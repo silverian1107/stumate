@@ -1,7 +1,16 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '@/theme';
+import { Lexend_Deca } from 'next/font/google'
 
+const lexendDeca = Lexend_Deca({
+  variable: '--font-lexend-deca',
+  subsets: ['latin'],
+  weight: ['100','200','300','400','500','600','700','800','900']
+})
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
@@ -26,9 +35,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ${lexendDeca.variable}`}
       >
+      <AppRouterCacheProvider options={{ key: 'css' }}>
+        <ThemeProvider theme={theme}>
         {children}
+        </ThemeProvider>
+      </AppRouterCacheProvider>
       </body>
     </html>
   );
