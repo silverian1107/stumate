@@ -15,7 +15,7 @@ export class CreateCollectionDto {
   })
   @IsString()
   @IsOptional()
-  parentId: string;
+  parentId?: string;
 
   @ApiProperty({
     description: 'Name of the collection',

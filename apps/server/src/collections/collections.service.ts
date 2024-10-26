@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCollectionDto } from './dto/create-collection.dto';
@@ -48,10 +48,33 @@ export class CollectionsService {
   async findAll({ sortBy = 'position', order = 'asc' }: SortOptions = {}) {
     const sortOrder = order === 'asc' ? 1 : -1;
 
-    const rootCollections = await this.collectionModel
+    const collections = await this.collectionModel
       .find({ level: 0 })
       .sort({ [sortBy]: sortOrder })
       .exec();
-    return rootCollections;
+    return collections;
+  }
+
+  async findByOwnerId(
+    userId: string,
+    { sortBy = 'position', order = 'asc' }: SortOptions = {},
+  ) {
+    const sortOrder = order === 'asc' ? 1 : -1;
+
+    const collection = await this.collectionModel
+      .find({ ownerId: userId, level: 0 })
+      .sort({ [sortBy]: sortOrder })
+      .exec();
+    return collection;
+  }
+
+  async findById(collectionId: string) {
+    const collection = await this.collectionModel.findById(collectionId).exec();
+    if (!collection) {
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
+    }
+    return collection;
   }
 }

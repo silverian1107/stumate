@@ -1,17 +1,13 @@
 meta {
-  name: FindAllCollection
+  name: find-collection-by-id
   type: http
-  seq: 2
+  seq: 5
 }
 
 get {
-  url: {{api}}/api/collections?order=desc
+  url: {{api}}/api/collections/{{collectionId}}
   body: none
   auth: none
-}
-
-params:query {
-  order: desc
 }
 
 body:json {
