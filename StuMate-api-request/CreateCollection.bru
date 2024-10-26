@@ -1,0 +1,19 @@
+meta {
+  name: CreateCollection
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api}}/api/collections
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Hello",
+    "parentId": "671cb3964ae27460f802080c",
+    "ownerId": "671cb3964ae27460f802080c"
+  }
+}
