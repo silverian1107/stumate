@@ -5,6 +5,12 @@ export type CollectionDocument = Collection & Document;
 
 @Schema({
   timestamps: true,
+  toJSON: {
+    transform(_, ret) {
+      delete ret.__v;
+      return ret;
+    },
+  },
 })
 export class Collection {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
@@ -53,3 +59,11 @@ CollectionSchema.index({ ownerId: 1 });
 CollectionSchema.index({ parentId: 1 });
 CollectionSchema.index({ level: 1 });
 CollectionSchema.index({ position: 1 });
+
+CollectionSchema.pre('find', function () {
+  this.populate('children');
+});
+
+CollectionSchema.pre('findOne', function () {
+  this.populate('children');
+});

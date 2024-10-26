@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CollectionDocument } from './models/collection.model';
+import { SortOptions } from './interfaces/options.interface';
 
 @Injectable()
 export class CollectionsService {
@@ -31,6 +32,11 @@ export class CollectionsService {
         newCollection.position = parent.children.length;
         newCollection.level = parent.level + 1;
         await parent.save();
+      } else {
+        const totalCollection = await this.collectionModel.countDocuments({
+          level: 0,
+        });
+        newCollection.position = totalCollection + 1;
       }
 
       return newCollection.save();
@@ -39,7 +45,13 @@ export class CollectionsService {
     }
   }
 
-  async findAll() {
-    return this.collectionModel.find();
+  async findAll({ sortBy = 'position', order = 'asc' }: SortOptions = {}) {
+    const sortOrder = order === 'asc' ? 1 : -1;
+
+    const rootCollections = await this.collectionModel
+      .find({ level: 0 })
+      .sort({ [sortBy]: sortOrder })
+      .exec();
+    return rootCollections;
   }
 }
