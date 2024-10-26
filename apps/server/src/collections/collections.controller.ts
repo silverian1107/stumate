@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiOperation,
@@ -9,6 +17,7 @@ import {
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { SortOptionsDto } from './dto/sort.dto';
+import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 @ApiTags('Collections')
 @Controller('collections')
@@ -87,5 +96,19 @@ export class CollectionsController {
   })
   async findById(@Param('collectionId') collectionId: string) {
     return this.collectionsService.findById(collectionId);
+  }
+
+  @Patch(':collectionId')
+  @ApiOperation({ summary: 'Update a collection by id' })
+  @ApiBody({ type: UpdateCollectionDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The updated collection.',
+  })
+  async update(
+    @Param('collectionId') collectionId: string,
+    @Body() updateData: UpdateCollectionDto,
+  ) {
+    return this.collectionsService.updateById(collectionId, updateData);
   }
 }

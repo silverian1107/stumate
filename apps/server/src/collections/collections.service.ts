@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CollectionDocument } from './models/collection.model';
 import { SortOptions } from './interfaces/options.interface';
+import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 @Injectable()
 export class CollectionsService {
@@ -76,5 +77,17 @@ export class CollectionsService {
       );
     }
     return collection;
+  }
+
+  async updateById(collectionId: string, updateData: UpdateCollectionDto) {
+    const updatedCollection = await this.collectionModel
+      .findByIdAndUpdate(collectionId, updateData, { new: true })
+      .exec();
+    if (!updatedCollection) {
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
+    }
+    return updatedCollection;
   }
 }

@@ -1,0 +1,17 @@
+meta {
+  name: update-collection
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{api}}/api/collections/{{collectionId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Hellolololo World!"
+  }
+}
