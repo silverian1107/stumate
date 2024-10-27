@@ -3,12 +3,16 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CollectionDocument } from './models/collection.model';
-import { SortOptions } from './interfaces/options.interface';
+
+import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { SortOptions } from './dto/options.dto';
+
+import { validateObjectId } from 'src/utils/validateId';
 
 @Injectable()
 export class CollectionsService {
@@ -83,14 +87,15 @@ export class CollectionsService {
   }
 
   async findArchivedByOwnerId(
-    userId: string,
+    ownerId: string,
     { sortBy = 'position', order = 'asc' }: SortOptions = {},
   ) {
-    const sortOrder = order === 'asc' ? 1 : -1;
+    validateObjectId(ownerId, 'User');
 
+    const sortOrder = order === 'asc' ? 1 : -1;
     const collection = await this.collectionModel
       .find({
-        ownerId: userId,
+        ownerId,
         level: 0,
         isArchived: true,
         isDeleted: false,
@@ -101,6 +106,7 @@ export class CollectionsService {
   }
 
   async findById(collectionId: string) {
+    validateObjectId(collectionId, 'Collection');
     const collection = await this.collectionModel.findById(collectionId).exec();
     if (!collection) {
       throw new NotFoundException(
@@ -111,6 +117,7 @@ export class CollectionsService {
   }
 
   async updateById(collectionId: string, updateData: UpdateCollectionDto) {
+    validateObjectId(collectionId, 'Collection');
     const updatedCollection = await this.collectionModel
       .findByIdAndUpdate(collectionId, updateData, { new: true })
       .exec();
@@ -123,6 +130,7 @@ export class CollectionsService {
   }
 
   async archiveById(collectionId: string) {
+    validateObjectId(collectionId, 'Collection');
     const archivedCollection = await this.collectionModel
       .findById(collectionId)
       .exec();
@@ -137,6 +145,7 @@ export class CollectionsService {
   }
 
   async restoreById(collectionId: string) {
+    validateObjectId(collectionId, 'Collection');
     const restoredCollection = await this.collectionModel
       .findById(collectionId)
       .exec();
@@ -152,6 +161,7 @@ export class CollectionsService {
   }
 
   async deleteById(collectionId: string) {
+    validateObjectId(collectionId, 'Collection');
     const deletedCollection = await this.collectionModel
       .findById(collectionId)
       .exec();
