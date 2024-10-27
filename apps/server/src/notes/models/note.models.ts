@@ -1,40 +1,32 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 
-export type CollectionDocument = Collection & Document;
+export type NoteDocument = Note & Document;
 
 @Schema({
   timestamps: true,
   versionKey: false,
 })
-export class Collection {
+export class Note {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   ownerId: string;
-
-  @Prop({
-    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Collection' }],
-    default: null,
-  })
-  parentId: string;
-
-  @Prop({ required: true })
-  name: string;
-
-  @Prop({
-    default: 'Description',
-  })
-  description?: string;
 
   @Prop({
     type: [
       {
         _id: { type: MongooseSchema.Types.ObjectId, required: true },
-        type: { type: String, required: true, enum: ['Collection', 'Note'] },
+        type: { type: String, required: true, enum: ['note', 'Note'] },
       },
     ],
     default: [],
   })
-  children: string[];
+  parentId: string;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Note' })
+  chilren: string[];
+
+  @Prop({ required: true })
+  title: string;
 
   @Prop({ default: 0 })
   level: number;
@@ -52,23 +44,17 @@ export class Collection {
   isDeleted: boolean;
 }
 
-export const CollectionSchema = SchemaFactory.createForClass(Collection);
+export const NoteSchema = SchemaFactory.createForClass(Note);
 
-CollectionSchema.index({ ownerId: 1 });
-CollectionSchema.index({ parentId: 1 });
-CollectionSchema.index({ ownerId: 1, level: 1 });
-CollectionSchema.index({ ownerId: 1, isArchived: 1, isDeleted: 1 });
-
-// Populate children
-CollectionSchema.pre('find', function () {
+NoteSchema.pre('find', function () {
   this.populate('children');
 });
 
-CollectionSchema.pre('findOne', function () {
+NoteSchema.pre('findOne', function () {
   this.populate('children');
 });
 
-CollectionSchema.pre('save', async function (next) {
+NoteSchema.pre('save', async function (next) {
   if (this.isModified('isArchived') && this.isArchived) {
     await archiveChildren(this);
   }
@@ -83,30 +69,24 @@ CollectionSchema.pre('save', async function (next) {
   next();
 });
 
-async function archiveChildren(collection: any) {
-  const children = await collection
-    .model('Collection')
-    .find({ parentId: collection._id });
+async function archiveChildren(note: any) {
+  const children = await note.model('Note').find({ parentId: note._id });
   for (const child of children) {
     child.isArchived = true;
     await child.save();
   }
 }
 
-async function restoreChildren(collection: any) {
-  const children = await collection
-    .model('Collection')
-    .find({ parentId: collection._id });
+async function restoreChildren(note: any) {
+  const children = await note.model('Note').find({ parentId: note._id });
   for (const child of children) {
     child.isArchived = false;
     await child.save();
   }
 }
 
-async function deleteChildren(collection: any) {
-  const children = await collection
-    .model('Collection')
-    .find({ parentId: collection._id });
+async function deleteChildren(note: any) {
+  const children = await note.model('note').find({ parentId: note._id });
   for (const child of children) {
     child.isDeleted = true;
     await child.save();
