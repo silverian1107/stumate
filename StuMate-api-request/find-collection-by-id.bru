@@ -1,0 +1,18 @@
+meta {
+  name: find-collection-by-id
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{api}}/api/collections/
+  body: none
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Hello",
+    "ownerId": "6512c620f09a0300015b0ae3"
+  }
+}
