@@ -5,21 +5,13 @@ export type CollectionDocument = Collection & Document;
 
 @Schema({
   timestamps: true,
-  toJSON: {
-    transform(_, ret) {
-      delete ret.__v;
-      return ret;
-    },
-  },
+  versionKey: false,
 })
 export class Collection {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   ownerId: string;
 
-  @Prop({
-    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Collection' }],
-    default: null,
-  })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Collection' })
   parentId: string;
 
   @Prop({ required: true })
@@ -31,10 +23,19 @@ export class Collection {
   description?: string;
 
   @Prop({
-    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Collection' }],
+    type: [
+      {
+        _id: { type: MongooseSchema.Types.ObjectId, required: true },
+        type: { type: String, required: true, enum: ['Collection', 'Note'] },
+      },
+    ],
+    required: false,
     default: [],
   })
-  children: string[];
+  children: {
+    _id: string;
+    type: 'Collection' | 'Note';
+  }[];
 
   @Prop({ default: 0 })
   level: number;
@@ -56,16 +57,22 @@ export const CollectionSchema = SchemaFactory.createForClass(Collection);
 
 CollectionSchema.index({ ownerId: 1 });
 CollectionSchema.index({ parentId: 1 });
-CollectionSchema.index({ level: 1 });
-CollectionSchema.index({ position: 1 });
+CollectionSchema.index({ ownerId: 1, level: 1 });
+CollectionSchema.index({ ownerId: 1, isArchived: 1, isDeleted: 1 });
 
 // Populate children
-CollectionSchema.pre('find', function () {
-  this.populate('children');
+CollectionSchema.virtual('childrenDocs', {
+  ref: 'Collection',
+  localField: 'children._id',
+  foreignField: '_id',
 });
 
-CollectionSchema.pre('findOne', function () {
-  this.populate('children');
+CollectionSchema.set('toObject', { virtuals: true });
+CollectionSchema.set('toJSON', {
+  virtuals: true,
+  transform: (_, ret) => {
+    delete ret.id;
+  },
 });
 
 CollectionSchema.pre('save', async function (next) {

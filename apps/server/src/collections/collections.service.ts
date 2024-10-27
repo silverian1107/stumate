@@ -10,9 +10,9 @@ import { CollectionDocument } from './models/collection.model';
 
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { SortOptions } from './dto/options.dto';
 
 import { validateObjectId } from 'src/utils/validateId';
+import { SortOptions } from 'src/utils/dtos/options.dto';
 
 @Injectable()
 export class CollectionsService {
@@ -27,16 +27,19 @@ export class CollectionsService {
     try {
       const newCollection = new this.collectionModel(newCollectionData);
 
-      if (newCollection.parentId) {
+      if ('parentId' in newCollectionData) {
         const parent = await this.collectionModel.findById(
           newCollection.parentId,
         );
 
         if (!parent) {
-          throw new Error('Parent collection not found');
+          throw new NotFoundException("Couldn' find the parent id");
         }
 
-        parent.children.push(newCollection._id as string);
+        parent.children.push({
+          _id: newCollection._id as string,
+          type: 'Collection',
+        });
         // Tính level và position
         newCollection.position = parent.children.length;
         newCollection.level = parent.level + 1;
@@ -63,6 +66,7 @@ export class CollectionsService {
         isArchived: false,
         isDeleted: false,
       })
+      .populate('childrenDocs')
       .sort({ [sortBy]: sortOrder })
       .exec();
     return collections;
