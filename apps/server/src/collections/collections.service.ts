@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCollectionDto } from './dto/create-collection.dto';
@@ -50,7 +54,11 @@ export class CollectionsService {
     const sortOrder = order === 'asc' ? 1 : -1;
 
     const collections = await this.collectionModel
-      .find({ level: 0 })
+      .find({
+        level: 0,
+        isArchived: false,
+        isDeleted: false,
+      })
       .sort({ [sortBy]: sortOrder })
       .exec();
     return collections;
@@ -63,7 +71,30 @@ export class CollectionsService {
     const sortOrder = order === 'asc' ? 1 : -1;
 
     const collection = await this.collectionModel
-      .find({ ownerId: userId, level: 0 })
+      .find({
+        ownerId: userId,
+        level: 0,
+        isArchived: false,
+        isDeleted: false,
+      })
+      .sort({ [sortBy]: sortOrder })
+      .exec();
+    return collection;
+  }
+
+  async findArchivedByOwnerId(
+    userId: string,
+    { sortBy = 'position', order = 'asc' }: SortOptions = {},
+  ) {
+    const sortOrder = order === 'asc' ? 1 : -1;
+
+    const collection = await this.collectionModel
+      .find({
+        ownerId: userId,
+        level: 0,
+        isArchived: true,
+        isDeleted: false,
+      })
       .sort({ [sortBy]: sortOrder })
       .exec();
     return collection;
@@ -89,5 +120,54 @@ export class CollectionsService {
       );
     }
     return updatedCollection;
+  }
+
+  async archiveById(collectionId: string) {
+    const archivedCollection = await this.collectionModel
+      .findById(collectionId)
+      .exec();
+
+    if (!archivedCollection) {
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
+    }
+    archivedCollection.isArchived = true;
+    return archivedCollection.save();
+  }
+
+  async restoreById(collectionId: string) {
+    const restoredCollection = await this.collectionModel
+      .findById(collectionId)
+      .exec();
+
+    if (!restoredCollection) {
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
+    }
+
+    restoredCollection.isArchived = false;
+    return restoredCollection.save();
+  }
+
+  async deleteById(collectionId: string) {
+    const deletedCollection = await this.collectionModel
+      .findById(collectionId)
+      .exec();
+
+    if (!deletedCollection) {
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
+    }
+    if (!deletedCollection.isArchived) {
+      throw new BadRequestException(
+        'Collection must be archived before delete',
+      );
+    }
+
+    deletedCollection.isDeleted = true;
+    return deletedCollection.save();
   }
 }

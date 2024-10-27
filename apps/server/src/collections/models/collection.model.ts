@@ -46,7 +46,7 @@ export class Collection {
   isPublished: boolean;
 
   @Prop({ default: false })
-  isArchive: boolean;
+  isArchived: boolean;
 
   @Prop({ default: false })
   isDeleted: boolean;
@@ -54,12 +54,12 @@ export class Collection {
 
 export const CollectionSchema = SchemaFactory.createForClass(Collection);
 
-// Indexes for better query performance
 CollectionSchema.index({ ownerId: 1 });
 CollectionSchema.index({ parentId: 1 });
 CollectionSchema.index({ level: 1 });
 CollectionSchema.index({ position: 1 });
 
+// Populate children
 CollectionSchema.pre('find', function () {
   this.populate('children');
 });
@@ -67,3 +67,48 @@ CollectionSchema.pre('find', function () {
 CollectionSchema.pre('findOne', function () {
   this.populate('children');
 });
+
+CollectionSchema.pre('save', async function (next) {
+  if (this.isModified('isArchived') && this.isArchived) {
+    await archiveChildren(this);
+  }
+
+  if (this.isModified('isArchived') && !this.isArchived) {
+    await restoreChildren(this);
+  }
+
+  if (this.isModified('isDeleted') && this.isArchived && this.isDeleted) {
+    await deleteChildren(this);
+  }
+  next();
+});
+
+async function archiveChildren(collection: any) {
+  const children = await collection
+    .model('Collection')
+    .find({ parentId: collection._id });
+  for (const child of children) {
+    child.isArchived = true;
+    await child.save();
+  }
+}
+
+async function restoreChildren(collection: any) {
+  const children = await collection
+    .model('Collection')
+    .find({ parentId: collection._id });
+  for (const child of children) {
+    child.isArchived = false;
+    await child.save();
+  }
+}
+
+async function deleteChildren(collection: any) {
+  const children = await collection
+    .model('Collection')
+    .find({ parentId: collection._id });
+  for (const child of children) {
+    child.isDeleted = true;
+    await child.save();
+  }
+}

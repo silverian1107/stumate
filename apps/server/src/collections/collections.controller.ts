@@ -88,6 +88,32 @@ export class CollectionsController {
     return this.collectionsService.findByOwnerId(ownerId, sortOptions);
   }
 
+  @Get(':ownerId/collections/archived')
+  @ApiOperation({ summary: 'Retrieve archived collections by user id' })
+  @ApiQuery({
+    name: 'sortBy',
+    description: 'The field to sort by (name, position, createdAt, updatedAt)',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'order',
+    description: 'The order of sorting (asc or desc)',
+    required: false,
+    type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The list of root-level collections.',
+    isArray: true,
+  })
+  async findArchivedByOwnerId(
+    @Param('ownerId') ownerId: string,
+    @Query() sortOptions: SortOptionsDto,
+  ) {
+    return this.collectionsService.findArchivedByOwnerId(ownerId, sortOptions);
+  }
+
   @Get(':collectionId')
   @ApiOperation({ summary: 'Retrieve a collection by id' })
   @ApiResponse({
@@ -110,5 +136,51 @@ export class CollectionsController {
     @Body() updateData: UpdateCollectionDto,
   ) {
     return this.collectionsService.updateById(collectionId, updateData);
+  }
+
+  @Patch(':collectionId/archive')
+  @ApiOperation({ summary: 'Archive a collection by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The archived collection.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Collection with specified ID not found.',
+  })
+  async archive(@Param('collectionId') collectionId: string) {
+    return this.collectionsService.archiveById(collectionId);
+  }
+
+  @Patch(':collectionId/restore')
+  @ApiOperation({ summary: 'Restore an archived collection by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The restored collection.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Collection with specified ID not found.',
+  })
+  async restore(@Param('collectionId') collectionId: string) {
+    return this.collectionsService.restoreById(collectionId);
+  }
+
+  @Patch(':collectionId/delete')
+  @ApiOperation({ summary: 'Delete a collection by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The deleted collection.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Collection must be archived before delete.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Collection with specified ID not found.',
+  })
+  async delete(@Param('collectionId') collectionId: string) {
+    return this.collectionsService.deleteById(collectionId);
   }
 }
