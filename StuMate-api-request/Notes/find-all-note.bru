@@ -1,10 +1,10 @@
 meta {
-  name: create-note
+  name: find-all-note
   type: http
-  seq: 1
+  seq: 2
 }
 
-post {
+get {
   url: {{api}}/api/notes
   body: json
   auth: none
@@ -12,8 +12,8 @@ post {
 
 body:json {
   {
-    "name": "Hello",
-    "parentId": "671fbce28874b77a85a4ffa2",
+    "title": "Hello",
+    "parentId": "671f490656f10ab245ee0f6b",
     "ownerId": "671cb3964ae27460f802080c"
   }
 }

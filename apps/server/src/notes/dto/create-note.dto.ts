@@ -23,5 +23,5 @@ export class CreateNoteDto {
   })
   @IsString()
   @Length(1, 100)
-  title: string;
+  name: string;
 }

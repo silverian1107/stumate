@@ -6,7 +6,7 @@ import {
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CollectionDocument } from './models/collection.model';
+import { Collection, CollectionDocument } from './models/collection.model';
 
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
@@ -57,7 +57,10 @@ export class CollectionsService {
     }
   }
 
-  async findAll({ sortBy = 'position', order = 'asc' }: SortOptions = {}) {
+  async findAll({
+    sortBy = 'position',
+    order = 'asc',
+  }: SortOptions = {}): Promise<Collection[]> {
     const sortOrder = order === 'asc' ? 1 : -1;
 
     const collections = await this.collectionModel
@@ -68,6 +71,7 @@ export class CollectionsService {
       })
       .populate('childrenDocs')
       .sort({ [sortBy]: sortOrder })
+      .lean<Collection[]>()
       .exec();
     return collections;
   }
@@ -75,7 +79,7 @@ export class CollectionsService {
   async findByOwnerId(
     userId: string,
     { sortBy = 'position', order = 'asc' }: SortOptions = {},
-  ) {
+  ): Promise<Collection[]> {
     const sortOrder = order === 'asc' ? 1 : -1;
 
     const collection = await this.collectionModel
@@ -86,14 +90,31 @@ export class CollectionsService {
         isDeleted: false,
       })
       .sort({ [sortBy]: sortOrder })
+      .populate('childrenDocs')
+      .lean<Collection[]>()
       .exec();
+
+    return collection;
+  }
+
+  async findById(collectionId: string): Promise<Collection> {
+    validateObjectId(collectionId, 'Collection');
+    const collection = await this.collectionModel
+      .findById(collectionId)
+      .populate('childrenDocs')
+      .exec();
+    if (!collection) {
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
+    }
     return collection;
   }
 
   async findArchivedByOwnerId(
     ownerId: string,
     { sortBy = 'position', order = 'asc' }: SortOptions = {},
-  ) {
+  ): Promise<Collection> {
     validateObjectId(ownerId, 'User');
 
     const sortOrder = order === 'asc' ? 1 : -1;
@@ -105,18 +126,9 @@ export class CollectionsService {
         isDeleted: false,
       })
       .sort({ [sortBy]: sortOrder })
+      .populate('childrenDocs')
+      .lean<Collection>()
       .exec();
-    return collection;
-  }
-
-  async findById(collectionId: string) {
-    validateObjectId(collectionId, 'Collection');
-    const collection = await this.collectionModel.findById(collectionId).exec();
-    if (!collection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
     return collection;
   }
 

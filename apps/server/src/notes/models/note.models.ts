@@ -41,7 +41,7 @@ export class Note {
   }[];
 
   @Prop({ required: true })
-  title: string;
+  name: string;
 
   @Prop({ default: 0 })
   level: number;
@@ -61,12 +61,19 @@ export class Note {
 
 export const NoteSchema = SchemaFactory.createForClass(Note);
 
-NoteSchema.pre('find', function () {
-  this.populate('children');
+// Populate children
+NoteSchema.virtual('childrenDocs', {
+  ref: 'Collection',
+  localField: 'children._id',
+  foreignField: '_id',
 });
 
-NoteSchema.pre('findOne', function () {
-  this.populate('children');
+NoteSchema.set('toObject', { virtuals: true });
+NoteSchema.set('toJSON', {
+  virtuals: true,
+  transform: (_, ret) => {
+    delete ret.id;
+  },
 });
 
 NoteSchema.pre('save', async function (next) {
