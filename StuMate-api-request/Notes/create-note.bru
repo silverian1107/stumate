@@ -1,19 +1,19 @@
 meta {
-  name: CreateCollection
+  name: create-note
   type: http
   seq: 1
 }
 
 post {
-  url: {{api}}/api/collections
+  url: {{api}}/api/notes
   body: json
   auth: none
 }
 
 body:json {
   {
-    "name": "Hello",
-    "parentId": "671f4b5903e0b4cf03c005b5",
+    "title": "Hello",
+    "parentId": "671f490656f10ab245ee0f6b",
     "ownerId": "671cb3964ae27460f802080c"
   }
 }

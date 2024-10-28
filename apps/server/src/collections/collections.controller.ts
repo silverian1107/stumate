@@ -16,8 +16,8 @@ import {
 } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-import { SortOptionsDto } from './dto/sort.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { SortOptions } from 'src/utils/dtos/options.dto';
 
 @ApiTags('Collections')
 @Controller('collections')
@@ -58,7 +58,7 @@ export class CollectionsController {
     description: 'The list of root-level collections.',
     isArray: true,
   })
-  async findAll(@Query() sortOptions: SortOptionsDto) {
+  async findAll(@Query() sortOptions: SortOptions) {
     return this.collectionsService.findAll(sortOptions);
   }
 
@@ -83,7 +83,7 @@ export class CollectionsController {
   })
   async findByOwnerId(
     @Param('ownerId') ownerId: string,
-    @Query() sortOptions: SortOptionsDto,
+    @Query() sortOptions: SortOptions,
   ) {
     return this.collectionsService.findByOwnerId(ownerId, sortOptions);
   }
@@ -109,7 +109,7 @@ export class CollectionsController {
   })
   async findArchivedByOwnerId(
     @Param('ownerId') ownerId: string,
-    @Query() sortOptions: SortOptionsDto,
+    @Query() sortOptions: SortOptions,
   ) {
     return this.collectionsService.findArchivedByOwnerId(ownerId, sortOptions);
   }

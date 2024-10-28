@@ -15,15 +15,30 @@ export class Note {
     type: [
       {
         _id: { type: MongooseSchema.Types.ObjectId, required: true },
-        type: { type: String, required: true, enum: ['note', 'Note'] },
+        type: { type: String, required: true, enum: ['Collection', 'Note'] },
       },
     ],
+    default: {},
+  })
+  parentId: {
+    _id: string;
+    type: 'Collection' | 'Note';
+  };
+
+  @Prop({
+    type: [
+      {
+        _id: { type: MongooseSchema.Types.ObjectId, required: true },
+        type: { type: String, required: true, enum: ['Note'] },
+      },
+    ],
+    required: false,
     default: [],
   })
-  parentId: string;
-
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Note' })
-  chilren: string[];
+  children: {
+    _id: string;
+    type: 'Note';
+  }[];
 
   @Prop({ required: true })
   title: string;
