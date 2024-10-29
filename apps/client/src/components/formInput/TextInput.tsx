@@ -22,12 +22,32 @@ const TextInput = ({
     // slotProps de them funtion cho tuy chinh doc tren document cua mui
     <TextField
       fullWidth
-      slotProps={{
-        input: { className: 'h-8 py-2 px-3 !text-[15px] !border !border-primary-main !text-primary-main' },
-        htmlInput: { className: '!p-0' },
-        
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          color: 'var(--primary-700)',
+          fontFamily: 'Arial',
+          fontWeight: 'bold',
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'var(--primary-300)',
+            borderWidth: '2px',
+          },
+          '&.Mui-focused': {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'var(--primary-700)',
+              borderWidth: '2px',
+            },
+          },
+        },
+        '& .MuiInputLabel-root': {
+          color: 'var(--primary-300)',
+          fontWeight: 'bold',
+          '&.Mui-focused': {
+            color: 'var(--primary-700)',
+            fontWeight: 'bold',
+          },
+        },
       }}
-      
+      label={name}
       name={name}
       onChange={onChange}
       value={value}
@@ -40,6 +60,3 @@ const TextInput = ({
 };
 
 export default TextInput;
-
-
-

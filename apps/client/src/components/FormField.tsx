@@ -27,7 +27,7 @@ export default function FormField<T extends FieldValues>({
   error,
 }: FormFieldProps<T>) {
   return (
-    <div>
+    <div className="relative">
       <Controller
         name={name}
         control={control}
@@ -42,8 +42,17 @@ export default function FormField<T extends FieldValues>({
           />
         )}
       />
-      {/* Display error message below the input */}
-      {error?.message && <FormHelperText error>{error.message}</FormHelperText>}
+      {error?.message && (
+        <FormHelperText
+          sx={{
+            fontSize: '12px',
+          }}
+          className="px-2 absolute -bottom-5 w-full"
+          error
+        >
+          {error.message}
+        </FormHelperText>
+      )}
     </div>
   );
 }

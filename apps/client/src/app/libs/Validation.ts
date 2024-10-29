@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 export const registerSchema = yup.object().shape({
-  fullName: yup.string().required(),
+  username: yup.string().required(),
   email: yup
     .string()
     .matches(
@@ -14,6 +14,6 @@ export const registerSchema = yup.object().shape({
     .string()
     .required()
     .oneOf([yup.ref('password')], 'Passwords must match'),
-    agreeToTerms: yup.boolean().oneOf([true],' You must agree with term')
+  agreeToTerms: yup.boolean().oneOf([true], ' You must agree with term'),
 });
 export type RegisterValues = yup.InferType<typeof registerSchema>;
