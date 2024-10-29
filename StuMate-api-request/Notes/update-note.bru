@@ -1,0 +1,29 @@
+meta {
+  name: update-note
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{api}}/api/notes/671fc54210a44757a43d86aa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "body": {
+      "time": 12345678,
+      "block": [
+        {
+          "id": "123456",
+          "type": "header",
+          "data": {
+            "text": "Key features",
+            "level": 3
+          }
+        }
+      ]
+    }
+  }
+}

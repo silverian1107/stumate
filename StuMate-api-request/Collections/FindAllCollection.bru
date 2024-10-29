@@ -5,14 +5,14 @@ meta {
 }
 
 get {
-  url: {{api}}/api/collections?order=desc&sortBy=position
+  url: {{api}}/api/collections?sortBy=position
   body: none
   auth: none
 }
 
 params:query {
-  order: desc
   sortBy: position
+  ~order: desc
 }
 
 body:json {

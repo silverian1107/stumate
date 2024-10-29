@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CollectionsService } from 'src/collections/collections.service';
@@ -6,6 +10,7 @@ import { validateObjectId } from 'src/utils/validateId';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { Note, NoteDocument } from './models/note.models';
 import { SortOptions } from 'src/utils/dtos/options.dto';
+import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Injectable()
 export class NotesService {
@@ -115,5 +120,56 @@ export class NotesService {
       throw new NotFoundException(`Collection with ID ${noteId} not found`);
     }
     return collection;
+  }
+
+  async updateById(noteId: string, updateData: UpdateNoteDto) {
+    validateObjectId(noteId, 'Collection');
+    const updatedCollection = await this.noteModel
+      .findByIdAndUpdate(noteId, updateData, { new: true })
+      .exec();
+    if (!updatedCollection) {
+      throw new NotFoundException(`Collection with ID ${noteId} not found`);
+    }
+    return updatedCollection;
+  }
+
+  async archiveById(noteId: string) {
+    validateObjectId(noteId, 'Note');
+    const archiveNote = await this.noteModel.findById(noteId).exec();
+
+    if (!archiveNote) {
+      throw new NotFoundException(`Note with ID ${noteId} not found`);
+    }
+
+    archiveNote.isArchived = true;
+    return archiveNote.save();
+  }
+
+  async restoreById(noteId: string) {
+    validateObjectId(noteId, 'Note');
+    const restoredNote = await this.noteModel.findById(noteId).exec();
+
+    if (!restoredNote) {
+      throw new NotFoundException(`Note with ID ${noteId} not found`);
+    }
+
+    restoredNote.isArchived = false;
+    return restoredNote.save();
+  }
+
+  async deleteById(noteId: string) {
+    validateObjectId(noteId, 'Note');
+    const deletedNote = await this.noteModel.findById(noteId).exec();
+
+    if (!deletedNote) {
+      throw new NotFoundException(`Note with ID ${noteId} not found`);
+    }
+
+    if (!deletedNote.isArchived) {
+      throw new BadRequestException('Note must be archived before delete');
+    }
+
+    deletedNote.isDeleted = true;
+    return deletedNote.save();
   }
 }

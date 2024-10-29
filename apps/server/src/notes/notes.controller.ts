@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { Note } from './models/note.models';
 import { SortOptions } from 'src/utils/dtos/options.dto';
+import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Controller('notes')
 export class NotesController {
@@ -58,5 +60,28 @@ export class NotesController {
   @Get(':noteId')
   async findById(@Param('noteId') noteId: string) {
     return this.notesService.findById(noteId);
+  }
+
+  @Patch(':noteId')
+  async updateById(
+    @Param('noteId') noteId: string,
+    @Body() updateData: UpdateNoteDto,
+  ) {
+    return this.notesService.updateById(noteId, updateData);
+  }
+
+  @Patch(':noteId/archive')
+  async archiveById(@Param('noteId') noteId: string) {
+    return this.notesService.archiveById(noteId);
+  }
+
+  @Patch(':noteId/restore')
+  async restoreById(@Param('noteId') noteId: string) {
+    return this.notesService.restoreById(noteId);
+  }
+
+  @Patch(':noteId/delete')
+  async deleteById(@Param('noteId') noteId: string) {
+    return this.notesService.deleteById(noteId);
   }
 }
