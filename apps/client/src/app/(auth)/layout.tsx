@@ -1,9 +1,21 @@
-export default function AuthLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    return (
-      <main className="bg-dark-200 flex items-center justify-center h-screen">
-        <div className="bg-white text-black w-[450px] h-fit py-10 px-8">
-          {children}
-        </div>
-      </main>
-    )
-  }
+import { ArrowBack } from '@mui/icons-material';
+import Link from 'next/link';
+
+export default function AuthLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <main className=" flex items-center justify-center h-screen  bg-[linear-gradient(114.55deg,#A6B1FB_0%,#C8CFFD_54.88%,#8BFFF5_100%)] font-[family-name:var(--font-lexend-deca)] relative">
+      <div className='absolute top-11 left-24  rounded-full w-14 h-14 flex justify-center items-center bg-purple-100/50 !text-primary-main'>
+        <Link href="/">
+          <ArrowBack sx={{fontSize:'30px'}}/>
+        </Link>
+      </div>
+      <div className="bg-white text-black w-[348px] h-fit py-8 px-8 relative rounded ">
+        {children}
+      </div>
+    </main>
+  );
+}
+
+/* Frame 1000003471 */
