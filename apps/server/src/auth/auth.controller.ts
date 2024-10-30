@@ -18,14 +18,12 @@ import {
   RegisterUserDto,
 } from './dto/create-auth.dto';
 import { UsersService } from 'src/modules/users/users.service';
-import { MailerService } from '@nestjs-modules/mailer';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
-    private readonly mailerService: MailerService,
   ) {}
 
   @Public()
@@ -44,48 +42,38 @@ export class AuthController {
   }
 
   @Public()
-  @ResponseMessage('Check code')
-  @Post('check-code')
-  checkCode(@Body() codeAutoDto: CodeAutoDto) {
-    return this.usersService.handleActivateAccount(codeAutoDto);
+  @ResponseMessage('Verify activation code')
+  @Post('verify-activation-code')
+  verifyActivationCode(@Body() codeAutoDto: CodeAutoDto) {
+    return this.usersService.handleVerifyActivationCode(codeAutoDto);
   }
 
   @Public()
-  @ResponseMessage('Retry Activate')
-  @Post('retry-activate')
-  retryActivate(@Body('email') email: string) {
-    return this.usersService.handleRetryActivateAccount(email);
+  @ResponseMessage('Resend activation code')
+  @Post('resend-activation-code')
+  resendActivationCode(@Body('email') email: string) {
+    return this.usersService.handleResendActivationCode(email);
   }
 
   @Public()
-  @ResponseMessage('Retry Password')
-  @Post('retry-password')
-  retryPassword(@Body('email') email: string) {
-    return this.usersService.handleRetryPassword(email);
+  @ResponseMessage('Send request password reset')
+  @Post('forgot-password')
+  forgotPassword(@Body('email') email: string) {
+    return this.usersService.handleRequestPasswordReset(email);
   }
 
   @Public()
-  @ResponseMessage('Change Password')
+  @ResponseMessage('Verify password reset code')
+  @Post('verify-password-reset-code')
+  verifyPasswordResetCode(@Body() codeAutoDto: CodeAutoDto) {
+    return this.usersService.handleVerifyPasswordResetCode(codeAutoDto);
+  }
+
+  @Public()
+  @ResponseMessage('Change password')
   @Post('change-password')
   changePassword(@Body() changePasswordAutoDto: ChangePasswordAutoDto) {
     return this.usersService.handleChangePassword(changePasswordAutoDto);
-  }
-
-  @Public()
-  @ResponseMessage('Send mail')
-  @Get('mail')
-  testMail() {
-    this.mailerService.sendMail({
-      to: 'hoangtuananhnguyen313@gmail.com',
-      subject: 'Testing Nest MailerModule ✔',
-      text: 'welcome',
-      template: 'confirmation',
-      context: {
-        name: 'Tam',
-        activationCode: 123456789,
-      },
-    });
-    return 'ok';
   }
 
   @ResponseMessage('Get user information')

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 export const getHashPassword = async (password: string) => {
   const saltRounds = 10;

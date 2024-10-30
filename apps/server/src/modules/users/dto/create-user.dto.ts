@@ -51,6 +51,10 @@ export class CreateUserDto {
   )
   password: string;
 
+  @IsNotEmpty()
+  @IsString()
+  confirmPassword: string;
+
   @IsOptional()
   @IsDate()
   @MaxDate(new Date())

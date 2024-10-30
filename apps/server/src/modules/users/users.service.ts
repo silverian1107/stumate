@@ -47,13 +47,12 @@ export class UsersService {
     return await this.userModel.findOne({ refreshToken });
   };
 
-  handleSendEmail = async (user: any, title: string, subject: string) => {
+  handleSendEmail = async (user: any, subject: string, template: string) => {
     this.mailerService.sendMail({
       to: user.email,
-      subject: subject,
-      template: 'confirmation',
+      subject,
+      template,
       context: {
-        title,
         name: user.name,
         activationCode: user.codeId,
       },
@@ -81,7 +80,7 @@ export class UsersService {
     });
   }
 
-  handleActivateAccount = async (codeAutoDto: CodeAutoDto) => {
+  handleVerifyActivationCode = async (codeAutoDto: CodeAutoDto) => {
     const user = await this.userModel.findOne({
       _id: codeAutoDto._id,
       codeId: codeAutoDto.codeId,
@@ -100,7 +99,7 @@ export class UsersService {
     throw new BadRequestException('Code is invalid or has expired');
   };
 
-  handleRetryActivateAccount = async (email: string) => {
+  handleResendActivationCode = async (email: string) => {
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new BadRequestException('Account does not exist');
@@ -116,13 +115,13 @@ export class UsersService {
     });
     await this.handleSendEmail(
       user,
-      'Welcome to stumate',
       'Activate your account',
+      'account-activation-email',
     );
     return { _id: user._id };
   };
 
-  handleRetryPassword = async (email: string) => {
+  handleRequestPasswordReset = async (email: string) => {
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new BadRequestException('Account does not exist');
@@ -136,12 +135,23 @@ export class UsersService {
         ms(this.configService.get<string>('CODE_EXPIRE_TIME')),
       ),
     });
-    await this.handleSendEmail(
-      user,
-      'Password reset',
-      'Change your password account',
-    );
+    await this.handleSendEmail(user, 'Password reset', 'reset-password-email');
     return { _id: user._id, email: user.email };
+  };
+
+  handleVerifyPasswordResetCode = async (codeAutoDto: CodeAutoDto) => {
+    const user = await this.userModel.findOne({
+      _id: codeAutoDto._id,
+      codeId: codeAutoDto.codeId,
+    });
+    if (user) {
+      //Check code expired
+      const isCodeExpired = dayjs().isBefore(user.codeExpire);
+      if (isCodeExpired) {
+        return user;
+      }
+    }
+    throw new BadRequestException('Code is invalid or has expired');
   };
 
   handleChangePassword = async (
@@ -170,12 +180,26 @@ export class UsersService {
   };
 
   async register(registerUserDto: RegisterUserDto) {
-    const { name, username, email, password, birthday, gender, avatarUrl } =
-      registerUserDto;
+    const {
+      name,
+      username,
+      email,
+      password,
+      confirmPassword,
+      birthday,
+      gender,
+      avatarUrl,
+    } = registerUserDto;
     //Check email already exists
     if (await this.isExistEmail(email)) {
       throw new BadRequestException(
         `Email ${email} already exists. Please use another email`,
+      );
+    }
+    //Check password and confirm password
+    if (confirmPassword !== password) {
+      throw new BadRequestException(
+        'Password and Confirm Password does not match',
       );
     }
     //Hash password
@@ -197,8 +221,8 @@ export class UsersService {
     //Send email
     await this.handleSendEmail(
       newUser,
-      'Welcome to stumate',
       'Activate your account',
+      'account-activation-email',
     );
     return newUser;
   }
@@ -209,6 +233,7 @@ export class UsersService {
       username,
       email,
       password,
+      confirmPassword,
       birthday,
       gender,
       avatarUrl,
@@ -218,6 +243,12 @@ export class UsersService {
     if (await this.isExistEmail(email)) {
       throw new BadRequestException(
         `Email ${email} already exists. Please use another email`,
+      );
+    }
+    //Check password and confirm password
+    if (confirmPassword !== password) {
+      throw new BadRequestException(
+        'Password and Confirm Password does not match',
       );
     }
     //Hash password
@@ -236,6 +267,12 @@ export class UsersService {
         email: user.email,
       },
     });
+    //Send email
+    await this.handleSendEmail(
+      newUser,
+      'Activate your account',
+      'account-activation-email',
+    );
     return newUser;
   }
 
