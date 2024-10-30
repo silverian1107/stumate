@@ -1,0 +1,18 @@
+meta {
+  name: CreateCollection
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api}}/api/collections
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "HELL NO",
+    "ownerId": "671cb3964ae27460f80208cc"
+  }
+}
