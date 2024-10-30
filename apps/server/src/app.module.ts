@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CollectionsModule } from './collections/collections.module';
 import { NotesModule } from './notes/notes.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { NotesModule } from './notes/notes.module';
     }),
     CollectionsModule,
     NotesModule,
+    CacheModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService],

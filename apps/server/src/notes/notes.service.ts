@@ -4,13 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import aqp from 'api-query-params';
 import { Model } from 'mongoose';
 import { CollectionsService } from 'src/collections/collections.service';
 import { validateObjectId } from 'src/utils/validateId';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { Note, NoteDocument } from './models/note.models';
-import { SortOptions } from 'src/utils/dtos/options.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import { Note, NoteDocument } from './models/note.models';
 
 @Injectable()
 export class NotesService {
@@ -60,50 +60,89 @@ export class NotesService {
     }
   }
 
-  async findAll({
-    sortBy = 'position',
-    order = 'asc',
-  }: SortOptions = {}): Promise<Note[]> {
-    const sortOrder = order === 'asc' ? 1 : -1;
+  async findAll(currentPage = 1, pageSize = 10, qs?: string) {
+    if (!Number.isInteger(currentPage) || currentPage <= 0) {
+      throw new BadRequestException('Current page must be a positive integer');
+    }
+    if (!Number.isInteger(pageSize) || pageSize <= 0) {
+      throw new BadRequestException('Page size must be a positive integer');
+    }
+    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
+    const limit = pageSize;
+    const skip = (currentPage - 1) * limit;
+    const filter = {
+      'parentId.type': 'Collection',
+      isArchived: false,
+      isDeleted: false,
+    };
 
     try {
+      const totalItems = await this.noteModel.countDocuments(filter).exec();
+      const totalPages = Math.ceil(totalItems / limit);
       const notes = await this.noteModel
-        .find({
-          'parentId.type': 'Collection',
-          isArchived: false,
-          isDeleted: false,
-        })
-        .sort({ [sortBy]: sortOrder })
+        .find(filter)
+        .sort(sort as any)
+        .skip(skip)
+        .limit(limit)
         .populate('childrenDocs')
         .lean<Note[]>()
         .exec();
-      return notes;
+
+      return {
+        meta: {
+          current: currentPage,
+          pageSize: limit,
+          pages: totalPages,
+          total: totalItems,
+        },
+        result: notes,
+      };
     } catch (error) {
+      if (error.name === 'CastError') {
+        throw new BadRequestException('Invalid request data');
+      }
       throw new Error(`Failed to search notes: ${error.message}`);
     }
   }
 
   async findByOwnerId(
     ownerId: string,
-    { sortBy = 'position', order = 'asc' }: SortOptions = {},
-  ): Promise<Note[]> {
-    validateObjectId(ownerId);
-    const sortOrder = order === 'asc' ? 1 : -1;
+    currentPage = 1,
+    pageSize = 10,
+    qs?: string,
+  ) {
+    validateObjectId(ownerId, 'User');
+    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
+    const limit = pageSize || 10;
+    const skip = (currentPage - 1) * limit;
+    const filter = {
+      ownerId,
+      'parentId.type': 'Collection',
+      isArchived: false,
+      isDeleted: false,
+    };
 
     try {
+      const totalItems = await this.noteModel.countDocuments(filter);
+      const totalPages = Math.ceil(totalItems / limit);
       const notes = await this.noteModel
-        .find({
-          ownerId,
-          'parentId.type': 'Collection',
-          isArchived: false,
-          isDeleted: false,
-        })
-        .sort({ [sortBy]: sortOrder })
+        .find(filter)
+        .sort(sort as any)
+        .skip(skip)
+        .limit(limit)
         .populate('childrenDocs')
         .lean<Note[]>()
         .exec();
 
-      return notes;
+      return {
+        meta: {
+          current: currentPage,
+          pageSize: limit,
+          pages: totalPages,
+          total: totalItems,
+        },
+        result: notes,
+      };
     } catch (error) {
       throw new Error(`Failed to search notes: ${error.message}`);
     }

@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -13,13 +11,12 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SortOptions } from 'src/utils/dtos/options.dto';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { Note } from './models/note.models';
 import { NotesService } from './notes.service';
 
 @ApiTags('Notes')
@@ -41,24 +38,54 @@ export class NotesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all notes' })
+  @ApiQuery({
+    name: 'currentPage',
+    description: 'The current page number',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    description: 'The number of items per page',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'qs',
+    description: 'Query string for sorting and filtering',
+    required: false,
+    type: String,
+  })
   @ApiResponse({ status: 200, description: 'Return all notes.' })
-  async findAll(): Promise<Note[]> {
-    try {
-      const notes = await this.notesService.findAll();
-      return notes;
-    } catch (error) {
-      throw new HttpException(
-        error.message,
-        error instanceof HttpException
-          ? error.getStatus()
-          : HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  async findAll(
+    @Query('currentPage') currentPage = 1,
+    @Query('pageSize') pageSize = 10,
+    @Query('qs') qs: string,
+  ) {
+    return this.notesService.findAll(+currentPage, +pageSize, qs);
   }
 
   @Get(':ownerId/notes')
   @ApiOperation({ summary: 'Get notes by owner ID' })
   @ApiParam({ name: 'ownerId', required: true })
+  @ApiQuery({
+    name: 'currentPage',
+    description: 'The current page number',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    description: 'The number of items per page',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'qs',
+    description: 'Query string for sorting and filtering',
+    required: false,
+    type: String,
+  })
   @ApiResponse({
     status: 200,
     description: 'Return notes for specified owner.',
@@ -66,19 +93,16 @@ export class NotesController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async findByOwner(
     @Param('ownerId') ownerId: string,
-    @Query() sortOptions: SortOptions,
-  ): Promise<Note[]> {
-    try {
-      const notes = await this.notesService.findByOwnerId(ownerId, sortOptions);
-      return notes;
-    } catch (error) {
-      throw new HttpException(
-        error.message,
-        error instanceof HttpException
-          ? error.getStatus()
-          : HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    @Query('currentPage') currentPage = 1,
+    @Query('pageSize') pageSize = 10,
+    @Query('qs') qs: string,
+  ) {
+    return this.notesService.findByOwnerId(
+      ownerId,
+      +currentPage,
+      +pageSize,
+      qs,
+    );
   }
 
   @Get(':noteId')
