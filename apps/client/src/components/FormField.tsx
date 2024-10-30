@@ -16,6 +16,7 @@ interface FormFieldProps<T extends FieldValues = FieldValues> {
   Component: React.ComponentType<any>;
   type?: string;
   error?: FieldError;
+  label?: string;
 }
 
 export default function FormField<T extends FieldValues>({
@@ -25,9 +26,11 @@ export default function FormField<T extends FieldValues>({
   Component,
   type,
   error,
+  label
 }: FormFieldProps<T>) {
   return (
     <div className="relative">
+      {label &&  <p className="font-bold mb-3 text-sm text-primary-main">{label}</p>}
       <Controller
         name={name}
         control={control}

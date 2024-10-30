@@ -4,8 +4,8 @@ import { Apple } from '@mui/icons-material';
 
 export default function RegisterPage() {
   return (
-    <div className="flex justify-evenly items-center w-full h-full flex-col">
-      <p className="font-extrabold text-[3rem] text-primary-main mt-20 -mb-20">
+    <div className="flex  items-center w-full h-full flex-col gap-4">
+      <p className="font-extrabold text-[3rem] text-primary-main mt-10  ">
         Registration
       </p>
       <div className="bg-white px-8 py-8 rounded w-[380px] lg:w-[480px] border border-primary-main/40">
