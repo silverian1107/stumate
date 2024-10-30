@@ -1,28 +1,62 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CollectionsModule } from './collections/collections.module';
-import { NotesModule } from './notes/notes.module';
-import { CacheModule } from '@nestjs/cache-manager';
+import { MongooseModule } from '@nestjs/mongoose';
+import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
+import { UsersModule } from './modules/users/users.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { join } from 'path';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
 @Module({
   imports: [
+    UsersModule,
+    AuthModule,
+    CollectionsModule,
+    NotesModule,
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+        connectionFactory: (connection) => {
+          connection.plugin(softDeletePlugin);
+          return connection;
+        },
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
-    MongooseModule.forRootAsync({
+    MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
+        transport: {
+          host: configService.get<string>('MAIL_HOST'),
+          port: 465,
+          secure: true,
+          auth: {
+            user: configService.get<string>('MAIL_USER'),
+            pass: configService.get<string>('MAIL_PASSWORD'),
+          },
+        },
+        defaults: {
+          from: `"stumate" <${configService.get<string>('MAIL_FROM')}>`,
+        },
+        // preview: true,
+        template: {
+          dir: join(__dirname, 'mail/templates/'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
       }),
       inject: [ConfigService],
     }),
-    CollectionsModule,
-    NotesModule,
-    CacheModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService],
