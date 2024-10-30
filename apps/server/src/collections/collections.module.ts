@@ -12,5 +12,6 @@ import { CollectionSchema } from './models/collection.model';
   ],
   controllers: [CollectionsController],
   providers: [CollectionsService],
+  exports: [CollectionsService],
 })
 export class CollectionsModule {}

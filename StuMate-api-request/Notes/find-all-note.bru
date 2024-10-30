@@ -1,0 +1,19 @@
+meta {
+  name: find-all-note
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api}}/api/notes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Hello",
+    "parentId": "671f490656f10ab245ee0f6b",
+    "ownerId": "671cb3964ae27460f802080c"
+  }
+}

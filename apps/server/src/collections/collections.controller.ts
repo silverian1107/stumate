@@ -16,7 +16,6 @@ import {
 } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-import { SortOptionsDto } from './dto/sort.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 @ApiTags('Collections')
@@ -40,39 +39,55 @@ export class CollectionsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Retrieve all collections' })
+  @ApiOperation({ summary: 'Get all collections' })
   @ApiQuery({
-    name: 'sortBy',
-    description: 'The field to sort by (name, position, createdAt, updatedAt)',
+    name: 'currentPage',
+    description: 'The current page number',
     required: false,
     type: String,
   })
   @ApiQuery({
-    name: 'order',
-    description: 'The order of sorting (asc or desc)',
+    name: 'pageSize',
+    description: 'The number of items per page',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'qs',
+    description: 'Query string for sorting and filtering',
     required: false,
     type: String,
   })
   @ApiResponse({
     status: 200,
-    description: 'The list of root-level collections.',
+    description: 'The list of collections.',
     isArray: true,
   })
-  async findAll(@Query() sortOptions: SortOptionsDto) {
-    return this.collectionsService.findAll(sortOptions);
+  async findAll(
+    @Query('currentPage') currentPage = '1',
+    @Query('pageSize') pageSize = '10',
+    @Query('qs') qs: string,
+  ) {
+    return this.collectionsService.findAll(+currentPage, +pageSize, qs);
   }
 
   @Get(':ownerId/collections')
   @ApiOperation({ summary: 'Retrieve collections by user id' })
   @ApiQuery({
-    name: 'sortBy',
-    description: 'The field to sort by (name, position, createdAt, updatedAt)',
+    name: 'currentPage',
+    description: 'The current page number',
     required: false,
-    type: String,
+    type: Number,
   })
   @ApiQuery({
-    name: 'order',
-    description: 'The order of sorting (asc or desc)',
+    name: 'pageSize',
+    description: 'The number of items per page',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'qs',
+    description: 'Query string for sorting and filtering',
     required: false,
     type: String,
   })
@@ -83,35 +98,55 @@ export class CollectionsController {
   })
   async findByOwnerId(
     @Param('ownerId') ownerId: string,
-    @Query() sortOptions: SortOptionsDto,
+    @Query('currentPage') currentPage = 1,
+    @Query('pageSize') pageSize = 10,
+    @Query('qs') qs: string,
   ) {
-    return this.collectionsService.findByOwnerId(ownerId, sortOptions);
+    return this.collectionsService.findByOwnerId(
+      ownerId,
+      +currentPage,
+      +pageSize,
+      qs,
+    );
   }
 
   @Get(':ownerId/collections/archived')
   @ApiOperation({ summary: 'Retrieve archived collections by user id' })
   @ApiQuery({
-    name: 'sortBy',
-    description: 'The field to sort by (name, position, createdAt, updatedAt)',
+    name: 'currentPage',
+    description: 'The current page number',
     required: false,
-    type: String,
+    type: Number,
   })
   @ApiQuery({
-    name: 'order',
-    description: 'The order of sorting (asc or desc)',
+    name: 'pageSize',
+    description: 'The number of items per page',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'qs',
+    description: 'Query string for sorting and filtering',
     required: false,
     type: String,
   })
   @ApiResponse({
     status: 200,
-    description: 'The list of root-level collections.',
+    description: 'The list of archived collections.',
     isArray: true,
   })
   async findArchivedByOwnerId(
     @Param('ownerId') ownerId: string,
-    @Query() sortOptions: SortOptionsDto,
+    @Query('currentPage') currentPage = 1,
+    @Query('pageSize') pageSize = 10,
+    @Query('qs') qs: string,
   ) {
-    return this.collectionsService.findArchivedByOwnerId(ownerId, sortOptions);
+    return this.collectionsService.findArchivedByOwnerId(
+      ownerId,
+      +currentPage,
+      +pageSize,
+      qs,
+    );
   }
 
   @Get(':collectionId')
