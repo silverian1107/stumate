@@ -1,13 +1,10 @@
-import { Type } from 'class-transformer';
 import {
-  IsDate,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsStrongPassword,
-  MaxDate,
 } from 'class-validator';
 
 export enum Gender {
@@ -22,10 +19,6 @@ enum Role {
 }
 
 export class CreateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
   @IsNotEmpty()
   @IsString()
   username: string;
@@ -54,20 +47,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   confirmPassword: string;
-
-  @IsOptional()
-  @IsDate()
-  @MaxDate(new Date())
-  @Type(() => Date)
-  birthday: Date;
-
-  @IsOptional()
-  @IsEnum(Gender)
-  gender: string;
-
-  @IsOptional()
-  @IsString()
-  avatarUrl: string;
 
   @IsOptional()
   @IsEnum(Role)

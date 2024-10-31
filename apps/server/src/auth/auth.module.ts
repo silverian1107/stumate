@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import ms from 'ms';
 import { LocalStrategy } from './passport/local.strategy';
 import { JwtStrategy } from './passport/jwt.strategy';
-import { UsersModule } from '../modules/users/users.module';
+import { UsersModule } from 'src/modules/users/users.module';
 
 @Module({
   controllers: [AuthController],

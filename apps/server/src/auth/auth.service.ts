@@ -38,8 +38,12 @@ export class AuthService {
       email,
       role,
     };
+    // Generate refresh token
     const refresh_token = this.createRefreshToken(payload);
     await this.usersService.updateUserToken(refresh_token, _id);
+    // Set lastLogin to the current date and time
+    await this.usersService.updateLastLogin(_id);
+    // Set cookie with the refresh token
     response.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),

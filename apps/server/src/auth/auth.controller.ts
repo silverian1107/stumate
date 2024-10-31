@@ -29,8 +29,12 @@ export class AuthController {
   @Public()
   @ResponseMessage('Register a new user')
   @Post('register')
-  handleRegister(@Body() registerUserDto: RegisterUserDto) {
-    return this.usersService.register(registerUserDto);
+  async handleRegister(@Body() registerUserDto: RegisterUserDto) {
+    const newUser = await this.usersService.register(registerUserDto);
+    return {
+      _id: newUser?._id,
+      createdAt: newUser?.createdAt,
+    };
   }
 
   @Public()
@@ -93,9 +97,8 @@ export class AuthController {
     return this.authService.processNewToken(refresh_token, response);
   }
 
-  @Public()
   @ResponseMessage('User logout')
-  @Get('logout')
+  @Post('logout')
   handleLogout(
     @Res({ passthrough: true }) response: Response,
     @User() user: IUser,

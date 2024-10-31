@@ -9,7 +9,7 @@ import {
   MaxDate,
 } from 'class-validator';
 import { Gender } from './create-user.dto';
-import { Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 
 export class UpdateUserDto {
   @IsNotEmpty()
@@ -31,7 +31,7 @@ export class UpdateUserDto {
   @IsOptional()
   @IsDate()
   @MaxDate(new Date())
-  @Type(() => Date)
+  @Transform(({ value }) => new Date(value))
   birthday: Date;
 
   @IsOptional()

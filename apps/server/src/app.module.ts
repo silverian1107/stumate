@@ -9,6 +9,8 @@ import { UsersModule } from './modules/users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { CollectionsModule } from './modules/collections/collections.module';
+import { NotesModule } from './modules/notes/notes.module';
 
 @Module({
   imports: [

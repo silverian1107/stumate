@@ -6,11 +6,11 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import aqp from 'api-query-params';
 import { Model } from 'mongoose';
-import { CollectionsService } from 'src/collections/collections.service';
-import { validateObjectId } from 'src/utils/validateId';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { Note, NoteDocument } from './models/note.models';
+import { Note, NoteDocument } from './schema/note.schema';
+import { CollectionsService } from '../collections/collections.service';
+import { validateObjectId } from 'src/helpers/utils';
 
 @Injectable()
 export class NotesService {

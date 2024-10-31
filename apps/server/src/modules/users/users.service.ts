@@ -33,6 +33,10 @@ export class UsersService {
     private readonly configService: ConfigService,
   ) {}
 
+  async updateLastLogin(userId: string): Promise<void> {
+    await this.userModel.updateOne({ _id: userId }, { lastLogin: dayjs() });
+  }
+
   isExistEmail = async (email: string) => {
     const user = await this.userModel.findOne({ email });
     if (user) return true;
@@ -144,14 +148,15 @@ export class UsersService {
       _id: codeAutoDto._id,
       codeId: codeAutoDto.codeId,
     });
-    if (user) {
-      //Check code expired
-      const isCodeExpired = dayjs().isBefore(user.codeExpire);
-      if (isCodeExpired) {
-        return user;
-      }
+    if (!user) {
+      throw new BadRequestException('Account does not exist');
     }
-    throw new BadRequestException('Code is invalid or has expired');
+    //Check code expired
+    const isCodeExpired = dayjs().isBefore(user.codeExpire);
+    if (!isCodeExpired) {
+      throw new BadRequestException('Code is invalid or has expired');
+    }
+    return user;
   };
 
   handleChangePassword = async (
@@ -170,26 +175,13 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException('Account does not exist');
     }
-    const isCodeExpired = dayjs().isBefore(user.codeExpire);
-    if (isCodeExpired) {
-      const newPassword = await getHashPassword(changePasswordAutoDto.password);
-      await user.updateOne({ password: newPassword });
-      return user;
-    }
-    throw new BadRequestException('Code is invalid or has expired');
+    const newPassword = await getHashPassword(changePasswordAutoDto.password);
+    await user.updateOne({ password: newPassword });
+    return user;
   };
 
   async register(registerUserDto: RegisterUserDto) {
-    const {
-      name,
-      username,
-      email,
-      password,
-      confirmPassword,
-      birthday,
-      gender,
-      avatarUrl,
-    } = registerUserDto;
+    const { username, email, password, confirmPassword } = registerUserDto;
     //Check email already exists
     if (await this.isExistEmail(email)) {
       throw new BadRequestException(
@@ -206,13 +198,9 @@ export class UsersService {
     const hashPassword = await getHashPassword(password);
     const codeId = this.getCodeId();
     const newUser = await this.userModel.create({
-      name,
       username,
       email,
       password: hashPassword,
-      birthday,
-      gender,
-      avatarUrl,
       codeId,
       codeExpire: dayjs().add(
         ms(this.configService.get<string>('CODE_EXPIRE_TIME')),
@@ -228,17 +216,7 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto, @User() user: IUser) {
-    const {
-      name,
-      username,
-      email,
-      password,
-      confirmPassword,
-      birthday,
-      gender,
-      avatarUrl,
-      role,
-    } = createUserDto;
+    const { username, email, password, confirmPassword, role } = createUserDto;
     //Check email already exists
     if (await this.isExistEmail(email)) {
       throw new BadRequestException(
@@ -254,13 +232,9 @@ export class UsersService {
     //Hash password
     const hashPassword = await getHashPassword(password);
     const newUser = await this.userModel.create({
-      name,
       username,
       email,
       password: hashPassword,
-      birthday,
-      gender,
-      avatarUrl,
       role,
       createdBy: {
         _id: user._id,

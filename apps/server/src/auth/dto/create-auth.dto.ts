@@ -1,14 +1,9 @@
-import { Type } from 'class-transformer';
 import {
-  IsDate,
   IsEmail,
-  IsEnum,
   IsMongoId,
   IsNotEmpty,
-  IsOptional,
   IsString,
   IsStrongPassword,
-  MaxDate,
 } from 'class-validator';
 
 export enum Gender {
@@ -18,10 +13,6 @@ export enum Gender {
 }
 
 export class RegisterUserDto {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
   @IsNotEmpty()
   @IsString()
   username: string;
@@ -50,20 +41,6 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @IsString()
   confirmPassword: string;
-
-  @IsOptional()
-  @IsDate()
-  @MaxDate(new Date())
-  @Type(() => Date)
-  birthday: Date;
-
-  @IsOptional()
-  @IsEnum(Gender)
-  gender: string;
-
-  @IsOptional()
-  @IsString()
-  avatarUrl: string;
 }
 
 export class CodeAutoDto {
@@ -84,10 +61,6 @@ export class ChangePasswordAutoDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  codeId: string;
 
   @IsNotEmpty()
   @IsString()

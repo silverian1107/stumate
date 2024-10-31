@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { NotesController } from './notes.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { NoteSchema } from './models/note.models';
-import { CollectionsModule } from 'src/collections/collections.module';
+import { NoteSchema } from './schema/note.schema';
+import { CollectionsModule } from '../collections/collections.module';
 
 @Module({
   imports: [
