@@ -1,20 +1,24 @@
 'use client';
+
 import FormField from '@/components/FormField';
-
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import { Button, FormHelperText } from '@mui/material';
 import TextInput from '@/components/formInput/TextInput';
 import { registerSchema, RegisterValues } from '@/app/libs/Validation';
 import { useForm } from 'react-hook-form';
 import CheckBoxInput from '@/components/formInput/CheckBoxInput';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRegisterMutation } from '@/service/rootApi';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
     formState: { errors },
+    getValues
   } = useForm<RegisterValues>({
     resolver: yupResolver(registerSchema),
     defaultValues: {
@@ -25,9 +29,19 @@ export default function RegisterForm() {
       agreeToTerms: false,
     },
   });
+  
+  const [register, {  isSuccess }] = useRegisterMutation();
   function onSubmit(formData: RegisterValues) {
     console.log({ formData });
+    register(formData);
   }
+ 
+  useEffect(()=>{
+    if (isSuccess) {
+      const email = getValues('email');
+      router.push(`/verify_otp?email=${encodeURIComponent(email)}`)
+    }
+  },[ router, isSuccess, getValues ])
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<RegisterValues>

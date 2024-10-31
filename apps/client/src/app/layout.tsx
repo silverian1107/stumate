@@ -3,7 +3,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { Lexend_Deca } from 'next/font/google';
 import './globals.css';
-// import StoreProvider from '@/redux/StoreProvider';
+import StoreProvider from '@/redux/StoreProvider';
 
 const lexendDeca = Lexend_Deca({
   variable: '--font-lexend-deca',
@@ -17,15 +17,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <StoreProvider> */}
       <StyledEngineProvider injectFirst>
         <body className={`antialiased ${lexendDeca.variable}`}>
+      <StoreProvider>
           <AppRouterCacheProvider options={{ key: 'css' }}>
             <ThemeProvider theme={theme}>{children}</ThemeProvider>
           </AppRouterCacheProvider>
+      </StoreProvider>
         </body>
       </StyledEngineProvider>
-      {/* </StoreProvider> */}
     </html>
   );
 }
