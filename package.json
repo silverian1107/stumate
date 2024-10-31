@@ -23,5 +23,18 @@
     "husky": "^8.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
+    "@reduxjs/toolkit": "^2.3.0",
+    "react-hook-form": "^7.53.1",
+    "react-redux": "^9.1.2",
+    "yup": "^1.4.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@headlessui/react": "^2.1.10",
+    "@heroicons/react": "^2.1.5",
+    "@mui/material": "^6.1.5",
+    "tailwindcss": "^3.4.14"
   }
 }

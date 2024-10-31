@@ -1,0 +1,22 @@
+meta {
+  name: find-all-collection-by-owner
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{api}}/api/collections/{{userIdE}}/collections?order=desc
+  body: none
+  auth: none
+}
+
+params:query {
+  order: desc
+}
+
+body:json {
+  {
+    "name": "Hello",
+    "ownerId": "6512c620f09a0300015b0ae3"
+  }
+}

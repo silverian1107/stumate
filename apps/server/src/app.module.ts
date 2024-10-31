@@ -14,6 +14,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
   imports: [
     UsersModule,
     AuthModule,
+    CollectionsModule,
+    NotesModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -26,6 +28,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       inject: [ConfigService],
     }),
     ConfigModule.forRoot({
+      envFilePath: '.env',
       isGlobal: true,
     }),
     MailerModule.forRootAsync({

@@ -1,0 +1,23 @@
+meta {
+  name: FindAllCollection
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api}}/api/collections?sortBy=position
+  body: none
+  auth: none
+}
+
+params:query {
+  sortBy: position
+  ~order: desc
+}
+
+body:json {
+  {
+    "name": "Hello",
+    "ownerId": "6512c620f09a0300015b0ae3"
+  }
+}
