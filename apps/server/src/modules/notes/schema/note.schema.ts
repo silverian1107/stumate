@@ -46,29 +46,13 @@ export class Note {
   @Prop({
     type: {
       time: { type: Number, required: true },
-      blocks: [
-        new MongooseSchema(
-          {
-            id: { type: String, required: true },
-            type: { type: String, required: true },
-            data: { type: MongooseSchema.Types.Mixed, required: true },
-            tunes: { type: MongooseSchema.Types.Mixed, required: false },
-          },
-          { strict: false },
-        ),
-      ],
+      blocks: [{ type: MongooseSchema.Types.Mixed, required: false }],
     },
-    required: true,
+    required: false,
   })
   body: {
     time: number;
-    blocks: {
-      id: string;
-      type: string;
-      data: any;
-      tunes?: any;
-      [key: string]: any;
-    }[];
+    blocks: any[];
   };
 
   @Prop({ default: 0 })

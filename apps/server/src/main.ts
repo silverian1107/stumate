@@ -25,7 +25,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors();
   app.setGlobalPrefix('api', { exclude: [''] });
-  
+
   const config = new DocumentBuilder()
     .setTitle('Stumate API')
     .setDescription('Documentation for the stumate API')
@@ -34,7 +34,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
-  
+
   await app.listen(configService.get('PORT'));
 }
 bootstrap();

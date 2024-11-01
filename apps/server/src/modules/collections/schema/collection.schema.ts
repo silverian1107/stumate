@@ -49,7 +49,10 @@ export class Collection {
   @Prop({ default: false })
   isArchived: boolean;
 
-  @Prop({ default: false })
+  @Prop()
+  deletedAt: Date;
+
+  @Prop()
   isDeleted: boolean;
 }
 
@@ -116,6 +119,7 @@ async function deleteChildren(collection: any) {
     .find({ parentId: collection._id });
   for (const child of children) {
     child.isDeleted = true;
+    child.deletedAt = new Date();
     await child.save();
   }
 }

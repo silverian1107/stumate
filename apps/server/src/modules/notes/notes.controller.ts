@@ -18,6 +18,8 @@ import {
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { NotesService } from './notes.service';
+import { User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
 
 @ApiTags('Notes')
 @Controller('notes')
@@ -32,8 +34,8 @@ export class NotesController {
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreateNoteDto })
-  async create(@Body() noteData: CreateNoteDto) {
-    return this.notesService.create(noteData);
+  async create(@Body() noteData: CreateNoteDto, @User() user: IUser) {
+    return this.notesService.create(noteData, user._id);
   }
 
   @Get()

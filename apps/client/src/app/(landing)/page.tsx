@@ -1,15 +1,22 @@
 'use client';
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+import { AuroraBackground } from '@/components/ui/aurora-background';
+import { FlipWords } from '@/components/ui/flip-words';
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
+import { motion } from 'framer-motion';
+import { Button as CustomizedButton } from '@/components/ui/button';
+
 import Link from 'next/link';
 
 export default function Landing() {
+  const words = [
+    'study smarter',
+    'organize your thoughts',
+    'learn effortlessly',
+    'boost productivity',
+    'retain better',
+    'think clearly',
+  ];
+
   return (
     <div
       className="min-h-screen"
@@ -62,26 +69,36 @@ export default function Landing() {
         </Toolbar>
       </AppBar>
 
-      <Container
-        maxWidth="lg"
-        className="flex flex-col items-center justify-center text-center gap-8 w-screen h-screen -mt-20"
-      >
-        <h1 className="font-extrabold text-[3.25rem]">
-          Your thoughts, Your <br />
-          Knowledges, Your <br />
-          <span className="underline font-black">Companion</span>
-        </h1>
-        <h2 className="text-xl text-gray-800 font-semibold max-w-2xl ">
-          Empower your knowledge with AI-driven insights. Your ultimate
-          companion for capturing and organizing thoughts.
-        </h2>
-        <Link
-          href="/register"
-          className="bg-primary-600 text-white px-8 py-3 font-bold rounded-md shadow hover:bg-primary-600/80"
+      <AuroraBackground>
+        <motion.div
+          initial={{ opacity: 0.0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.3,
+            duration: 0.8,
+            ease: 'easeInOut',
+          }}
+          className="relative flex flex-col gap-4 items-center justify-center px-4"
         >
-          Create an account
-        </Link>
-      </Container>
+          <div className="text-3xl md:text-7xl font-bold dark:text-white text-center ">
+            Let&apos;s <FlipWords words={words} className="text-primary-700" />
+          </div>
+          <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
+            And this, is your{' '}
+            <span className="underline text-primary-700 font-bold">
+              companion
+            </span>
+          </div>
+          <Link href={'/register'}>
+            <CustomizedButton
+              variant={'ringHover'}
+              className="bg-primary-700 px-8 text-lg py-6 hover:bg-primary-600"
+            >
+              Join us
+            </CustomizedButton>
+          </Link>
+        </motion.div>
+      </AuroraBackground>
 
       <Box component="footer" className="text-center py-6 text-gray-800 -mt-14">
         Copyright © 2024 Stumate Website. All rights reserved.

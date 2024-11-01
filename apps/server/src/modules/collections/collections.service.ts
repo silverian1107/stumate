@@ -1,18 +1,19 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Collection, CollectionDocument } from './schema/collection.schema';
 
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 import aqp from 'api-query-params';
-import { validateObjectId } from 'src/helpers/utils';
 
 @Injectable()
 export class CollectionsService {
@@ -23,24 +24,34 @@ export class CollectionsService {
 
   async create(
     newCollectionData: CreateCollectionDto,
+    userId: string,
   ): Promise<CollectionDocument> {
+    if (!mongoose.isValidObjectId(userId)) {
+      throw new BadRequestException('Invalid UserId');
+    }
     try {
-      const newCollection = new this.collectionModel(newCollectionData);
-
-      if ('parentId' in newCollectionData) {
+      const newCollection = new this.collectionModel({
+        ...newCollectionData,
+        ownerId: userId,
+      });
+      if (newCollection.parentId) {
         const parent = await this.collectionModel.findById(
           newCollection.parentId,
         );
-
         if (!parent) {
-          throw new NotFoundException("Couldn' find the parent id");
+          throw new NotFoundException("Couldn't find the parent id");
+        }
+
+        if (userId !== parent.ownerId.toString()) {
+          throw new UnauthorizedException(
+            'You are not authorized to perform this action.',
+          );
         }
 
         parent.children.push({
           _id: newCollection._id as string,
           type: 'Collection',
         });
-        // Tính level và position
         newCollection.position = parent.children.length;
         newCollection.level = parent.level + 1;
         await parent.save();
@@ -50,10 +61,9 @@ export class CollectionsService {
         });
         newCollection.position = totalCollection + 1;
       }
-
       return newCollection.save();
     } catch (error) {
-      throw new Error(`Failed to create collection: ${error.message}`);
+      throw error;
     }
   }
 
@@ -66,6 +76,8 @@ export class CollectionsService {
    * @returns A promise that resolves to an object containing pagination metadata and the result array.
    * @throws BadRequestException if currentPage or pageSize is not a positive integer.
    * @throws Error if the fetch operation fails.
+   *
+   * TODO: Restricted to admin users only.
    */
   async findAll(
     currentPage = 1,
@@ -88,7 +100,7 @@ export class CollectionsService {
       throw new BadRequestException('Page size must be a positive integer');
     }
 
-    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } }; // Default sorting by createdAt if qs is not provided
+    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
     const limit = pageSize || 10;
     const skip = (currentPage - 1) * limit;
     const filter = { level: 0, isArchived: false, isDeleted: false };
@@ -115,7 +127,7 @@ export class CollectionsService {
         result,
       };
     } catch (error) {
-      throw new Error(`Failed to fetch collections: ${error.message}`);
+      throw error;
     }
   }
 
@@ -125,6 +137,16 @@ export class CollectionsService {
     pageSize = 10,
     qs?: string,
   ) {
+    if (!mongoose.isValidObjectId(userId)) {
+      throw new BadRequestException('Invalid UserId');
+    }
+    if (!Number.isInteger(currentPage) || currentPage <= 0) {
+      throw new BadRequestException('Current page must be a positive integer');
+    }
+    if (!Number.isInteger(pageSize) || pageSize <= 0) {
+      throw new BadRequestException('Page size must be a positive integer');
+    }
+
     const { sort } = qs ? aqp(qs) : { sort: { position: -1 } }; // Default sorting by createdAt if qs is not provided
     const limit = pageSize || 10;
     const skip = (currentPage - 1) * limit;
@@ -165,20 +187,6 @@ export class CollectionsService {
     }
   }
 
-  async findById(collectionId: string): Promise<Collection> {
-    validateObjectId(collectionId, 'Collection');
-    const collection = await this.collectionModel
-      .findById(collectionId)
-      .populate('childrenDocs')
-      .exec();
-    if (!collection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
-    return collection;
-  }
-
   async findArchivedByOwnerId(
     ownerId: string,
     currentPage = 1,
@@ -193,7 +201,15 @@ export class CollectionsService {
     };
     result: Collection[];
   }> {
-    validateObjectId(ownerId, 'User');
+    if (!mongoose.isValidObjectId(ownerId)) {
+      throw new BadRequestException('Invalid UserId');
+    }
+    if (!Number.isInteger(currentPage) || currentPage <= 0) {
+      throw new BadRequestException('Current page must be a positive integer');
+    }
+    if (!Number.isInteger(pageSize) || pageSize <= 0) {
+      throw new BadRequestException('Page size must be a positive integer');
+    }
 
     const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
     const limit = pageSize || 10;
@@ -233,16 +249,52 @@ export class CollectionsService {
         result,
       };
     } catch (error) {
-      throw new Error(
+      throw new InternalServerErrorException(
         `Failed to fetch archived collections by owner ID: ${error.message}`,
       );
     }
   }
 
-  async updateById(collectionId: string, updateData: UpdateCollectionDto) {
-    validateObjectId(collectionId, 'Collection');
+  async findById(collectionId: string, userId: string): Promise<Collection> {
+    if (!mongoose.isValidObjectId(collectionId))
+      throw new BadRequestException('Invalid CollectionId');
+    if (!mongoose.isValidObjectId(userId))
+      throw new BadRequestException('Invalid UserId');
+
+    const collection = await this.collectionModel
+      .findOne({ _id: collectionId, ownerId: userId })
+      .populate('childrenDocs')
+      .exec();
+    if (!collection) {
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
+    }
+
+    return collection;
+  }
+
+  async updateById(
+    collectionId: string,
+    userId: string,
+    updateData: UpdateCollectionDto,
+  ) {
+    if (!mongoose.isValidObjectId(collectionId))
+      throw new BadRequestException('Invalid CollectionId');
+    if (!mongoose.isValidObjectId(userId))
+      throw new BadRequestException('Invalid UserId');
+
     const updatedCollection = await this.collectionModel
-      .findByIdAndUpdate(collectionId, updateData, { new: true })
+      .findOneAndUpdate(
+        {
+          _id: collectionId,
+          ownerId: userId,
+        },
+        updateData,
+        {
+          new: true,
+        },
+      )
       .exec();
     if (!updatedCollection) {
       throw new NotFoundException(
@@ -252,10 +304,17 @@ export class CollectionsService {
     return updatedCollection;
   }
 
-  async archiveById(collectionId: string) {
-    validateObjectId(collectionId, 'Collection');
+  async archiveById(collectionId: string, userId: string) {
+    if (!mongoose.isValidObjectId(collectionId))
+      throw new BadRequestException('Invalid CollectionId');
+    if (!mongoose.isValidObjectId(userId))
+      throw new BadRequestException('Invalid UserId');
+
     const archivedCollection = await this.collectionModel
-      .findById(collectionId)
+      .findOne({
+        _id: collectionId,
+        ownerId: userId,
+      })
       .exec();
 
     if (!archivedCollection) {
@@ -264,35 +323,47 @@ export class CollectionsService {
       );
     }
     archivedCollection.isArchived = true;
-    return archivedCollection.save();
+    await archivedCollection.save();
   }
 
-  async restoreById(collectionId: string) {
-    validateObjectId(collectionId, 'Collection');
+  async restoreById(collectionId: string, userId: string) {
+    if (!mongoose.isValidObjectId(collectionId))
+      throw new BadRequestException('Invalid CollectionId');
+    if (!mongoose.isValidObjectId(userId))
+      throw new BadRequestException('Invalid UserId');
+
     const restoredCollection = await this.collectionModel
-      .findById(collectionId)
+      .findOne({
+        _id: collectionId,
+        ownerId: userId,
+      })
       .exec();
 
-    if (!restoredCollection) {
+    if (!restoredCollection || restoredCollection.isDeleted) {
       throw new NotFoundException(
         `Collection with ID ${collectionId} not found`,
       );
     }
 
     restoredCollection.isArchived = false;
-    return restoredCollection.save();
+    await restoredCollection.save();
   }
 
-  async deleteById(collectionId: string) {
-    validateObjectId(collectionId, 'Collection');
+  async deleteById(collectionId: string, userId: string) {
+    if (!mongoose.isValidObjectId(collectionId))
+      throw new BadRequestException('Invalid CollectionId');
+    if (!mongoose.isValidObjectId(userId))
+      throw new BadRequestException('Invalid UserId');
+
     const deletedCollection = await this.collectionModel
-      .findById(collectionId)
+      .findOne({
+        _id: collectionId,
+        ownerId: userId,
+      })
       .exec();
 
     if (!deletedCollection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
+      throw new NotFoundException(`Collection not found`);
     }
     if (!deletedCollection.isArchived) {
       throw new BadRequestException(
@@ -300,7 +371,8 @@ export class CollectionsService {
       );
     }
 
+    deletedCollection.deletedAt = new Date();
     deletedCollection.isDeleted = true;
-    return deletedCollection.save();
+    await deletedCollection.save();
   }
 }

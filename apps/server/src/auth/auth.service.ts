@@ -76,12 +76,11 @@ export class AuthService {
       });
       const user = await this.usersService.findUserByToken(refreshToken);
       if (user) {
-        const { _id, name, username, email, role } = user;
+        const { _id, username, email, role } = user;
         const payload = {
           sub: 'token login',
           iss: 'from server',
           _id,
-          name,
           username,
           email,
           role,
