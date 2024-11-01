@@ -32,7 +32,7 @@ export class NotesService {
 
     try {
       const newNote = new this.noteModel(newNoteData);
-      const { parentId } = newNoteData;
+      const { parentId, attachment } = newNoteData;
 
       const [parentNote, parentCollection] = await Promise.all([
         this.noteModel.findById(parentId),
@@ -51,6 +51,11 @@ export class NotesService {
           'You are not authorized to create a note in this collection',
         );
 
+      // Add new attachments
+      if (attachment && attachment.length > 0) {
+        newNote.attachment = attachment;
+      }
+
       newNote.parentId = {
         _id: parent._id as string,
         type: parentNote ? 'Note' : 'Collection',
@@ -64,7 +69,9 @@ export class NotesService {
       newNote.level = parent.level + 1;
 
       await parent.save();
-      return await newNote.save();
+      const abc = await newNote.save();
+
+      return abc;
     } catch (error) {
       throw new InternalServerErrorException(
         `Failed to create note: ${error.message}`,
@@ -175,8 +182,15 @@ export class NotesService {
 
   async updateById(noteId: string, updateData: UpdateNoteDto) {
     validateObjectId(noteId, 'Collection');
+    // Add new attachments
+    const { attachment, ...otherUpdateData } = updateData;
+    const updateQuery: any = { ...otherUpdateData };
+    if (attachment && attachment.length > 0) {
+      updateQuery.$push = { attachment: { $each: attachment } };
+    }
+
     const updatedCollection = await this.noteModel
-      .findByIdAndUpdate(noteId, updateData, { new: true })
+      .findByIdAndUpdate(noteId, updateQuery, { new: true })
       .exec();
     if (!updatedCollection) {
       throw new NotFoundException(`Collection with ID ${noteId} not found`);

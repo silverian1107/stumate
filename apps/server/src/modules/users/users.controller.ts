@@ -38,9 +38,9 @@ export class UsersController {
     return this.usersService.findAll(+currentPage, +pageSize, qs);
   }
 
+  @Get(':id')
   @Public()
   @ResponseMessage('Fetch user by id')
-  @Get(':id')
   async findOne(@Param('id') id: string) {
     const foundUser = await this.usersService.findOne(id);
     return foundUser;

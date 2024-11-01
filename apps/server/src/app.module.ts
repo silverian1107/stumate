@@ -11,6 +11,7 @@ import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { CollectionsModule } from './modules/collections/collections.module';
 import { NotesModule } from './modules/notes/notes.module';
+import { AttachmentsModule } from './modules/attachments/attachments.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { NotesModule } from './modules/notes/notes.module';
       }),
       inject: [ConfigService],
     }),
+    AttachmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

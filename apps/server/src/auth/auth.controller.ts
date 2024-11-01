@@ -80,6 +80,7 @@ export class AuthController {
     return this.usersService.handleChangePassword(changePasswordAutoDto);
   }
 
+  // F5 refresh
   @ResponseMessage('Get user information')
   @Get('account')
   handleGetAccount(@User() user: IUser) {

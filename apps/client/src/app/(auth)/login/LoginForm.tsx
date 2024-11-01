@@ -25,7 +25,7 @@ export default function LoginForm() {
   }
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-      <FormField<LoginValues >
+      <FormField<LoginValues>
         name="email"
         placeHolder="Email"
         control={control}

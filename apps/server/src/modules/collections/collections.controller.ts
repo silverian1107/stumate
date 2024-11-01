@@ -17,14 +17,14 @@ import {
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { User } from 'src/decorator/customize';
+import { Public, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 
 @ApiTags('Collections')
 @Controller('collections')
 export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
-
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Create a new collection' })
   @ApiBody({ type: CreateCollectionDto })

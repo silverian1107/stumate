@@ -69,6 +69,9 @@ export class Note {
 
   @Prop({ default: false })
   isDeleted: boolean;
+
+  @Prop({ default: [] })
+  attachment: string[];
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note);
