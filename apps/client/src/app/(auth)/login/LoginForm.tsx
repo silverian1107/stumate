@@ -33,8 +33,10 @@ export default function LoginForm() {
     login(formData);
   }
   useEffect(() => {
+    console.log({isSuccess})
     if(isSuccess ){
-      if(data.userInfo.isActive === true){
+      
+      if(data.userInfo?.isActive === true){
         dispatch(loginState({
           accessToken: data.token,
           refreshToken: data.token,
@@ -42,6 +44,8 @@ export default function LoginForm() {
         }
         ))
         redirect('/');
+      }else{
+        redirect('/verify_otp');
       }
     }
   }, [data, isSuccess, dispatch])

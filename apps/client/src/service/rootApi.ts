@@ -12,7 +12,7 @@ import { RootState } from '../redux/store'; // Assuming you have a RootState typ
 
 // Define the base query with token handling
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8000/users', // Add your base URL here
+  baseUrl: 'http://localhost:8000/', // Add your base URL here
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.accessToken;
     if (token) {
@@ -62,7 +62,7 @@ export const rootApi = createApi({
       { email: string; password: string }
     >({
       query: ({ email, password }) => ({
-        url: '/login',
+        url: 'login',
         body: { email, password },
         method: 'POST',
       }),
