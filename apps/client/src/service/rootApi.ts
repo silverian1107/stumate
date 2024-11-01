@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 import { logout } from '../redux/slices/authSlice';
 import {
@@ -50,18 +51,14 @@ export const rootApi = createApi({
         password: string;
       }
     >({
-      query: ({
-        username,
-        email,
-        password,
-      }) => ({
+      query: ({ username, email, password }) => ({
         url: '/',
-        body: { username, email, password, },
+        body: { username, email, password },
         method: 'POST',
       }),
     }),
     login: builder.mutation<
-      { token: string },
+      { token: string; userInfo: Record<string, any> },
       { email: string; password: string }
     >({
       query: ({ email, password }) => ({
@@ -80,17 +77,13 @@ export const rootApi = createApi({
         method: 'POST',
       }),
     }),
-    resendOTP: builder.mutation<
-    { success: boolean },
-    { email: string }
-    >({
-      query: ({email}) => ({
+    resendOTP: builder.mutation<{ success: boolean }, { email: string }>({
+      query: ({ email }) => ({
         url: '/resend-otp',
-        body: {email},
-        method: 'POST'
-      })
-    })
-    
+        body: { email },
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -99,4 +92,5 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useVerifyOTPMutation,
+  useResendOTPMutation,
 } = rootApi;

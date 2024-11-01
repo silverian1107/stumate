@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import { verifyOtpSchema, VerifyOtpValues } from '@/app/libs/Validation';
 import { useForm } from 'react-hook-form';
 import OTPInput from '@/components/formInput/OTPInput';
-import { useVerifyOTPMutation } from '@/service/rootApi';
+import { useResendOTPMutation, useVerifyOTPMutation } from '@/service/rootApi';
 import { useEffect } from 'react';
 import { redirect, useSearchParams } from 'next/navigation';
 
@@ -24,23 +24,21 @@ export default function VerifyOTPForm() {
       otp: '',
     },
   });
-  const [verifyOTP, { isSuccess }] = useVerifyOTPMutation();
+  const [verifyOTP, { isSuccess: isVerifySuccess }] = useVerifyOTPMutation();
+  const [resendOTP, { isSuccess: isResendSuccess }] = useResendOTPMutation();
   function onSubmit(formData: VerifyOtpValues) {
     console.log({ formData });
     verifyOTP({ email: email as string, otp: formData?.otp });
   }
   useEffect(() => {
-    if (isSuccess) {
+    if (isVerifySuccess || isResendSuccess) {
       redirect('/login');
     }
-  }, [isSuccess]);
-  // const handleResend = () => {
-  //   try {
-
-  //   } catch (error) {
-
-  //   }
-  // }
+  }, [isResendSuccess, isVerifySuccess]);
+  const handleResend = () => {
+    resendOTP({email: email as string})
+    console.log({email})
+  }
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<VerifyOtpValues>
@@ -58,6 +56,7 @@ export default function VerifyOTPForm() {
         <Button
           variant="text"
           sx={{ textTransform: 'capitalize', padding: 0, lineHeight: 1 }}
+          onClick={handleResend}
         >
           Resend
         </Button>

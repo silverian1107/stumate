@@ -19,9 +19,10 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         // Define types for action payloads
-        login: (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
+        login: (state, action: PayloadAction<{ accessToken: string; refreshToken: string; userInfo: Record<string, any> }>) => {
             state.accessToken = action.payload.accessToken;
             state.refreshToken = action.payload.refreshToken;
+            state.userInfo = action.payload.userInfo;
         },
         logout: () => initialState,
         saveUserInfo: (state, action: PayloadAction<Record<string, any>>) => {
