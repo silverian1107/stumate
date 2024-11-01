@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsNotEmpty,
   IsOptional,
+  IsString,
   Length,
   ValidateNested,
 } from 'class-validator';
@@ -78,4 +80,9 @@ export class UpdateNoteDto {
   @ValidateNested()
   @Type(() => UpdateNoteBodyDto)
   body?: UpdateNoteBodyDto;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  attachment: string[];
 }

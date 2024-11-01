@@ -34,7 +34,7 @@ export class UsersService {
   ) {}
 
   async updateLastLogin(userId: string): Promise<void> {
-    await this.userModel.updateOne({ _id: userId }, { lastLogin: dayjs() });
+    await this.userModel.updateOne({ _id: userId }, { lastLogin: new Date() });
   }
 
   isExistEmail = async (email: string) => {
