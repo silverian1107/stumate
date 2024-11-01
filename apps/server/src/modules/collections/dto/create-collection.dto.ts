@@ -3,13 +3,6 @@ import { IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateCollectionDto {
   @ApiProperty({
-    description: 'Owner of the collection id',
-    example: '6512c620f09a0300015b0ae3',
-  })
-  @IsString()
-  ownerId: string;
-
-  @ApiProperty({
     description: 'The parent of the collection id',
     example: '6512c620f09a0300015b0ae3',
   })

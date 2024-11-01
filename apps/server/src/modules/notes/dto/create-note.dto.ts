@@ -14,7 +14,6 @@ export class CreateNoteDto {
     example: '6512c620f09a0300015b0ae3',
   })
   @IsString()
-  @IsOptional()
   parentId: string;
 
   @ApiProperty({

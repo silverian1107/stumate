@@ -17,6 +17,8 @@ import {
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
 
 @ApiTags('Collections')
 @Controller('collections')
@@ -34,11 +36,14 @@ export class CollectionsController {
     status: 400,
     description: 'Invalid data or validation error.',
   })
-  async create(@Body() collectionData: CreateCollectionDto) {
-    return this.collectionsService.create(collectionData);
+  async create(
+    @Body() collectionData: CreateCollectionDto,
+    @User() { _id }: IUser,
+  ) {
+    return this.collectionsService.create(collectionData, _id);
   }
 
-  @Get()
+  @Get('all')
   @ApiOperation({ summary: 'Get all collections' })
   @ApiQuery({
     name: 'currentPage',
@@ -68,10 +73,11 @@ export class CollectionsController {
     @Query('pageSize') pageSize = '10',
     @Query() qs: string,
   ) {
+    // TODO: Restricted to admin users only
     return this.collectionsService.findAll(+currentPage, +pageSize, qs);
   }
 
-  @Get(':ownerId/collections')
+  @Get()
   @ApiOperation({ summary: 'Retrieve collections by user id' })
   @ApiQuery({
     name: 'currentPage',
@@ -97,20 +103,20 @@ export class CollectionsController {
     isArray: true,
   })
   async findByOwnerId(
-    @Param('ownerId') ownerId: string,
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query() qs: string,
+    @Query('qs') qs: string,
+    @User() user: IUser,
   ) {
     return this.collectionsService.findByOwnerId(
-      ownerId,
+      user._id,
       +currentPage,
       +pageSize,
       qs,
     );
   }
 
-  @Get(':ownerId/collections/archived')
+  @Get('archived')
   @ApiOperation({ summary: 'Retrieve archived collections by user id' })
   @ApiQuery({
     name: 'currentPage',
@@ -136,13 +142,13 @@ export class CollectionsController {
     isArray: true,
   })
   async findArchivedByOwnerId(
-    @Param('ownerId') ownerId: string,
+    @User() user: IUser,
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
     @Query() qs: string,
   ) {
     return this.collectionsService.findArchivedByOwnerId(
-      ownerId,
+      user._id,
       +currentPage,
       +pageSize,
       qs,
@@ -150,63 +156,73 @@ export class CollectionsController {
   }
 
   @Get(':collectionId')
-  @ApiOperation({ summary: 'Retrieve a collection by id' })
+  @ApiOperation({ summary: 'Get collection by ID' })
   @ApiResponse({
     status: 200,
-    description: 'The requested collection.',
+    description: 'Successful retrieval of collection',
   })
-  async findById(@Param('collectionId') collectionId: string) {
-    return this.collectionsService.findById(collectionId);
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid collection ID or validation error',
+  })
+  async findById(
+    @Param('collectionId') collectionId: string,
+    @User() user: IUser,
+  ) {
+    return this.collectionsService.findById(collectionId, user._id);
   }
 
   @Patch(':collectionId')
   @ApiOperation({ summary: 'Update a collection by id' })
   @ApiBody({ type: UpdateCollectionDto })
+  @ApiResponse({ status: 200, description: 'The updated collection.' })
   @ApiResponse({
-    status: 200,
-    description: 'The updated collection.',
+    status: 400,
+    description: 'Invalid data or validation error.',
   })
   async update(
     @Param('collectionId') collectionId: string,
     @Body() updateData: UpdateCollectionDto,
+    @User() user: IUser,
   ) {
-    return this.collectionsService.updateById(collectionId, updateData);
+    return this.collectionsService.updateById(
+      collectionId,
+      user._id,
+      updateData,
+    );
   }
 
   @Patch(':collectionId/archive')
   @ApiOperation({ summary: 'Archive a collection by id' })
-  @ApiResponse({
-    status: 200,
-    description: 'The archived collection.',
-  })
+  @ApiResponse({ status: 200, description: 'The archived collection.' })
   @ApiResponse({
     status: 404,
     description: 'Collection with specified ID not found.',
   })
-  async archive(@Param('collectionId') collectionId: string) {
-    return this.collectionsService.archiveById(collectionId);
+  async archive(
+    @Param('collectionId') collectionId: string,
+    @User() user: IUser,
+  ) {
+    return this.collectionsService.archiveById(collectionId, user._id);
   }
 
   @Patch(':collectionId/restore')
   @ApiOperation({ summary: 'Restore an archived collection by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The restored collection.',
-  })
+  @ApiResponse({ status: 200, description: 'The restored collection.' })
   @ApiResponse({
     status: 404,
     description: 'Collection with specified ID not found.',
   })
-  async restore(@Param('collectionId') collectionId: string) {
-    return this.collectionsService.restoreById(collectionId);
+  async restore(
+    @Param('collectionId') collectionId: string,
+    @User() user: IUser,
+  ) {
+    return this.collectionsService.restoreById(collectionId, user._id);
   }
 
   @Patch(':collectionId/delete')
   @ApiOperation({ summary: 'Delete a collection by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The deleted collection.',
-  })
+  @ApiResponse({ status: 200, description: 'The deleted collection.' })
   @ApiResponse({
     status: 400,
     description: 'Collection must be archived before delete.',
@@ -215,7 +231,10 @@ export class CollectionsController {
     status: 404,
     description: 'Collection with specified ID not found.',
   })
-  async delete(@Param('collectionId') collectionId: string) {
-    return this.collectionsService.deleteById(collectionId);
+  async delete(
+    @Param('collectionId') collectionId: string,
+    @User() user: IUser,
+  ) {
+    return this.collectionsService.deleteById(collectionId, user._id);
   }
 }

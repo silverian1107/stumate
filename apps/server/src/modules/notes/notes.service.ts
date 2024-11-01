@@ -1,11 +1,13 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import aqp from 'api-query-params';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note, NoteDocument } from './schema/note.schema';
@@ -22,9 +24,13 @@ export class NotesService {
     private readonly statisticsService: StatisticsService,
   ) {}
 
-  //websocket
-  async create(newNoteData: CreateNoteDto) {
-    validateObjectId([newNoteData.ownerId, newNoteData.parentId]);
+  async create(newNoteData: CreateNoteDto, userId: string) {
+    if (!mongoose.isValidObjectId(newNoteData.parentId))
+      throw new BadRequestException('Invalid Collection ID');
+    if (!mongoose.isValidObjectId(newNoteData.ownerId))
+      throw new BadRequestException('Invalid UserId ID');
+    if (!mongoose.isValidObjectId(userId))
+      throw new BadRequestException('Invalid UserId ID');
 
     try {
       const newNote = new this.noteModel(newNoteData);
@@ -32,17 +38,20 @@ export class NotesService {
 
       const [parentNote, parentCollection] = await Promise.all([
         this.noteModel.findById(parentId),
-        this.collectionService.findById(parentId).catch(() => {
+        this.collectionService.findById(parentId, userId).catch(() => {
           return null;
         }),
       ]);
 
       const parent = parentNote || parentCollection;
-      if (!parent) {
+      if (!parent)
         throw new NotFoundException(
-          `Couldn't find the parent with ID: ${parentId}`,
+          `Couldn't find the collection with ID: ${parentId}`,
         );
-      }
+      if (parent.ownerId.toString() !== userId)
+        throw new UnauthorizedException(
+          'You are not authorized to create a note in this collection',
+        );
 
       newNote.parentId = {
         _id: parent._id as string,
@@ -63,7 +72,9 @@ export class NotesService {
       );
       return newNote;
     } catch (error) {
-      throw new Error(`Failed to create note: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Failed to create note: ${error.message}`,
+      );
     }
   }
 
