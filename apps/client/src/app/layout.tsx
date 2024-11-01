@@ -1,3 +1,4 @@
+'use client';
 import theme from '@/theme';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
@@ -15,15 +16,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const {data: session} = useSession();
+
   return (
     <html lang="en">
       <StyledEngineProvider injectFirst>
         <body className={`antialiased ${lexendDeca.variable}`}>
-      <StoreProvider>
-          <AppRouterCacheProvider options={{ key: 'css' }}>
-            <ThemeProvider theme={theme}>{children}</ThemeProvider>
-          </AppRouterCacheProvider>
-      </StoreProvider>
+          <StoreProvider>
+            <AppRouterCacheProvider options={{ key: 'css' }}>
+              <ThemeProvider theme={theme}>
+                {/*session &&*/ <NavBar />}
+                {/* {<NavBar/>} */}
+                {children}
+              </ThemeProvider>
+            </AppRouterCacheProvider>
+          </StoreProvider>
         </body>
       </StyledEngineProvider>
     </html>
