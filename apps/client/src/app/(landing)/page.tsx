@@ -38,7 +38,7 @@ export default function Landing() {
           </div>
           <div className="space-x-4 ml-auto">
             <Link
-              href="/register"
+              href="/login"
               className="text-gray-600 hover:text-primary "
             >
               <Button

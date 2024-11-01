@@ -35,7 +35,7 @@ export default function LoginForm() {
   useEffect(() => {
     console.log({isSuccess})
     if(isSuccess ){
-      
+      console.log(data.userInfo?.isActive)
       if(data.userInfo?.isActive === true){
         dispatch(loginState({
           accessToken: data.token,
