@@ -20,18 +20,24 @@ export default function LoginPage() {
           </p>
         </div>
         <div className="mt-5">
-          <div className="h-[1px] border flex items-center justify-center">
-            <span className="text-[12px] px-[10px]  bg-white">Or</span>
+          <div className="flex items-center justify-center h-[1px] bg-black w-full relative">
+            <span className="text-center bg-white px-2 text-sm">Or</span>
           </div>
-          <div className="flex gap-2 text-[12px] leading-5 mt-5 justify-between">
-            <div className="flex gap-0.5 border px-1 py-1 rounded-sm items-center">
-              <Apple />
-              <Link href="">Sign in with Apple</Link>
-            </div>
-            <div className="flex gap-0.5 border px-1  rounded-sm items-center">
-              <GoogleIcon />
-              <Link href="">Sign in with Google</Link>
-            </div>
+          <div className="flex gap-2 text-[12px] leading-5 mt-5 justify-between w-full">
+            <Link
+              href=""
+              className="flex gap-0.5 px-1 py-1 items-center justify-center grow border border-black/20 rounded"
+            >
+              <Apple className="text-gray-500" />
+              <span className="text-black/60">Sign in with Apple</span>
+            </Link>
+            <Link
+              href=""
+              className="flex gap-0.5 px-1 py-1 items-center justify-center grow border border-black/20 rounded"
+            >
+              <GoogleIcon/>
+              <span className="text-black/60">Sign in with Google</span>
+            </Link>
           </div>
         </div>
       </div>
