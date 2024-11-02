@@ -37,16 +37,12 @@ export class RegisterUserDto {
     },
   )
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  confirmPassword: string;
 }
 
 export class CodeAutoDto {
   @IsNotEmpty()
-  @IsMongoId()
-  _id: string;
+  @IsEmail()
+  email: string;
 
   @IsNotEmpty()
   @IsString()

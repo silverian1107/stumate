@@ -14,7 +14,7 @@ export default function AuthLayout({
           />
         </Link>
       </div>
-      <div className="w-full h-full">{children}</div>
+      <div className="w-full h-full ">{children}</div>
     </main>
   );
 }

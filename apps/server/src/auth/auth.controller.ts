@@ -1,11 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
-  Body,
-  UseGuards,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
@@ -31,6 +31,7 @@ export class AuthController {
   @Post('register')
   async handleRegister(@Body() registerUserDto: RegisterUserDto) {
     const newUser = await this.usersService.register(registerUserDto);
+
     return {
       _id: newUser?._id,
       createdAt: newUser?.createdAt,

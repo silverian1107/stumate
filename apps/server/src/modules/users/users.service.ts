@@ -86,17 +86,15 @@ export class UsersService {
 
   handleVerifyActivationCode = async (codeAutoDto: CodeAutoDto) => {
     const user = await this.userModel.findOne({
-      _id: codeAutoDto._id,
+      email: codeAutoDto.email,
       codeId: codeAutoDto.codeId,
     });
+
     if (user) {
       //Check code expired
       const isCodeExpired = dayjs().isBefore(user.codeExpire);
       if (isCodeExpired) {
-        await this.userModel.updateOne(
-          { _id: codeAutoDto._id },
-          { isActive: true },
-        );
+        await this.userModel.updateOne({ _id: user._id }, { isActive: true });
         return user;
       }
     }
@@ -145,7 +143,7 @@ export class UsersService {
 
   handleVerifyPasswordResetCode = async (codeAutoDto: CodeAutoDto) => {
     const user = await this.userModel.findOne({
-      _id: codeAutoDto._id,
+      email: codeAutoDto.email,
       codeId: codeAutoDto.codeId,
     });
     if (!user) {
@@ -181,19 +179,14 @@ export class UsersService {
   };
 
   async register(registerUserDto: RegisterUserDto) {
-    const { username, email, password, confirmPassword } = registerUserDto;
+    const { username, email, password } = registerUserDto;
     //Check email already exists
     if (await this.isExistEmail(email)) {
       throw new BadRequestException(
         `Email ${email} already exists. Please use another email`,
       );
     }
-    //Check password and confirm password
-    if (confirmPassword !== password) {
-      throw new BadRequestException(
-        'Password and Confirm Password does not match',
-      );
-    }
+
     //Hash password
     const hashPassword = await getHashPassword(password);
     const codeId = this.getCodeId();
@@ -216,19 +209,14 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto, @User() user: IUser) {
-    const { username, email, password, confirmPassword, role } = createUserDto;
+    const { username, email, password, role } = createUserDto;
     //Check email already exists
     if (await this.isExistEmail(email)) {
       throw new BadRequestException(
         `Email ${email} already exists. Please use another email`,
       );
     }
-    //Check password and confirm password
-    if (confirmPassword !== password) {
-      throw new BadRequestException(
-        'Password and Confirm Password does not match',
-      );
-    }
+
     //Hash password
     const hashPassword = await getHashPassword(password);
     const newUser = await this.userModel.create({

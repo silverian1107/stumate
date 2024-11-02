@@ -4,11 +4,11 @@ import { Apple } from '@mui/icons-material';
 
 export default function RegisterPage() {
   return (
-    <div className="flex  items-center w-full h-full flex-col gap-4">
-      <p className="font-extrabold text-[3rem] text-primary-main mt-10  ">
+    <div className="flex items-center w-full h-full flex-col gap-4 justify-evenly py-40">
+      <p className="font-extrabold text-[3rem] text-primary-main ">
         Registration
       </p>
-      <div className="bg-white px-8 py-8 rounded w-[380px] lg:w-[480px] border border-primary-main/40">
+      <div className="bg-white px-8 py-8 rounded w-[380px] lg:w-[480px] border border-primary-main/40 ">
         <RegisterForm />
         <div className="flex flex-col items-center text-sm">
           <p className="mt-4 font-bold ">

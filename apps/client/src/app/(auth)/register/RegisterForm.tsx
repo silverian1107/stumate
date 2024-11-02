@@ -1,33 +1,46 @@
 'use client';
-import FormField from '@/components/FormField';
 
-import { yupResolver } from '@hookform/resolvers/yup';
-
-import { Button, FormHelperText } from '@mui/material';
-import TextInput from '@/components/formInput/TextInput';
 import { registerSchema, RegisterValues } from '@/app/libs/Validation';
-import { useForm } from 'react-hook-form';
+import FormField from '@/components/FormField';
 import CheckBoxInput from '@/components/formInput/CheckBoxInput';
+import TextInput from '@/components/formInput/TextInput';
+import { useRegisterMutation } from '@/service/rootApi';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, FormHelperText } from '@mui/material';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 export default function RegisterForm() {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<RegisterValues>({
     resolver: yupResolver(registerSchema),
     defaultValues: {
       username: '',
       email: '',
       password: '',
-      confirm_password: '',
       agreeToTerms: false,
     },
   });
+
+  const [register, { isSuccess }] = useRegisterMutation();
   function onSubmit(formData: RegisterValues) {
     console.log({ formData });
+    register(formData);
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      const email = getValues('email');
+      router.push(`/verify_otp?email=${encodeURIComponent(email)}`);
+    }
+  }, [router, isSuccess, getValues]);
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<RegisterValues>
@@ -67,7 +80,10 @@ export default function RegisterForm() {
           Component={CheckBoxInput}
           type="checkbox"
         />
-        <p className="flex gap-1 text-[12px] text-secondary-main font-bold items-end">
+        <label
+          htmlFor="agreeToTerms"
+          className="flex gap-1 text-[12px] text-secondary-main font-bold items-end"
+        >
           I agree to the{' '}
           <Link
             href=""
@@ -75,7 +91,7 @@ export default function RegisterForm() {
           >
             term & policy
           </Link>
-        </p>
+        </label>
         {errors['agreeToTerms'] && (
           <FormHelperText
             sx={{

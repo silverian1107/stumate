@@ -1,0 +1,26 @@
+{
+  "login": [
+    {
+      "username": "abc",
+      "email": "abc@gmail.com",
+      "password": "123456789",
+      "isActive": true,
+      "id": "6962"
+    },
+    {
+      "id": "1123",
+      "email": "abc@gmail.com",
+      "password": "123456789"
+    },
+    {
+      "id": "46e2",
+      "email": "abc@gmail.com",
+      "password": "123456789"
+    },
+    {
+      "id": "9930",
+      "email": "abc@gmail.com",
+      "password": "1234567890"
+    }
+  ]
+}
