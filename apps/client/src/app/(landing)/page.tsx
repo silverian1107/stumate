@@ -1,9 +1,9 @@
 'use client';
 import { AuroraBackground } from '@/components/ui/aurora-background';
-import { FlipWords } from '@/components/ui/flip-words';
-import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
-import { motion } from 'framer-motion';
 import { Button as CustomizedButton } from '@/components/ui/button';
+import { FlipWords } from '@/components/ui/flip-words';
+import { AppBar, Button, Toolbar } from '@mui/material';
+import { motion } from 'framer-motion';
 
 import Link from 'next/link';
 
@@ -19,17 +19,21 @@ export default function Landing() {
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen w-screen"
       style={{
         backgroundImage:
           'linear-gradient(to bottom right, var(--primary-600), var(--accent-300))',
       }}
     >
-      <AppBar position="static" color="inherit" className="shadow-sm">
+      <AppBar
+        position="static"
+        color="inherit"
+        className="shadow-sm px-0 md:px-[6rem] lg:px-[10rem]"
+      >
         <Toolbar className="flex items-center gap-8">
-          <Typography variant="h4" color="primary" className="font-extrabold">
+          <h1 className="font-extrabold text-3xl text-primary-700 select-none">
             StuMate
-          </Typography>
+          </h1>
           <div className="space-x-6">
             {['Features', 'AI Companion', 'About', 'Download'].map(
               (text, index) => (
@@ -56,14 +60,13 @@ export default function Landing() {
                 Sign In
               </Button>
             </Link>
-            <Link href="/register">
-              <Button
-                variant="contained"
-                color="primary"
-                className="text-white"
+            <Link href="/register" className="group">
+              <CustomizedButton
+                variant={'ringHover'}
+                className="bg-primary-700 px-6 uppercase py-2 hover:bg-primary-600"
               >
-                Start here
-              </Button>
+                Register
+              </CustomizedButton>
             </Link>
           </div>
         </Toolbar>
@@ -78,9 +81,9 @@ export default function Landing() {
             duration: 0.8,
             ease: 'easeInOut',
           }}
-          className="relative flex flex-col gap-4 items-center justify-center px-4"
+          className="relative flex flex-col gap-10 items-center justify-center px-4 pb-32"
         >
-          <div className="text-3xl md:text-7xl font-bold dark:text-white text-center ">
+          <div className="text-3xl md:text-7xl font-bold dark:text-white text-center -mb-8">
             Let&apos;s <FlipWords words={words} className="text-primary-700" />
           </div>
           <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
@@ -99,10 +102,6 @@ export default function Landing() {
           </Link>
         </motion.div>
       </AuroraBackground>
-
-      <Box component="footer" className="text-center py-6 text-gray-800 -mt-14">
-        Copyright © 2024 Stumate Website. All rights reserved.
-      </Box>
     </div>
   );
 }
