@@ -26,11 +26,13 @@ export default function FormField<T extends FieldValues>({
   Component,
   type,
   error,
-  label
+  label,
 }: FormFieldProps<T>) {
   return (
     <div className="relative">
-      {label &&  <p className="font-bold mb-3 text-sm text-primary-main">{label}</p>}
+      {label && (
+        <p className="font-bold mb-3 text-sm text-primary-main">{label}</p>
+      )}
       <Controller
         name={name}
         control={control}

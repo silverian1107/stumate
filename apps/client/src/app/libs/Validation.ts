@@ -18,7 +18,6 @@ export const registerSchema = yup.object().shape({
 });
 export type RegisterValues = yup.InferType<typeof registerSchema>;
 
-
 export const loginSchema = yup.object().shape({
   email: yup
     .string()
