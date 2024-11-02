@@ -47,14 +47,14 @@ export const FlipWords = ({
         transition={{
           type: 'spring',
           stiffness: 100,
-          damping: 10,
+          damping: 20,
         }}
         exit={{
           opacity: 0,
           y: -40,
           x: 40,
           filter: 'blur(8px)',
-          scale: 2,
+          scale: 1.5,
           position: 'absolute',
         }}
         className={cn(
@@ -63,7 +63,6 @@ export const FlipWords = ({
         )}
         key={currentWord}
       >
-        {/* edit suggested by Sajal: https://x.com/DewanganSajal */}
         {currentWord.split(' ').map((word, wordIndex) => (
           <motion.span
             key={word + wordIndex}
