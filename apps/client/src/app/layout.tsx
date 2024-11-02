@@ -1,9 +1,9 @@
+import StoreProvider from '@/redux/StoreProvider';
 import theme from '@/theme';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { Lexend_Deca } from 'next/font/google';
 import './globals.css';
-import StoreProvider from '@/redux/StoreProvider';
 
 const lexendDeca = Lexend_Deca({
   variable: '--font-lexend-deca',

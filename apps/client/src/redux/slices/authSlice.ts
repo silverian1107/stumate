@@ -1,34 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Define the types for the initial state
 interface AuthState {
-    accessToken: string | null;
-    refreshToken: string | null;
-    userInfo: Record<string, any>; // Update this to a more specific type if available
+  accessToken: string | null;
+  refreshToken: string | null;
+  userInfo: Record<string, any>; // Update this to a more specific type if available
 }
 
 const initialState: AuthState = {
-    accessToken: null,
-    refreshToken: null,
-    userInfo: {}
+  accessToken: null,
+  refreshToken: null,
+  userInfo: {},
 };
 
 export const authSlice = createSlice({
-    name: "auth",
-    initialState,
-    reducers: {
-        // Define types for action payloads
-        login: (state, action: PayloadAction<{ accessToken: string; refreshToken: string; userInfo: Record<string, any> }>) => {
-            state.accessToken = action.payload.accessToken;
-            state.refreshToken = action.payload.refreshToken;
-            state.userInfo = action.payload.userInfo;
-        },
-        logout: () => initialState,
-        saveUserInfo: (state, action: PayloadAction<Record<string, any>>) => {
-            state.userInfo = action.payload;
-        }
-    }
+  name: 'auth',
+  initialState,
+  reducers: {
+    // Define types for action payloads
+    login: (
+      state,
+      action: PayloadAction<{
+        accessToken: string;
+        refreshToken: string;
+        userInfo: Record<string, any>;
+      }>,
+    ) => {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.userInfo = action.payload.userInfo;
+    },
+    logout: () => initialState,
+    saveUserInfo: (state, action: PayloadAction<Record<string, any>>) => {
+      state.userInfo = action.payload;
+    },
+  },
 });
 
 // Export actions and reducer
