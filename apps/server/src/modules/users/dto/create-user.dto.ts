@@ -44,10 +44,6 @@ export class CreateUserDto {
   )
   password: string;
 
-  @IsNotEmpty()
-  @IsString()
-  confirmPassword: string;
-
   @IsOptional()
   @IsEnum(Role)
   role: string;

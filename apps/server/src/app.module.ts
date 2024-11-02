@@ -12,6 +12,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { CollectionsModule } from './modules/collections/collections.module';
 import { NotesModule } from './modules/notes/notes.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
+import { DecksModule } from './modules/decks/decks.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { AttachmentsModule } from './modules/attachments/attachments.module';
       inject: [ConfigService],
     }),
     AttachmentsModule,
+    DecksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

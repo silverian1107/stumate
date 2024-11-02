@@ -14,8 +14,8 @@ import { User as UserModel, UserDocument } from './schema/user.schema';
 import { getHashPassword } from 'src/helpers/utils';
 import mongoose from 'mongoose';
 import {
-  ChangePasswordAutoDto,
-  CodeAutoDto,
+  ChangePasswordAuthDto,
+  CodeAuthDto,
   RegisterUserDto,
 } from 'src/auth/dto/create-auth.dto';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -37,8 +37,8 @@ export class UsersService {
     await this.userModel.updateOne({ _id: userId }, { lastLogin: new Date() });
   }
 
-  isExistEmail = async (email: string) => {
-    const user = await this.userModel.findOne({ email });
+  isExistUsernameOrEmail = async (usernameOrEmail: string) => {
+    const user = await this.findUserByUsernameOrEmail(usernameOrEmail);
     if (user) return true;
     return false;
   };
@@ -73,9 +73,13 @@ export class UsersService {
 
   async findOne(id: string) {
     if (!mongoose.isValidObjectId(id)) {
-      return `Not found user`;
+      throw new BadRequestException('Invalid User ID');
     }
-    return await this.userModel.findOne({ _id: id }).select('-password');
+    const user = await this.userModel.findOne({ _id: id }).select('-password');
+    if (!user) {
+      throw new NotFoundException('Not found user');
+    }
+    return user;
   }
 
   async findUserByUsernameOrEmail(usernameOrEmail: string) {
@@ -84,17 +88,17 @@ export class UsersService {
     });
   }
 
-  handleVerifyActivationCode = async (codeAutoDto: CodeAutoDto) => {
+  handleVerifyActivationCode = async (codeAuthDto: CodeAuthDto) => {
     const user = await this.userModel.findOne({
-      _id: codeAutoDto._id,
-      codeId: codeAutoDto.codeId,
+      _id: codeAuthDto._id,
+      codeId: codeAuthDto.codeId,
     });
     if (user) {
       //Check code expired
       const isCodeExpired = dayjs().isBefore(user.codeExpire);
       if (isCodeExpired) {
         await this.userModel.updateOne(
-          { _id: codeAutoDto._id },
+          { _id: codeAuthDto._id },
           { isActive: true },
         );
         return user;
@@ -143,10 +147,10 @@ export class UsersService {
     return { _id: user._id, email: user.email };
   };
 
-  handleVerifyPasswordResetCode = async (codeAutoDto: CodeAutoDto) => {
+  handleVerifyPasswordResetCode = async (codeAuthDto: CodeAuthDto) => {
     const user = await this.userModel.findOne({
-      _id: codeAutoDto._id,
-      codeId: codeAutoDto.codeId,
+      _id: codeAuthDto._id,
+      codeId: codeAuthDto.codeId,
     });
     if (!user) {
       throw new BadRequestException('Account does not exist');
@@ -160,38 +164,31 @@ export class UsersService {
   };
 
   handleChangePassword = async (
-    changePasswordAutoDto: ChangePasswordAutoDto,
+    changePasswordAuthDto: ChangePasswordAuthDto,
   ) => {
-    if (
-      changePasswordAutoDto.confirmPassword !== changePasswordAutoDto.password
-    ) {
-      throw new BadRequestException(
-        'Password and Confirm Password does not match',
-      );
-    }
     const user = await this.userModel.findOne({
-      email: changePasswordAutoDto.email,
+      email: changePasswordAuthDto.email,
     });
     if (!user) {
       throw new BadRequestException('Account does not exist');
     }
-    const newPassword = await getHashPassword(changePasswordAutoDto.password);
+    const newPassword = await getHashPassword(changePasswordAuthDto.password);
     await user.updateOne({ password: newPassword });
     return user;
   };
 
   async register(registerUserDto: RegisterUserDto) {
-    const { username, email, password, confirmPassword } = registerUserDto;
-    //Check email already exists
-    if (await this.isExistEmail(email)) {
+    const { username, email, password } = registerUserDto;
+    //Check username already exists
+    if (await this.isExistUsernameOrEmail(username)) {
       throw new BadRequestException(
-        `Email ${email} already exists. Please use another email`,
+        `Username '${username}' already exists. Please use another username`,
       );
     }
-    //Check password and confirm password
-    if (confirmPassword !== password) {
+    //Check email already exists
+    if (await this.isExistUsernameOrEmail(email)) {
       throw new BadRequestException(
-        'Password and Confirm Password does not match',
+        `Email '${email}' already exists. Please use another email`,
       );
     }
     //Hash password
@@ -216,17 +213,17 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto, @User() user: IUser) {
-    const { username, email, password, confirmPassword, role } = createUserDto;
-    //Check email already exists
-    if (await this.isExistEmail(email)) {
+    const { username, email, password, role } = createUserDto;
+    //Check username already exists
+    if (await this.isExistUsernameOrEmail(username)) {
       throw new BadRequestException(
-        `Email ${email} already exists. Please use another email`,
+        `Username '${username}' already exists. Please use another username`,
       );
     }
-    //Check password and confirm password
-    if (confirmPassword !== password) {
+    //Check email already exists
+    if (await this.isExistUsernameOrEmail(email)) {
       throw new BadRequestException(
-        'Password and Confirm Password does not match',
+        `Email '${email}' already exists. Please use another email`,
       );
     }
     //Hash password
@@ -238,7 +235,7 @@ export class UsersService {
       role,
       createdBy: {
         _id: user._id,
-        email: user.email,
+        username: user.username,
       },
     });
     //Send email
@@ -288,7 +285,7 @@ export class UsersService {
         ...updateUserDto,
         updatedBy: {
           _id: user._id,
-          email: user.email,
+          username: user.username,
         },
       },
     );
@@ -307,7 +304,7 @@ export class UsersService {
       {
         deletedBy: {
           _id: user._id,
-          email: user.email,
+          username: user.username,
         },
       },
     );

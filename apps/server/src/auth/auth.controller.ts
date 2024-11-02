@@ -13,8 +13,8 @@ import { LocalAuthGuard } from './passport/local-auth.guard';
 import { Response } from 'express';
 import { IUser } from '../modules/users/users.interface';
 import {
-  ChangePasswordAutoDto,
-  CodeAutoDto,
+  ChangePasswordAuthDto,
+  CodeAuthDto,
   RegisterUserDto,
 } from './dto/create-auth.dto';
 import { UsersService } from 'src/modules/users/users.service';
@@ -48,8 +48,8 @@ export class AuthController {
   @Public()
   @ResponseMessage('Verify activation code')
   @Post('verify-activation-code')
-  verifyActivationCode(@Body() codeAutoDto: CodeAutoDto) {
-    return this.usersService.handleVerifyActivationCode(codeAutoDto);
+  verifyActivationCode(@Body() codeAuthDto: CodeAuthDto) {
+    return this.usersService.handleVerifyActivationCode(codeAuthDto);
   }
 
   @Public()
@@ -69,15 +69,15 @@ export class AuthController {
   @Public()
   @ResponseMessage('Verify password reset code')
   @Post('verify-password-reset-code')
-  verifyPasswordResetCode(@Body() codeAutoDto: CodeAutoDto) {
-    return this.usersService.handleVerifyPasswordResetCode(codeAutoDto);
+  verifyPasswordResetCode(@Body() codeAuthDto: CodeAuthDto) {
+    return this.usersService.handleVerifyPasswordResetCode(codeAuthDto);
   }
 
   @Public()
   @ResponseMessage('Change password')
   @Post('change-password')
-  changePassword(@Body() changePasswordAutoDto: ChangePasswordAutoDto) {
-    return this.usersService.handleChangePassword(changePasswordAutoDto);
+  changePassword(@Body() changePasswordAuthDto: ChangePasswordAuthDto) {
+    return this.usersService.handleChangePassword(changePasswordAuthDto);
   }
 
   // F5 refresh
