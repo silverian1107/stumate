@@ -4,6 +4,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { Lexend_Deca } from 'next/font/google';
 import './globals.css';
+import SnackBar from '@/components/SnackBar';
+
 import StoreProvider from '@/redux/StoreProvider';
 
 const lexendDeca = Lexend_Deca({
@@ -16,8 +18,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const {data: session} = useSession();
-
   return (
     <html lang="en">
       <StyledEngineProvider injectFirst>
@@ -25,9 +25,8 @@ export default function RootLayout({
           <StoreProvider>
             <AppRouterCacheProvider options={{ key: 'css' }}>
               <ThemeProvider theme={theme}>
-                {/*session &&*/ <NavBar />}
-                {/* {<NavBar/>} */}
                 {children}
+                <SnackBar />
               </ThemeProvider>
             </AppRouterCacheProvider>
           </StoreProvider>

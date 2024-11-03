@@ -11,14 +11,19 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRegisterMutation } from '@/service/rootApi';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { openSnackbar } from '@/redux/slices/snackbarSlice';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 export default function RegisterForm() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
     formState: { errors },
-    getValues
+    getValues,
   } = useForm<RegisterValues>({
     resolver: yupResolver(registerSchema),
     defaultValues: {
@@ -29,19 +34,20 @@ export default function RegisterForm() {
       agreeToTerms: false,
     },
   });
-  
-  const [register, {  isSuccess }] = useRegisterMutation();
+
+  const [register, { isSuccess }] = useRegisterMutation();
   function onSubmit(formData: RegisterValues) {
     console.log({ formData });
     register(formData);
   }
- 
-  useEffect(()=>{
+
+  useEffect(() => {
     if (isSuccess) {
       const email = getValues('email');
-      router.push(`/verify_otp?email=${encodeURIComponent(email)}`)
+      router.push(`/verify?email=${encodeURIComponent(email)}`);
+      dispatch(openSnackbar({ message: 'Register successfully!' }));
     }
-  },[ router, isSuccess, getValues ])
+  }, [router, isSuccess, getValues, dispatch]);
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<RegisterValues>
