@@ -6,6 +6,8 @@ import { Lexend_Deca } from 'next/font/google';
 import './globals.css';
 import SnackBar from '@/components/SnackBar';
 
+import RqProvider from './libs/RqProvider';
+import { Toaster } from '@/components/ui/toaster';
 import StoreProvider from '@/redux/StoreProvider';
 
 const lexendDeca = Lexend_Deca({
@@ -25,8 +27,11 @@ export default function RootLayout({
           <StoreProvider>
             <AppRouterCacheProvider options={{ key: 'css' }}>
               <ThemeProvider theme={theme}>
-                {children}
-                <SnackBar />
+                <RqProvider>
+                  {children}
+                  <Toaster />
+                  <SnackBar />
+                </RqProvider>
               </ThemeProvider>
             </AppRouterCacheProvider>
           </StoreProvider>

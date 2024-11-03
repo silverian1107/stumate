@@ -1,7 +1,7 @@
-'use client'
+'use client';
 import { closeSnackbar } from '@/redux/slices/snackbarSlice';
 import { RootState } from '@/redux/store';
-import { Alert , Snackbar } from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 
@@ -22,7 +22,7 @@ export default function SnackBar() {
     >
       <Alert
         // onClose={handleClose}
-        severity={type as 'error'|'success'|'warning'} 
+        severity={type as 'error' | 'success' | 'warning'}
         variant="filled"
         sx={{ width: '100%' }}
       >
