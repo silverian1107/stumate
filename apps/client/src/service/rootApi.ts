@@ -87,8 +87,11 @@ export const rootApi = createApi({
       {
         statusCode: number;
         access_token: string;
-        refresh_token: string; token: string; data: Record<string, any>; message: string 
-},
+        refresh_token: string;
+        token: string;
+        data: Record<string, any>;
+        message: string;
+      },
       { username: string; password: string }
     >({
       query: ({ username, password }) => ({

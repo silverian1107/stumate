@@ -38,7 +38,6 @@ export default function LoginForm() {
   }
 
   useEffect(() => {
-    console.log({ isSuccess });
     if (isError) {
       if ('data' in error) {
         dispatch(
@@ -52,18 +51,17 @@ export default function LoginForm() {
       }
     }
     if (isSuccess) {
-      console.log(data);
       if (data.statusCode === 201) {
         dispatch(
           loginState({
-            accessToken: data.access_token,
+            accessToken: data.data.access_token,
             refreshToken: data.refresh_token,
           }),
         );
-        console.log({ data: data.data });
         dispatch(openSnackbar({ message: data?.message }));
-        Cookies.set('access_token', data.access_token);
-        Cookies.set('refresh_token', data.refresh_token);
+        console.log({ data });
+        Cookies.set('access_token', data.data.access_token);
+        // Cookies.set('refresh_token', data.refresh_token);
         redirect('/apps');
       } else {
         const email = getValues('username');

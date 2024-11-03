@@ -24,7 +24,6 @@ import { IUser } from '../users/users.interface';
 @Controller('collections')
 export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
-  @Public()
   @Post()
   @ApiOperation({ summary: 'Create a new collection' })
   @ApiBody({ type: CreateCollectionDto })
@@ -43,6 +42,7 @@ export class CollectionsController {
     return this.collectionsService.create(collectionData, _id);
   }
 
+  @Public()
   @Get('all')
   @ApiOperation({ summary: 'Get all collections' })
   @ApiQuery({

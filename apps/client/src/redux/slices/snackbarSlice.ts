@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   open: false,
   message: null,
-  type: "success",
+  type: 'success',
 };
 export const snackbarSlice = createSlice({
-  name: "snackbar",
+  name: 'snackbar',
   initialState,
   // reducers chua  tat ca cac action
   reducers: {
@@ -22,5 +22,5 @@ export const snackbarSlice = createSlice({
   },
 });
 
-export const { openSnackbar, closeSnackbar} = snackbarSlice.actions;
+export const { openSnackbar, closeSnackbar } = snackbarSlice.actions;
 export default snackbarSlice.reducer;
