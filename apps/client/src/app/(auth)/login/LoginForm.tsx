@@ -10,19 +10,24 @@ import { useLoginMutation } from '@/service/rootApi';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { login as loginState } from '@/redux/slices/authSlice';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
+import { openSnackbar } from '@/redux/slices/snackbarSlice';
+import Cookies from 'js-cookie';
 
 export default function LoginForm() {
   const dispatch = useDispatch();
-  const [login, { data, isSuccess }] = useLoginMutation();
+  const router = useRouter();
+  const [login, { data, isSuccess, isError, error }] = useLoginMutation();
+  console.log({ data });
   const {
     control,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<LoginValues>({
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   });
@@ -31,32 +36,49 @@ export default function LoginForm() {
     console.log({ formData });
     login(formData);
   }
+
   useEffect(() => {
     console.log({ isSuccess });
-    if (isSuccess) {
-      console.log(data.userInfo?.isActive);
-      if (data.userInfo?.isActive === true) {
+    if (isError) {
+      if ('data' in error) {
         dispatch(
-          loginState({
-            accessToken: data.token,
-            refreshToken: data.token,
-            userInfo: data.userInfo,
+          openSnackbar({
+            type: 'error',
+            message: (error.data as { message: string }).message,
           }),
         );
-        redirect('/');
       } else {
-        redirect('/verify_otp');
+        dispatch(openSnackbar({ type: 'error', message: 'An error occurred' }));
       }
     }
-  }, [data, isSuccess, dispatch]);
+    if (isSuccess) {
+      console.log(data);
+      if (data.statusCode === 201) {
+        dispatch(
+          loginState({
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token,
+          }),
+        );
+        console.log({ data: data.data });
+        dispatch(openSnackbar({ message: data?.message }));
+        Cookies.set('access_token', data.access_token);
+        Cookies.set('refresh_token', data.refresh_token);
+        redirect('/apps');
+      } else {
+        const email = getValues('username');
+        router.push(`/verify?email=${encodeURIComponent(email)}`);
+      }
+    }
+  }, [data, isSuccess, dispatch, getValues, router, isError, error]);
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<LoginValues>
-        name="email"
+        name="username"
         placeHolder="Email"
         control={control}
         Component={TextInput}
-        error={errors['email']}
+        error={errors['username']}
       />
       <FormField<LoginValues>
         name="password"

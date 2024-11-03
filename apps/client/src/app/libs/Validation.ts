@@ -19,13 +19,7 @@ export const registerSchema = yup.object().shape({
 export type RegisterValues = yup.InferType<typeof registerSchema>;
 
 export const loginSchema = yup.object().shape({
-  email: yup
-    .string()
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      'Email is not valid',
-    )
-    .required(),
+  username: yup.string().required(),
   password: yup.string().required(),
 });
 export type LoginValues = yup.InferType<typeof loginSchema>;

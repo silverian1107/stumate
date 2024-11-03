@@ -10,9 +10,10 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './slices/authSlice';
+import snackbarReducer from './slices/snackbarSlice';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { rootApi } from '../service/rootApi'; // Assuming rootApi is defined in your services folder
 import { logOutMiddleware } from './middlewares';
-import { rootApi } from '@/service/rootApi';
 
 // Type for persisted configuration
 const persistConfig = {
@@ -27,6 +28,7 @@ const persistedReducer = persistReducer(
   persistConfig,
   combineReducers({
     auth: authReducer,
+    snackbar: snackbarReducer,
     [rootApi.reducerPath]: rootApi.reducer,
   }),
 );

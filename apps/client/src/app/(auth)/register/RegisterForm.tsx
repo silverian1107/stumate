@@ -9,11 +9,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, FormHelperText } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { openSnackbar } from '@/redux/slices/snackbarSlice';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 export default function RegisterForm() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
@@ -38,9 +41,10 @@ export default function RegisterForm() {
   useEffect(() => {
     if (isSuccess) {
       const email = getValues('email');
-      router.push(`/verify_otp?email=${encodeURIComponent(email)}`);
+      router.push(`/verify?email=${encodeURIComponent(email)}`);
+      dispatch(openSnackbar({message: 'Register successfully!'}))
     }
-  }, [router, isSuccess, getValues]);
+  }, [router, isSuccess, getValues, dispatch]);
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<RegisterValues>

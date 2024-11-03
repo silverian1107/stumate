@@ -4,6 +4,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { Lexend_Deca } from 'next/font/google';
 import './globals.css';
+import SnackBar from '@/components/SnackBar';
+
 
 const lexendDeca = Lexend_Deca({
   variable: '--font-lexend-deca',
@@ -15,13 +17,17 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <StyledEngineProvider injectFirst>
         <body className={`antialiased ${lexendDeca.variable}`}>
           <StoreProvider>
             <AppRouterCacheProvider options={{ key: 'css' }}>
-              <ThemeProvider theme={theme}>{children}</ThemeProvider>
+              <ThemeProvider theme={theme}>
+                {children}
+                <SnackBar/>
+              </ThemeProvider>
             </AppRouterCacheProvider>
           </StoreProvider>
         </body>

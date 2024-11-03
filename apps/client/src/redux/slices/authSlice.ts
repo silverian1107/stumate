@@ -21,15 +21,10 @@ export const authSlice = createSlice({
     // Define types for action payloads
     login: (
       state,
-      action: PayloadAction<{
-        accessToken: string;
-        refreshToken: string;
-        userInfo: Record<string, any>;
-      }>,
+      action: PayloadAction<{ accessToken: string; refreshToken: string }>,
     ) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-      state.userInfo = action.payload.userInfo;
     },
     logout: () => initialState,
     saveUserInfo: (state, action: PayloadAction<Record<string, any>>) => {
