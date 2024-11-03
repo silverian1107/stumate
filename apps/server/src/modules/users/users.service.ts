@@ -248,12 +248,13 @@ export class UsersService {
   }
 
   async findAll(currentPage: number, pageSize: number, qs: string) {
-    const { filter, sort, population } = aqp(qs);
+    const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
 
+    currentPage = currentPage ? currentPage : 1;
     const limit = pageSize ? pageSize : 10;
-    const offset = (currentPage ? currentPage : 1 - 1) * limit;
+    const offset = (currentPage - 1) * limit;
 
     const totalItems = (await this.userModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / limit);
@@ -265,6 +266,7 @@ export class UsersService {
       .sort(sort as any)
       .select('-password')
       .populate(population)
+      .select(projection as any)
       .exec();
 
     return {
@@ -295,7 +297,7 @@ export class UsersService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid User ID');
     }
-    const existingUser = await this.findOne(id);
+    const existingUser = await this.userModel.findOne({ _id: id });
     if (!existingUser) {
       throw new NotFoundException('Not found user');
     }

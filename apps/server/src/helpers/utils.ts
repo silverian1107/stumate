@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 import { BadRequestException } from '@nestjs/common';
@@ -22,13 +21,6 @@ export const comparePassword = async (
     console.log(error);
   }
 };
-
-export function formatDate(
-  date: dayjs.Dayjs | string | Date,
-  formatString: string = 'YYYY-MM-DD HH:mm:ss',
-) {
-  return dayjs(date).format(formatString);
-}
 
 export function validateObjectId(id: string, objectName?: string): void;
 export function validateObjectId(ids: string[], objectName?: string): void;

@@ -13,6 +13,7 @@ import { CollectionsModule } from './modules/collections/collections.module';
 import { NotesModule } from './modules/notes/notes.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
 import { DecksModule } from './modules/decks/decks.module';
+import { FlashcardsModule } from './modules/flashcards/flashcards.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { DecksModule } from './modules/decks/decks.module';
     }),
     AttachmentsModule,
     DecksModule,
+    FlashcardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
