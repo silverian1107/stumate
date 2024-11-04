@@ -1,31 +1,37 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-export type DeckDocument = HydratedDocument<Deck>;
+export type QuizTestDocument = HydratedDocument<QuizTest>;
 
 @Schema({ timestamps: true })
-export class Deck {
-  @Prop({ require: true })
-  name: string;
+export class QuizTest {
+  @Prop({ required: true })
+  title: string;
 
   @Prop({ default: 'Description' })
   description: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true })
-  userId: mongoose.Schema.Types.ObjectId;
+  @Prop({ required: true })
+  numberOfQuestion: number;
 
   @Prop()
-  tag: string[];
+  duration: number;
 
-  @Prop({ type: Object })
-  studyStatus: {
-    lastStudied: Date;
-    dueToday: number;
-    progress: number;
-  };
-
-  @Prop({ default: false })
+  @Prop()
   isPublished: boolean;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    require: true,
+  })
+  userId: mongoose.Schema.Types.ObjectId;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Note',
+  })
+  noteId: mongoose.Schema.Types.ObjectId;
 
   @Prop()
   createdAt: Date;
@@ -58,4 +64,4 @@ export class Deck {
   };
 }
 
-export const DeckSchema = SchemaFactory.createForClass(Deck);
+export const QuizTestSchema = SchemaFactory.createForClass(QuizTest);

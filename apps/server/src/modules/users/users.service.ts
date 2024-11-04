@@ -23,6 +23,8 @@ import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
+import { DecksService } from '../decks/decks.service';
+import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 
 @Injectable()
 export class UsersService {
@@ -31,6 +33,8 @@ export class UsersService {
     private readonly userModel: SoftDeleteModel<UserDocument>,
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
+    private readonly decksService: DecksService,
+    private readonly quizTestsService: QuizTestsService,
   ) {}
 
   async updateLastLogin(userId: string): Promise<void> {
@@ -301,6 +305,21 @@ export class UsersService {
     if (!existingUser) {
       throw new NotFoundException('Not found user');
     }
+    //soft delete for all deck and flashcard
+    const decks = await this.decksService.findByUser(user);
+    await Promise.all(
+      decks.map((deck: any) =>
+        this.decksService.remove(deck._id.toString(), user),
+      ),
+    );
+    //soft delete for all quiz test, quiz question and quiz attempt
+    const quizTests = await this.quizTestsService.findByUser(user);
+    await Promise.all(
+      quizTests.map((quizTest: any) =>
+        this.quizTestsService.remove(quizTest._id.toString(), user),
+      ),
+    );
+    //soft delete for user
     await this.userModel.updateOne(
       { _id: id },
       {

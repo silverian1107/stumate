@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateFlashcardDto } from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,29 +12,25 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
 import { Flashcard, FlashcardDocument } from './schema/flashcard.schema';
-import { Deck, DeckDocument } from '../decks/schema/deck.schema';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
+import { DecksService } from '../decks/decks.service';
 
 @Injectable()
 export class FlashcardsService {
   constructor(
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
-    @InjectModel(Deck.name)
-    private readonly deckModel: SoftDeleteModel<DeckDocument>,
+    @Inject(forwardRef(() => DecksService))
+    private readonly decksModel: DecksService,
   ) {}
-
-  async findDeckById(deckId: string) {
-    return await this.deckModel.findOne({ _id: deckId });
-  }
 
   async create(
     deckId: string,
     createFlashcardDto: CreateFlashcardDto,
     @User() user: IUser,
   ) {
-    if (!(await this.findDeckById(deckId))) {
+    if (!(await this.decksModel.findOne(deckId))) {
       throw new NotFoundException('Not found deck');
     }
     //Create a new flashcard
@@ -110,8 +112,8 @@ export class FlashcardsService {
   }
 
   async remove(deckId: string, id: string, @User() user: IUser) {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('Invalid Deck ID');
+    if (!(await this.decksModel.findOne(deckId))) {
+      throw new NotFoundException('Not found deck');
     }
     const flashcard = await this.flashcardModel.findOne({ _id: id, deckId });
     if (!flashcard) {

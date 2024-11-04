@@ -14,7 +14,7 @@ export class Flashcard {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true })
   userId: mongoose.Schema.Types.ObjectId;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Note' })
   noteId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Deck', require: true })
@@ -45,19 +45,19 @@ export class Flashcard {
   @Prop({ type: Object })
   createdBy: {
     _id: mongoose.Schema.Types.ObjectId;
-    email: string;
+    username: string;
   };
 
   @Prop({ type: Object })
   updatedBy: {
     _id: mongoose.Schema.Types.ObjectId;
-    email: string;
+    username: string;
   };
 
   @Prop({ type: Object })
   deletedBy: {
     _id: mongoose.Schema.Types.ObjectId;
-    email: string;
+    username: string;
   };
 }
 

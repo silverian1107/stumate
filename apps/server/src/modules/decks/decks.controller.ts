@@ -30,7 +30,7 @@ export class DecksController {
 
   @Post('user')
   @ResponseMessage('Get deck by user')
-  getDeckByUser(@User() user: IUser) {
+  getByUser(@User() user: IUser) {
     return this.decksService.findByUser(user);
   }
 

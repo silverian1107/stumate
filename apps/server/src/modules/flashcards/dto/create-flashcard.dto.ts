@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateFlashcardDto {
   @IsNotEmpty()
@@ -8,4 +8,8 @@ export class CreateFlashcardDto {
   @IsNotEmpty()
   @IsString()
   back: string;
+
+  @IsOptional()
+  @IsMongoId()
+  noteId: string;
 }

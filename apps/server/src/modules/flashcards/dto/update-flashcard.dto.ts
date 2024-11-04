@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsOptional, IsString } from 'class-validator';
 
 export class UpdateFlashcardDto {
   @IsOptional()
@@ -8,4 +8,8 @@ export class UpdateFlashcardDto {
   @IsOptional()
   @IsString()
   back: string;
+
+  @IsOptional()
+  @IsMongoId()
+  noteId: string;
 }

@@ -14,6 +14,9 @@ import { NotesModule } from './modules/notes/notes.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
 import { DecksModule } from './modules/decks/decks.module';
 import { FlashcardsModule } from './modules/flashcards/flashcards.module';
+import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
+import { QuizAttemptsModule } from './modules/quiz-attempts/quiz-attempts.module';
+import { QuizTestsModule } from './modules/quiz-tests/quiz-tests.module';
 
 @Module({
   imports: [
@@ -65,6 +68,9 @@ import { FlashcardsModule } from './modules/flashcards/flashcards.module';
     AttachmentsModule,
     DecksModule,
     FlashcardsModule,
+    QuizQuestionsModule,
+    QuizAttemptsModule,
+    QuizTestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

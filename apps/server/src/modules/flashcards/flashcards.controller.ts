@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { FlashcardsService } from './flashcards.service';
 import { CreateFlashcardDto } from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
@@ -29,7 +38,7 @@ export class FlashcardsController {
 
   @Post('user')
   @ResponseMessage('Get flashcard by user and deck')
-  getDeckByUser(@Param('deckId') deckId: string, @User() user: IUser) {
+  getByUserAndDeckId(@Param('deckId') deckId: string, @User() user: IUser) {
     return this.flashcardsService.findByUserAndDeckId(deckId, user);
   }
 
