@@ -36,10 +36,10 @@ export class QuizQuestionsController {
     };
   }
 
-  @Post('user')
-  @ResponseMessage('Get quiz test by user')
-  getByUser(@Param() quizTestId: string) {
-    return this.quizQuestionsService.findByUser(quizTestId);
+  @Post('all')
+  @ResponseMessage('Get quiz question by quiz test')
+  getByQuizTestId(@Param() quizTestId: string) {
+    return this.quizQuestionsService.findByQuizTestId(quizTestId);
   }
 
   @Get()
@@ -70,13 +70,13 @@ export class QuizQuestionsController {
     @Body() updateQuizQuestionDto: UpdateQuizQuestionDto,
     @User() user: IUser,
   ) {
-    const updateDeck = await this.quizQuestionsService.update(
+    const updateQuizQuestion = await this.quizQuestionsService.update(
       quizTestId,
       id,
       updateQuizQuestionDto,
       user,
     );
-    return updateDeck;
+    return updateQuizQuestion;
   }
 
   @Delete(':id')

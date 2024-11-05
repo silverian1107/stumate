@@ -22,7 +22,7 @@ export class FlashcardsService {
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
     @Inject(forwardRef(() => DecksService))
-    private readonly decksModel: DecksService,
+    private readonly decks: DecksService,
   ) {}
 
   async create(
@@ -30,7 +30,7 @@ export class FlashcardsService {
     createFlashcardDto: CreateFlashcardDto,
     @User() user: IUser,
   ) {
-    if (!(await this.decksModel.findOne(deckId))) {
+    if (!(await this.decks.findOne(deckId))) {
       throw new NotFoundException('Not found deck');
     }
     //Create a new flashcard
@@ -112,7 +112,7 @@ export class FlashcardsService {
   }
 
   async remove(deckId: string, id: string, @User() user: IUser) {
-    if (!(await this.decksModel.findOne(deckId))) {
+    if (!(await this.decks.findOne(deckId))) {
       throw new NotFoundException('Not found deck');
     }
     const flashcard = await this.flashcardModel.findOne({ _id: id, deckId });

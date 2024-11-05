@@ -1,45 +1,101 @@
 import {
   Controller,
   Get,
-  // Post,
-  // Body,
-  // Patch,
+  Post,
+  Body,
+  Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { QuizAttemptsService } from './quiz-attempts.service';
-// import { CreateQuizAttemptDto } from './dto/create-quiz-attempt.dto';
-// import { UpdateStatusQuizAttemptDto } from './dto/update-quiz-attempt.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
+import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 
-@Controller('quiz-attempts')
+@Controller('quiz-tests/:quizTestId/quiz-attempts')
 export class QuizAttemptsController {
   constructor(private readonly quizAttemptsService: QuizAttemptsService) {}
 
-  // @Post()
-  // create(@Body() createQuizAttemptDto: CreateQuizAttemptDto) {
-  //   return this.quizAttemptsService.create(createQuizAttemptDto);
-  // }
+  @Post('start')
+  @ResponseMessage('Send request to start a quiz')
+  async startQuiz(@Param() quizTestId: string, @User() user: IUser) {
+    return await this.quizAttemptsService.handleStartQuizAttempt(
+      quizTestId,
+      user,
+    );
+  }
+
+  @Post(':id/submit')
+  @ResponseMessage('Send request to submit a quiz')
+  async submitQuiz(
+    @Param() quizTestId: string,
+    @Param() id: string,
+    @Body() userAnswersDto: UserAnswersDto,
+    @User() user: IUser,
+  ) {
+    return await this.quizAttemptsService.handleSubmitQuizAttempt(
+      quizTestId,
+      id,
+      userAnswersDto,
+      user,
+    );
+  }
+
+  @Post('all')
+  @ResponseMessage('Get quiz attempt by user')
+  getByUserAndQuizTestId(@Param() quizTestId: string, @User() user: IUser) {
+    return this.quizAttemptsService.findByUserAndQuizTestId(quizTestId, user);
+  }
 
   @Get()
-  findAll() {
-    return this.quizAttemptsService.findAll();
+  @ResponseMessage('Fetch list quiz attempt with pagination')
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') pageSize: string,
+    @Query() qs: string,
+  ) {
+    return this.quizAttemptsService.findAll(+currentPage, +pageSize, qs);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.quizAttemptsService.findOne(+id);
+  @ResponseMessage('Fetch quiz question by id')
+  async findOne(@Param() quizTestId: string, @Param('id') id: string) {
+    const foundQuizAttempt = await this.quizAttemptsService.findOne(
+      quizTestId,
+      id,
+    );
+    return foundQuizAttempt;
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateQuizAttemptDto: UpdateStatusQuizAttemptDto,
-  // ) {
-  //   return this.quizAttemptsService.update(+id, updateQuizAttemptDto);
-  // }
+  @Patch(':id/save-progress')
+  @ResponseMessage('Save the progress of a quiz')
+  async saveQuizAttempt(
+    @Param() quizTestId: string,
+    @Param('id') id: string,
+    @Body() userAnswersDto: UserAnswersDto,
+    @User() user: IUser,
+  ) {
+    const updateQuizAttempt =
+      await this.quizAttemptsService.handleSaveQuizAttempt(
+        quizTestId,
+        id,
+        userAnswersDto,
+        user,
+      );
+    return {
+      message: 'The quiz progress was saved successfully',
+      updateQuizAttempt,
+    };
+  }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.quizAttemptsService.remove(+id);
+  @ResponseMessage('Delete a quiz question')
+  remove(
+    @Param() quizTestId: string,
+    @Param('id') id: string,
+    @User() user: IUser,
+  ) {
+    return this.quizAttemptsService.remove(quizTestId, id, user);
   }
 }

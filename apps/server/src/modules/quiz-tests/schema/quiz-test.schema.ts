@@ -3,6 +3,14 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 export type QuizTestDocument = HydratedDocument<QuizTest>;
 
+enum Status {
+  NOT_STARTED = 'NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  PROGRESS_SAVED = 'PROGRESS_SAVED',
+  COMPLETED = 'COMPLETED',
+  REVIEWED = 'REVIEWED',
+}
+
 @Schema({ timestamps: true })
 export class QuizTest {
   @Prop({ required: true })
@@ -11,11 +19,14 @@ export class QuizTest {
   @Prop({ default: 'Description' })
   description: string;
 
-  @Prop({ required: true })
+  @Prop({ min: 0, required: true })
   numberOfQuestion: number;
 
-  @Prop()
+  @Prop({ min: 0 })
   duration: number;
+
+  @Prop({ enum: Status, default: Status.NOT_STARTED })
+  status: string;
 
   @Prop()
   isPublished: boolean;

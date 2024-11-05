@@ -5,17 +5,14 @@ export type QuizAttemptDocument = HydratedDocument<QuizAttempt>;
 
 @Schema({ timestamps: true })
 export class QuizAttempt {
-  @Prop()
+  @Prop({ default: 0 })
   score: number;
 
   @Prop({ required: true })
   totalQuestions: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   correctAnswers: number;
-
-  @Prop({ default: 'NOT_STARTED' })
-  status: string;
 
   @Prop({
     type: [
@@ -27,10 +24,12 @@ export class QuizAttempt {
         },
       },
     ],
+    default: [],
   })
   answers: {
     quizQuestionId: mongoose.Schema.Types.ObjectId;
     answer: string;
+    isCorrect: boolean;
   }[];
 
   @Prop()

@@ -48,7 +48,7 @@ export class QuizQuestionsService {
     return newQuizQuestion;
   }
 
-  async findByUser(quizTestId: string) {
+  async findByQuizTestId(quizTestId: string) {
     return await this.quizQuestionModel.find({ quizTestId });
   }
 
@@ -96,6 +96,10 @@ export class QuizQuestionsService {
       throw new NotFoundException('Not found quiz question');
     }
     return quizQuestion;
+  }
+
+  async findAllById(ids: string[]) {
+    return await this.quizQuestionModel.find({ _id: { $in: ids } });
   }
 
   async update(

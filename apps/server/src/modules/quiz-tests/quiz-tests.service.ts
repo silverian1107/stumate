@@ -15,6 +15,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
+import { QuizAttemptsService } from '../quiz-attempts/quiz-attempts.service';
 
 @Injectable()
 export class QuizTestsService {
@@ -23,6 +24,8 @@ export class QuizTestsService {
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
     @Inject(forwardRef(() => QuizQuestionsService))
     private readonly quizQuestionModel: QuizQuestionsService,
+    @Inject(forwardRef(() => QuizAttemptsService))
+    private readonly quizAttemptModel: QuizAttemptsService,
   ) {}
 
   async findQuizTestByTitle(title: string) {
@@ -127,13 +130,22 @@ export class QuizTestsService {
       throw new NotFoundException('Not found quiz test');
     }
     //soft delete for quiz question
-    const quizQuestions = await this.quizQuestionModel.findByUser(id);
+    const quizQuestions = await this.quizQuestionModel.findByQuizTestId(id);
     await Promise.all(
       quizQuestions.map((quizQuestion: any) =>
         this.quizQuestionModel.remove(id, quizQuestion._id.toString(), user),
       ),
     );
     //soft delete for quiz attempt
+    const quizAttempts = await this.quizAttemptModel.findByUserAndQuizTestId(
+      id,
+      user,
+    );
+    await Promise.all(
+      quizAttempts.map((quizAttempt: any) =>
+        this.quizAttemptModel.remove(id, quizAttempt._id.toString(), user),
+      ),
+    );
     //soft delete for quiz test
     await this.quizTestModel.updateOne(
       { _id: id },

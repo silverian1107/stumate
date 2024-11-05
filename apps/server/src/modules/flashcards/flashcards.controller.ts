@@ -36,7 +36,7 @@ export class FlashcardsController {
     };
   }
 
-  @Post('user')
+  @Post('all')
   @ResponseMessage('Get flashcard by user and deck')
   getByUserAndDeckId(@Param('deckId') deckId: string, @User() user: IUser) {
     return this.flashcardsService.findByUserAndDeckId(deckId, user);
