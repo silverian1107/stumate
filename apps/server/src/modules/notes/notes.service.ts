@@ -56,10 +56,7 @@ export class NotesService {
         newNote.attachment = attachment;
       }
 
-      newNote.parentId = {
-        _id: parent._id as string,
-        type: parentNote ? 'Note' : 'Collection',
-      };
+      newNote.parentId = parent._id as string;
       parent.children.push({
         _id: newNote._id as string,
         type: 'Note',
@@ -90,7 +87,7 @@ export class NotesService {
     const limit = pageSize;
     const skip = (currentPage - 1) * limit;
     const filter = {
-      'parentId.type': 'Collection',
+      'parent.type': 'Collection',
       isArchived: false,
       isDeleted: false,
     };

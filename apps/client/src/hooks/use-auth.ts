@@ -1,5 +1,4 @@
-// src/hooks/useAuth.ts
-import { AuthAxiosClient } from '@/endpoints/AxiosClient';
+import { AxiosClient } from '@/endpoints/AxiosClient';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
@@ -25,7 +24,7 @@ export const useAccount = () => {
   >({
     queryKey: ['getAccount'],
     queryFn: async () => {
-      const response = await AuthAxiosClient.get('/auth/account');
+      const response = await AxiosClient.get('/auth/account');
       return response.data;
     },
     enabled: !!Cookies.get('access_token'),

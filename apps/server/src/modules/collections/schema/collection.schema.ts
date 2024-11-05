@@ -14,28 +14,27 @@ export class Collection {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Collection' })
   parentId: string;
 
+  @Prop({ type: String, default: 'Collection' })
+  type: string;
+
   @Prop({ required: true })
   name: string;
 
   @Prop({
     default: 'Description',
   })
-  description?: string;
+  description: string;
 
-  @Prop({
-    type: [
-      {
-        _id: { type: MongooseSchema.Types.ObjectId, required: true },
-        type: { type: String, required: true, enum: ['Collection', 'Note'] },
-      },
-    ],
-    required: false,
-    default: [],
-  })
-  children: {
+  @Prop([
+    {
+      _id: { type: MongooseSchema.Types.ObjectId, refPath: 'children.type' },
+      type: { type: String, enum: ['Collection', 'Note'] },
+    },
+  ])
+  children: Array<{
     _id: string;
     type: 'Collection' | 'Note';
-  }[];
+  }>;
 
   @Prop({ default: 0 })
   level: number;
@@ -65,9 +64,10 @@ CollectionSchema.index({ ownerId: 1, isArchived: 1, isDeleted: 1 });
 
 // Populate children
 CollectionSchema.virtual('childrenDocs', {
-  ref: 'Collection',
+  refPath: 'children.type',
   localField: 'children._id',
   foreignField: '_id',
+  justOne: false,
 });
 
 CollectionSchema.set('toObject', { virtuals: true });

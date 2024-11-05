@@ -18,4 +18,15 @@ export class AppController {
   getError(): string {
     throw new UnauthorizedException('Unauthorized');
   }
+
+  @Public()
+  @Get('normal')
+  getNormal() {
+    return { hello: 'World' };
+  }
+  @Public()
+  @Get('withId')
+  getWithId() {
+    return { hello: 'Id' };
+  }
 }

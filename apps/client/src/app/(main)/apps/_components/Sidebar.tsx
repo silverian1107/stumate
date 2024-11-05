@@ -1,23 +1,40 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { AccountResponse } from '@/hooks/useAuth';
+import { useAccount } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import {
   ArrowRightCircle,
   Home,
   Inbox,
   Menu,
+  PlusCircle,
   Search,
   Settings,
   Sparkle,
 } from 'lucide-react';
 import { useState } from 'react';
 import SidebarItem from './SidebarItem';
+import CollectionList from './CollectionList';
+import { useToast } from '@/hooks/use-toast';
 
-interface SidebarProps {
-  data: AccountResponse;
-}
-const Sidebar = ({ data }: SidebarProps) => {
+interface SidebarProps {}
+
+const Sidebar = ({}: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { data, error, isLoading } = useAccount();
+  const { toast } = useToast();
+
+  if (isLoading || error || !data) {
+    return null;
+  }
+
+  const handleCreate = () => {
+    toast({
+      title: 'Coming Soon',
+      description: 'This feature will be available soon.',
+      variant: 'default',
+    });
+  };
+
   return (
     <>
       {isCollapsed && (
@@ -32,7 +49,7 @@ const Sidebar = ({ data }: SidebarProps) => {
           isCollapsed ? 'w-0 h-full overflow-hidden' : 'w-[240px] h-full',
         )}
       >
-        <div className="w-full h-[64px] flex items-center justify-between px-5 hover:bg-primary-800 group transition-all duration-300">
+        <div className="w-full h-[64px] flex items-center justify-between px-5 hover:bg-primary-800 group transition-all duration-300 text-base">
           <div className="flex items-center gap-2">
             <Avatar className="border-black border-2">
               <AvatarImage src="avatar.jpg" />
@@ -49,12 +66,31 @@ const Sidebar = ({ data }: SidebarProps) => {
             <ArrowRightCircle className="w-5 h-5 group-hover:text-white transition-all duration-300" />
           </span>
         </div>
-        <div className="flex flex-col flex-1 mt-2">
-          <SidebarItem label="Search" icon={Search} />
-          <SidebarItem label="Home" icon={Home} />
-          <SidebarItem label="Settings" icon={Settings} />
-          <SidebarItem label="Inbox" icon={Inbox} />
-          <SidebarItem label="Knowledge Base" icon={Sparkle} active />
+        <div className="flex flex-col flex-1">
+          <SidebarItem isButton label="Search" icon={Search} />
+          <SidebarItem isButton label="Home" icon={Home} />
+          <SidebarItem isButton label="Settings" icon={Settings} />
+          <SidebarItem isButton label="Inbox" icon={Inbox} />
+          <SidebarItem
+            isButton
+            level={1}
+            label="Knowledge Base"
+            icon={Sparkle}
+            active
+            href="/apps/knowledge-base"
+          />
+        </div>
+        {/* Separator */}
+        <div className="w-4/5 mx-auto my-2 h-[1px] bg-primary-300" />
+        <SidebarItem
+          label="New Collections"
+          icon={PlusCircle}
+          isCreate
+          isButton={false}
+          onClick={handleCreate}
+        />
+        <div className="bg-red-200 w-full h-full overflow-auto">
+          <CollectionList />
         </div>
       </div>
     </>

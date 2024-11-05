@@ -1,6 +1,12 @@
 import axios from 'axios';
-
 import Cookies from 'js-cookie';
+
+export const UnauthAxiosClient = axios.create({
+  baseURL: 'http://localhost:3000/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export const AxiosClient = axios.create({
   baseURL: 'http://localhost:3000/api',
@@ -9,14 +15,7 @@ export const AxiosClient = axios.create({
   },
 });
 
-export const AuthAxiosClient = axios.create({
-  baseURL: 'http://localhost:3000/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-AuthAxiosClient.interceptors.request.use(
+AxiosClient.interceptors.request.use(
   (config) => {
     const token = Cookies.get('access_token');
     if (token) {
@@ -28,3 +27,4 @@ AuthAxiosClient.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
