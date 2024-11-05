@@ -27,13 +27,14 @@ export class NotesService {
   async create(newNoteData: CreateNoteDto, userId: string) {
     if (!mongoose.isValidObjectId(newNoteData.parentId))
       throw new BadRequestException('Invalid Collection ID');
-    if (!mongoose.isValidObjectId(newNoteData.ownerId))
-      throw new BadRequestException('Invalid UserId ID');
     if (!mongoose.isValidObjectId(userId))
       throw new BadRequestException('Invalid UserId ID');
 
     try {
-      const newNote = new this.noteModel(newNoteData);
+      const newNote = new this.noteModel({
+        ...newNoteData,
+        ownerId: userId,
+      });
       const { parentId } = newNoteData;
 
       const [parentNote, parentCollection] = await Promise.all([
@@ -91,7 +92,6 @@ export class NotesService {
     const limit = pageSize;
     const skip = (currentPage - 1) * limit;
     const filter = {
-      'parent.type': 'Collection',
       isArchived: false,
       isDeleted: false,
     };
@@ -100,13 +100,41 @@ export class NotesService {
       const totalItems = await this.noteModel.countDocuments(filter).exec();
       const totalPages = Math.ceil(totalItems / limit);
       const notes = await this.noteModel
-        .find(filter)
-        .sort(sort as any)
-        .skip(skip)
-        .limit(limit)
-        .select('-ownerId')
-        .populate('childrenDocs')
-        .lean<Note[]>()
+        .aggregate([
+          {
+            $lookup: {
+              from: 'collections',
+              localField: 'parentId',
+              foreignField: '_id',
+              as: 'parentCollection',
+            },
+          },
+          {
+            $unwind: {
+              path: '$parentCollection',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $match: {
+              'parentCollection.type': 'Collection',
+              isArchived: false,
+              isDeleted: false,
+            },
+          },
+          { $sort: sort as any },
+          { $skip: skip },
+          { $limit: limit },
+          {
+            $lookup: {
+              from: 'notes',
+              localField: 'children._id',
+              foreignField: '_id',
+              as: 'childrenDocs',
+            },
+          },
+          { $project: { parentCollection: 0 } },
+        ])
         .exec();
 
       return {
@@ -132,27 +160,67 @@ export class NotesService {
     pageSize = 10,
     qs?: string,
   ) {
-    validateObjectId(ownerId, 'User');
+    if (!Number.isInteger(currentPage) || currentPage <= 0)
+      throw new BadRequestException('Current page must be a positive integer');
+    if (!Number.isInteger(pageSize) || pageSize <= 0)
+      throw new BadRequestException('Page size must be a positive integer');
+
+    if (!mongoose.isValidObjectId(ownerId))
+      throw new BadRequestException('Invalid UserId');
+
     const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
     const limit = pageSize || 10;
     const skip = (currentPage - 1) * limit;
+
+    // Define the filter to find notes by ownerId
     const filter = {
       ownerId,
-      'parentId.type': 'Collection',
       isArchived: false,
       isDeleted: false,
     };
 
     try {
+      // Count total items matching the filter
       const totalItems = await this.noteModel.countDocuments(filter);
       const totalPages = Math.ceil(totalItems / limit);
+
       const notes = await this.noteModel
-        .find(filter)
-        .sort(sort as any)
-        .skip(skip)
-        .limit(limit)
-        .populate('childrenDocs')
-        .lean<Note[]>()
+        .aggregate([
+          {
+            $match: filter,
+          },
+          {
+            $lookup: {
+              from: 'collections',
+              localField: 'parentId',
+              foreignField: '_id',
+              as: 'parentCollection',
+            },
+          },
+          {
+            $unwind: {
+              path: '$parentCollection',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $match: {
+              'parentCollection.type': 'Collection',
+            },
+          },
+          { $sort: sort as any },
+          { $skip: skip },
+          { $limit: limit },
+          {
+            $lookup: {
+              from: 'notes',
+              localField: 'children._id',
+              foreignField: '_id',
+              as: 'childrenDocs',
+            },
+          },
+          { $project: { parentCollection: 0 } },
+        ])
         .exec();
 
       return {
@@ -169,8 +237,12 @@ export class NotesService {
     }
   }
 
-  async findById(noteId: string): Promise<Note> {
-    validateObjectId(noteId, 'Collection');
+  async findById(ownerId: string, noteId: string): Promise<Note> {
+    if (!mongoose.isValidObjectId(ownerId))
+      throw new BadRequestException('Invalid UserId');
+    if (!mongoose.isValidObjectId(noteId))
+      throw new BadRequestException('Invalid NoteId');
+
     const collection = await this.noteModel
       .findById(noteId)
       .populate('childrenDocs')

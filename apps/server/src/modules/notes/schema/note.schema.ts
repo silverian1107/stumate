@@ -77,10 +77,9 @@ export const NoteSchema = SchemaFactory.createForClass(Note);
 
 // Populate children
 NoteSchema.virtual('childrenDocs', {
-  ref: 'Collection',
-  localField: 'children._id', // Accessing the _id field in the children array
+  ref: 'Note',
+  localField: 'children._id',
   foreignField: '_id',
-  justOne: false, // Set to false if children is an array
 });
 
 NoteSchema.set('toObject', { virtuals: true });

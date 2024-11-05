@@ -1,8 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAccount } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
+  Archive,
   ArrowRightCircle,
+  CircleHelp,
   Home,
   Inbox,
   Menu,
@@ -10,11 +13,11 @@ import {
   Search,
   Settings,
   Sparkle,
+  Tags,
 } from 'lucide-react';
 import { useState } from 'react';
 import SidebarItem from './SidebarItem';
-import CollectionList from './CollectionList';
-import { useToast } from '@/hooks/use-toast';
+import DocumentList from './DocumentList';
 
 interface SidebarProps {}
 
@@ -45,8 +48,8 @@ const Sidebar = ({}: SidebarProps) => {
       )}
       <div
         className={cn(
-          'bg-primary-100 transition-all duration-700',
-          isCollapsed ? 'w-0 h-full overflow-hidden' : 'w-[240px] h-full',
+          'bg-primary-100 transition-all duration-700 h-full flex flex-col justify-start overflow-hidden',
+          isCollapsed ? 'w-0 ' : 'w-[240px]',
         )}
       >
         <div className="w-full h-[64px] flex items-center justify-between px-5 hover:bg-primary-800 group transition-all duration-300 text-base">
@@ -66,7 +69,7 @@ const Sidebar = ({}: SidebarProps) => {
             <ArrowRightCircle className="w-5 h-5 group-hover:text-white transition-all duration-300" />
           </span>
         </div>
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col">
           <SidebarItem isButton label="Search" icon={Search} />
           <SidebarItem isButton label="Home" icon={Home} />
           <SidebarItem isButton label="Settings" icon={Settings} />
@@ -89,8 +92,15 @@ const Sidebar = ({}: SidebarProps) => {
           isButton={false}
           onClick={handleCreate}
         />
-        <div className="bg-red-200 w-full h-full overflow-auto">
-          <CollectionList />
+        <div className="w-full flex-1 flex flex-col">
+          <div className="w-full overflow-auto flex-1">
+            <DocumentList />
+          </div>
+          <div>
+            <SidebarItem isButton label="Archive" icon={Archive} />
+            <SidebarItem isButton label="Tags" icon={Tags} />
+            <SidebarItem isButton label="Guide" icon={CircleHelp} />
+          </div>
         </div>
       </div>
     </>
