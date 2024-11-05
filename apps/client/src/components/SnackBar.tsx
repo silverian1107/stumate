@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 export default function SnackBar() {
   const dispatch = useDispatch();
   const { open, type, message } = useSelector((state: RootState) => {
-    console.log({ state });
     return state.snackbar;
   });
   return (

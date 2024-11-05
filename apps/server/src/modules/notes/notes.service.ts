@@ -53,10 +53,12 @@ export class NotesService {
           'You are not authorized to create a note in this collection',
         );
 
-      newNote.parentId = {
-        _id: parent._id as string,
-        type: parentNote ? 'Note' : 'Collection',
-      };
+      // Add new attachments
+      if (attachment && attachment.length > 0) {
+        newNote.attachment = attachment;
+      }
+
+      newNote.parentId = parent._id as string;
       parent.children.push({
         _id: newNote._id as string,
         type: 'Note',
@@ -89,7 +91,7 @@ export class NotesService {
     const limit = pageSize;
     const skip = (currentPage - 1) * limit;
     const filter = {
-      'parentId.type': 'Collection',
+      'parent.type': 'Collection',
       isArchived: false,
       isDeleted: false,
     };

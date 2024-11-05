@@ -1,8 +1,8 @@
-import { useAccount } from '@/hooks/useAuth';
+import { useAccount } from '@/hooks/use-auth';
 import { ArrowRight, LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
-const UserAccount = () => {
+const LoginStatus = () => {
   const { data, isLoading, error } = useAccount();
   console.log(data);
 
@@ -53,4 +53,4 @@ const UserAccount = () => {
   );
 };
 
-export default UserAccount;
+export default LoginStatus;

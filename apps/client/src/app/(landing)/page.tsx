@@ -2,7 +2,7 @@
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { Button as CustomizedButton } from '@/components/ui/button';
 import { FlipWords } from '@/components/ui/flip-words';
-import UserAccount from '@/components/UserAccount';
+import LoginStatus from '@/components/UserAccount';
 import { AppBar, Toolbar } from '@mui/material';
 import { motion } from 'framer-motion';
 
@@ -49,7 +49,7 @@ export default function Landing() {
             )}
           </div>
           <div className="space-x-2 ml-auto">
-            <UserAccount />
+            <LoginStatus />
           </div>
         </Toolbar>
       </AppBar>
