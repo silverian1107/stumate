@@ -94,13 +94,13 @@ export class NotesController {
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async findByOwner(
-    @Param('ownerId') ownerId: string,
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
     @Query('qs') qs: string,
+    @User() user: IUser,
   ) {
     return this.notesService.findByOwnerId(
-      ownerId,
+      user._id,
       +currentPage,
       +pageSize,
       qs,
@@ -112,8 +112,8 @@ export class NotesController {
   @ApiParam({ name: 'noteId', required: true })
   @ApiResponse({ status: 200, description: 'Return the note.' })
   @ApiResponse({ status: 404, description: 'Note not found.' })
-  async findById(@Param('noteId') noteId: string) {
-    return this.notesService.findById(noteId);
+  async findById(@Param('noteId') noteId: string, @User() user: IUser) {
+    return this.notesService.findById(user._id, noteId);
   }
 
   @Patch(':noteId')

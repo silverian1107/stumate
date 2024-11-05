@@ -57,11 +57,11 @@ const SidebarItem = ({
       onClick={onClick}
       role="button"
       className={cn(
-        'flex font-medium pr-4 transition-all text-sm gap-2 items-center group',
+        'flex font-medium pr-2 transition-all text-sm gap-2 items-center group',
         active && 'bg-primary-200',
         isButton
           ? 'hover:bg-primary-800 py-3 hover:text-white'
-          : 'hover:bg-primary-200 py-2',
+          : 'hover:bg-primary-200 py-1.5',
       )}
       style={{
         paddingLeft: level ? `${level * 8 + 12}px` : '12px',
@@ -81,7 +81,7 @@ const SidebarItem = ({
       <span className="truncate">{label}</span>
 
       {!!id && (
-        <div className="ml-auto flex items-center gap-x-2">
+        <div className="ml-auto flex items-center gap-x-1">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div
