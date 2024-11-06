@@ -1,6 +1,5 @@
 import {
   IsEmail,
-  IsMongoId,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
