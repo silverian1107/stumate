@@ -21,9 +21,7 @@ import { useState } from 'react';
 import DocumentList from './DocumentList';
 import SidebarItem from './SidebarItem';
 
-interface SidebarProps {}
-
-const Sidebar = ({}: SidebarProps) => {
+const Sidebar = () => {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { data, error, isLoading } = useAccount();
