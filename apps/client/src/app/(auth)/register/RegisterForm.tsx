@@ -42,7 +42,7 @@ export default function RegisterForm() {
     if (isSuccess) {
       const email = getValues('email');
       router.push(`/verify?email=${encodeURIComponent(email)}`);
-      dispatch(openSnackbar({message: 'Register successfully!'}))
+      dispatch(openSnackbar({ message: 'Register successfully!' }));
     }
   }, [router, isSuccess, getValues, dispatch]);
   return (

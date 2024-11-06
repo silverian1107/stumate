@@ -6,7 +6,6 @@ import { Lexend_Deca } from 'next/font/google';
 import './globals.css';
 import SnackBar from '@/components/SnackBar';
 
-
 const lexendDeca = Lexend_Deca({
   variable: '--font-lexend-deca',
   subsets: ['latin'],
@@ -17,7 +16,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   return (
     <html lang="en">
       <StyledEngineProvider injectFirst>
@@ -26,7 +24,7 @@ export default async function RootLayout({
             <AppRouterCacheProvider options={{ key: 'css' }}>
               <ThemeProvider theme={theme}>
                 {children}
-                <SnackBar/>
+                <SnackBar />
               </ThemeProvider>
             </AppRouterCacheProvider>
           </StoreProvider>
