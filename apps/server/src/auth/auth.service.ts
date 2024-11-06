@@ -146,7 +146,7 @@ export class AuthService {
       } else {
         throw new BadRequestException('Invalid refresh token. Please login');
       }
-    } catch (error) {
+    } catch {
       throw new BadRequestException('Invalid refresh token. Please login');
     }
   };
