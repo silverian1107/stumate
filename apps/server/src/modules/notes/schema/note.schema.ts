@@ -12,24 +12,15 @@ export class Note {
   ownerId: string;
 
   @Prop({
-    type: [
-      {
-        _id: { type: MongooseSchema.Types.ObjectId, required: true },
-        type: { type: String, required: true, enum: ['Collection', 'Note'] },
-      },
-    ],
-    default: {},
+    type: MongooseSchema.Types.ObjectId,
+    enum: ['Collection', 'Note'],
   })
-  parentId: {
-    _id: string;
-    type: 'Collection' | 'Note';
-  };
+  parentId: string;
 
   @Prop({
     type: [
       {
         _id: { type: MongooseSchema.Types.ObjectId, required: true },
-        type: { type: String, required: true, enum: ['Note'] },
       },
     ],
     required: false,
@@ -37,8 +28,10 @@ export class Note {
   })
   children: {
     _id: string;
-    type: 'Note';
   }[];
+
+  @Prop({ type: String, default: 'Note' })
+  type: string;
 
   @Prop({ required: true })
   name: string;
@@ -78,7 +71,7 @@ export const NoteSchema = SchemaFactory.createForClass(Note);
 
 // Populate children
 NoteSchema.virtual('childrenDocs', {
-  ref: 'Collection',
+  ref: 'Note',
   localField: 'children._id',
   foreignField: '_id',
 });

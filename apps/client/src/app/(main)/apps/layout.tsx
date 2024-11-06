@@ -1,14 +1,12 @@
-import NavBar from '@/components/_navbar/NavBar';
+import Sidebar from './_components/Sidebar';
 
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <main className="w-screen h-screen">
-      <NavBar />
-      {children}
-    </main>
+    <div className="w-full h-full relative flex text-sm">
+      <Sidebar />
+      <main className="flex-1 bg-primary-50">{children}</main>
+    </div>
   );
 }
-
-/* Frame 1000003471 */

@@ -2,7 +2,8 @@
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { Button as CustomizedButton } from '@/components/ui/button';
 import { FlipWords } from '@/components/ui/flip-words';
-import { AppBar, Button, Toolbar } from '@mui/material';
+import LoginStatus from '@/components/UserAccount';
+import { AppBar, Toolbar } from '@mui/material';
 import { motion } from 'framer-motion';
 
 import Link from 'next/link';
@@ -28,7 +29,7 @@ export default function Landing() {
       <AppBar
         position="static"
         color="inherit"
-        className="shadow-sm px-0 md:px-[6rem] lg:px-[10rem]"
+        className="shadow-sm sm:px-0 md:px-[2rem] lg:px-[10rem]"
       >
         <Toolbar className="flex items-center gap-8">
           <h1 className="font-extrabold text-3xl text-primary-700 select-none">
@@ -47,24 +48,8 @@ export default function Landing() {
               ),
             )}
           </div>
-          <div className="space-x-4 ml-auto">
-            <Link href="/login" className="text-gray-600 hover:text-primary ">
-              <Button
-                variant="text"
-                color="inherit"
-                className="hover:bg-primary-100 px-2 hover:text-primary-800"
-              >
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/register" className="group">
-              <CustomizedButton
-                variant={'ringHover'}
-                className="bg-primary-700 px-6 uppercase py-2 hover:bg-primary-600"
-              >
-                Register
-              </CustomizedButton>
-            </Link>
+          <div className="space-x-2 ml-auto">
+            <LoginStatus />
           </div>
         </Toolbar>
       </AppBar>
