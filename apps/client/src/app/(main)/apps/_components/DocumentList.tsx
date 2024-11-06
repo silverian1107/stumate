@@ -111,6 +111,7 @@ const DocumentList = ({
             icon={document.type === 'Collection' ? FolderOpen : FileText}
             onClick={() => onRedirect(document._id)}
             level={level}
+            type={document.type}
             onExpand={() => onExpand(document._id)}
             expanded={expanded[document._id]}
           />
