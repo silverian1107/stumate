@@ -39,7 +39,7 @@ export class RegisterUserDto {
   password: string;
 }
 
-export class CodeAutoDto {
+export class CodeAuthDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -49,11 +49,7 @@ export class CodeAutoDto {
   codeId: string;
 }
 
-export class ChangePasswordAutoDto {
-  @IsNotEmpty()
-  @IsMongoId()
-  _id: string;
-
+export class ChangePasswordAuthDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -74,8 +70,4 @@ export class ChangePasswordAutoDto {
     },
   )
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  confirmPassword: string;
 }

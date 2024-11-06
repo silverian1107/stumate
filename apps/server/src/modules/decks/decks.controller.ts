@@ -1,0 +1,70 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
+import { DecksService } from './decks.service';
+import { CreateDeckDto } from './dto/create-deck.dto';
+import { UpdateDeckDto } from './dto/update-deck.dto';
+import { IUser } from '../users/users.interface';
+import { ResponseMessage, User } from 'src/decorator/customize';
+
+@Controller('decks')
+export class DecksController {
+  constructor(private readonly decksService: DecksService) {}
+
+  @Post()
+  @ResponseMessage('Create a new deck')
+  async create(@Body() createDeckDto: CreateDeckDto, @User() user: IUser) {
+    const newDeck = await this.decksService.create(createDeckDto, user);
+    return {
+      _id: newDeck?._id,
+      createdAt: newDeck?.createdAt,
+    };
+  }
+
+  @Post('user')
+  @ResponseMessage('Get deck by user')
+  getByUser(@User() user: IUser) {
+    return this.decksService.findByUser(user);
+  }
+
+  @Get()
+  @ResponseMessage('Fetch list deck with pagination')
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') pageSize: string,
+    @Query() qs: string,
+  ) {
+    return this.decksService.findAll(+currentPage, +pageSize, qs);
+  }
+
+  @Get(':id')
+  @ResponseMessage('Fetch deck by id')
+  async findOne(@Param('id') id: string) {
+    const foundDeck = await this.decksService.findOne(id);
+    return foundDeck;
+  }
+
+  @Patch(':id')
+  @ResponseMessage('Update a deck')
+  async update(
+    @Param('id') id: string,
+    @Body() updateDeckDto: UpdateDeckDto,
+    @User() user: IUser,
+  ) {
+    const updateDeck = await this.decksService.update(id, updateDeckDto, user);
+    return updateDeck;
+  }
+
+  @Delete(':id')
+  @ResponseMessage('Delete a deck')
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.decksService.remove(id, user);
+  }
+}

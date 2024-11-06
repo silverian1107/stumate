@@ -24,7 +24,7 @@ import { IUser } from '../users/users.interface';
 @Controller('collections')
 export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
-  @Public()
+
   @Post()
   @ApiOperation({ summary: 'Create a new collection' })
   @ApiBody({ type: CreateCollectionDto })

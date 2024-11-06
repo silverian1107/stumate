@@ -14,8 +14,8 @@ import { User as UserModel, UserDocument } from './schema/user.schema';
 import { getHashPassword } from 'src/helpers/utils';
 import mongoose from 'mongoose';
 import {
-  ChangePasswordAutoDto,
-  CodeAutoDto,
+  ChangePasswordAuthDto,
+  CodeAuthDto,
   RegisterUserDto,
 } from 'src/auth/dto/create-auth.dto';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -23,6 +23,8 @@ import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
+import { DecksService } from '../decks/decks.service';
+import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 
 @Injectable()
 export class UsersService {
@@ -31,14 +33,16 @@ export class UsersService {
     private readonly userModel: SoftDeleteModel<UserDocument>,
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
+    private readonly decksService: DecksService,
+    private readonly quizTestsService: QuizTestsService,
   ) {}
 
   async updateLastLogin(userId: string): Promise<void> {
     await this.userModel.updateOne({ _id: userId }, { lastLogin: new Date() });
   }
 
-  isExistEmail = async (email: string) => {
-    const user = await this.userModel.findOne({ email });
+  isExistUsernameOrEmail = async (usernameOrEmail: string) => {
+    const user = await this.findUserByUsernameOrEmail(usernameOrEmail);
     if (user) return true;
     return false;
   };
@@ -73,9 +77,13 @@ export class UsersService {
 
   async findOne(id: string) {
     if (!mongoose.isValidObjectId(id)) {
-      return `Not found user`;
+      throw new BadRequestException('Invalid User ID');
     }
-    return await this.userModel.findOne({ _id: id }).select('-password');
+    const user = await this.userModel.findOne({ _id: id }).select('-password');
+    if (!user) {
+      throw new NotFoundException('Not found user');
+    }
+    return user;
   }
 
   async findUserByUsernameOrEmail(usernameOrEmail: string) {
@@ -84,17 +92,20 @@ export class UsersService {
     });
   }
 
-  handleVerifyActivationCode = async (codeAutoDto: CodeAutoDto) => {
+  handleVerifyActivationCode = async (codeAuthDto: CodeAuthDto) => {
     const user = await this.userModel.findOne({
-      email: codeAutoDto.email,
-      codeId: codeAutoDto.codeId,
+      _id: codeAuthDto.email,
+      codeId: codeAuthDto.codeId,
     });
 
     if (user) {
       //Check code expired
       const isCodeExpired = dayjs().isBefore(user.codeExpire);
       if (isCodeExpired) {
-        await this.userModel.updateOne({ _id: user._id }, { isActive: true });
+        await this.userModel.updateOne(
+          { email: codeAuthDto.email },
+          { isActive: true },
+        );
         return user;
       }
     }
@@ -141,10 +152,10 @@ export class UsersService {
     return { _id: user._id, email: user.email };
   };
 
-  handleVerifyPasswordResetCode = async (codeAutoDto: CodeAutoDto) => {
+  handleVerifyPasswordResetCode = async (codeAuthDto: CodeAuthDto) => {
     const user = await this.userModel.findOne({
-      email: codeAutoDto.email,
-      codeId: codeAutoDto.codeId,
+      _id: codeAuthDto.email,
+      codeId: codeAuthDto.codeId,
     });
     if (!user) {
       throw new BadRequestException('Account does not exist');
@@ -158,35 +169,33 @@ export class UsersService {
   };
 
   handleChangePassword = async (
-    changePasswordAutoDto: ChangePasswordAutoDto,
+    changePasswordAuthDto: ChangePasswordAuthDto,
   ) => {
-    if (
-      changePasswordAutoDto.confirmPassword !== changePasswordAutoDto.password
-    ) {
-      throw new BadRequestException(
-        'Password and Confirm Password does not match',
-      );
-    }
     const user = await this.userModel.findOne({
-      email: changePasswordAutoDto.email,
+      email: changePasswordAuthDto.email,
     });
     if (!user) {
       throw new BadRequestException('Account does not exist');
     }
-    const newPassword = await getHashPassword(changePasswordAutoDto.password);
+    const newPassword = await getHashPassword(changePasswordAuthDto.password);
     await user.updateOne({ password: newPassword });
     return user;
   };
 
   async register(registerUserDto: RegisterUserDto) {
     const { username, email, password } = registerUserDto;
-    //Check email already exists
-    if (await this.isExistEmail(email)) {
+    //Check username already exists
+    if (await this.isExistUsernameOrEmail(username)) {
       throw new BadRequestException(
-        `Email ${email} already exists. Please use another email`,
+        `Username '${username}' already exists. Please use another username`,
       );
     }
-
+    //Check email already exists
+    if (await this.isExistUsernameOrEmail(email)) {
+      throw new BadRequestException(
+        `Email '${email}' already exists. Please use another email`,
+      );
+    }
     //Hash password
     const hashPassword = await getHashPassword(password);
     const codeId = this.getCodeId();
@@ -210,13 +219,18 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto, @User() user: IUser) {
     const { username, email, password, role } = createUserDto;
-    //Check email already exists
-    if (await this.isExistEmail(email)) {
+    //Check username already exists
+    if (await this.isExistUsernameOrEmail(username)) {
       throw new BadRequestException(
-        `Email ${email} already exists. Please use another email`,
+        `Username '${username}' already exists. Please use another username`,
       );
     }
-
+    //Check email already exists
+    if (await this.isExistUsernameOrEmail(email)) {
+      throw new BadRequestException(
+        `Email '${email}' already exists. Please use another email`,
+      );
+    }
     //Hash password
     const hashPassword = await getHashPassword(password);
     const newUser = await this.userModel.create({
@@ -226,7 +240,7 @@ export class UsersService {
       role,
       createdBy: {
         _id: user._id,
-        email: user.email,
+        username: user.username,
       },
     });
     //Send email
@@ -239,12 +253,13 @@ export class UsersService {
   }
 
   async findAll(currentPage: number, pageSize: number, qs: string) {
-    const { filter, sort, population } = aqp(qs);
+    const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
 
+    currentPage = currentPage ? currentPage : 1;
     const limit = pageSize ? pageSize : 10;
-    const offset = (currentPage ? currentPage : 1 - 1) * limit;
+    const offset = (currentPage - 1) * limit;
 
     const totalItems = (await this.userModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / limit);
@@ -256,6 +271,7 @@ export class UsersService {
       .sort(sort as any)
       .select('-password')
       .populate(population)
+      .select(projection as any)
       .exec();
 
     return {
@@ -276,7 +292,7 @@ export class UsersService {
         ...updateUserDto,
         updatedBy: {
           _id: user._id,
-          email: user.email,
+          username: user.username,
         },
       },
     );
@@ -286,16 +302,31 @@ export class UsersService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid User ID');
     }
-    const existingUser = await this.findOne(id);
+    const existingUser = await this.userModel.findOne({ _id: id });
     if (!existingUser) {
       throw new NotFoundException('Not found user');
     }
+    //soft delete for all deck and flashcard
+    const decks = await this.decksService.findByUser(user);
+    await Promise.all(
+      decks.map((deck: any) =>
+        this.decksService.remove(deck._id.toString(), user),
+      ),
+    );
+    //soft delete for all quiz test, quiz question and quiz attempt
+    const quizTests = await this.quizTestsService.findByUser(user);
+    await Promise.all(
+      quizTests.map((quizTest: any) =>
+        this.quizTestsService.remove(quizTest._id.toString(), user),
+      ),
+    );
+    //soft delete for user
     await this.userModel.updateOne(
       { _id: id },
       {
         deletedBy: {
           _id: user._id,
-          email: user.email,
+          username: user.username,
         },
       },
     );

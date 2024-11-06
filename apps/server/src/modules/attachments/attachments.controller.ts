@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Param,
-  Delete,
   UseInterceptors,
   UploadedFile,
   ParseFilePipeBuilder,
@@ -13,6 +12,8 @@ import {
 import { AttachmentsService } from './attachments.service';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ResponseMessage } from 'src/decorator/customize';
+// import * as fs from 'fs';
+// import * as path from 'path';
 
 @Controller('attachments')
 export class AttachmentsController {
@@ -57,9 +58,18 @@ export class AttachmentsController {
     return this.attachmentsService.findOne(+id);
   }
 
-  @ResponseMessage('Delete files')
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.attachmentsService.remove(+id);
-  }
+  // @Public()
+  // @ResponseMessage('Delete single file')
+  // @Delete(':fileName')
+  // async deleteFile(@Param('fileName') fileName: string) {
+  //   try {
+  //     const rootPath = process.cwd();
+  //     const filePath = path.join(rootPath, 'public/attachments', fileName);
+  //     await fs.promises.unlink(filePath);
+  //     return { message: 'File deleted successfully.' };
+  //   } catch (err) {
+  //     console.error('Error deleting file:', err);
+  //     throw new Error('Failed to delete file');
+  //   }
+  // }
 }
