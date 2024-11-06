@@ -38,12 +38,13 @@ const SidebarItem = ({
   level = 0,
   expanded,
   active,
-  // isCreate,
+  type, // Add the type prop to SidebarItem (either 'Collection' or 'Note')
   isButton,
   onClick,
   onExpand,
 }: SidebarItemProps) => {
   const CheveronIcon = expanded ? ChevronDown : ChevronRight;
+
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
@@ -107,13 +108,39 @@ const SidebarItem = ({
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div
-            role="button"
-            // onClick={onCreate}
-            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary-100"
-          >
-            <Plus className="h-4 w-4 text-primary-900/50 hover:text-primary-900/80" />
-          </div>
+
+          {/* Conditional Plus Icon behavior based on type */}
+          {type === 'Collection' ? (
+            // If type === 'Collection', show dropdown for creating collection or note
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div
+                  role="button"
+                  className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary-100"
+                >
+                  <Plus className="h-4 w-4 text-primary-900/50 hover:text-primary-900/80" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-60" align="start" side="bottom">
+                <DropdownMenuItem onClick={() => {}}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Collection
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {}}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Note
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div
+              role="button"
+              onClick={() => {}}
+              className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary-100"
+            >
+              <Plus className="h-4 w-4 text-primary-900/50 hover:text-primary-900/80" />
+            </div>
+          )}
         </div>
       )}
     </Link>
