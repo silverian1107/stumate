@@ -66,7 +66,7 @@ export class CollectionsController {
   async findAll(
     @Query('currentPage') currentPage = '1',
     @Query('pageSize') pageSize = '10',
-    @Query('qs') qs: string,
+    @Query() qs: string,
   ) {
     return this.collectionsService.findAll(+currentPage, +pageSize, qs);
   }
@@ -100,7 +100,7 @@ export class CollectionsController {
     @Param('ownerId') ownerId: string,
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query('qs') qs: string,
+    @Query() qs: string,
   ) {
     return this.collectionsService.findByOwnerId(
       ownerId,
@@ -139,7 +139,7 @@ export class CollectionsController {
     @Param('ownerId') ownerId: string,
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query('qs') qs: string,
+    @Query() qs: string,
   ) {
     return this.collectionsService.findArchivedByOwnerId(
       ownerId,

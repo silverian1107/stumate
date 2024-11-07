@@ -5,16 +5,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateFlashcardDto } from './dto/create-flashcard.dto';
+import { CreateFlashcardDto, MarkFlashcardDTO } from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
-import { Flashcard, FlashcardDocument } from './schema/flashcard.schema';
+import { Flashcard, FlashcardDocument, State } from './schema/flashcard.schema';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { DecksService } from '../decks/decks.service';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class FlashcardsService {
@@ -24,6 +25,51 @@ export class FlashcardsService {
     @Inject(forwardRef(() => DecksService))
     private readonly decks: DecksService,
   ) {}
+
+  getIntervalDate = (interval: number, date?: number) => {
+    return dayjs(date ?? Date.now())
+      .add(interval, 'day')
+      .valueOf();
+  };
+
+  reviewFlashcard = (
+    flashcard: FlashcardDocument,
+    rating: number,
+    reviewDate?: number,
+  ) => {
+    flashcard.repetitions++;
+
+    let interval: number;
+    switch (flashcard.repetitions) {
+      case 1:
+        interval = 1;
+        break;
+      case 2:
+        interval = 6;
+        break;
+      default:
+        interval = Math.round(flashcard.interval * flashcard.easiness);
+    }
+
+    let easiness =
+      flashcard.easiness + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
+
+    if (easiness < 1.3) {
+      easiness = 1.3;
+    }
+
+    if (rating < 3) {
+      interval = 1;
+      flashcard.repetitions = 1;
+    } else {
+      flashcard.easiness = easiness;
+    }
+
+    flashcard.interval = interval;
+    flashcard.nextReview = this.getIntervalDate(interval, reviewDate);
+
+    return rating < 4;
+  };
 
   async create(
     deckId: string,
@@ -38,6 +84,10 @@ export class FlashcardsService {
       ...createFlashcardDto,
       deckId: deckId,
       userId: user._id,
+      easiness: 2.5,
+      interval: 0,
+      repetitions: 0,
+      nextReview: Date.now(),
       createdBy: {
         _id: user._id,
         username: user.username,
@@ -46,7 +96,105 @@ export class FlashcardsService {
     return newFlashcard;
   }
 
+  async handleStudyFlashcard(
+    deckId: string,
+    user: IUser,
+    sortBy: 'nextReview' | 'rating' = 'nextReview',
+  ) {
+    const deck = await this.decks.findOne(deckId);
+    if (!deck) {
+      throw new NotFoundException('Not found deck');
+    }
+
+    const flashcards = await this.flashcardModel.find({
+      userId: user._id,
+      deckId,
+    });
+
+    const dueFlashcards = flashcards.filter(
+      (flashcard) => flashcard.nextReview <= Date.now(),
+    );
+
+    const sortedFlashcards = dueFlashcards.sort((a, b) => {
+      if (sortBy === 'nextReview') {
+        return a.nextReview - b.nextReview;
+      } else {
+        return a.rating - b.rating;
+      }
+    });
+
+    return {
+      flashcards: sortedFlashcards.length > 0 ? sortedFlashcards : [],
+      message:
+        sortedFlashcards.length > 0 ? '' : 'No flashcards due for review',
+    };
+  }
+
+  async handleMarkFlashcard(
+    id: string,
+    markFlashcardDTO: MarkFlashcardDTO,
+    user: IUser,
+  ) {
+    const flashcard = await this.flashcardModel.findOne({
+      _id: id,
+      userId: user._id,
+    });
+    if (!flashcard) {
+      throw new NotFoundException('Flashcard not found');
+    }
+    const isDueForReview = this.reviewFlashcard(
+      flashcard,
+      markFlashcardDTO.rating,
+      markFlashcardDTO.reviewDate,
+    );
+    if (markFlashcardDTO.rating < 3) {
+      flashcard.state = State.Relearning;
+    } else if (flashcard.state === 0 || flashcard.state === 1) {
+      flashcard.state = State.Review;
+    }
+    await flashcard.save();
+    return {
+      flashcard,
+      isDueForReview,
+    };
+  }
+
+  async handleDeckProgress(deckId: string, user: IUser) {
+    const deck = await this.decks.findOne(deckId);
+    if (!deck) {
+      throw new NotFoundException('Deck not found');
+    }
+
+    const flashcards = await this.flashcardModel.find({
+      userId: user._id,
+      deckId,
+    });
+    const totalCards = flashcards.length;
+    const reviewedCards = flashcards.filter(
+      (flashcard) =>
+        flashcard.state === State.Review || flashcard.state === State.Learning,
+    ).length;
+    const dueToday = flashcards.filter(
+      (flashcard) => flashcard.nextReview <= new Date().getTime(),
+    ).length;
+    const progress = totalCards > 0 ? (reviewedCards / totalCards) * 100 : 0;
+
+    deck.studyStatus = {
+      totalCards,
+      reviewedCards,
+      dueToday,
+      progress,
+      lastStudied: new Date(),
+    };
+    await deck.save();
+    return deck;
+  }
+
   async findByUserAndDeckId(deckId: string, user: IUser) {
+    const deck = await this.decks.findOne(deckId);
+    if (!deck) {
+      throw new NotFoundException('Not found deck');
+    }
     return await this.flashcardModel.find({ userId: user._id, deckId });
   }
 
@@ -67,6 +215,7 @@ export class FlashcardsService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
+      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();

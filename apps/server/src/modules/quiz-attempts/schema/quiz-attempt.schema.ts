@@ -28,7 +28,7 @@ export class QuizAttempt {
   })
   answers: {
     quizQuestionId: mongoose.Schema.Types.ObjectId;
-    answer: string;
+    answer: string[];
     isCorrect: boolean;
   }[];
 

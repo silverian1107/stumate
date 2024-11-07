@@ -21,7 +21,7 @@ export class QuizQuestionsController {
   @Post()
   @ResponseMessage('Create a new quiz question')
   async create(
-    @Param() quizTestId: string,
+    @Param('quizTestId') quizTestId: string,
     @Body() createQuizQuestionDto: CreateQuizQuestionDto,
     @User() user: IUser,
   ) {
@@ -38,7 +38,7 @@ export class QuizQuestionsController {
 
   @Post('all')
   @ResponseMessage('Get quiz question by quiz test')
-  getByQuizTestId(@Param() quizTestId: string) {
+  getByQuizTestId(@Param('quizTestId') quizTestId: string) {
     return this.quizQuestionsService.findByQuizTestId(quizTestId);
   }
 
@@ -54,7 +54,10 @@ export class QuizQuestionsController {
 
   @Get(':id')
   @ResponseMessage('Fetch quiz question by id')
-  async findOne(@Param() quizTestId: string, @Param('id') id: string) {
+  async findOne(
+    @Param('quizTestId') quizTestId: string,
+    @Param('id') id: string,
+  ) {
     const foundQuizTest = await this.quizQuestionsService.findOne(
       quizTestId,
       id,
@@ -65,7 +68,7 @@ export class QuizQuestionsController {
   @Patch(':id')
   @ResponseMessage('Update a quiz question')
   async update(
-    @Param() quizTestId: string,
+    @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
     @Body() updateQuizQuestionDto: UpdateQuizQuestionDto,
     @User() user: IUser,
@@ -82,7 +85,7 @@ export class QuizQuestionsController {
   @Delete(':id')
   @ResponseMessage('Delete a quiz question')
   remove(
-    @Param() quizTestId: string,
+    @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
     @User() user: IUser,
   ) {

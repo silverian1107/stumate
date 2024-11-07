@@ -4,6 +4,7 @@ import { QuizAttemptsController } from './quiz-attempts.controller';
 import { QuizTestsModule } from '../quiz-tests/quiz-tests.module';
 import { QuizAttempt, QuizAttemptSchema } from './schema/quiz-attempt.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { QuizQuestionsModule } from '../quiz-questions/quiz-questions.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
     ]),
     forwardRef(() => QuizTestsModule),
+    forwardRef(() => QuizQuestionsModule),
   ],
   controllers: [QuizAttemptsController],
   providers: [QuizAttemptsService],

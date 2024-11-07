@@ -78,6 +78,7 @@ export class QuizTestsService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
+      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();

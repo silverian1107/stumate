@@ -17,8 +17,18 @@ export class Deck {
   @Prop()
   tag: string[];
 
-  @Prop({ type: Object })
+  @Prop({
+    type: Object,
+    default: {
+      totalCards: 0,
+      reviewedCards: 0,
+      dueToday: 0,
+      progress: 0,
+    },
+  })
   studyStatus: {
+    totalCards: number;
+    reviewedCards: number;
     lastStudied: Date;
     dueToday: number;
     progress: number;

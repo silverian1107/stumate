@@ -19,18 +19,20 @@ export class QuizAttemptsController {
 
   @Post('start')
   @ResponseMessage('Send request to start a quiz')
-  async startQuiz(@Param() quizTestId: string, @User() user: IUser) {
-    return await this.quizAttemptsService.handleStartQuizAttempt(
-      quizTestId,
-      user,
-    );
+  async startQuiz(
+    @Param('quizTestId') quizTestId: string,
+    @User() user: IUser,
+  ) {
+    const newQuizAttempt =
+      await this.quizAttemptsService.handleStartQuizAttempt(quizTestId, user);
+    return newQuizAttempt;
   }
 
   @Post(':id/submit')
   @ResponseMessage('Send request to submit a quiz')
   async submitQuiz(
-    @Param() quizTestId: string,
-    @Param() id: string,
+    @Param('quizTestId') quizTestId: string,
+    @Param('id') id: string,
     @Body() userAnswersDto: UserAnswersDto,
     @User() user: IUser,
   ) {
@@ -44,7 +46,10 @@ export class QuizAttemptsController {
 
   @Post('all')
   @ResponseMessage('Get quiz attempt by user')
-  getByUserAndQuizTestId(@Param() quizTestId: string, @User() user: IUser) {
+  getByUserAndQuizTestId(
+    @Param('quizTestId') quizTestId: string,
+    @User() user: IUser,
+  ) {
     return this.quizAttemptsService.findByUserAndQuizTestId(quizTestId, user);
   }
 
@@ -60,7 +65,10 @@ export class QuizAttemptsController {
 
   @Get(':id')
   @ResponseMessage('Fetch quiz question by id')
-  async findOne(@Param() quizTestId: string, @Param('id') id: string) {
+  async findOne(
+    @Param('quizTestId') quizTestId: string,
+    @Param('id') id: string,
+  ) {
     const foundQuizAttempt = await this.quizAttemptsService.findOne(
       quizTestId,
       id,
@@ -71,7 +79,7 @@ export class QuizAttemptsController {
   @Patch(':id/save-progress')
   @ResponseMessage('Save the progress of a quiz')
   async saveQuizAttempt(
-    @Param() quizTestId: string,
+    @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
     @Body() userAnswersDto: UserAnswersDto,
     @User() user: IUser,
@@ -92,7 +100,7 @@ export class QuizAttemptsController {
   @Delete(':id')
   @ResponseMessage('Delete a quiz question')
   remove(
-    @Param() quizTestId: string,
+    @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
     @User() user: IUser,
   ) {

@@ -84,6 +84,7 @@ export class NotesService {
         .sort(sort as any)
         .skip(skip)
         .limit(limit)
+        .select('-ownerId')
         .populate('childrenDocs')
         .lean<Note[]>()
         .exec();

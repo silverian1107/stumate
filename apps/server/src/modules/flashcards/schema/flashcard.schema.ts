@@ -3,6 +3,21 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 export type FlashcardDocument = HydratedDocument<Flashcard>;
 
+export enum Rating {
+  Manual = 0,
+  Again = 1,
+  Hard = 2,
+  Good = 3,
+  Easy = 4,
+}
+
+export enum State {
+  New = 0,
+  Learning = 1,
+  Review = 2,
+  Relearning = 3,
+}
+
 @Schema({ timestamps: true })
 export class Flashcard {
   @Prop({ required: true })
@@ -20,15 +35,23 @@ export class Flashcard {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Deck', require: true })
   deckId: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: Object })
-  spacedRepetition: {
-    lastReviewed: Date;
-    nextReview: Date;
-    reviewCount: number;
-    easeFactor: number;
-    interval: number;
-    status: string;
-  };
+  @Prop({ default: 0 })
+  rating: Rating;
+
+  @Prop({ default: 0 })
+  state: State;
+
+  @Prop()
+  easiness: number;
+
+  @Prop()
+  interval: number;
+
+  @Prop()
+  repetitions: number;
+
+  @Prop()
+  nextReview: number;
 
   @Prop()
   createdAt: Date;

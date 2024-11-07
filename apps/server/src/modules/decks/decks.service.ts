@@ -25,20 +25,14 @@ export class DecksService {
     private readonly flashcardsService: FlashcardsService,
   ) {}
 
-  async findDeckByName(name: string) {
-    return await this.deckModel.findOne({ name });
+  async findDeckByName(name: string, @User() user: IUser) {
+    return await this.deckModel.findOne({ name, userId: user._id });
   }
-
-  isExistName = async (name: string) => {
-    const deck = await this.findDeckByName(name);
-    if (deck) return true;
-    return false;
-  };
 
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
     const { name, description } = createDeckDto;
     //Check name already exists
-    if (await this.isExistName(name)) {
+    if (await this.findDeckByName(name, user)) {
       throw new BadRequestException(`Name '${name}' already exists`);
     }
     //Create a new deck
@@ -75,6 +69,7 @@ export class DecksService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
+      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();

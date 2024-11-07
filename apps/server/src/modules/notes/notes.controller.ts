@@ -60,7 +60,7 @@ export class NotesController {
   async findAll(
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query('qs') qs: string,
+    @Query() qs: string,
   ) {
     return this.notesService.findAll(+currentPage, +pageSize, qs);
   }
@@ -95,7 +95,7 @@ export class NotesController {
     @Param('ownerId') ownerId: string,
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query('qs') qs: string,
+    @Query() qs: string,
   ) {
     return this.notesService.findByOwnerId(
       ownerId,
