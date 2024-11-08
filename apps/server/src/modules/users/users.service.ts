@@ -25,6 +25,7 @@ import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { DecksService } from '../decks/decks.service';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
+import { TagsService } from '../tags/tags.service';
 
 @Injectable()
 export class UsersService {
@@ -35,6 +36,7 @@ export class UsersService {
     private readonly configService: ConfigService,
     private readonly decksService: DecksService,
     private readonly quizTestsService: QuizTestsService,
+    private readonly tagsService: TagsService,
   ) {}
 
   async updateLastLogin(userId: string): Promise<void> {
@@ -305,6 +307,11 @@ export class UsersService {
     if (!existingUser) {
       throw new NotFoundException('Not found user');
     }
+    //soft delete for all tag
+    const tags = await this.tagsService.findAll(user);
+    await Promise.all(
+      tags.map((tag: any) => this.tagsService.remove(tag._id.toString(), user)),
+    );
     //soft delete for all deck and flashcard
     const decks = await this.decksService.findByUser(user);
     await Promise.all(

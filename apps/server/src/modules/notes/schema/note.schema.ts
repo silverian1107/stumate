@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
 
 export type NoteDocument = Note & Document;
 
@@ -72,6 +72,12 @@ export class Note {
 
   @Prop({ default: [] })
   attachment: string[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
+  tags: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note);

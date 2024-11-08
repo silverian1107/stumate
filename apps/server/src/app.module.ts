@@ -17,6 +17,8 @@ import { FlashcardsModule } from './modules/flashcards/flashcards.module';
 import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
 import { QuizAttemptsModule } from './modules/quiz-attempts/quiz-attempts.module';
 import { QuizTestsModule } from './modules/quiz-tests/quiz-tests.module';
+import { TagsModule } from './modules/tags/tags.module';
+import { SharedResourcesModule } from './modules/shared-resources/shared-resources.module';
 
 @Module({
   imports: [
@@ -71,6 +73,8 @@ import { QuizTestsModule } from './modules/quiz-tests/quiz-tests.module';
     QuizQuestionsModule,
     QuizAttemptsModule,
     QuizTestsModule,
+    TagsModule,
+    SharedResourcesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
 
 export type CollectionDocument = Collection & Document;
 
@@ -51,6 +51,12 @@ export class Collection {
 
   @Prop({ default: false })
   isDeleted: boolean;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
+  tags: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
 }
 
 export const CollectionSchema = SchemaFactory.createForClass(Collection);
