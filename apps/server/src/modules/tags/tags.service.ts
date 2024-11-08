@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Tag, TagDocument } from './schema/tag.schema';
@@ -6,10 +10,16 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import mongoose from 'mongoose';
-import { Collection, CollectionDocument } from '../collections/schema/collection.schema';
+import {
+  Collection,
+  CollectionDocument,
+} from '../collections/schema/collection.schema';
 import { Note, NoteDocument } from '../notes/schema/note.schema';
 import { Deck, DeckDocument } from '../decks/schema/deck.schema';
-import { QuizTest, QuizTestDocument } from '../quiz-tests/schema/quiz-test.schema';
+import {
+  QuizTest,
+  QuizTestDocument,
+} from '../quiz-tests/schema/quiz-test.schema';
 
 @Injectable()
 export class TagsService {

@@ -1,8 +1,18 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Collection, CollectionDocument } from '../collections/schema/collection.schema';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  Collection,
+  CollectionDocument,
+} from '../collections/schema/collection.schema';
 import { Note, NoteDocument } from '../notes/schema/note.schema';
 import { Deck, DeckDocument } from '../decks/schema/deck.schema';
-import { QuizTest, QuizTestDocument } from '../quiz-tests/schema/quiz-test.schema';
+import {
+  QuizTest,
+  QuizTestDocument,
+} from '../quiz-tests/schema/quiz-test.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/decorator/customize';

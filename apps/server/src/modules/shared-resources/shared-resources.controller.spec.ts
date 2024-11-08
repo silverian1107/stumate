@@ -11,7 +11,9 @@ describe('SharedResourcesController', () => {
       providers: [SharedResourcesService],
     }).compile();
 
-    controller = module.get<SharedResourcesController>(SharedResourcesController);
+    controller = module.get<SharedResourcesController>(
+      SharedResourcesController,
+    );
   });
 
   it('should be defined', () => {
