@@ -35,22 +35,22 @@ export class Flashcard {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Deck', require: true })
   deckId: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ default: 0 })
+  @Prop({ default: Rating.Manual })
   rating: Rating;
 
-  @Prop({ default: 0 })
+  @Prop({ default: State.New })
   state: State;
 
-  @Prop()
+  @Prop({ default: 2.5 })
   easiness: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   interval: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   repetitions: number;
 
-  @Prop()
+  @Prop({ default: Date.now() })
   nextReview: number;
 
   @Prop()

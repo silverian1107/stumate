@@ -5,7 +5,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateFlashcardDto, MarkFlashcardDTO } from './dto/create-flashcard.dto';
+import {
+  CreateFlashcardDto,
+  MarkFlashcardDTO,
+} from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
@@ -37,37 +40,29 @@ export class FlashcardsService {
     rating: number,
     reviewDate?: number,
   ) => {
-    flashcard.repetitions++;
-
     let interval: number;
-    switch (flashcard.repetitions) {
-      case 1:
+    if (rating >= 3) {
+      if (flashcard.repetitions === 0) {
         interval = 1;
-        break;
-      case 2:
+      } else if (flashcard.repetitions === 1) {
         interval = 6;
-        break;
-      default:
+      } else {
         interval = Math.round(flashcard.interval * flashcard.easiness);
-    }
-
-    let easiness =
-      flashcard.easiness + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
-
-    if (easiness < 1.3) {
-      easiness = 1.3;
-    }
-
-    if (rating < 3) {
-      interval = 1;
-      flashcard.repetitions = 1;
-    } else {
+      }
+      flashcard.repetitions++;
+      let easiness =
+        flashcard.easiness +
+        (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
+      if (easiness < 1.3) {
+        easiness = 1.3;
+      }
       flashcard.easiness = easiness;
+    } else {
+      flashcard.repetitions = 0;
+      interval = 1;
     }
-
     flashcard.interval = interval;
     flashcard.nextReview = this.getIntervalDate(interval, reviewDate);
-
     return rating < 4;
   };
 
@@ -84,10 +79,6 @@ export class FlashcardsService {
       ...createFlashcardDto,
       deckId: deckId,
       userId: user._id,
-      easiness: 2.5,
-      interval: 0,
-      repetitions: 0,
-      nextReview: Date.now(),
       createdBy: {
         _id: user._id,
         username: user.username,
@@ -96,27 +87,29 @@ export class FlashcardsService {
     return newFlashcard;
   }
 
-  async handleStudyFlashcard(
-    deckId: string,
-    user: IUser,
-    sortBy: 'nextReview' | 'rating' = 'nextReview',
-  ) {
+  async handleStudyFlashcard(deckId: string, user: IUser) {
     const deck = await this.decks.findOne(deckId);
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
-
     const flashcards = await this.flashcardModel.find({
       userId: user._id,
       deckId,
     });
-
+    await Promise.all(
+      flashcards.map(async (flashcard) => {
+        if (flashcard.state === State.New) {
+          flashcard.state = State.Learning;
+          flashcard.save();
+        }
+      }),
+    );
     const dueFlashcards = flashcards.filter(
       (flashcard) => flashcard.nextReview <= Date.now(),
     );
 
     const sortedFlashcards = dueFlashcards.sort((a, b) => {
-      if (sortBy === 'nextReview') {
+      if (a.nextReview !== b.nextReview) {
         return a.nextReview - b.nextReview;
       } else {
         return a.rating - b.rating;
@@ -125,18 +118,19 @@ export class FlashcardsService {
 
     return {
       flashcards: sortedFlashcards.length > 0 ? sortedFlashcards : [],
-      message:
-        sortedFlashcards.length > 0 ? '' : 'No flashcards due for review',
+      message: sortedFlashcards.length > 0 ? '' : 'No flashcard due for review',
     };
   }
 
   async handleMarkFlashcard(
+    deckId: string,
     id: string,
     markFlashcardDTO: MarkFlashcardDTO,
     user: IUser,
   ) {
     const flashcard = await this.flashcardModel.findOne({
       _id: id,
+      deckId,
       userId: user._id,
     });
     if (!flashcard) {
@@ -171,11 +165,10 @@ export class FlashcardsService {
     });
     const totalCards = flashcards.length;
     const reviewedCards = flashcards.filter(
-      (flashcard) =>
-        flashcard.state === State.Review || flashcard.state === State.Learning,
+      (flashcard) => flashcard.state === State.Review,
     ).length;
     const dueToday = flashcards.filter(
-      (flashcard) => flashcard.nextReview <= new Date().getTime(),
+      (flashcard) => flashcard.nextReview <= Date.now(),
     ).length;
     const progress = totalCards > 0 ? (reviewedCards / totalCards) * 100 : 0;
 

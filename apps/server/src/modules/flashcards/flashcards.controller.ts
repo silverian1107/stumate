@@ -9,7 +9,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { FlashcardsService } from './flashcards.service';
-import { CreateFlashcardDto, MarkFlashcardDTO } from './dto/create-flashcard.dto';
+import {
+  CreateFlashcardDto,
+  MarkFlashcardDTO,
+} from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
@@ -45,11 +48,13 @@ export class FlashcardsController {
   @Post(':id/mark')
   @ResponseMessage('Mark a flashcard')
   async markFlashcard(
+    @Param('deckId') deckId: string,
     @Param('id') id: string,
     @Body() markFlashcardDTO: MarkFlashcardDTO,
     @User() user: IUser,
   ) {
     return await this.flashcardsService.handleMarkFlashcard(
+      deckId,
       id,
       markFlashcardDTO,
       user,
