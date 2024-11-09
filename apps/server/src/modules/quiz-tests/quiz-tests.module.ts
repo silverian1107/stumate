@@ -1,10 +1,16 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { QuizTestsService } from './quiz-tests.service';
 import { QuizTestsController } from './quiz-tests.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuizTest, QuizTestSchema } from './schema/quiz-test.schema';
-import { QuizQuestion, QuizQuestionSchema } from '../quiz-questions/schema/quiz-question.schema';
-import { QuizAttempt, QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
+import {
+  QuizQuestion,
+  QuizQuestionSchema,
+} from '../quiz-questions/schema/quiz-question.schema';
+import {
+  QuizAttempt,
+  QuizAttemptSchema,
+} from '../quiz-attempts/schema/quiz-attempt.schema';
 
 @Module({
   imports: [

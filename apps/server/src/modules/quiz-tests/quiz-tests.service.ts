@@ -1,7 +1,5 @@
 import {
   BadRequestException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,8 +12,14 @@ import { QuizTest, QuizTestDocument } from './schema/quiz-test.schema';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { QuizAttempt, QuizAttemptDocument } from '../quiz-attempts/schema/quiz-attempt.schema';
-import { QuizQuestion, QuizQuestionDocument } from '../quiz-questions/schema/quiz-question.schema';
+import {
+  QuizAttempt,
+  QuizAttemptDocument,
+} from '../quiz-attempts/schema/quiz-attempt.schema';
+import {
+  QuizQuestion,
+  QuizQuestionDocument,
+} from '../quiz-questions/schema/quiz-question.schema';
 
 @Injectable()
 export class QuizTestsService {

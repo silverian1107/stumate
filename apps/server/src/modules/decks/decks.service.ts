@@ -12,7 +12,10 @@ import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { Flashcard, FlashcardDocument } from '../flashcards/schema/flashcard.schema';
+import {
+  Flashcard,
+  FlashcardDocument,
+} from '../flashcards/schema/flashcard.schema';
 
 @Injectable()
 export class DecksService {

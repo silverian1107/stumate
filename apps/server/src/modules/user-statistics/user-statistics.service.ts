@@ -5,7 +5,7 @@ import { UpdateUserStatisticDto } from './dto/update-user-statistic.dto';
 @Injectable()
 export class UserStatisticsService {
   create(createUserStatisticDto: CreateUserStatisticDto) {
-    return 'This action adds a new userStatistic';
+    return createUserStatisticDto;
   }
 
   findAll() {
@@ -17,7 +17,7 @@ export class UserStatisticsService {
   }
 
   update(id: number, updateUserStatisticDto: UpdateUserStatisticDto) {
-    return `This action updates a #${id} userStatistic`;
+    return updateUserStatisticDto;
   }
 
   remove(id: number) {
