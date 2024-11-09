@@ -1,11 +1,11 @@
-import { CollectionEndpoint } from '@/endpoints/collections-client';
-import { NoteEndpoint } from '@/endpoints/notes-client';
+import { CollectionApi } from '@/endpoints/collection-api';
+import { NoteApi } from '@/endpoints/note-api';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { FileText, FolderOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import SidebarItem from './SidebarItem'; // Assuming this component exists
+import SidebarItem from './SidebarItem';
 
 // Define types
 interface Collection {
@@ -45,17 +45,17 @@ const DocumentList = ({
     queryKey: ['getDocuments', parentDocumentId, type],
     queryFn: async () => {
       if (!parentDocumentId && type === 'Collection') {
-        const response = await CollectionEndpoint.findByOwner({
+        const response = await CollectionApi.findByOwner({
           currentPage: 1,
           pageSize: 10,
           qs: '',
         });
         return response.data.data.result;
       } else if (parentDocumentId && type === 'Collection') {
-        const response = await CollectionEndpoint.findById(parentDocumentId);
+        const response = await CollectionApi.findById(parentDocumentId);
         return response.data.data.childrenDocs || [];
       } else if (parentDocumentId && type === 'Note') {
-        const response = await NoteEndpoint.findById(parentDocumentId);
+        const response = await NoteApi.findById(parentDocumentId);
         return response.data.data.childrenDocs || [];
       }
       return [];
