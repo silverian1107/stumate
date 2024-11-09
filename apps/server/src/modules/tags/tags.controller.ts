@@ -73,12 +73,12 @@ export class TagsController {
     @Body() createTagDto: CreateTagDto,
     @User() user: IUser,
   ) {
-    const updateDeck = await this.tagsService.update(id, createTagDto, user);
-    return updateDeck;
+    const updateTag = await this.tagsService.update(id, createTagDto, user);
+    return updateTag;
   }
 
   @Delete(':id')
-  @ResponseMessage('Delete a deck')
+  @ResponseMessage('Delete a tag')
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.tagsService.remove(id, user);
   }

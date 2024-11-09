@@ -39,6 +39,24 @@ export class FlashcardsController {
     };
   }
 
+  @Post('multiple')
+  @ResponseMessage('Create multiple flashcards by deckId')
+  async createMultiple(
+    @Param('deckId') deckId: string,
+    @Body() createFlashcardDtos: CreateFlashcardDto[],
+    @User() user: IUser,
+  ) {
+    const newFlashcards = await this.flashcardsService.createMultiple(
+      deckId,
+      createFlashcardDtos,
+      user,
+    );
+    return newFlashcards.map((flashcard: any) => ({
+      _id: flashcard._id,
+      createdAt: flashcard.createdAt,
+    }));
+  }
+
   @Post('study')
   @ResponseMessage('Get flashcard by user and deck')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {

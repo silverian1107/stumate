@@ -25,7 +25,7 @@ export class QuizQuestionsService {
     @InjectModel(QuizQuestion.name)
     private readonly quizQuestionModel: SoftDeleteModel<QuizQuestionDocument>,
     @Inject(forwardRef(() => QuizTestsService))
-    private readonly quizTestModel: QuizTestsService,
+    private readonly quizTestService: QuizTestsService,
   ) {}
 
   async create(
@@ -33,8 +33,17 @@ export class QuizQuestionsService {
     createQuizQuestionDto: CreateQuizQuestionDto,
     @User() user: IUser,
   ) {
-    if (!(await this.quizTestModel.findOne(quizTestId))) {
+    const quizTest = await this.quizTestService.findOne(quizTestId);
+    if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
+    }
+    const currentNumberOfQuestion = await this.quizQuestionModel.countDocuments(
+      { quizTestId },
+    );
+    if (currentNumberOfQuestion >= quizTest.numberOfQuestion) {
+      throw new BadRequestException(
+        'Maximum number of questions has been reached',
+      );
     }
     //Create a new quiz question
     const newQuizQuestion = await this.quizQuestionModel.create({
@@ -46,6 +55,43 @@ export class QuizQuestionsService {
       },
     });
     return newQuizQuestion;
+  }
+
+  async createMultiple(
+    quizTestId: string,
+    createQuizQuestionDtos: CreateQuizQuestionDto[],
+    user: IUser,
+  ) {
+    const quizTest = await this.quizTestService.findOne(quizTestId);
+    if (!quizTest) {
+      throw new NotFoundException('Not found quiz test');
+    }
+    const currentNumberOfQuestion = await this.quizQuestionModel.countDocuments(
+      { quizTestId },
+    );
+    const newNumberOfQuestion = createQuizQuestionDtos.length;
+    if (
+      currentNumberOfQuestion + newNumberOfQuestion >
+      quizTest.numberOfQuestion
+    ) {
+      throw new BadRequestException(
+        'Maximum number of questions has been reached',
+      );
+    }
+    const questionsToCreate = createQuizQuestionDtos.map(
+      (createQuizQuestionDto) => ({
+        ...createQuizQuestionDto,
+        quizTestId: quizTestId,
+        createdBy: {
+          _id: user._id,
+          username: user.username,
+        },
+      }),
+    );
+    const newQuizQuestions =
+      await this.quizQuestionModel.insertMany(questionsToCreate);
+
+    return newQuizQuestions;
   }
 
   async findByQuizTestId(quizTestId: string) {
@@ -121,7 +167,7 @@ export class QuizQuestionsService {
   }
 
   async remove(quizTestId: string, id: string, @User() user: IUser) {
-    if (!(await this.quizTestModel.findOne(quizTestId))) {
+    if (!(await this.quizTestService.findOne(quizTestId))) {
       throw new NotFoundException('Not found quiz test');
     }
     const quizQuestion = await this.quizQuestionModel.findOne({

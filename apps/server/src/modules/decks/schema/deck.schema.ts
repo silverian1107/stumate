@@ -14,9 +14,6 @@ export class Deck {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true })
   userId: mongoose.Schema.Types.ObjectId;
 
-  @Prop()
-  tag: string[];
-
   @Prop({
     type: Object,
     default: {

@@ -36,6 +36,24 @@ export class QuizQuestionsController {
     };
   }
 
+  @Post('multiple')
+  @ResponseMessage('Create multiple quiz questions')
+  async createMultiple(
+    @Param('quizTestId') quizTestId: string,
+    @Body() createQuizQuestionDtos: CreateQuizQuestionDto[],
+    @User() user: IUser,
+  ) {
+    const newQuizQuestions = await this.quizQuestionsService.createMultiple(
+      quizTestId,
+      createQuizQuestionDtos,
+      user,
+    );
+    return newQuizQuestions.map((question) => ({
+      _id: question?._id,
+      createdAt: question?.createdAt,
+    }));
+  }
+
   @Post('all')
   @ResponseMessage('Get quiz question by quiz test')
   getByQuizTestId(@Param('quizTestId') quizTestId: string) {

@@ -57,6 +57,37 @@ export class QuizTestsService {
     return newQuizTest;
   }
 
+  // async createMultiple(createQuizTestDtos: CreateQuizTestDto[], user: IUser) {
+  //   const titleSet = new Set();
+  //   createQuizTestDtos.forEach((createQuizTestDto) => {
+  //     if (titleSet.has(createQuizTestDto.title)) {
+  //       throw new BadRequestException(
+  //         `Title '${createQuizTestDto.title}' is duplicated`,
+  //       );
+  //     }
+  //     titleSet.add(createQuizTestDto.title);
+  //   });
+  //   const newQuizTests = await Promise.all(
+  //     createQuizTestDtos.map(async (createQuizTestDto) => {
+  //       if (await this.isExistTitle(createQuizTestDto.title)) {
+  //         throw new BadRequestException(
+  //           `Title '${createQuizTestDto.title}' already exists`,
+  //         );
+  //       }
+  //       return this.quizTestModel.create({
+  //         ...createQuizTestDto,
+  //         userId: user._id,
+  //         createdBy: {
+  //           _id: user._id,
+  //           username: user.username,
+  //         },
+  //       });
+  //     }),
+  //   );
+
+  //   return newQuizTests;
+  // }
+
   async findByUser(user: IUser) {
     return await this.quizTestModel.find({ userId: user._id });
   }

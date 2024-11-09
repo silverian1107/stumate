@@ -164,6 +164,12 @@ export class TagsService {
     if (!tag) {
       throw new NotFoundException('Not found tag');
     }
+    await Promise.all([
+      this.collectionModel.updateMany({ tags: id }, { $pull: { tags: id } }),
+      this.noteModel.updateMany({ tags: id }, { $pull: { tags: id } }),
+      this.deckModel.updateMany({ tags: id }, { $pull: { tags: id } }),
+      this.quizTestModel.updateMany({ tags: id }, { $pull: { tags: id } }),
+    ]);
     //soft delete for tag
     await this.tagModel.updateOne(
       { _id: id },

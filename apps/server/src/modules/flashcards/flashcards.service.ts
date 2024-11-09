@@ -29,6 +29,27 @@ export class FlashcardsService {
     private readonly decks: DecksService,
   ) {}
 
+  async createMultiple(
+    deckId: string,
+    createFlashcardDtos: CreateFlashcardDto[],
+    user: IUser,
+  ) {
+    if (!(await this.decks.findOne(deckId))) {
+      throw new NotFoundException('Deck not found');
+    }
+    const flashcards = createFlashcardDtos.map((createFlashcardDto) => ({
+      ...createFlashcardDto,
+      deckId: deckId,
+      userId: user._id,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    }));
+    const newFlashcards = await this.flashcardModel.insertMany(flashcards);
+    return newFlashcards;
+  }
+
   getIntervalDate = (interval: number, date?: number) => {
     return dayjs(date ?? Date.now())
       .add(interval, 'day')
