@@ -85,10 +85,10 @@ const Sidebar = ({}: SidebarProps) => {
           <SidebarItem isButton label="Inbox" icon={Inbox} />
           <SidebarItem
             isButton
-            label="Knowledge Base"
+            label="Resources"
             icon={Sparkle}
-            active={pathname === '/apps/knowledge-base'}
-            href="/apps/knowledge-base"
+            active={pathname.includes('resources')}
+            href="/apps/resources/decks"
           />
         </div>
 
