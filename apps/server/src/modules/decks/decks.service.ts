@@ -1,7 +1,5 @@
 import {
   BadRequestException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,20 +7,20 @@ import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
 import { Deck, DeckDocument } from './schema/deck.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
-import { FlashcardsService } from '../flashcards/flashcards.service';
+import { SoftDeleteModel } from 'mongoose-delete';
+import { Flashcard, FlashcardDocument } from '../flashcards/schema/flashcard.schema';
 
 @Injectable()
 export class DecksService {
   constructor(
     @InjectModel(Deck.name)
     private readonly deckModel: SoftDeleteModel<DeckDocument>,
-    @Inject(forwardRef(() => FlashcardsService))
-    private readonly flashcardsService: FlashcardsService,
+    @InjectModel(Flashcard.name)
+    private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
   ) {}
 
   async findDeckByName(name: string, @User() user: IUser) {
@@ -118,25 +116,8 @@ export class DecksService {
       throw new NotFoundException('Not found deck');
     }
     //soft delete for all flashcard
-    const flashcards = await this.flashcardsService.findByUserAndDeckId(
-      id,
-      user,
-    );
-    await Promise.all(
-      flashcards.map((flashcard: any) =>
-        this.flashcardsService.remove(id, flashcard._id.toString(), user),
-      ),
-    );
+    await this.flashcardModel.delete({ deckId: id }, user._id);
     //soft delete for deck
-    await this.deckModel.updateOne(
-      { _id: id },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.deckModel.softDelete({ _id: id });
+    return this.deckModel.delete({ _id: id }, user._id);
   }
 }

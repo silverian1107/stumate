@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { UsersModule } from './modules/users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
@@ -19,6 +18,8 @@ import { QuizAttemptsModule } from './modules/quiz-attempts/quiz-attempts.module
 import { QuizTestsModule } from './modules/quiz-tests/quiz-tests.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { SharedResourcesModule } from './modules/shared-resources/shared-resources.module';
+import { UserStatisticsModule } from './modules/user-statistics/user-statistics.module';
+import MongooseDelete from 'mongoose-delete';
 
 @Module({
   imports: [
@@ -31,7 +32,12 @@ import { SharedResourcesModule } from './modules/shared-resources/shared-resourc
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
         connectionFactory: (connection) => {
-          connection.plugin(softDeletePlugin);
+          connection.plugin(MongooseDelete, {
+            overrideMethods: 'all',
+            deletedAt: true,
+            deletedBy: true,
+            deletedByType: String,
+          });
           return connection;
         },
       }),
@@ -75,6 +81,7 @@ import { SharedResourcesModule } from './modules/shared-resources/shared-resourc
     QuizTestsModule,
     TagsModule,
     SharedResourcesModule,
+    UserStatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -79,7 +79,7 @@ export class TagsController {
 
   @Delete(':id')
   @ResponseMessage('Delete a tag')
-  remove(@Param('id') id: string, @User() user: IUser) {
+  remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     return this.tagsService.remove(id, user);
   }
 }

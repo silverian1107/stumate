@@ -6,7 +6,6 @@ import {
 import { CreateTagDto } from './dto/create-tag.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Tag, TagDocument } from './schema/tag.schema';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import mongoose from 'mongoose';
@@ -20,6 +19,7 @@ import {
   QuizTest,
   QuizTestDocument,
 } from '../quiz-tests/schema/quiz-test.schema';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class TagsService {
@@ -170,16 +170,6 @@ export class TagsService {
       this.deckModel.updateMany({ tags: id }, { $pull: { tags: id } }),
       this.quizTestModel.updateMany({ tags: id }, { $pull: { tags: id } }),
     ]);
-    //soft delete for tag
-    await this.tagModel.updateOne(
-      { _id: id },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.tagModel.softDelete({ _id: id });
+    return this.tagModel.delete({ _id: id }, user._id);
   }
 }

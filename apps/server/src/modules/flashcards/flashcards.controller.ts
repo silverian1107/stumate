@@ -120,12 +120,12 @@ export class FlashcardsController {
   }
 
   @Delete(':id')
-  @ResponseMessage('Delete a deck')
+  @ResponseMessage('Delete a flashcard')
   remove(
     @Param('deckId') deckId: string,
     @Param('id') id: string,
     @User() user: IUser,
-  ) {
+  ): Promise<any> {
     return this.flashcardsService.remove(deckId, id, user);
   }
 }

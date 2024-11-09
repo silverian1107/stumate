@@ -1,24 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-export type UserDocument = HydratedDocument<User>;
+export type UserStatisticDocument = HydratedDocument<UserStatistic>;
 
 @Schema({ timestamps: true })
-export class User {
+export class UserStatistic {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true })
+  userId: mongoose.Schema.Types.ObjectId;
+
   @Prop()
-  name: string;
+  date: Date;
+
+  @Prop()
+  studyTime: number;
 
   @Prop({ required: true })
-  username: string;
+  UserStatisticname: string;
 
   @Prop({ required: true })
   email: string;
 
   @Prop({ required: true })
   password: string;
-
-  @Prop()
-  birthday: Date;
 
   @Prop()
   gender: string;
@@ -45,7 +48,7 @@ export class User {
   @Prop()
   codeExpire: Date;
 
-  @Prop({ default: 'USER' })
+  @Prop({ default: 'UserStatistic' })
   role: string;
 
   @Prop({ default: 'LOCAL' })
@@ -53,24 +56,6 @@ export class User {
 
   @Prop()
   lastLogin: Date;
-
-  @Prop()
-  createdAt: Date;
-
-  @Prop()
-  updatedAt: Date;
-
-  @Prop({ type: Object })
-  createdBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    username: string;
-  };
-
-  @Prop({ type: Object })
-  updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    username: string;
-  };
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserStatisticSchema = SchemaFactory.createForClass(UserStatistic);

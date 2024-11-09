@@ -106,7 +106,7 @@ export class QuizQuestionsController {
     @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
     @User() user: IUser,
-  ) {
+  ): Promise<any> {
     return this.quizQuestionsService.remove(quizTestId, id, user);
   }
 }

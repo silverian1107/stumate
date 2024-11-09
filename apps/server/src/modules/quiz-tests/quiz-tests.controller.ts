@@ -90,7 +90,7 @@ export class QuizTestsController {
 
   @Delete(':id')
   @ResponseMessage('Delete a quiz test')
-  remove(@Param('id') id: string, @User() user: IUser) {
+  remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     return this.quizTestsService.remove(id, user);
   }
 }

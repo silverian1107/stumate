@@ -64,7 +64,7 @@ export class DecksController {
 
   @Delete(':id')
   @ResponseMessage('Delete a deck')
-  remove(@Param('id') id: string, @User() user: IUser) {
+  remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     return this.decksService.remove(id, user);
   }
 }

@@ -3,8 +3,8 @@ import { QuizTestsService } from './quiz-tests.service';
 import { QuizTestsController } from './quiz-tests.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuizTest, QuizTestSchema } from './schema/quiz-test.schema';
-import { QuizQuestionsModule } from '../quiz-questions/quiz-questions.module';
-import { QuizAttemptsModule } from '../quiz-attempts/quiz-attempts.module';
+import { QuizQuestion, QuizQuestionSchema } from '../quiz-questions/schema/quiz-question.schema';
+import { QuizAttempt, QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
 
 @Module({
   imports: [
@@ -14,8 +14,18 @@ import { QuizAttemptsModule } from '../quiz-attempts/quiz-attempts.module';
         schema: QuizTestSchema,
       },
     ]),
-    forwardRef(() => QuizQuestionsModule),
-    forwardRef(() => QuizAttemptsModule),
+    MongooseModule.forFeature([
+      {
+        name: QuizQuestion.name,
+        schema: QuizQuestionSchema,
+      },
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: QuizAttempt.name,
+        schema: QuizAttemptSchema,
+      },
+    ]),
   ],
   controllers: [QuizTestsController],
   providers: [QuizTestsService],

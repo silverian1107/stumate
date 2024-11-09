@@ -13,10 +13,10 @@ import {
   QuizTest,
   QuizTestDocument,
 } from '../quiz-tests/schema/quiz-test.schema';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/decorator/customize';
 import { UserDocument } from '../users/schema/user.schema';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class SharedResourcesService {
@@ -108,25 +108,25 @@ export class SharedResourcesService {
     }
     switch (resourceType) {
       case 'collection':
-        return this.collectionModel.findByIdAndUpdate(
+        return await this.collectionModel.findByIdAndUpdate(
           resourceId,
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'note':
-        return this.noteModel.findByIdAndUpdate(
+        return await this.noteModel.findByIdAndUpdate(
           resourceId,
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'deck':
-        return this.deckModel.findByIdAndUpdate(
+        return await this.deckModel.findByIdAndUpdate(
           resourceId,
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'quiz':
-        return this.quizTestModel.findByIdAndUpdate(
+        return await this.quizTestModel.findByIdAndUpdate(
           resourceId,
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
@@ -149,25 +149,25 @@ export class SharedResourcesService {
     }
     switch (resourceType) {
       case 'collection':
-        return this.collectionModel.findByIdAndUpdate(
+        return await this.collectionModel.findByIdAndUpdate(
           resourceId,
           { $pull: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'note':
-        return this.noteModel.findByIdAndUpdate(
+        return await this.noteModel.findByIdAndUpdate(
           resourceId,
           { $pull: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'deck':
-        return this.deckModel.findByIdAndUpdate(
+        return await this.deckModel.findByIdAndUpdate(
           resourceId,
           { $pull: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'quiz':
-        return this.quizTestModel.findByIdAndUpdate(
+        return await this.quizTestModel.findByIdAndUpdate(
           resourceId,
           { $pull: { sharedWithUsers: user._id } },
           { new: true },

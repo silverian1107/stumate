@@ -103,7 +103,7 @@ export class QuizAttemptsController {
     @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
     @User() user: IUser,
-  ) {
+  ): Promise<any> {
     return this.quizAttemptsService.remove(quizTestId, id, user);
   }
 }

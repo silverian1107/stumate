@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { QuizAttempt, QuizAttemptDocument } from './schema/quiz-attempt.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
@@ -15,6 +14,7 @@ import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class QuizAttemptsService {
@@ -217,15 +217,6 @@ export class QuizAttemptsService {
     if (!quizAttempt) {
       throw new NotFoundException('Not found quiz attempt');
     }
-    await this.quizAttemptModel.updateOne(
-      { _id: id, quizTestId },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.quizAttemptModel.softDelete({ _id: id, quizTestId });
+    return this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
   }
 }

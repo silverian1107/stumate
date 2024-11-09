@@ -11,7 +11,6 @@ import {
 } from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
 import { Flashcard, FlashcardDocument, State } from './schema/flashcard.schema';
@@ -19,6 +18,7 @@ import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { DecksService } from '../decks/decks.service';
 import dayjs from 'dayjs';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class FlashcardsService {
@@ -282,15 +282,6 @@ export class FlashcardsService {
     if (!flashcard) {
       throw new NotFoundException('Not found flashcard');
     }
-    await this.flashcardModel.updateOne(
-      { _id: id, deckId },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.flashcardModel.softDelete({ _id: id, deckId });
+    return this.flashcardModel.delete({ _id: id, deckId }, user._id);
   }
 }

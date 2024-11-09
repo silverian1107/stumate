@@ -12,12 +12,12 @@ import {
   QuizQuestion,
   QuizQuestionDocument,
 } from './schema/quiz-question.schema';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class QuizQuestionsService {
@@ -177,15 +177,6 @@ export class QuizQuestionsService {
     if (!quizQuestion) {
       throw new NotFoundException('Not found quiz question');
     }
-    await this.quizQuestionModel.updateOne(
-      { _id: id, quizTestId },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.quizQuestionModel.softDelete({ _id: id, quizTestId });
+    return this.quizQuestionModel.delete({ _id: id, quizTestId }, user._id);
   }
 }

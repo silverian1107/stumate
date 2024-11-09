@@ -56,12 +56,6 @@ export class QuizTest {
   @Prop()
   updatedAt: Date;
 
-  @Prop()
-  deletedAt: Date;
-
-  @Prop()
-  isDeleted: boolean;
-
   @Prop({ type: Object })
   createdBy: {
     _id: mongoose.Schema.Types.ObjectId;
@@ -70,12 +64,6 @@ export class QuizTest {
 
   @Prop({ type: Object })
   updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    username: string;
-  };
-
-  @Prop({ type: Object })
-  deletedBy: {
     _id: mongoose.Schema.Types.ObjectId;
     username: string;
   };

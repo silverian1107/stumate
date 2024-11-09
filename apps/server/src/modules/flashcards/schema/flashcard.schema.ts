@@ -59,12 +59,6 @@ export class Flashcard {
   @Prop()
   updatedAt: Date;
 
-  @Prop()
-  deletedAt: Date;
-
-  @Prop()
-  isDeleted: boolean;
-
   @Prop({ type: Object })
   createdBy: {
     _id: mongoose.Schema.Types.ObjectId;
@@ -73,12 +67,6 @@ export class Flashcard {
 
   @Prop({ type: Object })
   updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    username: string;
-  };
-
-  @Prop({ type: Object })
-  deletedBy: {
     _id: mongoose.Schema.Types.ObjectId;
     username: string;
   };
