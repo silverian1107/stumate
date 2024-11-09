@@ -14,30 +14,37 @@ export class Deck {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true })
   userId: mongoose.Schema.Types.ObjectId;
 
-  @Prop()
-  tag: string[];
-
-  @Prop({ type: Object })
+  @Prop({
+    type: Object,
+    default: {
+      totalCards: 0,
+      reviewedCards: 0,
+      dueToday: 0,
+      progress: 0,
+    },
+  })
   studyStatus: {
+    totalCards: number;
+    reviewedCards: number;
     lastStudied: Date;
     dueToday: number;
     progress: number;
   };
 
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
+  tags: mongoose.Schema.Types.ObjectId[];
+
   @Prop({ default: false })
   isPublished: boolean;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
 
   @Prop()
   createdAt: Date;
 
   @Prop()
   updatedAt: Date;
-
-  @Prop()
-  deletedAt: Date;
-
-  @Prop()
-  isDeleted: boolean;
 
   @Prop({ type: Object })
   createdBy: {
@@ -47,12 +54,6 @@ export class Deck {
 
   @Prop({ type: Object })
   updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    username: string;
-  };
-
-  @Prop({ type: Object })
-  deletedBy: {
     _id: mongoose.Schema.Types.ObjectId;
     username: string;
   };

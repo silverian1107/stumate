@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { QuizAttempt, QuizAttemptDocument } from './schema/quiz-attempt.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
@@ -15,6 +14,7 @@ import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class QuizAttemptsService {
@@ -33,10 +33,7 @@ export class QuizAttemptsService {
       throw new NotFoundException('Not found quiz test');
     }
     //Update status for quiz test
-    if (
-      quizTest.status === 'NOT_STARTED' ||
-      quizTest.status === 'IN_PROGRESS'
-    ) {
+    if (quizTest.status === 'NOT_STARTED') {
       await quizTest.updateOne({ _id: quizTestId }, { status: 'IN_PROGRESS' });
     } else {
       await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWING' });
@@ -74,15 +71,23 @@ export class QuizAttemptsService {
     );
   }
 
-  checkAnswerCorrect(question: any, userAnswer: any) {
-    const isOptionCorrect = question.answerOptions.some(
-      (answerOption: any) =>
-        answerOption.option === userAnswer && answerOption.isCorrect,
+  checkAnswerCorrect(question: any, userAnswers: string[]) {
+    if (question.answerText) {
+      const isTextCorrect =
+        question.answerText.trim().toLowerCase() ===
+        userAnswers[0]?.trim().toLowerCase();
+      return isTextCorrect;
+    }
+
+    const correctOptions = question.answerOptions
+      .filter((answerOption: any) => answerOption.isCorrect)
+      .map((answerOption: any) => answerOption.option);
+    const userAnswerSet = new Set(userAnswers);
+    const isAllCorrect = correctOptions.every((answer: any) =>
+      userAnswerSet.has(answer),
     );
-    const isTextCorrect =
-      question.answerText.trim().toLowerCase() ===
-      userAnswer.trim().toLowerCase();
-    return isOptionCorrect || isTextCorrect;
+    const countCorrectAnswer = userAnswerSet.size === correctOptions.length;
+    return isAllCorrect && countCorrectAnswer;
   }
 
   async handleSubmitQuizAttempt(
@@ -104,7 +109,7 @@ export class QuizAttemptsService {
     let correctAnswers: number = 0;
     const questionResults: {
       quizQuestionId: string;
-      answer: string;
+      answer: string[];
       isCorrect: boolean;
     }[] = [];
     const quizQuestionIds = userAnswersDto.answers.map(
@@ -122,18 +127,18 @@ export class QuizAttemptsService {
       if (isCorrect) {
         score += question.point;
         correctAnswers += 1;
-        questionResults.push({
-          quizQuestionId: userAnswer.quizQuestionId,
-          answer: userAnswer.answer,
-          isCorrect,
-        });
       }
+      questionResults.push({
+        quizQuestionId: userAnswer.quizQuestionId,
+        answer: userAnswer.answer,
+        isCorrect,
+      });
     }
     //Update quiz test status
-    if (quizTest.status === 'COMPLETED') {
-      await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWED' });
-    } else {
+    if (quizTest.status === 'IN_PROGRESS') {
       await quizTest.updateOne({ _id: quizTestId }, { status: 'COMPLETED' });
+    } else {
+      await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWED' });
     }
     //Update quiz attempt
     return await this.quizAttemptModel.updateOne(
@@ -171,6 +176,7 @@ export class QuizAttemptsService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
+      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -211,15 +217,6 @@ export class QuizAttemptsService {
     if (!quizAttempt) {
       throw new NotFoundException('Not found quiz attempt');
     }
-    await this.quizAttemptModel.updateOne(
-      { _id: id, quizTestId },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.quizAttemptModel.softDelete({ _id: id, quizTestId });
+    return this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
   }
 }

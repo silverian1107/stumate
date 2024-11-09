@@ -71,7 +71,7 @@ export class CollectionsController {
   async findAll(
     @Query('currentPage') currentPage = '1',
     @Query('pageSize') pageSize = '10',
-    @Query('qs') qs: string,
+    @Query() qs: string,
   ) {
     // TODO: Restricted to admin users only
     return this.collectionsService.findAll(+currentPage, +pageSize, qs);
@@ -145,7 +145,7 @@ export class CollectionsController {
     @User() user: IUser,
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query('qs') qs: string,
+    @Query() qs: string,
   ) {
     return this.collectionsService.findArchivedByOwnerId(
       user._id,

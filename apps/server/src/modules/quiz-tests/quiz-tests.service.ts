@@ -1,7 +1,5 @@
 import {
   BadRequestException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,21 +9,27 @@ import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { QuizTest, QuizTestDocument } from './schema/quiz-test.schema';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
-import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
-import { QuizAttemptsService } from '../quiz-attempts/quiz-attempts.service';
+import { SoftDeleteModel } from 'mongoose-delete';
+import {
+  QuizAttempt,
+  QuizAttemptDocument,
+} from '../quiz-attempts/schema/quiz-attempt.schema';
+import {
+  QuizQuestion,
+  QuizQuestionDocument,
+} from '../quiz-questions/schema/quiz-question.schema';
 
 @Injectable()
 export class QuizTestsService {
   constructor(
     @InjectModel(QuizTest.name)
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
-    @Inject(forwardRef(() => QuizQuestionsService))
-    private readonly quizQuestionModel: QuizQuestionsService,
-    @Inject(forwardRef(() => QuizAttemptsService))
-    private readonly quizAttemptModel: QuizAttemptsService,
+    @InjectModel(QuizAttempt.name)
+    private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
+    @InjectModel(QuizQuestion.name)
+    private readonly quizQuestionModel: SoftDeleteModel<QuizQuestionDocument>,
   ) {}
 
   async findQuizTestByTitle(title: string) {
@@ -57,6 +61,37 @@ export class QuizTestsService {
     return newQuizTest;
   }
 
+  // async createMultiple(createQuizTestDtos: CreateQuizTestDto[], user: IUser) {
+  //   const titleSet = new Set();
+  //   createQuizTestDtos.forEach((createQuizTestDto) => {
+  //     if (titleSet.has(createQuizTestDto.title)) {
+  //       throw new BadRequestException(
+  //         `Title '${createQuizTestDto.title}' is duplicated`,
+  //       );
+  //     }
+  //     titleSet.add(createQuizTestDto.title);
+  //   });
+  //   const newQuizTests = await Promise.all(
+  //     createQuizTestDtos.map(async (createQuizTestDto) => {
+  //       if (await this.isExistTitle(createQuizTestDto.title)) {
+  //         throw new BadRequestException(
+  //           `Title '${createQuizTestDto.title}' already exists`,
+  //         );
+  //       }
+  //       return this.quizTestModel.create({
+  //         ...createQuizTestDto,
+  //         userId: user._id,
+  //         createdBy: {
+  //           _id: user._id,
+  //           username: user.username,
+  //         },
+  //       });
+  //     }),
+  //   );
+
+  //   return newQuizTests;
+  // }
+
   async findByUser(user: IUser) {
     return await this.quizTestModel.find({ userId: user._id });
   }
@@ -78,6 +113,7 @@ export class QuizTestsService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
+      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -130,32 +166,10 @@ export class QuizTestsService {
       throw new NotFoundException('Not found quiz test');
     }
     //soft delete for quiz question
-    const quizQuestions = await this.quizQuestionModel.findByQuizTestId(id);
-    await Promise.all(
-      quizQuestions.map((quizQuestion: any) =>
-        this.quizQuestionModel.remove(id, quizQuestion._id.toString(), user),
-      ),
-    );
+    await this.quizQuestionModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz attempt
-    const quizAttempts = await this.quizAttemptModel.findByUserAndQuizTestId(
-      id,
-      user,
-    );
-    await Promise.all(
-      quizAttempts.map((quizAttempt: any) =>
-        this.quizAttemptModel.remove(id, quizAttempt._id.toString(), user),
-      ),
-    );
+    await this.quizAttemptModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz test
-    await this.quizTestModel.updateOne(
-      { _id: id },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.quizTestModel.softDelete({ _id: id });
+    return this.quizTestModel.delete({ _id: id }, user._id);
   }
 }

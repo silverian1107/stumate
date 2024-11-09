@@ -6,7 +6,6 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
@@ -25,6 +24,8 @@ import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { DecksService } from '../decks/decks.service';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
+import { TagsService } from '../tags/tags.service';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class UsersService {
@@ -35,6 +36,7 @@ export class UsersService {
     private readonly configService: ConfigService,
     private readonly decksService: DecksService,
     private readonly quizTestsService: QuizTestsService,
+    private readonly tagsService: TagsService,
   ) {}
 
   async updateLastLogin(userId: string): Promise<void> {
@@ -306,6 +308,11 @@ export class UsersService {
     if (!existingUser) {
       throw new NotFoundException('Not found user');
     }
+    //soft delete for all tag
+    const tags = await this.tagsService.findAll(user);
+    await Promise.all(
+      tags.map((tag: any) => this.tagsService.remove(tag._id.toString(), user)),
+    );
     //soft delete for all deck and flashcard
     const decks = await this.decksService.findByUser(user);
     await Promise.all(
@@ -321,15 +328,6 @@ export class UsersService {
       ),
     );
     //soft delete for user
-    await this.userModel.updateOne(
-      { _id: id },
-      {
-        deletedBy: {
-          _id: user._id,
-          username: user.username,
-        },
-      },
-    );
-    return this.userModel.softDelete({ _id: id });
+    return this.userModel.delete({ _id: id }, user._id);
   }
 }

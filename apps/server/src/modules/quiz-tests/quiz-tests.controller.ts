@@ -34,6 +34,22 @@ export class QuizTestsController {
     };
   }
 
+  // @Post('multiple')
+  // @ResponseMessage('Create multiple quiz tests')
+  // async createMultiple(
+  //   @Body() createQuizTestDtos: CreateQuizTestDto[],
+  //   @User() user: IUser,
+  // ) {
+  //   const newQuizTests = await this.quizTestsService.createMultiple(
+  //     createQuizTestDtos,
+  //     user,
+  //   );
+  //   return newQuizTests.map((quizTest: any) => ({
+  //     _id: quizTest._id,
+  //     createdAt: quizTest.createdAt,
+  //   }));
+  // }
+
   @Post('user')
   @ResponseMessage('Get quiz test by user')
   getByUser(@User() user: IUser) {
@@ -74,7 +90,7 @@ export class QuizTestsController {
 
   @Delete(':id')
   @ResponseMessage('Delete a quiz test')
-  remove(@Param('id') id: string, @User() user: IUser) {
+  remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     return this.quizTestsService.remove(id, user);
   }
 }

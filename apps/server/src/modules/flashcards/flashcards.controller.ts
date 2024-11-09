@@ -9,7 +9,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { FlashcardsService } from './flashcards.service';
-import { CreateFlashcardDto } from './dto/create-flashcard.dto';
+import {
+  CreateFlashcardDto,
+  MarkFlashcardDTO,
+} from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
@@ -36,10 +39,50 @@ export class FlashcardsController {
     };
   }
 
-  @Post('all')
+  @Post('multiple')
+  @ResponseMessage('Create multiple flashcards by deckId')
+  async createMultiple(
+    @Param('deckId') deckId: string,
+    @Body() createFlashcardDtos: CreateFlashcardDto[],
+    @User() user: IUser,
+  ) {
+    const newFlashcards = await this.flashcardsService.createMultiple(
+      deckId,
+      createFlashcardDtos,
+      user,
+    );
+    return newFlashcards.map((flashcard: any) => ({
+      _id: flashcard._id,
+      createdAt: flashcard.createdAt,
+    }));
+  }
+
+  @Post('study')
   @ResponseMessage('Get flashcard by user and deck')
-  getByUserAndDeckId(@Param('deckId') deckId: string, @User() user: IUser) {
-    return this.flashcardsService.findByUserAndDeckId(deckId, user);
+  async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
+    return await this.flashcardsService.handleStudyFlashcard(deckId, user);
+  }
+
+  @Post(':id/mark')
+  @ResponseMessage('Mark a flashcard')
+  async markFlashcard(
+    @Param('deckId') deckId: string,
+    @Param('id') id: string,
+    @Body() markFlashcardDTO: MarkFlashcardDTO,
+    @User() user: IUser,
+  ) {
+    return await this.flashcardsService.handleMarkFlashcard(
+      deckId,
+      id,
+      markFlashcardDTO,
+      user,
+    );
+  }
+
+  @Post('progress')
+  @ResponseMessage('Get deck progress')
+  async getDeckProgress(@Param('deckId') deckId: string, @User() user: IUser) {
+    return await this.flashcardsService.handleDeckProgress(deckId, user);
   }
 
   @Get()
@@ -77,12 +120,12 @@ export class FlashcardsController {
   }
 
   @Delete(':id')
-  @ResponseMessage('Delete a deck')
+  @ResponseMessage('Delete a flashcard')
   remove(
     @Param('deckId') deckId: string,
     @Param('id') id: string,
     @User() user: IUser,
-  ) {
+  ): Promise<any> {
     return this.flashcardsService.remove(deckId, id, user);
   }
 }

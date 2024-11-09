@@ -44,17 +44,17 @@ export class QuizTest {
   })
   noteId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
+  tags: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
+
   @Prop()
   createdAt: Date;
 
   @Prop()
   updatedAt: Date;
-
-  @Prop()
-  deletedAt: Date;
-
-  @Prop()
-  isDeleted: boolean;
 
   @Prop({ type: Object })
   createdBy: {
@@ -64,12 +64,6 @@ export class QuizTest {
 
   @Prop({ type: Object })
   updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    username: string;
-  };
-
-  @Prop({ type: Object })
-  deletedBy: {
     _id: mongoose.Schema.Types.ObjectId;
     username: string;
   };

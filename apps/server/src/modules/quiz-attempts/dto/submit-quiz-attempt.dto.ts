@@ -13,8 +13,9 @@ class Answers {
   quizQuestionId: string;
 
   @IsOptional()
-  @IsString()
-  answer: string;
+  @IsArray()
+  @IsString({ each: true })
+  answer: string[];
 }
 
 export class UserAnswersDto {
