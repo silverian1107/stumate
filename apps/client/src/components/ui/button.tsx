@@ -11,12 +11,11 @@ const buttonVariants = cva(
       variant: {
         default:
           'bg-primary-600 text-primary-foreground shadow hover:bg-primary-600/90',
-        destructive:
-          'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+        destructive: 'bg-red-600 text-white shadow-sm hover:bg-red-600/80',
         outline:
           'border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground',
         secondary:
-          'bg-primary-100 text-primary-950 shadow-sm hover:bg-primary-200/60',
+          'bg-primary-100 text-primary-800 shadow-sm hover:bg-primary-200/60',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         ringHover:

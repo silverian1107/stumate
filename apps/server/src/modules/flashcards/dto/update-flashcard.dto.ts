@@ -13,3 +13,16 @@ export class UpdateFlashcardDto {
   @IsMongoId()
   noteId: string;
 }
+
+export class UpdateMultipleFlashcardDto {
+  @IsString()
+  _id: string;
+
+  @IsOptional()
+  @IsString()
+  front: string;
+
+  @IsOptional()
+  @IsString()
+  back: string;
+}

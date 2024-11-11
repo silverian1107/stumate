@@ -7,7 +7,7 @@ const allTabs = [
   {
     id: 'flashcard',
     name: 'Flashcards',
-    href: '/cards',
+    href: '/decks',
   },
   {
     id: 'quizz',

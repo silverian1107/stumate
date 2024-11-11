@@ -96,7 +96,7 @@ export class UsersService {
 
   handleVerifyActivationCode = async (codeAuthDto: CodeAuthDto) => {
     const user = await this.userModel.findOne({
-      _id: codeAuthDto.email,
+      email: codeAuthDto.email,
       codeId: codeAuthDto.codeId,
     });
 

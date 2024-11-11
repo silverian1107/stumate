@@ -13,7 +13,10 @@ import {
   CreateFlashcardDto,
   MarkFlashcardDTO,
 } from './dto/create-flashcard.dto';
-import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
+import {
+  UpdateFlashcardDto,
+  UpdateMultipleFlashcardDto,
+} from './dto/update-flashcard.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 
@@ -39,22 +42,36 @@ export class FlashcardsController {
     };
   }
 
-  @Post('multiple')
+  @Post('bulk/create')
   @ResponseMessage('Create multiple flashcards by deckId')
   async createMultiple(
     @Param('deckId') deckId: string,
-    @Body() createFlashcardDtos: CreateFlashcardDto[],
+    @Body() createFlashcardData: CreateFlashcardDto[],
     @User() user: IUser,
   ) {
     const newFlashcards = await this.flashcardsService.createMultiple(
       deckId,
-      createFlashcardDtos,
+      createFlashcardData,
       user,
     );
     return newFlashcards.map((flashcard: any) => ({
       _id: flashcard._id,
       createdAt: flashcard.createdAt,
     }));
+  }
+
+  @Post('bulk/update')
+  @ResponseMessage('Create multiple flashcards by deckId')
+  async updateMultiple(
+    @Param('deckId') deckId: string,
+    @Body() updateFlashcardData: UpdateMultipleFlashcardDto[],
+  ) {
+    const updated = await this.flashcardsService.updateMultiple(
+      deckId,
+      updateFlashcardData,
+    );
+
+    return updated;
   }
 
   @Post('study')
@@ -83,6 +100,12 @@ export class FlashcardsController {
   @ResponseMessage('Get deck progress')
   async getDeckProgress(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleDeckProgress(deckId, user);
+  }
+
+  @Get('all')
+  @ResponseMessage('Get flashcard by user and deck')
+  async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
+    return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
   }
 
   @Get()

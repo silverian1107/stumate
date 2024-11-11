@@ -50,6 +50,7 @@ const DocumentList = ({
           pageSize: 10,
           qs: '',
         });
+
         return response.data.data.result;
       } else if (parentDocumentId && type === 'Collection') {
         const response = await CollectionApi.findById(parentDocumentId);

@@ -105,9 +105,10 @@ export class CollectionsController {
   async findByOwnerId(
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query('qs') qs: string,
+    @Query() qs: string,
     @User() user: IUser,
   ) {
+    console.log(qs);
     return this.collectionsService.findByOwnerId(
       user._id,
       +currentPage,

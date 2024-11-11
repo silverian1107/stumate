@@ -55,7 +55,12 @@ const SidebarItem = ({
   return (
     <Link
       href={href ? href : '#'}
-      onClick={onClick}
+      onClick={() => {
+        if (type === 'Collection') {
+          return;
+        }
+        onClick?.();
+      }}
       role="button"
       className={cn(
         'flex font-medium pr-2 transition-all text-sm gap-2 items-center group',

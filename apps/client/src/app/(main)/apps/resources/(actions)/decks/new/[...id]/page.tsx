@@ -6,8 +6,8 @@ import { Deck } from '@/types/deck';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDeckManager } from '@/hooks/use-deck';
-import { ResourceHeader } from '../../_components/header';
-import { ResourceElements } from '../../_components/creator';
+import { ResourceHeader } from '../../../_components/header';
+import { ResourceElements } from '../../../_components/creator';
 
 export default function ResourcePage() {
   const dispatch = useDispatch();
