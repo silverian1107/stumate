@@ -27,3 +27,26 @@ AxiosClient.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+export const createCustomClient = (customBaseURL: string) => {
+  const customClient = axios.create({
+    ...AxiosClient.defaults,
+    baseURL: customBaseURL, // Override baseURL
+  });
+
+  // @ts-expect-error ts(2349)
+  AxiosClient.interceptors.request.forEach((interceptor) =>
+    customClient.interceptors.request.use(
+      interceptor.fulfilled,
+      interceptor.rejected,
+    ),
+  );
+
+  return customClient;
+};
+
+export const CollectionClient = createCustomClient(
+  'http://localhost:3000/api/collections',
+);
+export const NoteClient = createCustomClient('http://localhost:3000/api/notes');
+export const DeckClient = createCustomClient('http://localhost:3000/api/decks');

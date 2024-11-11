@@ -14,6 +14,7 @@ import snackbarReducer from './slices/snackbarSlice';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { rootApi } from '../service/rootApi'; // Assuming rootApi is defined in your services folder
 import { logOutMiddleware } from './middlewares';
+import DecksReducer from './slices/resourceSlice';
 
 // Type for persisted configuration
 const persistConfig = {
@@ -29,6 +30,7 @@ const persistedReducer = persistReducer(
   combineReducers({
     auth: authReducer,
     snackbar: snackbarReducer,
+    decks: DecksReducer,
     [rootApi.reducerPath]: rootApi.reducer,
   }),
 );

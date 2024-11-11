@@ -20,9 +20,7 @@ const ActionButton = () => {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button>
-            <span>
-              <PlusIcon className="text-white" />
-            </span>
+            <PlusIcon className="text-white" />
             Create new
           </Button>
         </DropdownMenuTrigger>

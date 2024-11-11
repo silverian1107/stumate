@@ -1,15 +1,14 @@
 'use client';
 
 import { useAccount } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
 import Cookies from 'js-cookie';
 import { CloudSun, LayoutGrid, LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import IconWrapper from './_components/IconWrapper';
+import { toast } from 'sonner';
 
 const Main = () => {
-  const { toast } = useToast();
   const router = useRouter();
   const { data, error, isLoading } = useAccount();
 
@@ -19,13 +18,12 @@ const Main = () => {
     if (error) {
       Cookies.remove('access_token');
       router.push('/login');
-      toast({
-        title: 'Error',
+      toast('Unauthorized', {
         description: 'Please login to continue',
-        variant: 'destructive',
+        position: 'top-right',
       });
     }
-  }, [error, data, router, toast]);
+  }, [error, data, router]);
 
   if (isLoading) {
     return (

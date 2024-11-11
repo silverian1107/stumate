@@ -7,7 +7,7 @@ import './globals.css';
 import SnackBar from '@/components/SnackBar';
 
 import RqProvider from './libs/RqProvider';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from 'sonner';
 const lexendDeca = Lexend_Deca({
   variable: '--font-lexend-deca',
   subsets: ['latin'],
@@ -27,7 +27,7 @@ export default async function RootLayout({
               <ThemeProvider theme={theme}>
                 <RqProvider>
                   {children}
-                  <Toaster />
+                  <Toaster position="top-right" />
                   <SnackBar />
                 </RqProvider>
               </ThemeProvider>
