@@ -18,7 +18,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
-    "typeRoots": ["node_modules/cron"],
-    "types": ["jasmine"]
+    "typeRoots": ["node_modules/cron", "./node_modules/@types"],
+    "types": ["jest", "node"]
   }
 }
