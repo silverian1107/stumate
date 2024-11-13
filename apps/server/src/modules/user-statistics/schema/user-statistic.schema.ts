@@ -11,51 +11,68 @@ export class UserStatistic {
   @Prop()
   date: Date;
 
-  @Prop()
-  studyTime: number;
+  @Prop({ default: 0 })
+  dailyStudyDuration: number;
 
-  @Prop({ required: true })
-  UserStatisticname: string;
+  @Prop({ default: 0 })
+  studyStreakDays: number;
 
-  @Prop({ required: true })
-  email: string;
+  @Prop({ default: 0 })
+  totalNotesCount: number;
 
-  @Prop({ required: true })
-  password: string;
+  @Prop({ default: 0 })
+  totalFlashcardsCount: number;
 
-  @Prop()
-  gender: string;
+  @Prop({ default: 0 })
+  notesRevisedTodayCount: number;
 
-  @Prop()
-  avatarUrl: string;
+  @Prop({ default: 0 })
+  flashcardsDueTodayCount: number;
 
-  @Prop({ type: Object, default: {} })
-  settings: {
-    theme?: string;
-    language?: string;
-    fontSize?: string;
-  };
+  @Prop({ default: 0 })
+  totalQuizzesCount: number;
 
-  @Prop()
-  refreshToken: string;
+  @Prop({ default: 0 })
+  quizzesCompletedToday: number;
 
-  @Prop({ default: false })
-  isActive: boolean;
+  @Prop({ default: 0 })
+  flashcardsCompletedToday: number;
 
-  @Prop()
-  codeId: string;
+  @Prop({ default: 0 })
+  flashcardMasteryProgressToday: number;
 
-  @Prop()
-  codeExpire: Date;
+  @Prop({ default: 0 })
+  accuracyRate: number;
 
-  @Prop({ default: 'UserStatistic' })
-  role: string;
+  @Prop({ default: 0 })
+  accuracyRateToday: number;
 
-  @Prop({ default: 'LOCAL' })
-  accountType: string;
+  @Prop({ default: 0 })
+  lowAccuracyCount: number;
 
-  @Prop()
-  lastLogin: Date;
+  @Prop({ default: 0 })
+  studiedFlashcardsCount: number;
+
+  @Prop({ default: [] })
+  dailyTaskList: string[];
+
+  @Prop({ default: 0 })
+  completedTasksCount: number;
+
+  @Prop({ default: 0 })
+  sessionsThisWeek: number;
+
+  @Prop({ default: [] })
+  monthlyStudyHeatmap: string[];
+
+  // @Prop()
+  // quoteOfTheDay: string;
+
+  // @Prop()
+  // bestStreak: number;
+
+  // @Prop()
+  // eventsToday: string[];
 }
 
 export const UserStatisticSchema = SchemaFactory.createForClass(UserStatistic);

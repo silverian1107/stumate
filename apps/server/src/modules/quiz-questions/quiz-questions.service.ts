@@ -154,7 +154,7 @@ export class QuizQuestionsService {
     updateQuizQuestionDto: UpdateQuizQuestionDto,
     @User() user: IUser,
   ) {
-    return await this.quizQuestionModel.updateOne(
+    return await this.quizQuestionModel.findOneAndUpdate(
       { _id: id, quizTestId },
       {
         ...updateQuizQuestionDto,
@@ -163,6 +163,7 @@ export class QuizQuestionsService {
           username: user.username,
         },
       },
+      { new: true },
     );
   }
 

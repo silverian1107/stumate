@@ -19,6 +19,7 @@ import mongoose from 'mongoose';
 import { DecksService } from '../decks/decks.service';
 import dayjs from 'dayjs';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { UserStatisticsService } from '../user-statistics/user-statistics.service';
 
 @Injectable()
 export class FlashcardsService {
@@ -27,15 +28,29 @@ export class FlashcardsService {
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
     @Inject(forwardRef(() => DecksService))
     private readonly decks: DecksService,
+    private readonly userStatisticService: UserStatisticsService,
   ) {}
 
+  async handleGetAllFlashcards(deckId: string, user: IUser) {
+    const deck = await this.decks.findOne(deckId);
+    if (!deck) {
+      throw new NotFoundException('Not found deck');
+    }
+    const flashcards = await this.flashcardModel.find({
+      userId: user._id,
+      deckId,
+    });
+    return flashcards;
+  }
+
+  //websocket
   async createMultiple(
     deckId: string,
     createFlashcardDtos: CreateFlashcardDto[],
     user: IUser,
   ) {
     if (!(await this.decks.findOne(deckId))) {
-      throw new NotFoundException('Deck not found');
+      throw new NotFoundException('Not found deck');
     }
     const flashcards = createFlashcardDtos.map((createFlashcardDto) => ({
       ...createFlashcardDto,
@@ -47,6 +62,7 @@ export class FlashcardsService {
       },
     }));
     const newFlashcards = await this.flashcardModel.insertMany(flashcards);
+    await this.userStatisticService.createOrUpdate(user._id);
     return newFlashcards;
   }
 
@@ -87,6 +103,7 @@ export class FlashcardsService {
     return rating < 4;
   };
 
+  //websocket
   async create(
     deckId: string,
     createFlashcardDto: CreateFlashcardDto,
@@ -105,6 +122,7 @@ export class FlashcardsService {
         username: user.username,
       },
     });
+    await this.userStatisticService.createOrUpdate(user._id);
     return newFlashcard;
   }
 
@@ -143,6 +161,7 @@ export class FlashcardsService {
     };
   }
 
+  //websocket
   async handleMarkFlashcard(
     deckId: string,
     id: string,
@@ -162,12 +181,14 @@ export class FlashcardsService {
       markFlashcardDTO.rating,
       markFlashcardDTO.reviewDate,
     );
+    flashcard.rating = markFlashcardDTO.rating;
     if (markFlashcardDTO.rating < 3) {
       flashcard.state = State.Relearning;
     } else if (flashcard.state === 0 || flashcard.state === 1) {
       flashcard.state = State.Review;
     }
     await flashcard.save();
+    await this.userStatisticService.createOrUpdate(user._id);
     return {
       flashcard,
       isDueForReview,
@@ -262,7 +283,7 @@ export class FlashcardsService {
     updateFlashcardDto: UpdateFlashcardDto,
     @User() user: IUser,
   ) {
-    return await this.flashcardModel.updateOne(
+    return await this.flashcardModel.findOneAndUpdate(
       { _id: id, deckId },
       {
         ...updateFlashcardDto,
@@ -271,9 +292,11 @@ export class FlashcardsService {
           username: user.username,
         },
       },
+      { new: true },
     );
   }
 
+  //websocket
   async remove(deckId: string, id: string, @User() user: IUser) {
     if (!(await this.decks.findOne(deckId))) {
       throw new NotFoundException('Not found deck');
@@ -282,6 +305,9 @@ export class FlashcardsService {
     if (!flashcard) {
       throw new NotFoundException('Not found flashcard');
     }
-    return this.flashcardModel.delete({ _id: id, deckId }, user._id);
+    const userId = flashcard.userId.toString();
+    await this.flashcardModel.delete({ _id: id, deckId }, user._id);
+    await this.userStatisticService.createOrUpdate(userId);
+    return 'Flashcard was deleted successfully';
   }
 }

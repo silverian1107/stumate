@@ -7,10 +7,10 @@ import { NoteSchema } from '../notes/schema/note.schema';
 import { DeckSchema } from '../decks/schema/deck.schema';
 import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
 import { UserSchema } from '../users/schema/user.schema';
-import { User } from 'src/decorator/customize';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: 'Collection', schema: CollectionSchema },
     ]),
@@ -22,7 +22,6 @@ import { User } from 'src/decorator/customize';
         schema: QuizTestSchema,
       },
     ]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [SharedResourcesController],
   providers: [SharedResourcesService],

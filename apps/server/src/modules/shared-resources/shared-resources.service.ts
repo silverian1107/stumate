@@ -14,8 +14,7 @@ import {
   QuizTestDocument,
 } from '../quiz-tests/schema/quiz-test.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from 'src/decorator/customize';
-import { UserDocument } from '../users/schema/user.schema';
+import { User, UserDocument } from '../users/schema/user.schema';
 import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
@@ -36,26 +35,26 @@ export class SharedResourcesService {
   async handlePublishResource(resourceType: string, resourceId: string) {
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
+        return await this.collectionModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: true },
           { new: true },
         );
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
+        return await this.noteModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: true },
           { new: true },
         );
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
+        return await this.deckModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: true },
           { new: true },
         );
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
+        return await this.quizTestModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: true },
           { new: true },
         );
@@ -67,26 +66,26 @@ export class SharedResourcesService {
   async handleUnpublishResource(resourceType: string, resourceId: string) {
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
+        return await this.collectionModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: false },
           { new: true },
         );
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
+        return await this.noteModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: false },
           { new: true },
         );
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
+        return await this.deckModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: false },
           { new: true },
         );
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
+        return await this.quizTestModel.findOneAndUpdate(
+          { id: resourceId },
           { isPublished: false },
           { new: true },
         );
@@ -108,26 +107,26 @@ export class SharedResourcesService {
     }
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
+        return await this.collectionModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
+        return await this.noteModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
+        return await this.deckModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
+        return await this.quizTestModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { sharedWithUsers: user._id } },
           { new: true },
         );
@@ -149,26 +148,26 @@ export class SharedResourcesService {
     }
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
+        return await this.collectionModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
+        return await this.noteModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
+        return await this.deckModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { sharedWithUsers: user._id } },
           { new: true },
         );
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
+        return await this.quizTestModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { sharedWithUsers: user._id } },
           { new: true },
         );

@@ -98,7 +98,7 @@ export class DecksService {
   }
 
   async update(id: string, updateDeckDto: UpdateDeckDto, @User() user: IUser) {
-    return await this.deckModel.updateOne(
+    return await this.deckModel.findOneAndUpdate(
       { _id: id },
       {
         ...updateDeckDto,
@@ -107,6 +107,7 @@ export class DecksService {
           username: user.username,
         },
       },
+      { new: true },
     );
   }
 

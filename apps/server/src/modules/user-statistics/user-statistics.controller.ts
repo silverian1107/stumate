@@ -1,45 +1,34 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { UserStatisticsService } from './user-statistics.service';
-import { CreateUserStatisticDto } from './dto/create-user-statistic.dto';
-import { UpdateUserStatisticDto } from './dto/update-user-statistic.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { InjectModel } from '@nestjs/mongoose';
+import { SoftDeleteModel } from 'mongoose-delete';
+import { User as UserModel, UserDocument } from '../users/schema/user.schema';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
 
 @Controller('user-statistics')
 export class UserStatisticsController {
-  constructor(private readonly userStatisticsService: UserStatisticsService) {}
+  constructor(
+    private readonly userStatisticsService: UserStatisticsService,
+    @InjectModel(UserModel.name)
+    private readonly userModel: SoftDeleteModel<UserDocument>,
+  ) {}
 
-  @Post()
-  create(@Body() createUserStatisticDto: CreateUserStatisticDto) {
-    return this.userStatisticsService.create(createUserStatisticDto);
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async create() {
+    const users = await this.userModel.find().select('-password');
+    await Promise.all(
+      users.map((user) =>
+        this.userStatisticsService.createOrUpdate(user._id.toString()),
+      ),
+    );
   }
 
+  @Public()
   @Get()
-  findAll() {
-    return this.userStatisticsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userStatisticsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserStatisticDto: UpdateUserStatisticDto,
-  ) {
-    return this.userStatisticsService.update(+id, updateUserStatisticDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userStatisticsService.remove(+id);
+  @ResponseMessage('Fetch user statistic')
+  async getUserStatistic(@User() user: IUser) {
+    return await this.userStatisticsService.findOne(user);
   }
 }

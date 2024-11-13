@@ -20,6 +20,9 @@ import { TagsModule } from './modules/tags/tags.module';
 import { SharedResourcesModule } from './modules/shared-resources/shared-resources.module';
 import { UserStatisticsModule } from './modules/user-statistics/user-statistics.module';
 import MongooseDelete from 'mongoose-delete';
+import { ScheduleModule } from '@nestjs/schedule';
+import { GatewayModule } from './gateway/gateway.module';
+import { ArchiveModule } from './modules/archive/archive.module';
 
 @Module({
   imports: [
@@ -82,6 +85,9 @@ import MongooseDelete from 'mongoose-delete';
     TagsModule,
     SharedResourcesModule,
     UserStatisticsModule,
+    ScheduleModule.forRoot(),
+    GatewayModule,
+    ArchiveModule,
   ],
   controllers: [AppController],
   providers: [AppService],

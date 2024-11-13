@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type DeckDocument = HydratedDocument<Deck>;
 
@@ -60,3 +61,5 @@ export class Deck {
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);
+
+DeckSchema.plugin(archivePlugin);

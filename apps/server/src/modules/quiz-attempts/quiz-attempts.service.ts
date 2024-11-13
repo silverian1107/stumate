@@ -15,6 +15,7 @@ import mongoose from 'mongoose';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { UserStatisticsService } from '../user-statistics/user-statistics.service';
 
 @Injectable()
 export class QuizAttemptsService {
@@ -25,8 +26,10 @@ export class QuizAttemptsService {
     private readonly quizTests: QuizTestsService,
     @Inject(forwardRef(() => QuizQuestionsService))
     private readonly quizQuestions: QuizQuestionsService,
+    private readonly userStatisticService: UserStatisticsService,
   ) {}
 
+  //websocket
   async handleStartQuizAttempt(quizTestId: string, @User() user: IUser) {
     const quizTest = await this.quizTests.findOne(quizTestId);
     if (!quizTest) {
@@ -50,6 +53,7 @@ export class QuizAttemptsService {
         username: user.username,
       },
     });
+    await this.userStatisticService.createOrUpdate(user._id);
     return { newQuizAttempt, quizTest, user };
   }
 
@@ -59,7 +63,7 @@ export class QuizAttemptsService {
     userAnswersDto: UserAnswersDto,
     @User() user: IUser,
   ) {
-    return await this.quizAttemptModel.updateOne(
+    return await this.quizAttemptModel.findOneAndUpdate(
       { _id: id, quizTestId },
       {
         ...userAnswersDto,
@@ -68,6 +72,7 @@ export class QuizAttemptsService {
           username: user.username,
         },
       },
+      { new: true },
     );
   }
 
@@ -90,6 +95,7 @@ export class QuizAttemptsService {
     return isAllCorrect && countCorrectAnswer;
   }
 
+  //websocket
   async handleSubmitQuizAttempt(
     quizTestId: string,
     id: string,
@@ -141,7 +147,7 @@ export class QuizAttemptsService {
       await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWED' });
     }
     //Update quiz attempt
-    return await this.quizAttemptModel.updateOne(
+    const updateQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
       { _id: id, quizTestId },
       {
         score,
@@ -152,7 +158,10 @@ export class QuizAttemptsService {
           username: user.username,
         },
       },
+      { new: true },
     );
+    await this.userStatisticService.createOrUpdate(user._id);
+    return updateQuizAttempt;
   }
 
   async findByUserAndQuizTestId(quizTestId: string, @User() user: IUser) {
@@ -206,6 +215,7 @@ export class QuizAttemptsService {
     return quizAttempt;
   }
 
+  //websocket
   async remove(quizTestId: string, id: string, @User() user: IUser) {
     if (!(await this.quizTests.findOne(quizTestId))) {
       throw new NotFoundException('Not found quiz test');
@@ -217,6 +227,9 @@ export class QuizAttemptsService {
     if (!quizAttempt) {
       throw new NotFoundException('Not found quiz attempt');
     }
-    return this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
+    const userId = quizAttempt.userId.toString();
+    await this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
+    await this.userStatisticService.createOrUpdate(userId);
+    return 'Quiz attempt was deleted successfully';
   }
 }

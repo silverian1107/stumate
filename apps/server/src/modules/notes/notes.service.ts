@@ -11,6 +11,7 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note, NoteDocument } from './schema/note.schema';
 import { CollectionsService } from '../collections/collections.service';
 import { validateObjectId } from 'src/helpers/utils';
+import { UserStatisticsService } from '../user-statistics/user-statistics.service';
 
 @Injectable()
 export class NotesService {
@@ -18,8 +19,10 @@ export class NotesService {
     @InjectModel('Note')
     private readonly noteModel: Model<NoteDocument>,
     private readonly collectionService: CollectionsService,
+    private readonly userStatisticService: UserStatisticsService,
   ) {}
 
+  //websocket
   async create(newNoteData: CreateNoteDto) {
     validateObjectId([newNoteData.ownerId, newNoteData.parentId]);
 
@@ -54,7 +57,9 @@ export class NotesService {
       newNote.level = parent.level + 1;
 
       await parent.save();
-      return await newNote.save();
+      await newNote.save();
+      await this.userStatisticService.createOrUpdate(newNoteData.ownerId);
+      return newNote;
     } catch (error) {
       throw new Error(`Failed to create note: ${error.message}`);
     }
@@ -197,6 +202,7 @@ export class NotesService {
     return restoredNote.save();
   }
 
+  //websocket
   async deleteById(noteId: string) {
     validateObjectId(noteId, 'Note');
     const deletedNote = await this.noteModel.findById(noteId).exec();
@@ -209,7 +215,12 @@ export class NotesService {
       throw new BadRequestException('Note must be archived before delete');
     }
 
+    const userId = deletedNote.ownerId;
+
     deletedNote.isDeleted = true;
-    return deletedNote.save();
+    await deletedNote.save();
+
+    await this.userStatisticService.createOrUpdate(userId);
+    return 'Note was deleted successfully';
   }
 }

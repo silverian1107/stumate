@@ -95,10 +95,12 @@ export class UsersService {
   }
 
   handleVerifyActivationCode = async (codeAuthDto: CodeAuthDto) => {
-    const user = await this.userModel.findOne({
-      _id: codeAuthDto._id,
-      codeId: codeAuthDto.codeId,
-    });
+    const user = await this.userModel
+      .findOne({
+        _id: codeAuthDto._id,
+        codeId: codeAuthDto.codeId,
+      })
+      .select('-password');
     if (user) {
       //Check code expired
       const isCodeExpired = dayjs().isBefore(user.codeExpire);
@@ -154,10 +156,12 @@ export class UsersService {
   };
 
   handleVerifyPasswordResetCode = async (codeAuthDto: CodeAuthDto) => {
-    const user = await this.userModel.findOne({
-      _id: codeAuthDto._id,
-      codeId: codeAuthDto.codeId,
-    });
+    const user = await this.userModel
+      .findOne({
+        _id: codeAuthDto._id,
+        codeId: codeAuthDto.codeId,
+      })
+      .select('-password');
     if (!user) {
       throw new BadRequestException('Account does not exist');
     }
@@ -172,9 +176,11 @@ export class UsersService {
   handleChangePassword = async (
     changePasswordAuthDto: ChangePasswordAuthDto,
   ) => {
-    const user = await this.userModel.findOne({
-      email: changePasswordAuthDto.email,
-    });
+    const user = await this.userModel
+      .findOne({
+        email: changePasswordAuthDto.email,
+      })
+      .select('-password');
     if (!user) {
       throw new BadRequestException('Account does not exist');
     }
@@ -287,7 +293,7 @@ export class UsersService {
   }
 
   async update(updateUserDto: UpdateUserDto, @User() user: IUser) {
-    return await this.userModel.updateOne(
+    return await this.userModel.findOneAndUpdate(
       { _id: updateUserDto._id },
       {
         ...updateUserDto,
@@ -296,6 +302,7 @@ export class UsersService {
           username: user.username,
         },
       },
+      { new: true },
     );
   }
 

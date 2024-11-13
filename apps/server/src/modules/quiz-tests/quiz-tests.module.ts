@@ -11,6 +11,7 @@ import {
   QuizAttempt,
   QuizAttemptSchema,
 } from '../quiz-attempts/schema/quiz-attempt.schema';
+import { UserStatisticsModule } from '../user-statistics/user-statistics.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import {
         schema: QuizAttemptSchema,
       },
     ]),
+    UserStatisticsModule,
   ],
   controllers: [QuizTestsController],
   providers: [QuizTestsService],

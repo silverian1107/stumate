@@ -57,8 +57,14 @@ export class FlashcardsController {
     }));
   }
 
+  @Post('all')
+  @ResponseMessage('Get all flashcards by user and deck')
+  async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
+    return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
+  }
+
   @Post('study')
-  @ResponseMessage('Get flashcard by user and deck')
+  @ResponseMessage('Study flashcards')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleStudyFlashcard(deckId, user);
   }
