@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query } from '@nestjs/common';
 import { ArchiveService } from './archive.service';
 import { ResponseMessage } from 'src/decorator/customize';
 
@@ -30,18 +30,28 @@ export class ArchiveController {
     );
   }
 
-  @Get()
-  findAll() {
-    return this.archiveService.findAll();
+  @Get(':resourceType')
+  @ResponseMessage('Fetch list archived resources with pagination')
+  findAll(
+    @Param('resourceType') resourceType: string,
+    @Query('current') currentPage: string,
+    @Query('pageSize') pageSize: string,
+    @Query() qs: string,
+  ) {
+    return this.archiveService.findAll(
+      resourceType,
+      +currentPage,
+      +pageSize,
+      qs,
+    );
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.archiveService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.archiveService.remove(+id);
+  @Get(':resourceType/:resourceId')
+  @ResponseMessage('Fetch archived resources by id')
+  async findOne(
+    @Param('resourceType') resourceType: string,
+    @Param('resourceId') resourceId: string,
+  ) {
+    return await this.archiveService.findOne(resourceType, resourceId);
   }
 }

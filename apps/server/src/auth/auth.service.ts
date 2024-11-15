@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
@@ -14,6 +14,50 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
+
+  async handleGoogleAuthRedirect(user: IUser, response: Response) {
+    if (!user) {
+      new NotFoundException('Not found user google account');
+    }
+    let foundUser = await this.usersService.findUserByUsernameOrEmail(
+      user.email,
+    );
+    if (!foundUser) {
+      foundUser = await this.usersService.createSocialAccount(user);
+    }
+    const { _id, name, username, email, role, avatarUrl } = foundUser;
+    const payload = {
+      sub: 'token login',
+      iss: 'from server',
+      _id,
+      name,
+      username,
+      email,
+      role,
+      avatarUrl,
+    };
+    // Generate refresh token
+    const refreshToken = this.createRefreshToken(payload);
+    await this.usersService.updateUserToken(refreshToken, _id.toString());
+    // Set lastLogin to the current date and time
+    await this.usersService.updateLastLogin(_id.toString());
+    // Set cookie with the refresh token
+    response.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
+    });
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        _id,
+        name,
+        username,
+        email,
+        role,
+        avatarUrl,
+      },
+    };
+  }
 
   async validateUser(usernameOrEmail: string, pass: string): Promise<any> {
     const user =

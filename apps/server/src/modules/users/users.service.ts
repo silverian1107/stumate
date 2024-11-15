@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from './users.interface';
 import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
-import { User as UserModel, UserDocument } from './schema/user.schema';
+import { User as UserModel, UserDocument, AccountType } from './schema/user.schema';
 import { getHashPassword } from 'src/helpers/utils';
 import mongoose from 'mongoose';
 import {
@@ -38,6 +38,17 @@ export class UsersService {
     private readonly quizTestsService: QuizTestsService,
     private readonly tagsService: TagsService,
   ) {}
+
+  async createSocialAccount(user: IUser) {
+    const newUser = await this.userModel.create({
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      avatarUrl: user.avatarUrl,
+      accountType: AccountType.GOOGLE,
+    });
+    return newUser;
+  }
 
   async updateLastLogin(userId: string): Promise<void> {
     await this.userModel.updateOne({ _id: userId }, { lastLogin: new Date() });

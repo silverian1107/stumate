@@ -8,10 +8,11 @@ import ms from 'ms';
 import { LocalStrategy } from './passport/local.strategy';
 import { JwtStrategy } from './passport/jwt.strategy';
 import { UsersModule } from 'src/modules/users/users.module';
+import { GoogleStrategy } from './passport/google.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
   imports: [
     UsersModule,
     PassportModule,

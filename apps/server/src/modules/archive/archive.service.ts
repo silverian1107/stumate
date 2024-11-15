@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
 // import { CollectionDocument } from '../collections/schema/collection.schema';
@@ -8,6 +8,8 @@ import { FlashcardDocument } from '../flashcards/schema/flashcard.schema';
 import { QuizTestDocument } from '../quiz-tests/schema/quiz-test.schema';
 import { QuizQuestionDocument } from '../quiz-questions/schema/quiz-question.schema';
 import { QuizAttemptDocument } from '../quiz-attempts/schema/quiz-attempt.schema';
+import aqp from 'api-query-params';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class ArchiveService {
@@ -30,22 +32,6 @@ export class ArchiveService {
 
   async handleArchiveResource(resourceType: string, resourceId: string) {
     switch (resourceType) {
-      // case 'collection':
-      //   const notes = this.noteModel.updateMany(
-      //     {  },
-      //     { isArchived: true, archivedAt: new Date() },
-      //   );
-      //   return await this.collectionModel.findOneAndUpdate(
-      //     { _id: resourceId },
-      //     { isArchived: true, archivedAt: new Date() },
-      //     { new: true },
-      //   );
-      // case 'note':
-      //   return await this.noteModel.findOneAndUpdate(
-      //     { _id: resourceId },
-      //     { isArchived: true, archivedAt: new Date() },
-      //     { new: true },
-      //   );
       case 'deck':
         await this.flashcardModel.updateMany(
           { deckId: resourceId },
@@ -106,15 +92,77 @@ export class ArchiveService {
     }
   }
 
-  findAll() {
-    return `This action returns all archive`;
+  async findAll(
+    resourceType: string,
+    currentPage: number,
+    pageSize: number,
+    qs: string,
+  ) {
+    const { filter, sort, population, projection } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    filter.isArchived = true;
+
+    currentPage = currentPage ? currentPage : 1;
+    const limit = pageSize ? pageSize : 10;
+    const offset = (currentPage - 1) * limit;
+
+    let model: any;
+    switch (resourceType) {
+      case 'deck':
+        model = this.deckModel;
+        break;
+      case 'quiz':
+        model = this.quizTestModel;
+        break;
+      default:
+        throw new BadRequestException('Invalid resource type');
+    }
+
+    const totalItems = (await model.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const result = await model
+      .find(filter)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort as any)
+      .select('-userId')
+      .populate(population)
+      .select(projection as any)
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        total: totalItems,
+      },
+      result,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} archive`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} archive`;
+  async findOne(resourceType: string, resourceId: string) {
+    if (!mongoose.isValidObjectId(resourceId)) {
+      throw new BadRequestException('Invalid Resource ID');
+    }
+    let model: any;
+    switch (resourceType) {
+      case 'deck':
+        model = this.deckModel;
+        break;
+      case 'quiz':
+        model = this.quizTestModel;
+        break;
+      default:
+        throw new BadRequestException('Invalid resource type');
+    }
+    const resource = await model.findOne({ _id: resourceId, isArchived: true });
+    if (!resource) {
+      throw new NotFoundException(`Not found ${resourceType}`);
+    }
+    return resource;
   }
 }

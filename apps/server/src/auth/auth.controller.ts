@@ -18,6 +18,7 @@ import {
   RegisterUserDto,
 } from './dto/create-auth.dto';
 import { UsersService } from 'src/modules/users/users.service';
+import { GoogleAuthGuard } from './passport/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -105,5 +106,22 @@ export class AuthController {
     @User() user: IUser,
   ) {
     return this.authService.logout(response, user);
+  }
+
+  @Public()
+  @ResponseMessage('Login with google')
+  @Get('google/login')
+  @UseGuards(GoogleAuthGuard)
+  loginWithGoogle() {}
+
+  @Public()
+  @ResponseMessage('Login with google redirect')
+  @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthRedirect(
+    @User() user: IUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return await this.authService.handleGoogleAuthRedirect(user, response);
   }
 }
