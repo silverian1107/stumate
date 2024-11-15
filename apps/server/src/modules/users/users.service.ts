@@ -9,7 +9,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from './users.interface';
 import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
-import { User as UserModel, UserDocument, AccountType } from './schema/user.schema';
+import {
+  User as UserModel,
+  UserDocument,
+  AccountType,
+} from './schema/user.schema';
 import { getHashPassword } from 'src/helpers/utils';
 import mongoose from 'mongoose';
 import {
