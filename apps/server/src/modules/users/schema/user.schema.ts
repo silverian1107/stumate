@@ -3,12 +3,6 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
-export enum AccountType {
-  LOCAL = 'LOCAL',
-  GOOGLE = 'GOOGLE',
-  FACEBOOK = 'FACEBOOK',
-}
-
 @Schema({ timestamps: true })
 export class User {
   @Prop()
@@ -54,8 +48,11 @@ export class User {
   @Prop({ default: 'USER' })
   role: string;
 
-  @Prop({ default: AccountType.LOCAL })
-  accountType: AccountType;
+  @Prop()
+  accountId: string;
+
+  @Prop({ default: 'LOCAL' })
+  accountType: string;
 
   @Prop()
   lastLogin: Date;

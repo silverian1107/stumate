@@ -1,6 +1,5 @@
 import {
   IsDate,
-  IsEmail,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
@@ -23,10 +22,6 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   username: string;
-
-  @IsOptional()
-  @IsEmail()
-  email: string;
 
   @IsOptional()
   @IsDate()

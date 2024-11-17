@@ -19,6 +19,7 @@ import {
 } from './dto/create-auth.dto';
 import { UsersService } from 'src/modules/users/users.service';
 import { GoogleAuthGuard } from './passport/google-auth.guard';
+import { FacebookAuthGuard } from './passport/facebook-auth.guards';
 
 @Controller('auth')
 export class AuthController {
@@ -122,6 +123,23 @@ export class AuthController {
     @User() user: IUser,
     @Res({ passthrough: true }) response: Response,
   ) {
-    return await this.authService.handleGoogleAuthRedirect(user, response);
+    return await this.authService.handleSocialAuthRedirect(user, response);
+  }
+
+  @Public()
+  @ResponseMessage('Login with facebook')
+  @Get('facebook/login')
+  @UseGuards(FacebookAuthGuard)
+  loginWithFacebook() {}
+
+  @Public()
+  @ResponseMessage('Login with facebook redirect')
+  @Get('facebook/redirect')
+  @UseGuards(FacebookAuthGuard)
+  async facebookAuthRedirect(
+    @User() user: IUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return await this.authService.handleSocialAuthRedirect(user, response);
   }
 }

@@ -19,9 +19,9 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async handleGoogleAuthRedirect(user: IUser, response: Response) {
+  async handleSocialAuthRedirect(user: IUser, response: Response) {
     if (!user) {
-      new NotFoundException('Not found user google account');
+      throw new NotFoundException('Not found user account');
     }
     let foundUser = await this.usersService.findUserByUsernameOrEmail(
       user.email,
@@ -29,44 +29,37 @@ export class AuthService {
     if (!foundUser) {
       foundUser = await this.usersService.createSocialAccount(user);
     }
-    const { _id, name, username, email, role, avatarUrl } = foundUser;
-    const payload = {
-      sub: 'token login',
-      iss: 'from server',
-      _id,
-      name,
-      username,
-      email,
-      role,
-      avatarUrl,
+    if (!foundUser.accountId) {
+      foundUser = await this.usersService.updateUserSocialAccount(
+        foundUser._id.toString(),
+        user,
+      );
+    } else if (foundUser.accountId !== user.accountId) {
+      throw new BadRequestException(
+        'Email already exists with a different accountId. Please choose another login method',
+      );
+    }
+    const typedFoundUser: IUser = {
+      _id: foundUser._id.toString(),
+      name: foundUser.name,
+      username: foundUser.username,
+      email: foundUser.email,
+      role: foundUser.role,
+      accountId: foundUser.accountId,
+      accountType: foundUser.accountType,
     };
-    // Generate refresh token
-    const refreshToken = this.createRefreshToken(payload);
-    await this.usersService.updateUserToken(refreshToken, _id.toString());
-    // Set lastLogin to the current date and time
-    await this.usersService.updateLastLogin(_id.toString());
-    // Set cookie with the refresh token
-    response.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
-    });
-    return {
-      access_token: this.jwtService.sign(payload),
-      user: {
-        _id,
-        name,
-        username,
-        email,
-        role,
-        avatarUrl,
-      },
-    };
+    return await this.login(typedFoundUser, response);
   }
 
   async validateUser(usernameOrEmail: string, pass: string): Promise<any> {
     const user =
       await this.usersService.findUserByUsernameOrEmail(usernameOrEmail);
     if (user) {
+      if (!user.password) {
+        throw new BadRequestException(
+          'This email is associated with an another login method. Please use the correct login method',
+        );
+      }
       const isValidPassword = await comparePassword(pass, user.password);
       if (isValidPassword === true) {
         return user;
