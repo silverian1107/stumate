@@ -11,9 +11,9 @@ import {
   State,
 } from 'ts-fsrs';
 
-const dueCardsQuery = {
-  'repetitionData.due': { $lte: new Date() },
-};
+// const dueCardsQuery = {
+//   'repetitionData.due': { $lte: new Date() },
+// };
 
 @Injectable()
 export class SrsService {
@@ -64,25 +64,25 @@ export class SrsService {
     const f = fsrs(params);
 
     const scheduling_cards = f.repeat(emptyCard, new Date());
-    console.log(scheduling_cards);
+    // console.log(scheduling_cards);
 
     // Update the card with the scheduled information
-    // await this.srsModel.findByIdAndUpdate(cardId, {
-    //   $set: {
-    //     'repetitionData.due': scheduling_cards[Rating.Again].card.due,
-    //     'repetitionData.last_review': scheduling_cards[Rating.Again].log.review,
-    //     'repetitionData.stability':
-    //       scheduling_cards[Rating.Again].card.stability,
-    //     'repetitionData.difficulty':
-    //       scheduling_cards[Rating.Again].card.difficulty,
-    //     'repetitionData.reps': scheduling_cards[Rating.Again].card.reps + 1,
-    //     'repetitionData.lapses': scheduling_cards[Rating.Again].card.lapses,
-    //     'repetitionData.state': State.Review,
-    //   },
-    //   $inc: {
-    //     'repetitionData.elapsed_days': 1,
-    //   },
-    // });
+    await this.srsModel.findByIdAndUpdate(cardId, {
+      $set: {
+        'repetitionData.due': scheduling_cards[Rating.Again].card.due,
+        'repetitionData.last_review': scheduling_cards[Rating.Again].log.review,
+        'repetitionData.stability':
+          scheduling_cards[Rating.Again].card.stability,
+        'repetitionData.difficulty':
+          scheduling_cards[Rating.Again].card.difficulty,
+        'repetitionData.reps': scheduling_cards[Rating.Again].card.reps + 1,
+        'repetitionData.lapses': scheduling_cards[Rating.Again].card.lapses,
+        'repetitionData.state': State.Review,
+      },
+      $inc: {
+        'repetitionData.elapsed_days': 1,
+      },
+    });
   }
 
   async getDueCards(): Promise<Srs[]> {
