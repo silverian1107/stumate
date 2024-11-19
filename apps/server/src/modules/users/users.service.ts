@@ -27,7 +27,10 @@ import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { TagsService } from '../tags/tags.service';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { NotificationsService } from '../notifications/notifications.service';
-import { UserStatistic, UserStatisticDocument } from '../statistics/schema/user-statistic.schema';
+import {
+  UserStatistic,
+  UserStatisticDocument,
+} from '../statistics/schema/user-statistic.schema';
 
 @Injectable()
 export class UsersService {

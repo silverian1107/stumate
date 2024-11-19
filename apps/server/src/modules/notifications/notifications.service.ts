@@ -1,8 +1,16 @@
 import { MyGateway } from 'src/gateway/gateway';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { Notification, NotificationDocument, NotificationType } from './schema/notification.schema';
+import {
+  Notification,
+  NotificationDocument,
+  NotificationType,
+} from './schema/notification.schema';
 import { IUser } from '../users/users.interface';
 import mongoose from 'mongoose';
 
