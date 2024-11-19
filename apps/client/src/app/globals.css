@@ -108,6 +108,17 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  #editorjs h2, h2 {
+    @apply text-4xl font-bold text-black !important;
+  }
+
+  #editorjs h3, h3 {
+    @apply text-3xl font-bold text-black !important;
+  }
+
+  #editorjs h4, h4 {
+    @apply text-2xl font-bold text-black !important;
+  }
 }
 
 ::-webkit-scrollbar {

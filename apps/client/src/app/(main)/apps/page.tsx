@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import IconWrapper from './_components/IconWrapper';
 import { toast } from 'sonner';
+import CreateNote from './resources/note/create/page';
 
 const Main = () => {
   const router = useRouter();
@@ -61,6 +62,7 @@ const Main = () => {
           </div>
         </div>
       </div>
+
       {/* <div className="grid lg:grid-cols-4 gap-4 w-full h-[calc(100%-72px)] px-4 md:grid-cols-2 grid-cols-1 [&>*]:h-[172px] overflow-auto"></div> */}
     </div>
   );
