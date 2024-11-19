@@ -24,6 +24,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { GatewayModule } from './gateway/gateway.module';
 import { ArchiveModule } from './modules/archive/archive.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { TodoModule } from './modules/todo/todo.module';
+import { SummariesModule } from './modules/summaries/summaries.module';
 
 @Module({
   imports: [
@@ -90,6 +92,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     GatewayModule,
     ArchiveModule,
     NotificationsModule,
+    TodoModule,
+    SummariesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
