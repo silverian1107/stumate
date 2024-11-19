@@ -18,11 +18,12 @@ import { QuizAttemptsModule } from './modules/quiz-attempts/quiz-attempts.module
 import { QuizTestsModule } from './modules/quiz-tests/quiz-tests.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { SharedResourcesModule } from './modules/shared-resources/shared-resources.module';
-import { UserStatisticsModule } from './modules/user-statistics/user-statistics.module';
+import { StatisticsModule } from './modules/statistics/statistics.module';
 import MongooseDelete from 'mongoose-delete';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GatewayModule } from './gateway/gateway.module';
 import { ArchiveModule } from './modules/archive/archive.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -84,10 +85,11 @@ import { ArchiveModule } from './modules/archive/archive.module';
     QuizTestsModule,
     TagsModule,
     SharedResourcesModule,
-    UserStatisticsModule,
+    StatisticsModule,
     ScheduleModule.forRoot(),
     GatewayModule,
     ArchiveModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

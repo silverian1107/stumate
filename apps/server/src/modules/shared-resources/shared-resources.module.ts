@@ -7,6 +7,7 @@ import { NoteSchema } from '../notes/schema/note.schema';
 import { DeckSchema } from '../decks/schema/deck.schema';
 import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
 import { UserSchema } from '../users/schema/user.schema';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserSchema } from '../users/schema/user.schema';
         schema: QuizTestSchema,
       },
     ]),
+    NotificationsModule,
   ],
   controllers: [SharedResourcesController],
   providers: [SharedResourcesService],

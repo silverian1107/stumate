@@ -35,8 +35,8 @@ export class Deck {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
   tags: mongoose.Schema.Types.ObjectId[];
 
-  @Prop({ default: false })
-  isPublished: boolean;
+  // @Prop({ default: false })
+  // isPublished: boolean;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   sharedWithUsers: mongoose.Schema.Types.ObjectId[];

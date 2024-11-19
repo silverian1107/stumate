@@ -30,4 +30,12 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.error('Error', error);
     }
   }
+
+  sendNotification(data: any) {
+    try {
+      this.server.emit('send-notification', data);
+    } catch (error) {
+      console.error('Error', error);
+    }
+  }
 }

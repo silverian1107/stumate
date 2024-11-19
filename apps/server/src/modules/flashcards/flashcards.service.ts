@@ -19,7 +19,8 @@ import mongoose from 'mongoose';
 import { DecksService } from '../decks/decks.service';
 import dayjs from 'dayjs';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { UserStatisticsService } from '../user-statistics/user-statistics.service';
+import { StatisticsService } from '../statistics/statistics.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class FlashcardsService {
@@ -28,7 +29,8 @@ export class FlashcardsService {
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
     @Inject(forwardRef(() => DecksService))
     private readonly decks: DecksService,
-    private readonly userStatisticService: UserStatisticsService,
+    private readonly statisticsService: StatisticsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async handleGetAllFlashcards(deckId: string, user: IUser) {
@@ -62,7 +64,7 @@ export class FlashcardsService {
       },
     }));
     const newFlashcards = await this.flashcardModel.insertMany(flashcards);
-    await this.userStatisticService.createOrUpdate(user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newFlashcards;
   }
 
@@ -122,7 +124,7 @@ export class FlashcardsService {
         username: user.username,
       },
     });
-    await this.userStatisticService.createOrUpdate(user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newFlashcard;
   }
 
@@ -188,7 +190,7 @@ export class FlashcardsService {
       flashcard.state = State.Review;
     }
     await flashcard.save();
-    await this.userStatisticService.createOrUpdate(user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return {
       flashcard,
       isDueForReview,
@@ -222,6 +224,18 @@ export class FlashcardsService {
       lastStudied: new Date(),
     };
     await deck.save();
+    //send notification
+    const cardsDueToday =
+      await this.statisticsService.getFlashcardsDueTodayCount(
+        user._id.toString(),
+      );
+    if (cardsDueToday === 0) {
+      await this.notificationsService.sendSuccessNotification(
+        user,
+        `All Cards Completed!`,
+        `Awesome! You've finished reviewing all your cards for today. Keep it going!`,
+      );
+    }
     return deck;
   }
 
@@ -307,7 +321,7 @@ export class FlashcardsService {
     }
     const userId = flashcard.userId.toString();
     await this.flashcardModel.delete({ _id: id, deckId }, user._id);
-    await this.userStatisticService.createOrUpdate(userId);
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
     return 'Flashcard was deleted successfully';
   }
 }

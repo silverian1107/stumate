@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserStatisticsService } from './user-statistics.service';
-import { UserStatisticsController } from './user-statistics.controller';
+import { StatisticsService } from './statistics.service';
+import { StatisticsController } from './statistics.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from '../users/schema/user.schema';
 import { UserStatisticSchema } from './schema/user-statistic.schema';
@@ -32,8 +32,8 @@ import { GatewayModule } from 'src/gateway/gateway.module';
     ]),
     GatewayModule,
   ],
-  controllers: [UserStatisticsController],
-  providers: [UserStatisticsService],
-  exports: [UserStatisticsService],
+  controllers: [StatisticsController],
+  providers: [StatisticsService],
+  exports: [StatisticsService],
 })
-export class UserStatisticsModule {}
+export class StatisticsModule {}

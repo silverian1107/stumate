@@ -20,7 +20,7 @@ import {
   QuizQuestion,
   QuizQuestionDocument,
 } from '../quiz-questions/schema/quiz-question.schema';
-import { UserStatisticsService } from '../user-statistics/user-statistics.service';
+import { StatisticsService } from '../statistics/statistics.service';
 
 @Injectable()
 export class QuizTestsService {
@@ -31,7 +31,7 @@ export class QuizTestsService {
     private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
     @InjectModel(QuizQuestion.name)
     private readonly quizQuestionModel: SoftDeleteModel<QuizQuestionDocument>,
-    private readonly userStatisticService: UserStatisticsService,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   async findQuizTestByTitle(title: string) {
@@ -61,7 +61,7 @@ export class QuizTestsService {
         username: user.username,
       },
     });
-    await this.userStatisticService.createOrUpdate(user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newQuizTest;
   }
 
@@ -178,7 +178,7 @@ export class QuizTestsService {
     await this.quizAttemptModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz test
     await this.quizTestModel.delete({ _id: id }, user._id);
-    await this.userStatisticService.createOrUpdate(userId);
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
     return 'Quiz was deleted successfully';
   }
 }

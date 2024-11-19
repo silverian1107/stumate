@@ -48,8 +48,8 @@ export class TagsController {
 
   @Get()
   @ResponseMessage('Fetch list tag')
-  findAll(@User() user: IUser) {
-    return this.tagsService.findAll(user);
+  async findAll(@User() user: IUser) {
+    return await this.tagsService.findAll(user);
   }
 
   @Get(':id')

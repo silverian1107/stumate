@@ -25,7 +25,7 @@ import { IUser } from '../users/users.interface';
 import { MyGateway } from 'src/gateway/gateway';
 
 @Injectable()
-export class UserStatisticsService {
+export class StatisticsService {
   constructor(
     @InjectModel(UserStatistic.name)
     private readonly userStatisticModel: SoftDeleteModel<UserStatisticDocument>,
@@ -44,12 +44,12 @@ export class UserStatisticsService {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
     await this.userStatisticModel.findOne({
-      _id: user._id.toString(),
+      _id: user._id,
       today: startOfDay,
     });
   }
 
-  async createOrUpdate(userId: string) {
+  async createOrUpdateUserStatistics(userId: string) {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
@@ -135,6 +135,7 @@ export class UserStatisticsService {
       sessionsThisWeek: 0,
       monthlyStudyHeatmap: [],
     });
+    this.myGateway.sendUpdate(newUserStatistic);
 
     return newUserStatistic;
   }
@@ -221,16 +222,17 @@ export class UserStatisticsService {
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date();
     endOfDay.setHours(23, 59, 59, 999);
-    const totalFlashcardsLearningToday =
+    const totalFlashcardsCompletedToday =
       await this.getFlashcardsCompletedToday(userId);
-    const flashcardsCompletedToday = await this.flashcardModel.countDocuments({
-      userId,
-      updatedAt: { $gte: startOfDay, $lte: endOfDay },
-      rating: { $in: [Rating.Good, Rating.Easy] },
-    });
+    const totalFlashcardsMasteryToday =
+      await this.flashcardModel.countDocuments({
+        userId,
+        updatedAt: { $gte: startOfDay, $lte: endOfDay },
+        rating: { $in: [Rating.Good, Rating.Easy] },
+      });
     const progress =
-      totalFlashcardsLearningToday > 0
-        ? (flashcardsCompletedToday / totalFlashcardsLearningToday) * 100
+      totalFlashcardsCompletedToday > 0
+        ? (totalFlashcardsMasteryToday / totalFlashcardsCompletedToday) * 100
         : 0;
     return progress;
   }

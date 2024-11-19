@@ -26,6 +26,8 @@ import { DecksService } from '../decks/decks.service';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { TagsService } from '../tags/tags.service';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { NotificationsService } from '../notifications/notifications.service';
+import { UserStatistic, UserStatisticDocument } from '../statistics/schema/user-statistic.schema';
 
 @Injectable()
 export class UsersService {
@@ -37,6 +39,9 @@ export class UsersService {
     private readonly decksService: DecksService,
     private readonly quizTestsService: QuizTestsService,
     private readonly tagsService: TagsService,
+    private readonly notificationsService: NotificationsService,
+    @InjectModel(UserStatistic.name)
+    private readonly userStatisticModel: SoftDeleteModel<UserStatisticDocument>,
   ) {}
 
   async updateUserSocialAccount(userId: string, user: IUser) {
@@ -317,7 +322,7 @@ export class UsersService {
   }
 
   async update(updateUserDto: UpdateUserDto, @User() user: IUser) {
-    return await this.userModel.findOneAndUpdate(
+    const updatedProfile = await this.userModel.findOneAndUpdate(
       { _id: updateUserDto._id },
       {
         ...updateUserDto,
@@ -328,6 +333,13 @@ export class UsersService {
       },
       { new: true },
     );
+    //send notification
+    await this.notificationsService.sendSuccessNotification(
+      updatedProfile,
+      `Profile Updated`,
+      `Your profile has been updated successfully.`,
+    );
+    return updatedProfile;
   }
 
   async remove(id: string, @User() user: IUser) {
@@ -357,6 +369,10 @@ export class UsersService {
         this.quizTestsService.remove(quizTest._id.toString(), user),
       ),
     );
+    //soft delete for all notification
+    await this.notificationsService.removeAll(user);
+    //soft delete for all statistic
+    this.userStatisticModel.delete({ userId: id });
     //soft delete for user
     return this.userModel.delete({ _id: id }, user._id);
   }

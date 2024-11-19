@@ -11,7 +11,7 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note, NoteDocument } from './schema/note.schema';
 import { CollectionsService } from '../collections/collections.service';
 import { validateObjectId } from 'src/helpers/utils';
-import { UserStatisticsService } from '../user-statistics/user-statistics.service';
+import { StatisticsService } from '../statistics/statistics.service';
 
 @Injectable()
 export class NotesService {
@@ -19,7 +19,7 @@ export class NotesService {
     @InjectModel('Note')
     private readonly noteModel: Model<NoteDocument>,
     private readonly collectionService: CollectionsService,
-    private readonly userStatisticService: UserStatisticsService,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   //websocket
@@ -58,7 +58,9 @@ export class NotesService {
 
       await parent.save();
       await newNote.save();
-      await this.userStatisticService.createOrUpdate(newNoteData.ownerId);
+      await this.statisticsService.createOrUpdateUserStatistics(
+        newNoteData.ownerId,
+      );
       return newNote;
     } catch (error) {
       throw new Error(`Failed to create note: ${error.message}`);
@@ -220,7 +222,7 @@ export class NotesService {
     deletedNote.isDeleted = true;
     await deletedNote.save();
 
-    await this.userStatisticService.createOrUpdate(userId);
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
     return 'Note was deleted successfully';
   }
 }

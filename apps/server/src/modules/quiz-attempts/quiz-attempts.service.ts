@@ -15,7 +15,8 @@ import mongoose from 'mongoose';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { UserStatisticsService } from '../user-statistics/user-statistics.service';
+import { StatisticsService } from '../statistics/statistics.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class QuizAttemptsService {
@@ -26,7 +27,8 @@ export class QuizAttemptsService {
     private readonly quizTests: QuizTestsService,
     @Inject(forwardRef(() => QuizQuestionsService))
     private readonly quizQuestions: QuizQuestionsService,
-    private readonly userStatisticService: UserStatisticsService,
+    private readonly statisticsService: StatisticsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   //websocket
@@ -53,7 +55,7 @@ export class QuizAttemptsService {
         username: user.username,
       },
     });
-    await this.userStatisticService.createOrUpdate(user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return { newQuizAttempt, quizTest, user };
   }
 
@@ -63,7 +65,11 @@ export class QuizAttemptsService {
     userAnswersDto: UserAnswersDto,
     @User() user: IUser,
   ) {
-    return await this.quizAttemptModel.findOneAndUpdate(
+    const quizTest = await this.quizTests.findOne(quizTestId);
+    if (!quizTest) {
+      throw new NotFoundException('Not found quiz test');
+    }
+    const updatedQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
       { _id: id, quizTestId },
       {
         ...userAnswersDto,
@@ -74,6 +80,13 @@ export class QuizAttemptsService {
       },
       { new: true },
     );
+    //send notification
+    await this.notificationsService.sendInfoNotification(
+      user,
+      `Quiz Submission Reminder`,
+      `Your quiz '${quizTest.title}' is in progress and has not been submitted. Don't forget to submit it when you're done!`,
+    );
+    return updatedQuizAttempt;
   }
 
   checkAnswerCorrect(question: any, userAnswers: string[]) {
@@ -94,6 +107,23 @@ export class QuizAttemptsService {
     const countCorrectAnswer = userAnswerSet.size === correctOptions.length;
     return isAllCorrect && countCorrectAnswer;
   }
+
+  message = (
+    correctAnswers: number,
+    totalQuestions: number,
+    quizTitle: string,
+  ) => {
+    const percentage = (correctAnswers / totalQuestions) * 100;
+    if (percentage >= 90) {
+      return `Excellent! You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Keep up the great work!`;
+    } else if (percentage >= 80) {
+      return `Well done! You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Keep pushing forward!`;
+    } else if (percentage >= 50) {
+      return `Good job! You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Keep improving and you'll get there!`;
+    } else {
+      return `You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Don't be discouraged, try again and improve your results!`;
+    }
+  };
 
   //websocket
   async handleSubmitQuizAttempt(
@@ -160,7 +190,18 @@ export class QuizAttemptsService {
       },
       { new: true },
     );
-    await this.userStatisticService.createOrUpdate(user._id);
+    //update user statistic
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
+    //send notification
+    await this.notificationsService.sendSuccessNotification(
+      user,
+      `Quiz Completed`,
+      this.message(
+        updateQuizAttempt.correctAnswers,
+        updateQuizAttempt.totalQuestions,
+        quizTest.title,
+      ),
+    );
     return updateQuizAttempt;
   }
 
@@ -229,7 +270,7 @@ export class QuizAttemptsService {
     }
     const userId = quizAttempt.userId.toString();
     await this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
-    await this.userStatisticService.createOrUpdate(userId);
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
     return 'Quiz attempt was deleted successfully';
   }
 }

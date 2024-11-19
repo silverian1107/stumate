@@ -29,8 +29,8 @@ export class QuizTest {
   @Prop({ enum: Status, default: Status.NOT_STARTED })
   status: string;
 
-  @Prop()
-  isPublished: boolean;
+  // @Prop()
+  // isPublished: boolean;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
