@@ -1,13 +1,13 @@
 'use client';
 
-import { useDeckManager } from '@/hooks/use-deck';
 import { setFlashcards } from '@/redux/slices/resourceSlice';
 import { RootState } from '@/redux/store';
 import { Deck } from '@/types/deck';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ResourceElements } from '../../_components/creator';
-import { ResourceHeader } from '../../_components/header';
+import { useDeckManager } from '@/hooks/use-deck';
+import { ResourceHeader } from '../../../_components/header';
+import { ResourceElements } from '../../../_components/creator';
 
 export default function ResourcePage() {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ export default function ResourcePage() {
       <ResourceHeader
         initialData={initialResource}
         isEditing={isEditing}
-        onSubmit={handleSubmit} // Pass handleSubmit to ResourceHeader
+        onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
       />
       <ResourceElements />

@@ -7,11 +7,13 @@ import { cn } from '@/lib/utils';
 
 import ActionButton from '../_components/action-button';
 import { SlidingTabBar } from '../_components/tab';
+import { useAccount } from '@/hooks/use-auth';
 
 export default function Layout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
   const [isFocused, setIsFocused] = useState(false);
+  const user = useAccount();
 
   return (
     <div className="flex size-full flex-col gap-3 px-2 py-4 md:p-8">

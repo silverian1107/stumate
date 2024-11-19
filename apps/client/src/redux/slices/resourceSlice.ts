@@ -30,12 +30,9 @@ const resourceSlice = createSlice({
       const { index, fieldName, value } = action.payload;
       const card = state.flashcards[index];
 
-      // Update the field value
       (card as unknown as Record<string, string>)[fieldName] = value;
 
-      // Update action only if card isn't deleted
       if (!card.isDeleted) {
-        // If it's a new card (created in this session), keep it as 'create'
         card.action = card.originalAction || 'update';
       }
     },

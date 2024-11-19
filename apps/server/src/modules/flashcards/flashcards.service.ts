@@ -85,8 +85,8 @@ export class FlashcardsService {
       },
     }));
 
-    const result = await this.flashcardModel.bulkWrite(bulkOperations);
-    return result;
+    await this.flashcardModel.bulkWrite(bulkOperations);
+    return { message: 'Update flashcard successfully' };
   }
 
   getIntervalDate = (interval: number, date?: number) => {

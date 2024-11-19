@@ -1,24 +1,24 @@
-import type { FlashcardElement } from '@/types/deck';
-
+import { FlashcardElement } from '@/types/deck';
 import { AxiosClient, DeckClient } from './AxiosClient';
 
 export const FlashcardApi = {
-  async findByOwner() {
+  findByOwner: async function () {
     return AxiosClient.get('/flashcards');
   },
 
-  async createDeck(data: { name: string; description: string }) {
+  createDeck: async function (data: { name: string; description: string }) {
     return AxiosClient.post('/flashcards', data);
   },
 
-  async bulkCreate(deckId: string, flashcards: FlashcardElement[]) {
+  bulkCreate: async function (deckId: string, flashcards: FlashcardElement[]) {
     return DeckClient.post(`/${deckId}/flashcards/bulk/create`, flashcards);
   },
-  async bulkUpdate(deckId: string, flashcards: FlashcardElement[]) {
+
+  bulkUpdate: async function (deckId: string, flashcards: FlashcardElement[]) {
     return DeckClient.post(`/${deckId}/flashcards/bulk/update`, flashcards);
   },
 
-  async findAllInDeck(deckId: string) {
+  findAllInDeck: async function (deckId: string) {
     return DeckClient.get(`/${deckId}/flashcards/all`);
-  }
+  },
 };
