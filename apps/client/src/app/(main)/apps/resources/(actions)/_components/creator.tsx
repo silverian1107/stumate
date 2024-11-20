@@ -1,12 +1,14 @@
 'use client';
 
+import { useSelector } from 'react-redux';
+
 import {
   addFlashcard,
   clearFlashcards,
-  removeAllCards,
+  removeAllCards
 } from '@/redux/slices/resourceSlice';
-import { RootState } from '@/redux/store';
-import { useSelector } from 'react-redux';
+import type { RootState } from '@/redux/store';
+
 import FlashcardField from './flashcard-field';
 import ResourceActionButton from './resource-action-button';
 
