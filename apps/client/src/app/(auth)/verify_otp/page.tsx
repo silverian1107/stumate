@@ -1,6 +1,4 @@
-
 import VerifyOTPForm from './VerifyOTPForm';
-
 
 export default function RegisterPage() {
   return (
@@ -10,7 +8,6 @@ export default function RegisterPage() {
       </p>
       <div className="bg-white px-8 py-8 rounded w-[380px] lg:w-[480px] border border-primary-main/40">
         <VerifyOTPForm />
-        
       </div>
     </div>
   );

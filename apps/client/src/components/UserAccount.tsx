@@ -1,6 +1,8 @@
-import { useAccount } from '@/hooks/use-auth';
-import { ArrowRight, LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
+import { ArrowRight, LoaderCircle } from 'lucide-react';
+
+import { useAccount } from '@/hooks/use-auth';
+
 import { Button } from './ui/button';
 const LoginStatus = () => {
   const { data, isLoading, error } = useAccount();

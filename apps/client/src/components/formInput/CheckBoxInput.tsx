@@ -1,6 +1,6 @@
-import { Checkbox } from '@mui/material';
-
 import { ChangeEventHandler } from 'react';
+
+import { Checkbox } from '@mui/material';
 
 interface CheckBoxInputProps {
   onChange: ChangeEventHandler<HTMLInputElement>;

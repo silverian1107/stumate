@@ -1,14 +1,15 @@
 'use client';
 
-import FormField from '@/components/FormField';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button } from '@mui/material';
-import { verifyOtpSchema, VerifyOtpValues } from '@/app/libs/Validation';
-import { useForm } from 'react-hook-form';
-import OTPInput from '@/components/formInput/OTPInput';
-import { useResendOTPMutation, useVerifyOTPMutation } from '@/service/rootApi';
 import { useEffect } from 'react';
 import { redirect, useSearchParams } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+
+import { verifyOtpSchema, VerifyOtpValues } from '@/app/libs/Validation';
+import FormField from '@/components/FormField';
+import OTPInput from '@/components/formInput/OTPInput';
+import { useResendOTPMutation, useVerifyOTPMutation } from '@/service/rootApi';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button } from '@mui/material';
 
 export default function VerifyOTPForm() {
   const searchParam = useSearchParams();
@@ -36,9 +37,9 @@ export default function VerifyOTPForm() {
     }
   }, [isResendSuccess, isVerifySuccess]);
   const handleResend = () => {
-    resendOTP({email: email as string})
-    console.log({email})
-  }
+    resendOTP({ email: email as string });
+    console.log({ email });
+  };
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<VerifyOtpValues>

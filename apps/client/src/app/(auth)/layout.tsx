@@ -1,5 +1,6 @@
-import { ArrowBack } from '@mui/icons-material';
 import Link from 'next/link';
+
+import { ArrowBack } from '@mui/icons-material';
 
 export default function AuthLayout({
   children,

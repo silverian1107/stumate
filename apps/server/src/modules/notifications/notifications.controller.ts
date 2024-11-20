@@ -47,7 +47,7 @@ export class NotificationsController {
             ),
         ),
       );
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Failed to create notifications');
     }
   }
@@ -73,7 +73,7 @@ export class NotificationsController {
           }
         }),
       );
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Failed to send notification');
     }
   }

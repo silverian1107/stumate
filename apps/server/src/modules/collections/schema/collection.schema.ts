@@ -51,7 +51,7 @@ export class Collection {
   @Prop()
   deletedAt: Date;
 
-  @Prop()
+  @Prop({ default: false })
   isDeleted: boolean;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })

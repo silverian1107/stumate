@@ -1,8 +1,6 @@
 'use client';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAccount } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   Archive,
   ArrowRightCircle,
@@ -16,28 +14,29 @@ import {
   Sparkle,
   Tags,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { toast } from 'sonner';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAccount } from '@/hooks/use-auth';
+import { cn } from '@/lib/utils';
+
 import DocumentList from './DocumentList';
 import SidebarItem from './SidebarItem';
 
-interface SidebarProps {}
+// interface SidebarProps {}
 
-const Sidebar = ({}: SidebarProps) => {
+const Sidebar = () => {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { data, error, isLoading } = useAccount();
-  const { toast } = useToast();
 
   if (isLoading || error || !data) {
     return null;
   }
 
   const handleCreate = () => {
-    toast({
-      title: 'Coming Soon',
+    toast('Coming Soon', {
       description: 'This feature will be available soon.',
-      variant: 'default',
     });
   };
 

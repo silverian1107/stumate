@@ -1,12 +1,13 @@
+import Link from 'next/link';
+import { PlusIcon, Settings } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PlusIcon, Settings } from 'lucide-react';
-import Link from 'next/link';
 
 const ActionButton = () => {
   return (
@@ -20,9 +21,7 @@ const ActionButton = () => {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button>
-            <span>
-              <PlusIcon className="text-white" />
-            </span>
+            <PlusIcon className="text-white" />
             Create new
           </Button>
         </DropdownMenuTrigger>

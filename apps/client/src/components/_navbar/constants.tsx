@@ -6,14 +6,14 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: 'Search',
     path: '/search',
-    icon: <Icon icon="lucide:search" width="24" height="24"/>
+    icon: <Icon icon="lucide:search" width="24" height="24" />,
   },
   {
     title: 'Dashboard',
     path: '/',
     icon: <Icon icon="lucide:home" width="24" height="24" />,
   },
-  
+
   {
     title: 'Inbox',
     path: '/inbox',

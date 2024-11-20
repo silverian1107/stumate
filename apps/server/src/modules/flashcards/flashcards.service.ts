@@ -9,7 +9,10 @@ import {
   CreateFlashcardDto,
   MarkFlashcardDTO,
 } from './dto/create-flashcard.dto';
-import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
+import {
+  UpdateFlashcardDto,
+  UpdateMultipleFlashcardDto,
+} from './dto/update-flashcard.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
@@ -48,14 +51,14 @@ export class FlashcardsService {
   //websocket
   async createMultiple(
     deckId: string,
-    createFlashcardDtos: CreateFlashcardDto[],
+    createFlashcardData: CreateFlashcardDto[],
     user: IUser,
   ) {
     if (!(await this.decks.findOne(deckId))) {
       throw new NotFoundException('Not found deck');
     }
-    const flashcards = createFlashcardDtos.map((createFlashcardDto) => ({
-      ...createFlashcardDto,
+    const flashcards = createFlashcardData.map((cards) => ({
+      ...cards,
       deckId: deckId,
       userId: user._id,
       createdBy: {
@@ -66,6 +69,24 @@ export class FlashcardsService {
     const newFlashcards = await this.flashcardModel.insertMany(flashcards);
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newFlashcards;
+  }
+
+  async updateMultiple(
+    deckId: string,
+    updateFlashcardData: UpdateMultipleFlashcardDto[],
+  ) {
+    if (!(await this.decks.findOne(deckId))) {
+      throw new NotFoundException('Deck not found');
+    }
+    const bulkOperations = updateFlashcardData.map((flashcard) => ({
+      updateOne: {
+        filter: { _id: flashcard._id },
+        update: { front: flashcard.front, back: flashcard.back },
+      },
+    }));
+
+    const result = await this.flashcardModel.bulkWrite(bulkOperations);
+    return result;
   }
 
   getIntervalDate = (interval: number, date?: number) => {

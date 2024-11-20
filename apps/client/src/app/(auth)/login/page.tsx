@@ -1,7 +1,9 @@
 import Link from 'next/link';
-import LoginForm from './LoginForm';
-import { Apple } from '@mui/icons-material';
+
 import GoogleIcon from '@/access/GoogleIcon';
+import { Apple } from '@mui/icons-material';
+
+import LoginForm from './LoginForm';
 
 export default function LoginPage() {
   return (
@@ -35,7 +37,7 @@ export default function LoginPage() {
               href=""
               className="flex gap-0.5 px-1 py-1 items-center justify-center grow border border-black/20 rounded"
             >
-              <GoogleIcon/>
+              <GoogleIcon />
               <span className="text-black/60">Sign in with Google</span>
             </Link>
           </div>

@@ -1,14 +1,16 @@
 'use client';
-import theme from '@/theme';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { Lexend_Deca } from 'next/font/google';
-import './globals.css';
+import { Toaster } from 'sonner';
+
 import SnackBar from '@/components/SnackBar';
+import StoreProvider from '@/redux/StoreProvider';
+import theme from '@/theme';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 
 import RqProvider from './libs/RqProvider';
-import { Toaster } from '@/components/ui/toaster';
-import StoreProvider from '@/redux/StoreProvider';
+
+import './globals.css';
 
 const lexendDeca = Lexend_Deca({
   variable: '--font-lexend-deca',
@@ -29,7 +31,7 @@ export default function RootLayout({
               <ThemeProvider theme={theme}>
                 <RqProvider>
                   {children}
-                  <Toaster />
+                  <Toaster position="top-right" />
                   <SnackBar />
                 </RqProvider>
               </ThemeProvider>

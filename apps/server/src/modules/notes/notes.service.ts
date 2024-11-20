@@ -1,19 +1,17 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import aqp from 'api-query-params';
 import mongoose, { Model } from 'mongoose';
+import { validateObjectId } from 'src/helpers/utils';
+import { CollectionsService } from '../collections/collections.service';
+import { StatisticsService } from '../statistics/statistics.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note, NoteDocument } from './schema/note.schema';
-import { CollectionsService } from '../collections/collections.service';
-import { validateObjectId } from 'src/helpers/utils';
-import { StatisticsService } from '../statistics/statistics.service';
 
 @Injectable()
 export class NotesService {
@@ -45,18 +43,10 @@ export class NotesService {
       ]);
 
       const parent = parentNote || parentCollection;
-      if (!parent)
+      if (!parent) {
         throw new NotFoundException(
-          `Couldn't find the collection with ID: ${parentId}`,
+          `Couldn't find the parent with ID: ${parentId}`,
         );
-      if (parent.ownerId.toString() !== userId)
-        throw new UnauthorizedException(
-          'You are not authorized to create a note in this collection',
-        );
-
-      // Add new attachments
-      if (attachment && attachment.length > 0) {
-        newNote.attachment = attachment;
       }
 
       newNote.parentId = parent._id as string;
@@ -70,14 +60,10 @@ export class NotesService {
 
       await parent.save();
       await newNote.save();
-      await this.statisticsService.createOrUpdateUserStatistics(
-        newNoteData.ownerId,
-      );
+      await this.statisticsService.createOrUpdateUserStatistics(userId);
       return newNote;
     } catch (error) {
-      throw new InternalServerErrorException(
-        `Failed to create note: ${error.message}`,
-      );
+      throw new Error(`Failed to create note: ${error.message}`);
     }
   }
 

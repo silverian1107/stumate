@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { login, logout } from '../redux/slices/authSlice';
 import {
-  createApi,
-  fetchBaseQuery,
   BaseQueryFn,
+  createApi,
   FetchArgs,
+  fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
+
+import { login, logout } from '../redux/slices/authSlice';
 import { RootState } from '../redux/store';
 
 interface AuthResponse {
@@ -104,9 +105,9 @@ export const rootApi = createApi({
       { success: boolean },
       { email: string; otp: string }
     >({
-      query: ({ email, codeId }) => ({
+      query: ({ email, otp }) => ({
         url: '/auth/verify-activation-code',
-        body: { email, codeId },
+        body: { email, otp },
         method: 'POST',
       }),
     }),

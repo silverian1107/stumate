@@ -1,11 +1,4 @@
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+import Link from 'next/link';
 import {
   ChevronDown,
   ChevronRight,
@@ -14,7 +7,15 @@ import {
   Plus,
   Trash,
 } from 'lucide-react';
-import Link from 'next/link';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
 interface SidebarItemProps {
   label: string;
@@ -55,7 +56,12 @@ const SidebarItem = ({
   return (
     <Link
       href={href ? href : '#'}
-      onClick={onClick}
+      onClick={() => {
+        if (type === 'Collection') {
+          return;
+        }
+        onClick?.();
+      }}
       role="button"
       className={cn(
         'flex font-medium pr-2 transition-all text-sm gap-2 items-center group',

@@ -1,13 +1,31 @@
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import Link from 'next/link';
 import { PenLine, PlayIcon } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { FlashcardApi } from '@/endpoints/flashcard-api';
+import { useQuery } from '@tanstack/react-query';
+
 interface ResourceCardProps {
+  id: string;
   name: string;
   description: string;
 }
 
-const ResourceCard = ({ name, description }: ResourceCardProps) => {
+const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['flashcardsByDeckId', id],
+    queryFn: async () => {
+      const response = (await FlashcardApi.findAllInDeck(id)).data;
+      console.log(response);
+      return response.data;
+    },
+  });
+
+  if (isLoading || error || !data) return null;
+
+  console.log(data);
+
   return (
     <div className="w-full bg-white rounded-sm px-4 py-3 flex flex-col text-base gap-3 justify-between">
       <div className="w-full flex items-center justify-end gap-1">
@@ -22,7 +40,7 @@ const ResourceCard = ({ name, description }: ResourceCardProps) => {
         <h1 className="text-xl font-bold -mb-1">
           {name}{' '}
           <span className="font-semibold text-lg text-primary-600 ">
-            (45 cards)
+            ({data.length} cards)
           </span>
         </h1>
         <h2 className="text-primary-950/50 font-semibold line-clamp-1">
@@ -45,9 +63,11 @@ const ResourceCard = ({ name, description }: ResourceCardProps) => {
       </div>
       <Progress value={75} />
       <div className="w-full flex justify-end gap-2">
-        <Button variant="secondary" className="px-4 hover:bg-primary-100/80">
-          <PenLine /> Edit
-        </Button>
+        <Link href={`decks/new/${id}`}>
+          <Button variant="secondary" className="px-4 hover:bg-primary-100/80">
+            <PenLine /> Edit
+          </Button>
+        </Link>
         <Button variant="default" className="px-6">
           <PlayIcon /> Study
         </Button>

@@ -127,18 +127,17 @@ export class UsersService {
   }
 
   handleVerifyActivationCode = async (codeAuthDto: CodeAuthDto) => {
-    const user = await this.userModel
-      .findOne({
-        _id: codeAuthDto._id,
-        codeId: codeAuthDto.codeId,
-      })
-      .select('-password');
+    const user = await this.userModel.findOne({
+      email: codeAuthDto.email,
+      codeId: codeAuthDto.codeId,
+    });
+
     if (user) {
       //Check code expired
       const isCodeExpired = dayjs().isBefore(user.codeExpire);
       if (isCodeExpired) {
         await this.userModel.updateOne(
-          { _id: codeAuthDto._id },
+          { email: codeAuthDto.email },
           { isActive: true },
         );
         return user;
@@ -190,7 +189,7 @@ export class UsersService {
   handleVerifyPasswordResetCode = async (codeAuthDto: CodeAuthDto) => {
     const user = await this.userModel
       .findOne({
-        _id: codeAuthDto._id,
+        email: codeAuthDto.email,
         codeId: codeAuthDto.codeId,
       })
       .select('-password');

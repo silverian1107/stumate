@@ -1,6 +1,8 @@
 import Link from 'next/link';
-import RegisterForm from './RegisterForm';
+
 import { Apple } from '@mui/icons-material';
+
+import RegisterForm from './RegisterForm';
 
 export default function RegisterPage() {
   return (

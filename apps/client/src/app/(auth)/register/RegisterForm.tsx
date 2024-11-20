@@ -1,20 +1,19 @@
 'use client';
 
+import { useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import { registerSchema, RegisterValues } from '@/app/libs/Validation';
 import FormField from '@/components/FormField';
+import CheckBoxInput from '@/components/formInput/CheckBoxInput';
+import TextInput from '@/components/formInput/TextInput';
+import { openSnackbar } from '@/redux/slices/snackbarSlice';
+import { useRegisterMutation } from '@/service/rootApi';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, FormHelperText } from '@mui/material';
-import TextInput from '@/components/formInput/TextInput';
-import { registerSchema, RegisterValues } from '@/app/libs/Validation';
-import { useForm } from 'react-hook-form';
-import CheckBoxInput from '@/components/formInput/CheckBoxInput';
-import Link from 'next/link';
-import { useEffect } from 'react';
-import { useRegisterMutation } from '@/service/rootApi';
-import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
-import { openSnackbar } from '@/redux/slices/snackbarSlice';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 
 export default function RegisterForm() {
   const router = useRouter();

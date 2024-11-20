@@ -1,7 +1,9 @@
 'use client';
-import { cn } from '@/lib/utils';
-import { SearchIcon } from 'lucide-react';
 import { useState } from 'react';
+import { SearchIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 import ActionButton from '../_components/action-button';
 import { SlidingTabBar } from '../_components/tab';
 

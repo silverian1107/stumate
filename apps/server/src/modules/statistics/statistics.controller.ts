@@ -29,7 +29,7 @@ export class StatisticsController {
             ),
         ),
       );
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException(
         'Failed to create new user statistics',
       );

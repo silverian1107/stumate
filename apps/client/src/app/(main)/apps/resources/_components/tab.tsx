@@ -1,13 +1,13 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
 
 const allTabs = [
   {
     id: 'flashcard',
     name: 'Flashcards',
-    href: '/cards',
+    href: '/decks',
   },
   {
     id: 'quizz',

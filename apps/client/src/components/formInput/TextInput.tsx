@@ -1,6 +1,6 @@
-import { TextField } from '@mui/material';
-
 import { ChangeEventHandler } from 'react';
+
+import { TextField } from '@mui/material';
 
 interface TextInputProps {
   onChange?: ChangeEventHandler<HTMLInputElement>;

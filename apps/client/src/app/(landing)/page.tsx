@@ -1,12 +1,12 @@
 'use client';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { Button as CustomizedButton } from '@/components/ui/button';
 import { FlipWords } from '@/components/ui/flip-words';
 import LoginStatus from '@/components/UserAccount';
 import { AppBar, Toolbar } from '@mui/material';
-import { motion } from 'framer-motion';
-
-import Link from 'next/link';
 
 export default function Landing() {
   const words = [

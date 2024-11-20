@@ -1,10 +1,12 @@
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
+import { FileText, FolderOpen } from 'lucide-react';
+
 import { CollectionApi } from '@/endpoints/collection-api';
 import { NoteApi } from '@/endpoints/note-api';
 import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { FileText, FolderOpen } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+
 import SidebarItem from './SidebarItem';
 
 // Define types
@@ -50,6 +52,7 @@ const DocumentList = ({
           pageSize: 10,
           qs: '',
         });
+
         return response.data.data.result;
       } else if (parentDocumentId && type === 'Collection') {
         const response = await CollectionApi.findById(parentDocumentId);

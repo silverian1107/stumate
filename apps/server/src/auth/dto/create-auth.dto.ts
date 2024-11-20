@@ -1,6 +1,5 @@
 import {
   IsEmail,
-  IsMongoId,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
@@ -41,8 +40,8 @@ export class RegisterUserDto {
 
 export class CodeAuthDto {
   @IsNotEmpty()
-  @IsMongoId()
-  _id: string;
+  @IsEmail()
+  email: string;
 
   @IsNotEmpty()
   @IsString()

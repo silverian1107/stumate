@@ -26,6 +26,7 @@ export class CollectionsService {
     newCollectionData: CreateCollectionDto,
     userId: string,
   ): Promise<CollectionDocument> {
+    console.log(userId);
     if (!mongoose.isValidObjectId(userId)) {
       throw new BadRequestException('Invalid UserId');
     }
@@ -34,6 +35,9 @@ export class CollectionsService {
         ...newCollectionData,
         ownerId: userId,
       });
+
+      console.log(newCollection);
+
       if (newCollection.parentId) {
         const parent = await this.collectionModel.findById(
           newCollection.parentId,
@@ -113,10 +117,12 @@ export class CollectionsService {
         .sort(sort as any)
         .skip(skip)
         .limit(limit)
-        .select('-ownerId')
+        // .select('-ownerId')
         .populate('childrenDocs')
         .lean()
         .exec();
+
+      console.log(filter);
 
       return {
         meta: {
@@ -157,7 +163,7 @@ export class CollectionsService {
         ownerId: userId,
         level: 0,
         isArchived: false,
-        isDeleted: false,
+        // isDeleted: false,
       };
 
       const totalItems = await this.collectionModel.countDocuments(filter);

@@ -33,10 +33,10 @@
 //   return (
 //     <AuthContext.Provider value={{ user, login, logout }}>
 //       {children}
-//     </AuthContext.Provider>   
+//     </AuthContext.Provider>
 
 //   );
 // };
 
-// export default   
+// export default
 //  AuthContext;

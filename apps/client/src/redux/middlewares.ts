@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { Middleware } from '@reduxjs/toolkit';
+
 import { logout } from './slices/authSlice';
 import { persistor } from './store';
 
