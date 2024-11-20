@@ -1,12 +1,14 @@
 'use client';
 
-import { useAccount } from '@/hooks/use-auth';
 import Cookies from 'js-cookie';
 import { CloudSun, LayoutGrid, LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import IconWrapper from './_components/IconWrapper';
 import { toast } from 'sonner';
+
+import { useAccount } from '@/hooks/use-auth';
+
+import IconWrapper from './_components/IconWrapper';
 
 const Main = () => {
   const router = useRouter();
@@ -20,15 +22,15 @@ const Main = () => {
       router.push('/login');
       toast('Unauthorized', {
         description: 'Please login to continue',
-        position: 'top-right',
+        position: 'top-right'
       });
     }
   }, [error, data, router]);
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-primary-100">
-        <LoaderCircle className="w-16 h-16 animate-spin" />
+      <div className="flex size-full items-center justify-center bg-primary-100">
+        <LoaderCircle className="size-16 animate-spin" />
       </div>
     );
   }
@@ -36,12 +38,12 @@ const Main = () => {
   if (!data) return null;
 
   return (
-    <div className="flex-1 h-full bg-primary-50">
-      <div className="h-[72px] w-full bg-primary-50 flex justify-between items-end py-2 px-4">
-        <div className="text-primary-950/40 bg-primary-50 border border-primary-950/40 hover:bg-primary-100 hover:border-primary-800 hover:text-primary-800 flex items-center gap-1 px-2 py-1 rounded-sm cursor-pointer">
+    <div className="h-full flex-1 bg-primary-50">
+      <div className="flex h-[72px] w-full items-end justify-between bg-primary-50 px-4 py-2">
+        <div className="flex cursor-pointer items-center gap-1 rounded-sm border border-primary-950/40 bg-primary-50 px-2 py-1 text-primary-950/40 hover:border-primary-800 hover:bg-primary-100 hover:text-primary-800">
           Customized
           <span>
-            <LayoutGrid className="w-4 h-4" />
+            <LayoutGrid className="size-4" />
           </span>
         </div>
         <div className="flex flex-col items-end">
@@ -49,13 +51,13 @@ const Main = () => {
             <span>
               {new Date().toLocaleTimeString('en-US', {
                 hour: '2-digit',
-                minute: '2-digit',
+                minute: '2-digit'
               })}
             </span>
             <IconWrapper icon={CloudSun} />
           </div>
           <div>
-            <h1 className="font-bold text-2xl">
+            <h1 className="text-2xl font-bold">
               Morning, {data.data.user.username}
             </h1>
           </div>

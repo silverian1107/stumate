@@ -1,7 +1,7 @@
 import { AxiosClient } from './AxiosClient';
 
 export const NoteApi = {
-  findByOwner: async function (params: {
+  async findByOwner(params: {
     currentPage?: number;
     pageSize?: number;
     qs?: string;
@@ -10,12 +10,12 @@ export const NoteApi = {
       params: {
         currentPage: params.currentPage || 1,
         pageSize: params.pageSize || 10,
-        qs: params.qs,
-      },
+        qs: params.qs
+      }
     });
   },
 
-  findById: async function (collectionId: string) {
+  async findById(collectionId: string) {
     return AxiosClient.get(`/notes/${collectionId}`);
-  },
+  }
 };

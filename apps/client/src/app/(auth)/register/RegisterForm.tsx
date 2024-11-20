@@ -1,18 +1,20 @@
 'use client';
 
-import { registerSchema, RegisterValues } from '@/app/libs/Validation';
-import FormField from '@/components/FormField';
-import CheckBoxInput from '@/components/formInput/CheckBoxInput';
-import TextInput from '@/components/formInput/TextInput';
-import { useRegisterMutation } from '@/service/rootApi';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, FormHelperText } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
-import { openSnackbar } from '@/redux/slices/snackbarSlice';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import type { RegisterValues } from '@/app/libs/Validation';
+import { registerSchema } from '@/app/libs/Validation';
+import FormField from '@/components/FormField';
+import CheckBoxInput from '@/components/formInput/CheckBoxInput';
+import TextInput from '@/components/formInput/TextInput';
+import { openSnackbar } from '@/redux/slices/snackbarSlice';
+import { useRegisterMutation } from '@/service/rootApi';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -21,15 +23,15 @@ export default function RegisterForm() {
     control,
     handleSubmit,
     formState: { errors },
-    getValues,
+    getValues
   } = useForm<RegisterValues>({
     resolver: yupResolver(registerSchema),
     defaultValues: {
       username: '',
       email: '',
       password: '',
-      agreeToTerms: false,
-    },
+      agreeToTerms: false
+    }
   });
 
   const [register, { isSuccess }] = useRegisterMutation();
@@ -52,14 +54,14 @@ export default function RegisterForm() {
         placeHolder="Username"
         control={control}
         Component={TextInput}
-        error={errors['username']}
+        error={errors.username}
       />
       <FormField<RegisterValues>
         name="email"
         placeHolder="Email"
         control={control}
         Component={TextInput}
-        error={errors['email']}
+        error={errors.email}
       />
       <FormField<RegisterValues>
         name="password"
@@ -67,7 +69,7 @@ export default function RegisterForm() {
         control={control}
         Component={TextInput}
         type="password"
-        error={errors['password']}
+        error={errors.password}
       />
       <FormField<RegisterValues>
         name="confirm_password"
@@ -75,9 +77,9 @@ export default function RegisterForm() {
         control={control}
         Component={TextInput}
         type="password"
-        error={errors['password']}
+        error={errors.password}
       />
-      <div className="relative flex items-center gap-1 mb-2">
+      <div className="relative mb-2 flex items-center gap-1">
         <FormField<RegisterValues>
           name="agreeToTerms" // Change to a different name for clarity
           control={control}
@@ -86,25 +88,26 @@ export default function RegisterForm() {
         />
         <label
           htmlFor="agreeToTerms"
-          className="flex gap-1 text-[12px] text-secondary-main font-bold items-end"
+          className="text-secondary-main flex items-end gap-1 text-[12px] font-bold"
         >
           I agree to the{' '}
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <Link
-            href=""
-            className="text-primary-main font-normal underline underline-offset-4"
+            href="#"
+            className="font-normal text-primary-main underline underline-offset-4"
           >
             term & policy
           </Link>
         </label>
-        {errors['agreeToTerms'] && (
+        {errors.agreeToTerms && (
           <FormHelperText
             sx={{
-              fontSize: '12px',
+              fontSize: '12px'
             }}
             className="absolute -bottom-3 w-full px-2"
             error
           >
-            {errors['agreeToTerms'].message}
+            {errors.agreeToTerms.message}
           </FormHelperText>
         )}
       </div>

@@ -1,9 +1,10 @@
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { FlashcardApi } from '@/endpoints/flashcard-api';
 import { useQuery } from '@tanstack/react-query';
 import { PenLine, PlayIcon } from 'lucide-react';
 import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { FlashcardApi } from '@/endpoints/flashcard-api';
 
 interface ResourceCardProps {
   id: string;
@@ -18,7 +19,7 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
       const response = (await FlashcardApi.findAllInDeck(id)).data;
       console.log(response);
       return response.data;
-    },
+    }
   });
 
   if (isLoading || error || !data) return null;
@@ -26,42 +27,42 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
   console.log(data);
 
   return (
-    <div className="w-full bg-white rounded-sm px-4 py-3 flex flex-col text-base gap-3 justify-between">
-      <div className="w-full flex items-center justify-end gap-1">
-        <div className="bg-primary-100 text-primary-400 px-3 font-bold text-xs py-1 rounded-md">
+    <div className="flex w-full flex-col justify-between gap-3 rounded-sm bg-white px-4 py-3 text-base">
+      <div className="flex w-full items-center justify-end gap-1">
+        <div className="rounded-md bg-primary-100 px-3 py-1 text-xs font-bold text-primary-400">
           Mathematics
         </div>
-        <div className="bg-primary-100 text-primary-400 px-3 font-bold text-xs py-1 rounded-md">
+        <div className="rounded-md bg-primary-100 px-3 py-1 text-xs font-bold text-primary-400">
           Algorithm
         </div>
       </div>
       <div>
-        <h1 className="text-xl font-bold -mb-1">
+        <h1 className="-mb-1 text-xl font-bold">
           {name}{' '}
-          <span className="font-semibold text-lg text-primary-600 ">
+          <span className="text-lg font-semibold text-primary-600 ">
             ({data.length} cards)
           </span>
         </h1>
-        <h2 className="text-primary-950/50 font-semibold line-clamp-1">
+        <h2 className="line-clamp-1 font-semibold text-primary-950/50">
           {description}
         </h2>
       </div>
       <div className="text-sm">
-        <div className="flex justify-between items-center">
-          <p className="text-primary-950/50 font-semibold">Last studied: </p>
+        <div className="flex items-center justify-between">
+          <p className="font-semibold text-primary-950/50">Last studied: </p>
           <h1>2 days ago</h1>
         </div>
-        <div className="flex justify-between items-center">
-          <p className="text-primary-950/50 font-semibold">Due today: </p>
+        <div className="flex items-center justify-between">
+          <p className="font-semibold text-primary-950/50">Due today: </p>
           <h1>25</h1>
         </div>
-        <div className="flex justify-between items-center">
-          <p className="text-primary-950/50 font-semibold">Progress: </p>
+        <div className="flex items-center justify-between">
+          <p className="font-semibold text-primary-950/50">Progress: </p>
           <h1>75%</h1>
         </div>
       </div>
       <Progress value={75} />
-      <div className="w-full flex justify-end gap-2">
+      <div className="flex w-full justify-end gap-2">
         <Link href={`decks/new/${id}`}>
           <Button variant="secondary" className="px-4 hover:bg-primary-100/80">
             <PenLine /> Edit

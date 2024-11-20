@@ -1,7 +1,6 @@
-// types/resource.ts
 export type ResourceType = 'decks' | 'quizzes';
 
-export type ENTITY_ACTION = 'create' | 'update' | 'delete';
+export type EntityAction = 'create' | 'update' | 'delete';
 
 export interface BaseResource {
   _id?: string;

@@ -1,10 +1,12 @@
-import { CollectionApi } from '@/endpoints/collection-api';
-import { NoteApi } from '@/endpoints/note-api';
 import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { FileText, FolderOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+import { CollectionApi } from '@/endpoints/collection-api';
+import { NoteApi } from '@/endpoints/note-api';
+
 import SidebarItem from './SidebarItem';
 
 // Define types
@@ -31,7 +33,7 @@ interface DocumentListProps {
 const DocumentList = ({
   parentDocumentId,
   level = 0,
-  type = 'Collection',
+  type = 'Collection'
 }: DocumentListProps) => {
   const router = useRouter();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -40,7 +42,7 @@ const DocumentList = ({
   const {
     data: documents,
     isLoading: documentsLoading,
-    error: documentsError,
+    error: documentsError
   } = useQuery<Collection[] | Note[], AxiosError>({
     queryKey: ['getDocuments', parentDocumentId, type],
     queryFn: async () => {
@@ -48,27 +50,29 @@ const DocumentList = ({
         const response = await CollectionApi.findByOwner({
           currentPage: 1,
           pageSize: 10,
-          qs: '',
+          qs: ''
         });
 
         return response.data.data.result;
-      } else if (parentDocumentId && type === 'Collection') {
+      }
+      if (parentDocumentId && type === 'Collection') {
         const response = await CollectionApi.findById(parentDocumentId);
         return response.data.data.childrenDocs || [];
-      } else if (parentDocumentId && type === 'Note') {
+      }
+      if (parentDocumentId && type === 'Note') {
         const response = await NoteApi.findById(parentDocumentId);
         return response.data.data.childrenDocs || [];
       }
       return [];
     },
-    enabled: !!parentDocumentId || level === 0,
+    enabled: !!parentDocumentId || level === 0
   });
 
   // Handle expand/collapse logic
   const onExpand = (documentId: string) => {
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
-      [documentId]: !prevExpanded[documentId],
+      [documentId]: !prevExpanded[documentId]
     }));
   };
 

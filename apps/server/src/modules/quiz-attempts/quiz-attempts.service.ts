@@ -15,6 +15,8 @@ import mongoose from 'mongoose';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { StatisticsService } from '../statistics/statistics.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class QuizAttemptsService {
@@ -25,8 +27,11 @@ export class QuizAttemptsService {
     private readonly quizTests: QuizTestsService,
     @Inject(forwardRef(() => QuizQuestionsService))
     private readonly quizQuestions: QuizQuestionsService,
+    private readonly statisticsService: StatisticsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
+  //websocket
   async handleStartQuizAttempt(quizTestId: string, @User() user: IUser) {
     const quizTest = await this.quizTests.findOne(quizTestId);
     if (!quizTest) {
@@ -50,6 +55,7 @@ export class QuizAttemptsService {
         username: user.username,
       },
     });
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return { newQuizAttempt, quizTest, user };
   }
 
@@ -59,7 +65,11 @@ export class QuizAttemptsService {
     userAnswersDto: UserAnswersDto,
     @User() user: IUser,
   ) {
-    return await this.quizAttemptModel.updateOne(
+    const quizTest = await this.quizTests.findOne(quizTestId);
+    if (!quizTest) {
+      throw new NotFoundException('Not found quiz test');
+    }
+    const updatedQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
       { _id: id, quizTestId },
       {
         ...userAnswersDto,
@@ -68,7 +78,15 @@ export class QuizAttemptsService {
           username: user.username,
         },
       },
+      { new: true },
     );
+    //send notification
+    await this.notificationsService.sendInfoNotification(
+      user,
+      `Quiz Submission Reminder`,
+      `Your quiz '${quizTest.title}' is in progress and has not been submitted. Don't forget to submit it when you're done!`,
+    );
+    return updatedQuizAttempt;
   }
 
   checkAnswerCorrect(question: any, userAnswers: string[]) {
@@ -90,6 +108,24 @@ export class QuizAttemptsService {
     return isAllCorrect && countCorrectAnswer;
   }
 
+  message = (
+    correctAnswers: number,
+    totalQuestions: number,
+    quizTitle: string,
+  ) => {
+    const percentage = (correctAnswers / totalQuestions) * 100;
+    if (percentage >= 90) {
+      return `Excellent! You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Keep up the great work!`;
+    } else if (percentage >= 80) {
+      return `Well done! You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Keep pushing forward!`;
+    } else if (percentage >= 50) {
+      return `Good job! You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Keep improving and you'll get there!`;
+    } else {
+      return `You scored ${correctAnswers}/${totalQuestions} in the quiz '${quizTitle}'. Don't be discouraged, try again and improve your results!`;
+    }
+  };
+
+  //websocket
   async handleSubmitQuizAttempt(
     quizTestId: string,
     id: string,
@@ -141,7 +177,7 @@ export class QuizAttemptsService {
       await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWED' });
     }
     //Update quiz attempt
-    return await this.quizAttemptModel.updateOne(
+    const updateQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
       { _id: id, quizTestId },
       {
         score,
@@ -152,7 +188,21 @@ export class QuizAttemptsService {
           username: user.username,
         },
       },
+      { new: true },
     );
+    //update user statistic
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
+    //send notification
+    await this.notificationsService.sendSuccessNotification(
+      user,
+      `Quiz Completed`,
+      this.message(
+        updateQuizAttempt.correctAnswers,
+        updateQuizAttempt.totalQuestions,
+        quizTest.title,
+      ),
+    );
+    return updateQuizAttempt;
   }
 
   async findByUserAndQuizTestId(quizTestId: string, @User() user: IUser) {
@@ -206,6 +256,7 @@ export class QuizAttemptsService {
     return quizAttempt;
   }
 
+  //websocket
   async remove(quizTestId: string, id: string, @User() user: IUser) {
     if (!(await this.quizTests.findOne(quizTestId))) {
       throw new NotFoundException('Not found quiz test');
@@ -217,6 +268,9 @@ export class QuizAttemptsService {
     if (!quizAttempt) {
       throw new NotFoundException('Not found quiz attempt');
     }
-    return this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
+    const userId = quizAttempt.userId.toString();
+    await this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
+    return 'Quiz attempt was deleted successfully';
   }
 }

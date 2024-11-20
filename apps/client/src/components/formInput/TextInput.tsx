@@ -1,6 +1,5 @@
 import { TextField } from '@mui/material';
-
-import { ChangeEventHandler } from 'react';
+import type { ChangeEventHandler } from 'react';
 
 interface TextInputProps {
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -16,7 +15,7 @@ const TextInput = ({
   name,
   type = 'text',
   error,
-  placeHolder,
+  placeHolder
 }: TextInputProps) => {
   return (
     // slotProps de them funtion cho tuy chinh doc tren document cua mui
@@ -29,23 +28,23 @@ const TextInput = ({
           fontWeight: 'bold',
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: 'var(--primary-300)',
-            borderWidth: '2px',
+            borderWidth: '2px'
           },
           '&.Mui-focused': {
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: 'var(--primary-700)',
-              borderWidth: '2px',
-            },
-          },
+              borderWidth: '2px'
+            }
+          }
         },
         '& .MuiInputLabel-root': {
           color: 'var(--primary-300)',
           fontWeight: 'bold',
           '&.Mui-focused': {
             color: 'var(--primary-700)',
-            fontWeight: 'bold',
-          },
-        },
+            fontWeight: 'bold'
+          }
+        }
       }}
       label={name}
       name={name}

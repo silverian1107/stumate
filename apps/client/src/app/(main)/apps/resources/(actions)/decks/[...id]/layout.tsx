@@ -1,10 +1,10 @@
 export default function ResourceLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full h-full flex flex-col px-4 py-8 space-y-6 lg:w-4/5 xl:w-3/5 mx-auto lg:text-base">
+    <div className="mx-auto flex size-full flex-col space-y-6 px-4 py-8 lg:w-4/5 lg:text-base xl:w-3/5">
       {children}
     </div>
   );

@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// FormField.tsx
 import { FormHelperText } from '@mui/material';
-import {
-  Control,
-  Controller,
-  FieldError,
-  FieldValues,
-  Path,
-} from 'react-hook-form';
+import type { Control, FieldError, FieldValues, Path } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 interface FormFieldProps<T extends FieldValues = FieldValues> {
   control: Control<T>;
@@ -26,16 +20,17 @@ export default function FormField<T extends FieldValues>({
   Component,
   type,
   error,
-  label,
+  label
 }: FormFieldProps<T>) {
   return (
     <div className="relative">
       {label && (
-        <p className="font-bold mb-3 text-sm text-primary-main">{label}</p>
+        <p className="text-primary-main mb-3 text-sm font-bold">{label}</p>
       )}
       <Controller
         name={name}
         control={control}
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         render={({ field: { onChange, value, name } }) => (
           <Component
             placeHolder={placeHolder}
@@ -50,9 +45,9 @@ export default function FormField<T extends FieldValues>({
       {error?.message && (
         <FormHelperText
           sx={{
-            fontSize: '12px',
+            fontSize: '12px'
           }}
-          className="px-2 absolute -bottom-5 w-full"
+          className="absolute -bottom-5 w-full px-2"
           error
         >
           {error.message}

@@ -1,12 +1,14 @@
-import { FlashcardElementWithAction } from '@/types/deck';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+
+import type { FlashcardElementWithAction } from '@/types/deck';
 
 interface ResourceState {
   flashcards: FlashcardElementWithAction[];
 }
 
 const initialState: ResourceState = {
-  flashcards: [],
+  flashcards: []
 };
 
 const resourceSlice = createSlice({
@@ -23,7 +25,7 @@ const resourceSlice = createSlice({
         index: number;
         fieldName: string;
         value: string;
-      }>,
+      }>
     ) {
       const { index, fieldName, value } = action.payload;
       const card = state.flashcards[index];
@@ -45,7 +47,7 @@ const resourceSlice = createSlice({
         back: '',
         action: 'create',
         originalAction: 'create',
-        isDeleted: false,
+        isDeleted: false
       });
     },
 
@@ -77,8 +79,8 @@ const resourceSlice = createSlice({
 
     permanentlyDeleteCards(state) {
       state.flashcards = state.flashcards.filter((card) => !card.isDeleted);
-    },
-  },
+    }
+  }
 });
 
 export const {
@@ -89,7 +91,7 @@ export const {
   restoreFlashcard,
   removeAllCards,
   clearFlashcards,
-  permanentlyDeleteCards,
+  permanentlyDeleteCards
 } = resourceSlice.actions;
 
 export default resourceSlice.reducer;

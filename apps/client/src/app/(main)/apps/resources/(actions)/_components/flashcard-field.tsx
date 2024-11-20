@@ -1,23 +1,20 @@
+import { useDispatch } from 'react-redux';
+
 import { AutosizeTextarea } from '@/components/ui/auto-size-textarea';
 import { cn } from '@/lib/utils';
 import { updateFlashcards } from '@/redux/slices/resourceSlice';
-import { FlashcardElementWithAction } from '@/types/deck';
-import { useDispatch } from 'react-redux';
+import type { FlashcardElementWithAction } from '@/types/deck';
 
 const FlashcardField = ({
   element,
-  index,
+  index
 }: {
   element: FlashcardElementWithAction;
   index: number;
 }) => {
   const dispatch = useDispatch();
 
-  const handleElementChange = (
-    index: number,
-    fieldName: string,
-    newContent: string,
-  ) => {
+  const handleElementChange = (fieldName: string, newContent: string) => {
     dispatch(updateFlashcards({ index, fieldName, value: newContent }));
   };
 
@@ -33,15 +30,15 @@ const FlashcardField = ({
     <div
       className={cn(
         'w-full flex flex-col md:flex-row gap-4 justify-between bg-white px-6 py-5 rounded-md',
-        getBorderStyle(),
+        getBorderStyle()
       )}
     >
       <div className="flex-1">
         <p>Front</p>
         <AutosizeTextarea
           value={element.front}
-          onChange={(e) => handleElementChange(index, 'front', e.target.value)}
-          className="w-full p-2 border rounded resize-none mt-1"
+          onChange={(e) => handleElementChange('front', e.target.value)}
+          className="mt-1 w-full resize-none rounded border p-2"
           minHeight={160}
           disabled={element.isDeleted}
         />
@@ -50,8 +47,8 @@ const FlashcardField = ({
         <p>Back</p>
         <AutosizeTextarea
           value={element.back}
-          onChange={(e) => handleElementChange(index, 'back', e.target.value)}
-          className="w-full p-2 border rounded resize-none mt-1"
+          onChange={(e) => handleElementChange('back', e.target.value)}
+          className="mt-1 w-full resize-none rounded border p-2"
           minHeight={160}
           disabled={element.isDeleted}
         />

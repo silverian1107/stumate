@@ -16,6 +16,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../users/schema/user.schema';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { NotificationsService } from '../notifications/notifications.service';
+import { IUser } from '../users/users.interface';
 
 @Injectable()
 export class SharedResourcesService {
@@ -30,106 +32,136 @@ export class SharedResourcesService {
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
     @InjectModel(User.name)
     private readonly userModel: SoftDeleteModel<UserDocument>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
-  async handlePublishResource(resourceType: string, resourceId: string) {
-    switch (resourceType) {
-      case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: true },
-          { new: true },
-        );
-      case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: true },
-          { new: true },
-        );
-      case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: true },
-          { new: true },
-        );
-      case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: true },
-          { new: true },
-        );
-      default:
-        throw new BadRequestException('Invalid resource type');
-    }
-  }
+  // async handlePublishResource(resourceType: string, resourceId: string) {
+  //   switch (resourceType) {
+  //     case 'collection':
+  //       return await this.collectionModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: true },
+  //         { new: true },
+  //       );
+  //     case 'note':
+  //       return await this.noteModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: true },
+  //         { new: true },
+  //       );
+  //     case 'deck':
+  //       return await this.deckModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: true },
+  //         { new: true },
+  //       );
+  //     case 'quiz':
+  //       return await this.quizTestModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: true },
+  //         { new: true },
+  //       );
+  //     default:
+  //       throw new BadRequestException('Invalid resource type');
+  //   }
+  // }
 
-  async handleUnpublishResource(resourceType: string, resourceId: string) {
-    switch (resourceType) {
-      case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: false },
-          { new: true },
-        );
-      case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: false },
-          { new: true },
-        );
-      case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: false },
-          { new: true },
-        );
-      case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
-          { isPublished: false },
-          { new: true },
-        );
-      default:
-        throw new BadRequestException('Invalid resource type');
-    }
-  }
+  // async handleUnpublishResource(resourceType: string, resourceId: string) {
+  //   switch (resourceType) {
+  //     case 'collection':
+  //       return await this.collectionModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: false },
+  //         { new: true },
+  //       );
+  //     case 'note':
+  //       return await this.noteModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: false },
+  //         { new: true },
+  //       );
+  //     case 'deck':
+  //       return await this.deckModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: false },
+  //         { new: true },
+  //       );
+  //     case 'quiz':
+  //       return await this.quizTestModel.findOneAndUpdate(
+  //         { id: resourceId },
+  //         { isPublished: false },
+  //         { new: true },
+  //       );
+  //     default:
+  //       throw new BadRequestException('Invalid resource type');
+  //   }
+  // }
 
   async handleShareResourceWithUser(
     resourceType: string,
     resourceId: string,
+    user: IUser,
     usernameOrEmail: string,
   ) {
-    const user = await this.userModel.findOne({
+    const sharedUser = await this.userModel.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
-    if (!user) {
+    if (!sharedUser) {
       throw new NotFoundException('Not found user');
     }
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
-          { $addToSet: { sharedWithUsers: user._id } },
+        const sharedCollection = await this.collectionModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $addToSet: { sharedWithUsers: sharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          sharedUser,
+          `New Collection Shared`,
+          `${user.username} has shared a collection with you. Check it out now!`,
+        );
+        return sharedCollection;
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
-          { $addToSet: { sharedWithUsers: user._id } },
+        const sharedNote = await this.noteModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $addToSet: { sharedWithUsers: sharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          sharedUser,
+          `New Note Shared`,
+          `${user.username} has shared a note with you. Check it out now!`,
+        );
+        return sharedNote;
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
-          { $addToSet: { sharedWithUsers: user._id } },
+        const sharedDeck = await this.deckModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $addToSet: { sharedWithUsers: sharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          sharedUser,
+          `New Deck Shared`,
+          `${user.username} has shared a deck with you. Check it out now!`,
+        );
+        return sharedDeck;
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
-          { $addToSet: { sharedWithUsers: user._id } },
+        const sharedQuiz = await this.quizTestModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $addToSet: { sharedWithUsers: sharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          sharedUser,
+          `New Quiz Shared`,
+          `${user.username} has shared a quiz with you. Check it out now!`,
+        );
+        return sharedQuiz;
       default:
         throw new BadRequestException('Invalid resource type');
     }
@@ -138,39 +170,68 @@ export class SharedResourcesService {
   async handleRemoveSharedResourceWithUser(
     resourceType: string,
     resourceId: string,
+    user: IUser,
     usernameOrEmail: string,
   ) {
-    const user = await this.userModel.findOne({
+    const unsharedUser = await this.userModel.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
-    if (!user) {
+    if (!unsharedUser) {
       throw new NotFoundException('User not found');
     }
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
-          { $pull: { sharedWithUsers: user._id } },
+        const unsharedCollection = await this.collectionModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $pull: { sharedWithUsers: unsharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          unsharedUser,
+          `Collection Unshared`,
+          `${user.username} has unshared a collection with you.`,
+        );
+        return unsharedCollection;
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
-          { $pull: { sharedWithUsers: user._id } },
+        const unsharedNote = await this.noteModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $pull: { sharedWithUsers: unsharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          unsharedUser,
+          `Note Unshared`,
+          `${user.username} has unshared a note with you.`,
+        );
+        return unsharedNote;
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
-          { $pull: { sharedWithUsers: user._id } },
+        const unsharedDeck = await this.deckModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $pull: { sharedWithUsers: unsharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          unsharedUser,
+          `Deck Unshared`,
+          `${user.username} has unshared a deck with you.`,
+        );
+        return unsharedDeck;
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
-          { $pull: { sharedWithUsers: user._id } },
+        const unsharedQuiz = await this.quizTestModel.findOneAndUpdate(
+          { _id: resourceId },
+          { $pull: { sharedWithUsers: unsharedUser._id } },
           { new: true },
         );
+        //send notification
+        await this.notificationsService.sendInfoNotification(
+          unsharedUser,
+          `Quiz Unshared`,
+          `${user.username} has unshared a quiz with you.`,
+        );
+        return unsharedQuiz;
       default:
         throw new BadRequestException('Invalid resource type');
     }

@@ -1,35 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
-import FormField from '@/components/FormField';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@mui/material';
-import TextInput from '@/components/formInput/TextInput';
-import { loginSchema, LoginValues } from '@/app/libs/Validation';
-import { useForm } from 'react-hook-form';
-import { useLoginMutation } from '@/service/rootApi';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { login as loginState } from '@/redux/slices/authSlice';
-import { redirect, useRouter } from 'next/navigation';
-import { openSnackbar } from '@/redux/slices/snackbarSlice';
 import Cookies from 'js-cookie';
+import { redirect, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import type { LoginValues } from '@/app/libs/Validation';
+import { loginSchema } from '@/app/libs/Validation';
+import FormField from '@/components/FormField';
+import TextInput from '@/components/formInput/TextInput';
+import { login as loginState } from '@/redux/slices/authSlice';
+import { openSnackbar } from '@/redux/slices/snackbarSlice';
+import { useLoginMutation } from '@/service/rootApi';
 
 export default function LoginForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [login, { data, isSuccess, isError, error }] = useLoginMutation();
-  console.log({ data });
   const {
     control,
     handleSubmit,
     formState: { errors },
-    getValues,
+    getValues
   } = useForm<LoginValues>({
     resolver: yupResolver(loginSchema),
     defaultValues: {
       username: '',
-      password: '',
-    },
+      password: ''
+    }
   });
 
   function onSubmit(formData: LoginValues) {
@@ -43,8 +46,8 @@ export default function LoginForm() {
         dispatch(
           openSnackbar({
             type: 'error',
-            message: (error.data as { message: string }).message,
-          }),
+            message: (error.data as { message: string }).message
+          })
         );
       } else {
         dispatch(openSnackbar({ type: 'error', message: 'An error occurred' }));
@@ -55,8 +58,8 @@ export default function LoginForm() {
         dispatch(
           loginState({
             accessToken: data.data.access_token,
-            refreshToken: data.refresh_token,
-          }),
+            refreshToken: data.refresh_token
+          })
         );
         dispatch(openSnackbar({ message: data?.message }));
         console.log({ data });
@@ -76,7 +79,7 @@ export default function LoginForm() {
         placeHolder="Email"
         control={control}
         Component={TextInput}
-        error={errors['username']}
+        error={errors.username}
       />
       <FormField<LoginValues>
         name="password"
@@ -84,7 +87,7 @@ export default function LoginForm() {
         control={control}
         Component={TextInput}
         type="password"
-        error={errors['password']}
+        error={errors.password}
       />
       <Button variant="contained" type="submit" sx={{ height: '36px' }}>
         Log In

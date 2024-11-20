@@ -1,20 +1,21 @@
+import type { LucideIcon } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  MoreHorizontal,
+  Plus,
+  Trash
+} from 'lucide-react';
+import Link from 'next/link';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import {
-  ChevronDown,
-  ChevronRight,
-  LucideIcon,
-  MoreHorizontal,
-  Plus,
-  Trash,
-} from 'lucide-react';
-import Link from 'next/link';
 
 interface SidebarItemProps {
   label: string;
@@ -40,13 +41,15 @@ const SidebarItem = ({
   active,
   type, // Add the type prop to SidebarItem (either 'Collection' or 'Note')
   isButton,
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  isCreate,
   onClick,
-  onExpand,
+  onExpand
 }: SidebarItemProps) => {
   const CheveronIcon = expanded ? ChevronDown : ChevronRight;
 
   const handleExpand = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.stopPropagation();
     onExpand?.();
@@ -54,7 +57,7 @@ const SidebarItem = ({
 
   return (
     <Link
-      href={href ? href : '#'}
+      href={href || '#'}
       onClick={() => {
         if (type === 'Collection') {
           return;
@@ -67,22 +70,22 @@ const SidebarItem = ({
         active && 'bg-primary-200',
         isButton
           ? 'hover:bg-primary-800 py-3 hover:text-white'
-          : 'hover:bg-primary-200 py-1.5',
+          : 'hover:bg-primary-200 py-1.5'
       )}
       style={{
-        paddingLeft: level ? `${level * 8 + 12}px` : '12px',
+        paddingLeft: level ? `${level * 8 + 12}px` : '12px'
       }}
     >
       {!!id && (
-        <div
-          role="button"
+        <button
+          type="button"
           className="h-full rounded-sm hover:bg-primary-100"
           onClick={handleExpand}
         >
-          <CheveronIcon className="h-4 w-4 shrink-0" />
-        </div>
+          <CheveronIcon className="size-4 shrink-0" />
+        </button>
       )}
-      {isButton ? <Icon className="w-5 h-5" /> : <Icon className="w-4 h-4" />}
+      {isButton ? <Icon className="size-5" /> : <Icon className="size-4" />}
 
       <span className="truncate">{label}</span>
 
@@ -92,9 +95,9 @@ const SidebarItem = ({
             <DropdownMenuTrigger>
               <div
                 role="button"
-                className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary-100 text-black"
+                className="ml-auto h-full rounded-sm text-black opacity-0 hover:bg-primary-100 group-hover:opacity-100"
               >
-                <MoreHorizontal className="h-4 w-4 text-primary-900/60 hover:text-primary-900/80" />
+                <MoreHorizontal className="size-4 text-primary-900/60 hover:text-primary-900/80" />
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -104,7 +107,7 @@ const SidebarItem = ({
               forceMount
             >
               <DropdownMenuItem>
-                <Trash className="h-4 w-4 mr-2" />
+                <Trash className="mr-2 size-4" />
                 Delete
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -121,30 +124,30 @@ const SidebarItem = ({
               <DropdownMenuTrigger>
                 <div
                   role="button"
-                  className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary-100"
+                  className="ml-auto h-full rounded-sm opacity-0 hover:bg-primary-100 group-hover:opacity-100"
                 >
-                  <Plus className="h-4 w-4 text-primary-900/50 hover:text-primary-900/80" />
+                  <Plus className="size-4 text-primary-900/50 hover:text-primary-900/80" />
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-60" align="start" side="bottom">
                 <DropdownMenuItem onClick={() => {}}>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 size-4" />
                   Create Collection
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => {}}>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 size-4" />
                   Create Note
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div
-              role="button"
+            <button
+              type="button"
               onClick={() => {}}
-              className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary-100"
+              className="ml-auto h-full rounded-sm opacity-0 hover:bg-primary-100 group-hover:opacity-100"
             >
-              <Plus className="h-4 w-4 text-primary-900/50 hover:text-primary-900/80" />
-            </div>
+              <Plus className="size-4 text-primary-900/50 hover:text-primary-900/80" />
+            </button>
           )}
         </div>
       )}
