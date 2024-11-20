@@ -45,6 +45,8 @@ export class AuthController {
   @ResponseMessage('User login')
   @Post('login')
   handleLogin(@Req() req, @Res({ passthrough: true }) response: Response) {
+    console.log('Ádsadsa');
+
     return this.authService.login(req.user, response);
   }
 

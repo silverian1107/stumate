@@ -64,7 +64,6 @@ export default function LoginForm() {
         dispatch(openSnackbar({ message: data?.message }));
         console.log({ data });
         Cookies.set('access_token', data.data.access_token);
-        // Cookies.set('refresh_token', data.refresh_token);
         redirect('/apps');
       } else {
         const email = getValues('username');

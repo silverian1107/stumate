@@ -11,6 +11,14 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
+    "@editorjs/code": "^2.9.2",
+    "@editorjs/editorjs": "^2.30.7",
+    "@editorjs/embed": "^2.7.6",
+    "@editorjs/header": "^2.8.8",
+    "@editorjs/inline-code": "^1.5.1",
+    "@editorjs/list": "^2.0.0",
+    "@editorjs/marker": "^1.4.0",
+    "@editorjs/quote": "^2.7.2",
     "@emotion/cache": "11.13.1",
     "@emotion/react": "11.13.3",
     "@emotion/styled": "11.13.0",
