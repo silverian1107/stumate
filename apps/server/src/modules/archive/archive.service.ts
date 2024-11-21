@@ -14,6 +14,7 @@ import { QuizQuestionDocument } from '../quiz-questions/schema/quiz-question.sch
 import { QuizAttemptDocument } from '../quiz-attempts/schema/quiz-attempt.schema';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
+import { IUser } from '../users/users.interface';
 
 @Injectable()
 export class ArchiveService {
@@ -97,6 +98,7 @@ export class ArchiveService {
   }
 
   async findAll(
+    user: IUser,
     resourceType: string,
     currentPage: number,
     pageSize: number,
@@ -107,6 +109,7 @@ export class ArchiveService {
     delete filter.pageSize;
 
     filter.isArchived = true;
+    filter.userId = user._id;
 
     currentPage = currentPage ? currentPage : 1;
     const limit = pageSize ? pageSize : 10;

@@ -18,6 +18,7 @@ import { User, UserDocument } from '../users/schema/user.schema';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { NotificationsService } from '../notifications/notifications.service';
 import { IUser } from '../users/users.interface';
+import aqp from 'api-query-params';
 
 @Injectable()
 export class SharedResourcesService {
@@ -34,68 +35,6 @@ export class SharedResourcesService {
     private readonly userModel: SoftDeleteModel<UserDocument>,
     private readonly notificationsService: NotificationsService,
   ) {}
-
-  // async handlePublishResource(resourceType: string, resourceId: string) {
-  //   switch (resourceType) {
-  //     case 'collection':
-  //       return await this.collectionModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: true },
-  //         { new: true },
-  //       );
-  //     case 'note':
-  //       return await this.noteModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: true },
-  //         { new: true },
-  //       );
-  //     case 'deck':
-  //       return await this.deckModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: true },
-  //         { new: true },
-  //       );
-  //     case 'quiz':
-  //       return await this.quizTestModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: true },
-  //         { new: true },
-  //       );
-  //     default:
-  //       throw new BadRequestException('Invalid resource type');
-  //   }
-  // }
-
-  // async handleUnpublishResource(resourceType: string, resourceId: string) {
-  //   switch (resourceType) {
-  //     case 'collection':
-  //       return await this.collectionModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: false },
-  //         { new: true },
-  //       );
-  //     case 'note':
-  //       return await this.noteModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: false },
-  //         { new: true },
-  //       );
-  //     case 'deck':
-  //       return await this.deckModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: false },
-  //         { new: true },
-  //       );
-  //     case 'quiz':
-  //       return await this.quizTestModel.findOneAndUpdate(
-  //         { id: resourceId },
-  //         { isPublished: false },
-  //         { new: true },
-  //       );
-  //     default:
-  //       throw new BadRequestException('Invalid resource type');
-  //   }
-  // }
 
   async handleShareResourceWithUser(
     resourceType: string,
@@ -177,7 +116,7 @@ export class SharedResourcesService {
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
     if (!unsharedUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Not found user');
     }
     switch (resourceType) {
       case 'collection':
@@ -235,5 +174,64 @@ export class SharedResourcesService {
       default:
         throw new BadRequestException('Invalid resource type');
     }
+  }
+
+  async findAll(
+    user: IUser,
+    resourceType: string,
+    currentPage: number,
+    pageSize: number,
+    qs: string,
+  ) {
+    const { filter, sort, population, projection } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    filter.sharedWithUsers = { $in: [user._id] };
+
+    currentPage = currentPage ? currentPage : 1;
+    const limit = pageSize ? pageSize : 10;
+    const offset = (currentPage - 1) * limit;
+
+    let model: any;
+    switch (resourceType) {
+      case 'collection':
+        model = this.collectionModel;
+        break;
+      case 'note':
+        model = this.noteModel;
+        break;
+      case 'deck':
+        model = this.deckModel;
+        break;
+      case 'quiz':
+        model = this.quizTestModel;
+        break;
+      default:
+        throw new BadRequestException('Invalid resource type');
+    }
+
+    const totalItems = (await model.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const result = await model
+      .find(filter)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort as any)
+      .select('-userId')
+      .populate(population)
+      .select(projection as any)
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        total: totalItems,
+      },
+      result,
+    };
   }
 }

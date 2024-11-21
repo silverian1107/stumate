@@ -8,12 +8,15 @@ import {
   ParseFilePipeBuilder,
   HttpStatus,
   UploadedFiles,
+  Delete,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { AttachmentsService } from './attachments.service';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ResponseMessage } from 'src/decorator/customize';
-// import * as fs from 'fs';
-// import * as path from 'path';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Controller('attachments')
 export class AttachmentsController {
@@ -58,18 +61,21 @@ export class AttachmentsController {
     return this.attachmentsService.findOne(+id);
   }
 
-  // @Public()
-  // @ResponseMessage('Delete single file')
-  // @Delete(':fileName')
-  // async deleteFile(@Param('fileName') fileName: string) {
-  //   try {
-  //     const rootPath = process.cwd();
-  //     const filePath = path.join(rootPath, 'public/attachments', fileName);
-  //     await fs.promises.unlink(filePath);
-  //     return { message: 'File deleted successfully.' };
-  //   } catch (err) {
-  //     console.error('Error deleting file:', err);
-  //     throw new Error('Failed to delete file');
-  //   }
-  // }
+  @Delete(':folderType/:fileName')
+  @ResponseMessage('Delete single file')
+  async deleteFile(
+    @Param('folderType') folderType: string,
+    @Param('fileName') fileName: string,
+  ) {
+    try {
+      const filePath = path.join(process.cwd(), 'public', folderType, fileName);
+      if (!fs.existsSync(filePath)) {
+        throw new NotFoundException('Not found file');
+      }
+      await fs.promises.unlink(filePath);
+      return { message: 'File deleted successfully' };
+    } catch {
+      throw new BadRequestException('Fail to delete file');
+    }
+  }
 }

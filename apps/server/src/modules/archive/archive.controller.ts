@@ -1,12 +1,13 @@
 import { Controller, Get, Post, Param, Query } from '@nestjs/common';
 import { ArchiveService } from './archive.service';
-import { ResponseMessage } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
 
-@Controller('archive')
+@Controller(':resourceType')
 export class ArchiveController {
   constructor(private readonly archiveService: ArchiveService) {}
 
-  @Post(':resourceType/archive/:resourceId')
+  @Post(':resourceId/archive')
   @ResponseMessage('Archive a resource')
   async archiveResource(
     @Param('resourceType') resourceType: string,
@@ -18,7 +19,7 @@ export class ArchiveController {
     );
   }
 
-  @Post(':resourceType/restore/:resourceId')
+  @Post(':resourceId/restore')
   @ResponseMessage('Restore a resource')
   async restoreResource(
     @Param('resourceType') resourceType: string,
@@ -30,15 +31,17 @@ export class ArchiveController {
     );
   }
 
-  @Get(':resourceType')
+  @Get('archived-resources')
   @ResponseMessage('Fetch list archived resources with pagination')
   findAll(
+    @User() user: IUser,
     @Param('resourceType') resourceType: string,
     @Query('current') currentPage: string,
     @Query('pageSize') pageSize: string,
     @Query() qs: string,
   ) {
     return this.archiveService.findAll(
+      user,
       resourceType,
       +currentPage,
       +pageSize,
@@ -46,7 +49,7 @@ export class ArchiveController {
     );
   }
 
-  @Get(':resourceType/:resourceId')
+  @Get(':resourceType/archived-resource')
   @ResponseMessage('Fetch archived resources by id')
   async findOne(
     @Param('resourceType') resourceType: string,

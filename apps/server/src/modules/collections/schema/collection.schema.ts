@@ -43,9 +43,6 @@ export class Collection {
   @Prop({ default: 0 })
   position: number;
 
-  // @Prop({ default: false })
-  // isPublished: boolean;
-
   @Prop({ default: false })
   isArchived: boolean;
 
