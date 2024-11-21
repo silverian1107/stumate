@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 import { BadRequestException } from '@nestjs/common';
 
 export const getHashPassword = async (password: string) => {
@@ -20,6 +21,14 @@ export const comparePassword = async (
   } catch (error) {
     console.log(error);
   }
+};
+
+export const getCodeId = () => {
+  let uuidDigits = uuidv4().replace(/\D/g, '');
+  while (uuidDigits.length < 6) {
+    uuidDigits += Math.floor(Math.random() * 10).toString();
+  }
+  return uuidDigits.slice(0, 6);
 };
 
 export function validateObjectId(id: string, objectName?: string): void;
