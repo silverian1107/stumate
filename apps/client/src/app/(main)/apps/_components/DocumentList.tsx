@@ -115,6 +115,11 @@ const DocumentList = ({
             type={document.type}
             onExpand={() => onExpand(document._id)}
             expanded={expanded[document._id]}
+            href={
+              document.type === 'Note'
+                ? `/apps/resources/note/create/${document._id}`
+                : ''
+            }
           />
           {expanded[document._id] && (
             <DocumentList

@@ -16,6 +16,7 @@ const buttonVariants = cva(
           'border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground',
         secondary:
           'bg-primary-100 text-primary-800 shadow-sm hover:bg-primary-200/60',
+
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         ringHover:
