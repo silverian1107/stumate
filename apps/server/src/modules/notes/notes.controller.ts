@@ -38,7 +38,7 @@ export class NotesController {
     return this.notesService.create(noteData, user._id);
   }
 
-  @Get()
+  @Get('all')
   @ApiOperation({ summary: 'Get all notes' })
   @ApiQuery({
     name: 'currentPage',
@@ -67,7 +67,7 @@ export class NotesController {
     return this.notesService.findAll(+currentPage, +pageSize, qs);
   }
 
-  @Get(':ownerId/notes')
+  @Get()
   @ApiOperation({ summary: 'Get notes by owner ID' })
   @ApiParam({ name: 'ownerId', required: true })
   @ApiQuery({

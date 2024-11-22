@@ -92,13 +92,13 @@ const SidebarItem = ({
       {!!id && (
         <div className="ml-auto flex items-center gap-x-1">
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div
-                role="button"
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
                 className="ml-auto h-full rounded-sm text-black opacity-0 hover:bg-primary-100 group-hover:opacity-100"
               >
                 <MoreHorizontal className="size-4 text-primary-900/60 hover:text-primary-900/80" />
-              </div>
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               className="w-60"

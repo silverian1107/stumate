@@ -38,6 +38,15 @@ export default function ResourcePage() {
     description?: string;
   }) => {
     try {
+      const invalidFlashcards = resource.flashcards.filter(
+        (fc) => !fc.front.trim() || !fc.back.trim()
+      );
+      console.log(invalidFlashcards);
+
+      if (invalidFlashcards.length > 0) {
+        return; // Prevent submission
+      }
+
       const resourceToSubmit: Deck = {
         ...initialResource,
         flashcards: resource.flashcards,

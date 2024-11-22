@@ -12,6 +12,7 @@ export interface FlashcardElement {
   _id?: string;
   front: string;
   back: string;
+  deckId?: string;
 }
 
 export interface QuizElement {
@@ -28,6 +29,8 @@ export interface FlashcardElementWithAction extends FlashcardElement {
   action?: 'create' | 'update' | 'delete';
   originalAction?: 'create' | 'update';
   isDeleted?: boolean;
+  frontError: boolean;
+  backError: boolean;
 }
 
 export interface Deck extends BaseResource {

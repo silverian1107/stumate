@@ -11,14 +11,14 @@ interface ResourceActionButtonProps {
   resouces: FlashcardElement[] | QuizElement[];
   addNewAction: () => UnknownAction;
   clearAction: () => UnknownAction;
-  removeAction: () => UnknownAction;
+  restoreAction: () => UnknownAction;
 }
 
 const ResourceActionButton = ({
   resouces,
   addNewAction,
   clearAction,
-  removeAction
+  restoreAction
 }: ResourceActionButtonProps) => {
   const [isRemoveAll, setIsRemoveAll] = useState(false);
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const ResourceActionButton = ({
         <Button
           variant="secondary"
           onClick={() => {
-            dispatch(removeAction());
+            dispatch(restoreAction());
             setIsRemoveAll(false);
           }}
           className="ml-auto rounded"

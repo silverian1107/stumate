@@ -18,7 +18,21 @@ const resourceSlice = createSlice({
     setFlashcards(state, action: PayloadAction<FlashcardElementWithAction[]>) {
       state.flashcards = action.payload;
     },
-
+    setFlashcardErrors(
+      state,
+      action: PayloadAction<{
+        index: number;
+        frontError: boolean;
+        backError: boolean;
+      }>
+    ) {
+      const { index, frontError, backError } = action.payload;
+      const card = state.flashcards[index];
+      if (card) {
+        card.frontError = frontError;
+        card.backError = backError;
+      }
+    },
     updateFlashcards(
       state,
       action: PayloadAction<{
@@ -47,7 +61,9 @@ const resourceSlice = createSlice({
         back: '',
         action: 'create',
         originalAction: 'create',
-        isDeleted: false
+        isDeleted: false,
+        frontError: false,
+        backError: false
       });
     },
 
@@ -58,17 +74,11 @@ const resourceSlice = createSlice({
       });
     },
 
-    removeAllCards(state) {
+    restoreAllCards(state) {
       state.flashcards.forEach((flashcard) => {
         flashcard.isDeleted = false;
         flashcard.action = flashcard.originalAction || 'update';
       });
-    },
-
-    removeFlashcard(state, action: PayloadAction<number>) {
-      const card = state.flashcards[action.payload];
-      card.isDeleted = true;
-      card.action = 'delete';
     },
 
     restoreFlashcard(state, action: PayloadAction<number>) {
@@ -77,8 +87,20 @@ const resourceSlice = createSlice({
       card.action = card.originalAction || 'update';
     },
 
+    removeFlashcard(state, action: PayloadAction<number>) {
+      const card = state.flashcards[action.payload];
+      card.isDeleted = true;
+      card.action = 'delete';
+    },
+
     permanentlyDeleteCards(state) {
       state.flashcards = state.flashcards.filter((card) => !card.isDeleted);
+    },
+
+    permanentlyDeleteACard(state, action: PayloadAction<number>) {
+      state.flashcards = state.flashcards.filter(
+        (_, index) => index !== action.payload
+      );
     }
   }
 });
@@ -89,9 +111,11 @@ export const {
   addFlashcard,
   removeFlashcard,
   restoreFlashcard,
-  removeAllCards,
+  restoreAllCards,
   clearFlashcards,
-  permanentlyDeleteCards
+  permanentlyDeleteCards,
+  permanentlyDeleteACard,
+  setFlashcardErrors
 } = resourceSlice.actions;
 
 export default resourceSlice.reducer;

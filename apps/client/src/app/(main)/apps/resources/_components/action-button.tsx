@@ -19,7 +19,7 @@ const ActionButton = () => {
         Custom study
       </Button>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button>
             <PlusIcon className="text-white" />
             Create new

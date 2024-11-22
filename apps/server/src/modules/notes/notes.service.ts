@@ -77,6 +77,7 @@ export class NotesService {
       throw new BadRequestException('Page size must be a positive integer');
     }
     const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
+
     const limit = pageSize;
     const skip = (currentPage - 1) * limit;
     const filter = {
@@ -166,6 +167,7 @@ export class NotesService {
       isArchived: false,
       isDeleted: false,
     };
+    console.log(ownerId);
 
     try {
       // Count total items matching the filter

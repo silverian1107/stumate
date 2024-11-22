@@ -78,7 +78,7 @@ const DocumentList = ({
 
   // Handle navigation on click
   const onRedirect = (documentId: string) => {
-    router.push(`/documents/${documentId}`);
+    router.push(`/note/${documentId}`);
   };
 
   // Loading state

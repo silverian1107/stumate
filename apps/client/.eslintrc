@@ -81,7 +81,9 @@
         ],
         "no-underscore-dangle": "off",
         "tailwindcss/no-custom-classname": "off",
-        "tailwindcss/classnames-order": "off"
+        "tailwindcss/classnames-order": "off",
+        "@typescript-eslint/lines-between-class-members": "off",
+        "@typescript-eslint/no-throw-literal": "off"
       }
     },
     // Configuration for testing
