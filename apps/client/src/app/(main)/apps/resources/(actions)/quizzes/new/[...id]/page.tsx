@@ -8,8 +8,8 @@ import { setFlashcards } from '@/redux/slices/resourceSlice';
 import type { RootState } from '@/redux/store';
 import type { Deck } from '@/types/deck';
 
-import { ResourceElements } from '../../_components/creator';
-import { ResourceHeader } from '../../_components/header';
+import { ResourceElements } from '../../../_components/creator';
+import { ResourceHeader } from '../../../_components/header';
 
 export default function ResourcePage() {
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ export default function ResourcePage() {
       <ResourceHeader
         initialData={initialResource}
         isEditing={isEditing}
-        onSubmit={handleSubmit} // Pass handleSubmit to ResourceHeader
+        onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
       />
       <ResourceElements />

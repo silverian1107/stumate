@@ -56,7 +56,7 @@ export default function ResourcePage() {
       <ResourceHeader
         initialData={initialResource}
         isEditing={isEditing}
-        onSubmit={handleSubmit} // Pass handleSubmit to ResourceHeader
+        onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
       />
       <ResourceElements />

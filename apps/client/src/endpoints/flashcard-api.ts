@@ -14,6 +14,7 @@ export const FlashcardApi = {
   async bulkCreate(deckId: string, flashcards: FlashcardElement[]) {
     return DeckClient.post(`/${deckId}/flashcards/bulk/create`, flashcards);
   },
+
   async bulkUpdate(deckId: string, flashcards: FlashcardElement[]) {
     return DeckClient.post(`/${deckId}/flashcards/bulk/update`, flashcards);
   },

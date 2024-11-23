@@ -1,8 +1,13 @@
+import { UndoIcon, XIcon } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 
 import { AutosizeTextarea } from '@/components/ui/auto-size-textarea';
 import { cn } from '@/lib/utils';
-import { updateFlashcards } from '@/redux/slices/resourceSlice';
+import {
+  removeFlashcard,
+  restoreFlashcard,
+  updateFlashcards
+} from '@/redux/slices/resourceSlice';
 import type { FlashcardElementWithAction } from '@/types/deck';
 
 const FlashcardField = ({
@@ -19,26 +24,65 @@ const FlashcardField = ({
   };
 
   const getBorderStyle = () => {
-    if (element.isDeleted) return 'opacity-50 border-gray-300';
-    if (element.originalAction === 'create')
-      return 'border-2 border-green-600/30';
-    if (element.action === 'update') return 'border-2 border-primary-600/30';
+    if (element.isDeleted) return 'opacity-70 border-gray-300';
     return '';
   };
 
   return (
     <div
       className={cn(
-        'w-full flex flex-col md:flex-row gap-4 justify-between bg-white px-6 py-5 rounded-md',
+        'w-full flex flex-col md:flex-row gap-4 justify-between bg-white px-6 py-5 rounded-md relative',
         getBorderStyle()
       )}
     >
+      <div className="absolute top-1 right-2 flex gap-2 items-center">
+        <code
+          className={cn(
+            'uppercase text-[10px] border px-1 rounded-sm leading-none',
+            element.action === 'delete'
+              ? 'text-red-600 border-red-600'
+              : element.originalAction === 'create'
+                ? 'text-green-600 border-green-600'
+                : element.action === 'update'
+                  ? 'text-primary-600 border-primary-600'
+                  : 'hidden'
+          )}
+        >
+          {element.action === 'delete'
+            ? 'deleted'
+            : element.originalAction === 'create'
+              ? 'new'
+              : element.action === 'update'
+                ? 'changed'
+                : null}
+        </code>
+        <XIcon
+          onClick={() => {
+            dispatch(removeFlashcard(index));
+          }}
+          role="button"
+          className={cn(
+            'w-6 h-6 cursor-pointer text-primary-200',
+            element.isDeleted ? 'hidden' : 'block'
+          )}
+        />
+        <UndoIcon
+          onClick={() => {
+            dispatch(restoreFlashcard(index));
+          }}
+          role="button"
+          className={cn(
+            'w-6 h-6 cursor-pointer text-primary-300 z-10',
+            element.isDeleted ? 'block' : 'hidden'
+          )}
+        />
+      </div>
       <div className="flex-1">
         <p>Front</p>
         <AutosizeTextarea
           value={element.front}
           onChange={(e) => handleElementChange('front', e.target.value)}
-          className="mt-1 w-full resize-none rounded border p-2"
+          className="w-full p-2 border rounded resize-none mt-1"
           minHeight={160}
           disabled={element.isDeleted}
         />
@@ -48,7 +92,7 @@ const FlashcardField = ({
         <AutosizeTextarea
           value={element.back}
           onChange={(e) => handleElementChange('back', e.target.value)}
-          className="mt-1 w-full resize-none rounded border p-2"
+          className="w-full p-2 border rounded resize-none mt-1"
           minHeight={160}
           disabled={element.isDeleted}
         />
