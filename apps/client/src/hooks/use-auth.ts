@@ -1,9 +1,10 @@
-import { AxiosClient } from '@/endpoints/AxiosClient';
 import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+
+import { AxiosClient } from '@/endpoints/AxiosClient';
 
 export interface AccountResponse {
   statusCode: number;
@@ -31,7 +32,7 @@ export const useAccount = () => {
       return response.data;
     },
     enabled: !!Cookies.get('access_token'),
-    retry: false,
+    retry: false
   });
 
   useEffect(() => {

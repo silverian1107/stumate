@@ -1,9 +1,12 @@
 'use client';
 
-import { useUpdateNote } from '@/hooks/use-note';
-import { Note } from '@/types/note';
-import EditorJS, { API, OutputData } from '@editorjs/editorjs';
+import type { API, OutputData } from '@editorjs/editorjs';
+import EditorJS from '@editorjs/editorjs';
 import { useEffect, useRef } from 'react';
+
+import { useUpdateNote } from '@/hooks/use-note';
+import type { Note } from '@/types/note';
+
 import { tools } from '../../../(actions)/_components/tools';
 
 const MyTextEditor = ({ data }: { data: Note }) => {
@@ -23,14 +26,14 @@ const MyTextEditor = ({ data }: { data: Note }) => {
         holder: 'editor-js',
         data: initialData,
         autofocus: true,
-        tools: tools,
+        tools,
         onChange: async (event: API) => {
           const body = await event.saver.save();
           updateNoteMutate.mutate({
             _id: data._id,
-            body,
+            body
           });
-        },
+        }
       });
       ref.current = editor;
     }

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+
 import Note from './Note';
 
 interface Block {
@@ -24,14 +25,14 @@ const initialDeck: Deck[] = [
       {
         data: {
           text: 'First note content',
-          level: 2,
+          level: 2
         },
         id: '123_abc',
-        type: 'header',
-      },
+        type: 'header'
+      }
     ],
     time: '2024-11-18 10:00 AM',
-    category: 'Work',
+    category: 'Work'
   },
   {
     user_id: 'def456',
@@ -39,14 +40,14 @@ const initialDeck: Deck[] = [
       {
         data: {
           text: 'Second note content',
-          level: 2,
+          level: 2
         },
         id: '124_def',
-        type: 'header',
-      },
+        type: 'header'
+      }
     ],
     time: '2024-11-18 11:00 AM',
-    category: 'Personal',
+    category: 'Personal'
   },
   {
     user_id: 'ghi789',
@@ -54,15 +55,15 @@ const initialDeck: Deck[] = [
       {
         data: {
           text: 'Third note content',
-          level: 2,
+          level: 2
         },
         id: '125_ghi',
-        type: 'header',
-      },
+        type: 'header'
+      }
     ],
     time: '2024-11-18 12:00 PM',
-    category: 'Misc',
-  },
+    category: 'Misc'
+  }
 ];
 
 const Page: React.FC = () => {

@@ -1,34 +1,34 @@
 'use client';
 
-import FormField from '@/components/FormField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@mui/material';
-import { verifyOtpSchema, VerifyOtpValues } from '@/app/libs/Validation';
+import { redirect, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+
+import type { VerifyOtpValues } from '@/app/libs/Validation';
+import { verifyOtpSchema } from '@/app/libs/Validation';
+import FormField from '@/components/FormField';
 import OTPInput from '@/components/formInput/OTPInput';
 import { useResendOTPMutation, useVerifyOTPMutation } from '@/service/rootApi';
-import { useEffect } from 'react';
-import { redirect, useSearchParams } from 'next/navigation';
 
 export default function VerifyOTPForm() {
   const searchParam = useSearchParams();
   const email = searchParam.get('email');
-  console.log({ email });
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<VerifyOtpValues>({
     resolver: yupResolver(verifyOtpSchema),
     defaultValues: {
-      otp: '',
-    },
+      codeId: ''
+    }
   });
   const [verifyOTP, { isSuccess: isVerifySuccess }] = useVerifyOTPMutation();
   const [resendOTP, { isSuccess: isResendSuccess }] = useResendOTPMutation();
   function onSubmit(formData: VerifyOtpValues) {
-    console.log({ formData });
-    verifyOTP({ email: email as string, codeId: formData?.otp });
+    verifyOTP({ email: email as string, codeId: formData?.codeId });
   }
   useEffect(() => {
     if (isVerifySuccess || isResendSuccess) {
@@ -37,21 +37,20 @@ export default function VerifyOTPForm() {
   }, [isResendSuccess, isVerifySuccess]);
   const handleResend = () => {
     resendOTP({ email: email as string });
-    console.log({ email });
   };
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<VerifyOtpValues>
-        name="otp"
+        name="codeId"
         label="Type your 6 digit security code"
         control={control}
         Component={OTPInput}
-        error={errors['otp']}
+        error={errors.codeId}
       />
       <Button variant="contained" type="submit" sx={{ height: '36px' }}>
         Verify my account
       </Button>
-      <div className="flex  items-center text-sm  justify-center">
+      <div className="flex  items-center justify-center  text-sm">
         <p className=" font-bold ">Didn&apos;t get the code? </p>
         <Button
           variant="text"

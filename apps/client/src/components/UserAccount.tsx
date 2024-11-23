@@ -1,15 +1,18 @@
-import { useAccount } from '@/hooks/use-auth';
 import { ArrowRight, LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
+
+import { useAccount } from '@/hooks/use-auth';
+
 import { Button } from './ui/button';
+
 const LoginStatus = () => {
   const { data, isLoading, error } = useAccount();
   console.log(data);
 
   if (isLoading) {
     return (
-      <Button variant={'default'} className="px-8 w-[80px]">
-        <LoaderCircle className="text-center animate-spin text-primary-800" />
+      <Button variant="default" className="w-[80px] px-8">
+        <LoaderCircle className="animate-spin text-center text-primary-800" />
       </Button>
     );
   }
@@ -21,15 +24,15 @@ const LoginStatus = () => {
         <Link href="/login" className="text-gray-600 hover:text-primary ">
           <Button
             variant="secondary"
-            className="hover:bg-primary-100 px-2 hover:text-primary-800"
+            className="px-2 hover:bg-primary-100 hover:text-primary-800"
           >
             Sign In
           </Button>
         </Link>
         <Link href="/register" className="group">
           <Button
-            variant={'ringHover'}
-            className="bg-primary-700 px-6 uppercase py-2 hover:bg-primary-600"
+            variant="ringHover"
+            className="bg-primary-700 px-6 py-2 uppercase hover:bg-primary-600"
           >
             Register
           </Button>
@@ -39,17 +42,15 @@ const LoginStatus = () => {
   }
 
   return (
-    <>
-      <Link href="/apps" className="group">
-        <Button
-          variant={'ringHover'}
-          className="bg-primary-700 px-6 uppercase py-2 hover:bg-primary-600 "
-        >
-          To dashboard
-          <ArrowRight className="-ml-1 hover:ml-2" />
-        </Button>
-      </Link>
-    </>
+    <Link href="/apps" className="group">
+      <Button
+        variant="ringHover"
+        className="bg-primary-700 px-6 py-2 uppercase hover:bg-primary-600 "
+      >
+        To dashboard
+        <ArrowRight className="-ml-1 hover:ml-2" />
+      </Button>
+    </Link>
   );
 };
 

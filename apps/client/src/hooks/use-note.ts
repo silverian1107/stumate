@@ -1,8 +1,10 @@
 'use client';
 
-import { NoteApi } from '@/endpoints/note-api';
-import { NoteUpdateDto } from '@/types/note';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+import { NoteApi } from '@/endpoints/note-api';
+import type { NoteUpdateDto } from '@/types/note';
 
 export const useNoteById = (noteId: string) => {
   return useQuery({
@@ -11,7 +13,7 @@ export const useNoteById = (noteId: string) => {
       return NoteApi.findById(noteId)
         .then((res) => res.data.data)
         .catch();
-    },
+    }
   });
 };
 
@@ -20,6 +22,10 @@ export const useUpdateNote = () => {
     mutationFn: async ({ _id, name, body, attachment }: NoteUpdateDto) => {
       return NoteApi.updateById(_id, { name, body, attachment });
     },
-    onError: (error) => console.log(error),
+    onError: () => {
+      toast.error('Failed to update note', {
+        description: 'From useUpdateNote'
+      });
+    }
   });
 };

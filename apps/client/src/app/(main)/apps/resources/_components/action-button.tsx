@@ -1,17 +1,18 @@
+import { PlusIcon, Settings } from 'lucide-react';
+import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { PlusIcon, Settings } from 'lucide-react';
-import Link from 'next/link';
 
 const ActionButton = () => {
   return (
-    <div className="w-full flex items-center justify-end gap-2">
-      <Button variant={'secondary'}>
+    <div className="flex w-full items-center justify-end gap-2">
+      <Button variant="secondary">
         <span>
           <Settings />
         </span>

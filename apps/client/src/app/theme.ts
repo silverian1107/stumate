@@ -1,4 +1,5 @@
 'use client';
+
 import { createTheme } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
@@ -14,17 +15,17 @@ declare module '@mui/material/styles' {
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'var(--font-lexend-deca)',
+    fontFamily: 'var(--font-lexend-deca)'
   },
   palette: {
     primary: {
       main: '#716DF0',
-      dark: '',
+      dark: ''
     },
     secondary: {
       main: '#1C254A',
-      dark: '',
-    },
+      dark: ''
+    }
   },
   breakpoints: {
     values: {
@@ -33,9 +34,9 @@ const theme = createTheme({
       md: 768,
       lg: 1024,
       xl: 1280,
-      '2xl': 1536,
-    },
-  },
+      '2xl': 1536
+    }
+  }
 });
 
 export default theme;

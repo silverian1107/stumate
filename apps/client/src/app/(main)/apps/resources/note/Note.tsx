@@ -9,7 +9,7 @@ const Note: React.FC<NoteListProps> = ({
   content,
   time = ' 12/12/12',
   category = 'math',
-  hour = '12:12',
+  hour = '12:12'
 }) => {
   return (
     <div className="w-full flex flex-col gap-1 px-4 py-2  ">

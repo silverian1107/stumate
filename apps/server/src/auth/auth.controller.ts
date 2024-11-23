@@ -18,6 +18,8 @@ import {
   RegisterUserDto,
 } from './dto/create-auth.dto';
 import { UsersService } from 'src/modules/users/users.service';
+import { GoogleAuthGuard } from './passport/google-auth.guard';
+import { FacebookAuthGuard } from './passport/facebook-auth.guards';
 
 @Controller('auth')
 export class AuthController {
@@ -43,6 +45,8 @@ export class AuthController {
   @ResponseMessage('User login')
   @Post('login')
   handleLogin(@Req() req, @Res({ passthrough: true }) response: Response) {
+    console.log('Ádsadsa');
+
     return this.authService.login(req.user, response);
   }
 
@@ -106,5 +110,39 @@ export class AuthController {
     @User() user: IUser,
   ) {
     return this.authService.logout(response, user);
+  }
+
+  @Public()
+  @ResponseMessage('Login with google')
+  @Get('google/login')
+  @UseGuards(GoogleAuthGuard)
+  loginWithGoogle() {}
+
+  @Public()
+  @ResponseMessage('Login with google redirect')
+  @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthRedirect(
+    @User() user: IUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return await this.authService.handleSocialAuthRedirect(user, response);
+  }
+
+  @Public()
+  @ResponseMessage('Login with facebook')
+  @Get('facebook/login')
+  @UseGuards(FacebookAuthGuard)
+  loginWithFacebook() {}
+
+  @Public()
+  @ResponseMessage('Login with facebook redirect')
+  @Get('facebook/redirect')
+  @UseGuards(FacebookAuthGuard)
+  async facebookAuthRedirect(
+    @User() user: IUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return await this.authService.handleSocialAuthRedirect(user, response);
   }
 }

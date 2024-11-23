@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-import { Middleware } from '@reduxjs/toolkit';
+import type { Middleware } from '@reduxjs/toolkit';
+
 import { logout } from './slices/authSlice';
+// eslint-disable-next-line import/no-cycle
 import { persistor } from './store';
 
 export const logOutMiddleware: Middleware = () => (next) => (action) => {

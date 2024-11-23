@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type FlashcardDocument = HydratedDocument<Flashcard>;
 
@@ -73,3 +74,5 @@ export class Flashcard {
 }
 
 export const FlashcardSchema = SchemaFactory.createForClass(Flashcard);
+
+FlashcardSchema.plugin(archivePlugin);

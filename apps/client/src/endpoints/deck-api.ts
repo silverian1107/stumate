@@ -6,22 +6,19 @@ interface DeckCreateDTO {
 }
 
 export const DeckApi = {
-  findByOwner: async function () {
+  async findByOwner() {
     return DeckClient.get('');
   },
 
-  findById: async function (id: string) {
+  async findById(id: string) {
     return DeckClient.get(`/${id}`);
   },
 
-  create: async function (data: DeckCreateDTO) {
+  async create(data: DeckCreateDTO) {
     return (await DeckClient.post('', data)).data;
   },
 
-  update: async function (
-    deckId: string,
-    data: { name?: string; description?: string },
-  ) {
+  async update(deckId: string, data: { name?: string; description?: string }) {
     return (await DeckClient.patch(`${deckId}`, data)).data;
-  },
+  }
 };

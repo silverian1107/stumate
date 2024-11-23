@@ -2,11 +2,9 @@
 
 const Flashcards = () => {
   return (
-    <>
-      <div className="w-full flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 overflow-auto auto-rows-min ">
-        No item
-      </div>
-    </>
+    <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 lg:grid-cols-4 ">
+      No item
+    </div>
   );
 };
 

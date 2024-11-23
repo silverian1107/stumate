@@ -1,12 +1,13 @@
 'use client';
+
+import { AppBar, Toolbar } from '@mui/material';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { Button as CustomizedButton } from '@/components/ui/button';
 import { FlipWords } from '@/components/ui/flip-words';
 import LoginStatus from '@/components/UserAccount';
-import { AppBar, Toolbar } from '@mui/material';
-import { motion } from 'framer-motion';
-
-import Link from 'next/link';
 
 export default function Landing() {
   const words = [
@@ -15,7 +16,7 @@ export default function Landing() {
     'learn effortlessly',
     'boost productivity',
     'retain better',
-    'think clearly',
+    'think clearly'
   ];
 
   return (
@@ -23,32 +24,33 @@ export default function Landing() {
       className="min-h-screen w-screen"
       style={{
         backgroundImage:
-          'linear-gradient(to bottom right, var(--primary-600), var(--accent-300))',
+          'linear-gradient(to bottom right, var(--primary-600), var(--accent-300))'
       }}
     >
       <AppBar
         position="static"
         color="inherit"
-        className="shadow-sm sm:px-0 md:px-[2rem] lg:px-[10rem]"
+        className="shadow-sm sm:px-0 md:px-8 lg:px-40"
       >
         <Toolbar className="flex items-center gap-8">
-          <h1 className="font-extrabold text-3xl text-primary-700 select-none">
+          <h1 className="select-none text-3xl font-extrabold text-primary-700">
             StuMate
           </h1>
           <div className="space-x-6">
             {['Features', 'AI Companion', 'About', 'Download'].map(
               (text, index) => (
                 <Link
+                  // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   href="/#"
                   className="text-gray-600  hover:text-primary-600"
                 >
                   {text}
                 </Link>
-              ),
+              )
             )}
           </div>
-          <div className="space-x-2 ml-auto">
+          <div className="ml-auto space-x-2">
             <LoginStatus />
           </div>
         </Toolbar>
@@ -61,23 +63,23 @@ export default function Landing() {
           transition={{
             delay: 0.3,
             duration: 0.8,
-            ease: 'easeInOut',
+            ease: 'easeInOut'
           }}
-          className="relative flex flex-col gap-10 items-center justify-center px-4 pb-32"
+          className="relative flex flex-col items-center justify-center gap-10 px-4 pb-32"
         >
-          <div className="text-3xl md:text-7xl font-bold dark:text-white text-center -mb-8">
+          <div className="-mb-8 text-center text-3xl font-bold dark:text-white md:text-7xl">
             Let&apos;s <FlipWords words={words} className="text-primary-700" />
           </div>
-          <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
+          <div className="py-4 text-base font-extralight dark:text-neutral-200 md:text-4xl">
             And this, is your{' '}
-            <span className="underline text-primary-700 font-bold">
+            <span className="font-bold text-primary-700 underline">
               companion
             </span>
           </div>
-          <Link href={'/register'}>
+          <Link href="/register">
             <CustomizedButton
-              variant={'ringHover'}
-              className="bg-primary-700 px-8 text-lg py-6 hover:bg-primary-600"
+              variant="ringHover"
+              className="bg-primary-700 px-8 py-6 text-lg hover:bg-primary-600"
             >
               Join us
             </CustomizedButton>

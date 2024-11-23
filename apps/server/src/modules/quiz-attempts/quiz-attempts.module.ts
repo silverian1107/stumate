@@ -5,6 +5,8 @@ import { QuizTestsModule } from '../quiz-tests/quiz-tests.module';
 import { QuizAttempt, QuizAttemptSchema } from './schema/quiz-attempt.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuizQuestionsModule } from '../quiz-questions/quiz-questions.module';
+import { StatisticsModule } from '../statistics/statistics.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { QuizQuestionsModule } from '../quiz-questions/quiz-questions.module';
     ]),
     forwardRef(() => QuizTestsModule),
     forwardRef(() => QuizQuestionsModule),
+    StatisticsModule,
+    NotificationsModule,
   ],
   controllers: [QuizAttemptsController],
   providers: [QuizAttemptsService],
