@@ -20,7 +20,11 @@ import { DecksService } from '../decks/decks.service';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { StatisticsService } from '../statistics/statistics.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { FlashcardReview, FlashcardReviewDocument, State } from './schema/flashcard-review.schema';
+import {
+  FlashcardReview,
+  FlashcardReviewDocument,
+  State,
+} from './schema/flashcard-review.schema';
 import { reviewFlashcard } from './../../helpers/utils';
 
 @Injectable()

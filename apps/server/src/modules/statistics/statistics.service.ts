@@ -21,7 +21,12 @@ import {
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import { MyGateway } from 'src/gateway/gateway';
-import { FlashcardReview, FlashcardReviewDocument, Rating, State } from '../flashcards/schema/flashcard-review.schema';
+import {
+  FlashcardReview,
+  FlashcardReviewDocument,
+  Rating,
+  State,
+} from '../flashcards/schema/flashcard-review.schema';
 
 @Injectable()
 export class StatisticsService {

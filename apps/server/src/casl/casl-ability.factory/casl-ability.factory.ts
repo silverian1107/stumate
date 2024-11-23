@@ -1,4 +1,11 @@
-import { AbilityBuilder, createMongoAbility, ExtractSubjectType, InferSubjects, MongoAbility, MongoQuery } from '@casl/ability';
+import {
+  AbilityBuilder,
+  createMongoAbility,
+  ExtractSubjectType,
+  InferSubjects,
+  MongoAbility,
+  MongoQuery,
+} from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/users/schema/user.schema';
 import { Collection } from 'src/modules/collections/schema/collection.schema';
