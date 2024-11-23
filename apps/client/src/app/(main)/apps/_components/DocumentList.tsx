@@ -1,13 +1,15 @@
-import { useDocuments } from '@/hooks/use-collection';
 import { FileText, FolderOpen } from 'lucide-react';
 import { useState } from 'react';
+
+import { useDocuments } from '@/hooks/use-collection';
+import type { Collection, DocumentListProps, Note } from '@/types/collection';
+
 import SidebarItem from './SidebarItem';
-import { Collection, DocumentListProps, Note } from '@/types/collection';
 
 const DocumentList = ({
   parentDocumentId,
   level = 0,
-  type = 'Collection',
+  type = 'Collection'
 }: DocumentListProps) => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
@@ -15,14 +17,14 @@ const DocumentList = ({
   const {
     data: documents,
     isLoading: documentsLoading,
-    error: documentsError,
+    error: documentsError
   } = useDocuments({ parentDocumentId, type, level });
 
   // Handle expand/collapse logic
   const onExpand = (documentId: string) => {
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
-      [documentId]: !prevExpanded[documentId],
+      [documentId]: !prevExpanded[documentId]
     }));
   };
 

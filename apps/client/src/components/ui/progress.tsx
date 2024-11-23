@@ -1,7 +1,7 @@
 'use client';
 
-import * as React from 'react';
 import * as ProgressPrimitive from '@radix-ui/react-progress';
+import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -13,12 +13,12 @@ const Progress = React.forwardRef<
     ref={ref}
     className={cn(
       'relative h-2 w-full overflow-hidden rounded-full bg-primary-main/20',
-      className,
+      className
     )}
     {...props}
   >
     <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary-main transition-all"
+      className="size-full flex-1 bg-primary-main transition-all"
       style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
     />
   </ProgressPrimitive.Root>

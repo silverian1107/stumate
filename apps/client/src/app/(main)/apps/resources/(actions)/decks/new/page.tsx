@@ -1,13 +1,15 @@
 'use client';
 
-import { setFlashcards } from '@/redux/slices/resourceSlice';
-import { RootState } from '@/redux/store';
-import { Deck } from '@/types/deck';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { useDeckManager } from '@/hooks/use-deck';
-import { ResourceHeader } from '../../_components/header';
+import { setFlashcards } from '@/redux/slices/resourceSlice';
+import type { RootState } from '@/redux/store';
+import type { Deck } from '@/types/deck';
+
 import { ResourceElements } from '../../_components/creator';
+import { ResourceHeader } from '../../_components/header';
 
 export default function ResourcePage() {
   const dispatch = useDispatch();
@@ -18,7 +20,7 @@ export default function ResourcePage() {
     deck: initialResource,
     saveResource,
     isSubmitting,
-    isLoading,
+    isLoading
   } = useDeckManager();
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function ResourcePage() {
         ...initialResource,
         flashcards: resource.flashcards,
         name: formData.name,
-        description: formData.description,
+        description: formData.description
       } as Deck;
 
       await saveResource(resourceToSubmit);

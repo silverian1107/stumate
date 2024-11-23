@@ -1,19 +1,20 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PlusIcon, SaveIcon } from 'lucide-react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import { AutosizeTextarea } from '@/components/ui/auto-size-textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusIcon, SaveIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { useEffect } from 'react';
-import { Deck } from '@/types/deck';
+import type { Deck } from '@/types/deck';
 
 const DeckSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  description: z.string().optional(),
+  description: z.string().optional()
 });
 
 type ResourceFormData = z.infer<typeof DeckSchema>;
@@ -21,7 +22,7 @@ export function ResourceHeader({
   initialData = {} as Deck,
   isEditing,
   onSubmit,
-  isSubmitting,
+  isSubmitting
 }: {
   initialData?: Deck;
   isEditing: boolean;
@@ -32,35 +33,35 @@ export function ResourceHeader({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors }
   } = useForm<ResourceFormData>({
     resolver: zodResolver(DeckSchema),
     defaultValues: {
       name: initialData.name || '',
-      description: initialData.description || '',
-    },
+      description: initialData.description || ''
+    }
   });
 
   useEffect(() => {
     reset({
       name: initialData.name,
-      description: initialData.description,
+      description: initialData.description
     });
   }, [initialData, reset]);
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full space-y-2 bg-white rounded-md px-4 py-4 pb-10 relative"
+      className="relative w-full space-y-2 rounded-md bg-white p-4 pb-10"
     >
-      <div className="flex justify-between items-center">
-        <h1 className="font-bold text-xl text-primary-600">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-primary-600">
           {isEditing ? 'Edit' : 'Create'} Deck
         </h1>
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-4 py-2 bg-primary-500 text-white rounded"
+          className="rounded bg-primary-500 px-4 py-2 text-white"
         >
           {isEditing ? <SaveIcon /> : <PlusIcon />}
           {isEditing ? 'Save' : 'Create'}
@@ -73,21 +74,21 @@ export function ResourceHeader({
         <Input
           type="text"
           {...register('name')}
-          placeholder={`Deck Name`}
+          placeholder="Deck Name"
           className={cn(
             'w-full p-2 border rounded',
             errors.name &&
-              'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500',
+              'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500'
           )}
         />
         <AutosizeTextarea
           {...register('description')}
           placeholder="Description"
-          className="w-full p-2 border rounded resize-none"
+          className="w-full resize-none rounded border p-2"
         />
       </div>
       {errors.name && (
-        <p className="text-red-500 absolute bottom-4">*{errors.name.message}</p>
+        <p className="absolute bottom-4 text-red-500">*{errors.name.message}</p>
       )}
     </form>
   );

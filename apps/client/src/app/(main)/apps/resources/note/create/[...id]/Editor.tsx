@@ -1,7 +1,10 @@
 'use client';
 
+import type { OutputData } from '@editorjs/editorjs';
+import EditorJS from '@editorjs/editorjs';
 import { forwardRef, useEffect, useRef } from 'react';
-import EditorJS, { OutputData } from '@editorjs/editorjs';
+import { toast } from 'sonner';
+
 import { tools } from '../../../(actions)/_components/tools'; // Đảm bảo đường dẫn đúng
 
 interface EditorProps {
@@ -11,7 +14,7 @@ interface EditorProps {
 
 const Editor = forwardRef<EditorJS | null, EditorProps>(function Editor(
   { data, onChange }, // Props: dữ liệu khởi tạo và callback
-  ref,
+  ref
 ) {
   const editorRef = useRef<EditorJS | null>(null); // Lưu trữ instance của EditorJS
   const isInitialized = useRef(false); // Theo dõi trạng thái khởi tạo EditorJS
@@ -25,14 +28,14 @@ const Editor = forwardRef<EditorJS | null, EditorProps>(function Editor(
         holder: 'editor', // ID của element chứa editor
         placeholder: 'Type something!',
         autofocus: true,
-        tools: tools, // Các công cụ editor
+        tools, // Các công cụ editor
         data: data || undefined, // Dữ liệu khởi tạo
         onChange: async () => {
           if (onChange && editorRef.current) {
             const savedData = await editorRef.current.save(); // Lấy dữ liệu từ editor
             onChange(savedData); // Gọi callback với dữ liệu mới
           }
-        },
+        }
       });
 
       editorRef.current = editor; // Lưu instance vào ref
@@ -43,6 +46,7 @@ const Editor = forwardRef<EditorJS | null, EditorProps>(function Editor(
       }
 
       // Cleanup khi component bị unmount
+      // eslint-disable-next-line consistent-return
       return () => {
         if (
           editorRef.current &&
@@ -52,7 +56,9 @@ const Editor = forwardRef<EditorJS | null, EditorProps>(function Editor(
         }
       };
     } catch (error) {
-      console.error('EditorJS initialization failed:', error);
+      toast.error('Failed to create editor', {
+        description: 'Please try again.'
+      });
     }
   }, [data, onChange, ref]); // Chỉ chạy lại khi data hoặc onChange thay đổi
 

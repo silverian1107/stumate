@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 interface IconWrapperProps {
   icon: LucideIcon;
@@ -6,8 +6,8 @@ interface IconWrapperProps {
 
 const IconWrapper = ({ icon: Icon }: IconWrapperProps) => {
   return (
-    <div className="p-1 rounded-full bg-primary-100 inline-block border border-dashed border-primary-800">
-      <Icon className="w-5 h-5 text-primary-600" />
+    <div className="inline-block rounded-full border border-dashed border-primary-800 bg-primary-100 p-1">
+      <Icon className="size-5 text-primary-600" />
     </div>
   );
 };

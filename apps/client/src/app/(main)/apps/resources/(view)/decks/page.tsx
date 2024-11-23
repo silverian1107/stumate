@@ -1,7 +1,10 @@
 'use client';
-import { DeckApi } from '@/endpoints/deck-api';
+
 import { useQuery } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
+
+import { DeckApi } from '@/endpoints/deck-api';
+
 import ResourceCard from '../../_components/resource-card';
 
 interface Deck {
@@ -17,20 +20,20 @@ const Flashcards = () => {
       const response = await DeckApi.findByOwner();
       return response.data;
     },
-    retry: false,
+    retry: false
   });
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-primary-100">
-        <LoaderCircle className="w-16 h-16 animate-spin" />
+      <div className="flex size-full items-center justify-center bg-primary-100">
+        <LoaderCircle className="size-16 animate-spin" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-primary-100">
+      <div className="flex size-full items-center justify-center bg-primary-100">
         <p>Error: {error.message}</p>
       </div>
     );
@@ -38,26 +41,24 @@ const Flashcards = () => {
 
   if (data.data.result.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-primary-100">
+      <div className="flex size-full items-center justify-center bg-primary-100">
         <p>No data found</p>
       </div>
     );
   }
 
-  const result = data.data.result;
+  const { result } = data.data;
   return (
-    <>
-      <div className="w-full flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 overflow-auto auto-rows-min ">
-        {result.map((deck: Deck) => (
-          <ResourceCard
-            key={deck._id}
-            id={deck._id}
-            name={deck.name}
-            description={deck.description}
-          />
-        ))}
-      </div>
-    </>
+    <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 lg:grid-cols-4 ">
+      {result.map((deck: Deck) => (
+        <ResourceCard
+          key={deck._id}
+          id={deck._id}
+          name={deck.name}
+          description={deck.description}
+        />
+      ))}
+    </div>
   );
 };
 

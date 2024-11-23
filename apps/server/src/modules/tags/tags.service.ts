@@ -43,26 +43,26 @@ export class TagsService {
     }
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
+        return await this.collectionModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
+        return await this.noteModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
+        return await this.deckModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
+        return await this.quizTestModel.findOneAndUpdate(
+          { id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
@@ -78,26 +78,26 @@ export class TagsService {
     }
     switch (resourceType) {
       case 'collection':
-        return await this.collectionModel.findByIdAndUpdate(
-          resourceId,
+        return await this.collectionModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
       case 'note':
-        return await this.noteModel.findByIdAndUpdate(
-          resourceId,
+        return await this.noteModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
       case 'deck':
-        return await this.deckModel.findByIdAndUpdate(
-          resourceId,
+        return await this.deckModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
       case 'quiz':
-        return await this.quizTestModel.findByIdAndUpdate(
-          resourceId,
+        return await this.quizTestModel.findOneAndUpdate(
+          { id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
@@ -144,7 +144,7 @@ export class TagsService {
   }
 
   async update(id: string, createTagDto: CreateTagDto, @User() user: IUser) {
-    return await this.tagModel.updateOne(
+    return await this.tagModel.findOneAndUpdate(
       { _id: id },
       {
         ...createTagDto,
@@ -153,6 +153,7 @@ export class TagsService {
           username: user.username,
         },
       },
+      { new: true },
     );
   }
 

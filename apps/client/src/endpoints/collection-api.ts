@@ -7,12 +7,12 @@ export type CreateCollectionDto = {
 };
 
 export const CollectionApi = {
-  create: async function (data: CreateCollectionDto) {
+  async create(data: CreateCollectionDto) {
     const response = await CollectionClient.post('', data);
     return response.data;
   },
 
-  findByOwner: async function (params: {
+  async findByOwner(params: {
     currentPage?: number;
     pageSize?: number;
     qs?: string;
@@ -21,12 +21,12 @@ export const CollectionApi = {
       params: {
         currentPage: params.currentPage || 1,
         pageSize: params.pageSize || 10,
-        qs: params.qs,
-      },
+        qs: params.qs
+      }
     });
   },
 
-  findById: async function (collectionId: string) {
+  async findById(collectionId: string) {
     return CollectionClient.get(`/${collectionId}`);
-  },
+  }
 };

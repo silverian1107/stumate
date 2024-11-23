@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type QuizTestDocument = HydratedDocument<QuizTest>;
 
@@ -28,8 +29,8 @@ export class QuizTest {
   @Prop({ enum: Status, default: Status.NOT_STARTED })
   status: string;
 
-  @Prop()
-  isPublished: boolean;
+  // @Prop()
+  // isPublished: boolean;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
@@ -70,3 +71,5 @@ export class QuizTest {
 }
 
 export const QuizTestSchema = SchemaFactory.createForClass(QuizTest);
+
+QuizTestSchema.plugin(archivePlugin);

@@ -1,9 +1,10 @@
 'use client';
-import { closeSnackbar } from '@/redux/slices/snackbarSlice';
-import { RootState } from '@/redux/store';
+
 import { Alert, Snackbar } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { closeSnackbar } from '@/redux/slices/snackbarSlice';
+import type { RootState } from '@/redux/store';
 
 export default function SnackBar() {
   const dispatch = useDispatch();

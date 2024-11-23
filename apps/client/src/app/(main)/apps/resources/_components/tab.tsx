@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -7,18 +8,18 @@ const allTabs = [
   {
     id: 'flashcard',
     name: 'Flashcards',
-    href: '/decks',
+    href: '/decks'
   },
   {
     id: 'quizz',
     name: 'Quizzes',
-    href: '/quizzes',
+    href: '/quizzes'
   },
   {
     id: 'summary',
     name: 'Sumarry',
-    href: '/summaries',
-  },
+    href: '/summaries'
+  }
 ];
 
 export const SlidingTabBar = () => {
@@ -29,11 +30,9 @@ export const SlidingTabBar = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    const activeTabIndex = allTabs.findIndex((tab) =>
-      pathname.includes(tab.href),
-    );
+    const tabIndex = allTabs.findIndex((tab) => pathname.includes(tab.href));
 
-    setActiveTabIndex(activeTabIndex);
+    setActiveTabIndex(tabIndex);
   }, [pathname]);
 
   useEffect(() => {
@@ -53,25 +52,25 @@ export const SlidingTabBar = () => {
   return (
     <div className="relative flex rounded border border-primary-950/40 bg-primary-100 backdrop-blur-sm">
       <span
-        className="absolute bottom-0 top-0 -z-10 flex overflow-hidden transition-all duration-300"
+        className="absolute inset-y-0 -z-10 flex overflow-hidden transition-all duration-300"
         style={{ left: tabUnderlineLeft, width: tabUnderlineWidth }}
       >
-        <span className="h-full w-full rounded-sm bg-primary-600" />
+        <span className="size-full rounded-sm bg-primary-600" />
       </span>
       {allTabs.map((tab, index) => {
         const isActive = activeTabIndex === index;
 
         return (
           <Link
-            href={`/apps/resources/` + tab.href}
+            href={`/apps/resources/${tab.href}`}
+            // eslint-disable-next-line react/no-array-index-key
             key={index}
             ref={(el) => {
               tabsRef.current[index] = el;
-              return;
             }}
             className={`${
               isActive ? `` : `hover:bg-primary-100`
-            } ${isActive ? 'text-white' : 'text-primary-950'} my-auto cursor-pointer select-none px-4 text-center font-light h-full py-2`}
+            } ${isActive ? 'text-white' : 'text-primary-950'} my-auto h-full cursor-pointer select-none px-4 py-2 text-center font-light`}
             onClick={() => setActiveTabIndex(index)}
           >
             {tab.name}

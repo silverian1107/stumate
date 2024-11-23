@@ -20,6 +20,7 @@ import {
   QuizQuestion,
   QuizQuestionDocument,
 } from '../quiz-questions/schema/quiz-question.schema';
+import { StatisticsService } from '../statistics/statistics.service';
 
 @Injectable()
 export class QuizTestsService {
@@ -30,6 +31,7 @@ export class QuizTestsService {
     private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
     @InjectModel(QuizQuestion.name)
     private readonly quizQuestionModel: SoftDeleteModel<QuizQuestionDocument>,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   async findQuizTestByTitle(title: string) {
@@ -42,6 +44,7 @@ export class QuizTestsService {
     return false;
   };
 
+  //websocket
   async create(createQuizTestDto: CreateQuizTestDto, @User() user: IUser) {
     //Check title already exists
     if (await this.isExistTitle(createQuizTestDto.title)) {
@@ -58,6 +61,7 @@ export class QuizTestsService {
         username: user.username,
       },
     });
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newQuizTest;
   }
 
@@ -145,7 +149,7 @@ export class QuizTestsService {
     updateQuizTestDto: UpdateQuizTestDto,
     @User() user: IUser,
   ) {
-    return await this.quizTestModel.updateOne(
+    return await this.quizTestModel.findOneAndUpdate(
       { _id: id },
       {
         ...updateQuizTestDto,
@@ -154,9 +158,11 @@ export class QuizTestsService {
           username: user.username,
         },
       },
+      { new: true },
     );
   }
 
+  //websocket
   async remove(id: string, @User() user: IUser) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Quiz Test ID');
@@ -165,11 +171,14 @@ export class QuizTestsService {
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }
+    const userId = quizTest.userId.toString();
     //soft delete for quiz question
     await this.quizQuestionModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz attempt
     await this.quizAttemptModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz test
-    return this.quizTestModel.delete({ _id: id }, user._id);
+    await this.quizTestModel.delete({ _id: id }, user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
+    return 'Quiz was deleted successfully';
   }
 }

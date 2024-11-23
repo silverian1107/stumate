@@ -60,6 +60,12 @@ export class FlashcardsController {
     }));
   }
 
+  @Post('all')
+  @ResponseMessage('Get all flashcards by user and deck')
+  async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
+    return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
+  }
+
   @Post('bulk/update')
   @ResponseMessage('Create multiple flashcards by deckId')
   async updateMultiple(
@@ -75,7 +81,7 @@ export class FlashcardsController {
   }
 
   @Post('study')
-  @ResponseMessage('Get flashcard by user and deck')
+  @ResponseMessage('Study flashcards')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleStudyFlashcard(deckId, user);
   }
@@ -100,12 +106,6 @@ export class FlashcardsController {
   @ResponseMessage('Get deck progress')
   async getDeckProgress(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleDeckProgress(deckId, user);
-  }
-
-  @Get('all')
-  @ResponseMessage('Get flashcard by user and deck')
-  async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
-    return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
   }
 
   @Get()

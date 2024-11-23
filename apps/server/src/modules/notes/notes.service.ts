@@ -3,12 +3,12 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { validateObjectId } from 'src/helpers/utils';
 import { CollectionsService } from '../collections/collections.service';
+import { StatisticsService } from '../statistics/statistics.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note, NoteDocument } from './schema/note.schema';
@@ -19,6 +19,7 @@ export class NotesService {
     @InjectModel('Note')
     private readonly noteModel: Model<NoteDocument>,
     private readonly collectionService: CollectionsService,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   async create(newNoteData: CreateNoteDto, userId: string) {
@@ -32,7 +33,7 @@ export class NotesService {
         ...newNoteData,
         ownerId: userId,
       });
-      const { parentId, attachment } = newNoteData;
+      const { parentId } = newNoteData;
 
       const [parentNote, parentCollection] = await Promise.all([
         this.noteModel.findById(parentId),
@@ -46,15 +47,6 @@ export class NotesService {
         throw new NotFoundException(
           `Couldn't find the collection with ID: ${parentId}`,
         );
-      if (parent.ownerId.toString() !== userId)
-        throw new UnauthorizedException(
-          'You are not authorized to create a note in this collection',
-        );
-
-      // Add new attachments
-      if (attachment && attachment.length > 0) {
-        newNote.attachment = attachment;
-      }
 
       newNote.parentId = parent._id as string;
       parent.children.push({
@@ -66,7 +58,9 @@ export class NotesService {
       newNote.level = parent.level + 1;
 
       await parent.save();
-      return newNote.save();
+      await newNote.save();
+      await this.statisticsService.createOrUpdateUserStatistics(userId);
+      return newNote;
     } catch (error) {
       throw new InternalServerErrorException(
         `Failed to create note: ${error.message}`,
@@ -248,6 +242,7 @@ export class NotesService {
     return restoredNote.save();
   }
 
+  //websocket
   async deleteById(noteId: string) {
     validateObjectId(noteId, 'Note');
     const deletedNote = await this.noteModel.findById(noteId).exec();
@@ -260,7 +255,12 @@ export class NotesService {
       throw new BadRequestException('Note must be archived before delete');
     }
 
+    const userId = deletedNote.ownerId;
+
     deletedNote.isDeleted = true;
-    return deletedNote.save();
+    await deletedNote.save();
+
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
+    return 'Note was deleted successfully';
   }
 }

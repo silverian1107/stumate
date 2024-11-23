@@ -1,10 +1,11 @@
 'use client';
 
-import { useNoteById, useUpdateNote } from '@/hooks/use-note';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const NoteTitle = ({}) => {
+import { useNoteById, useUpdateNote } from '@/hooks/use-note';
+
+const NoteTitle = () => {
   const { id } = useParams();
   const noteId = id as string;
 
@@ -23,7 +24,7 @@ const NoteTitle = ({}) => {
     setIsEditing(false);
     updateNote.mutate({
       _id: data._id,
-      name: noteTitle,
+      name: noteTitle
     });
   };
 
@@ -32,6 +33,8 @@ const NoteTitle = ({}) => {
     <>
       {!isEditing && (
         <div
+          role="button"
+          tabIndex={0}
           className="w-full lg:w-4/5 mx-auto text-xl line-clamp-1"
           onClick={() => setIsEditing(true)}
         >
@@ -43,6 +46,7 @@ const NoteTitle = ({}) => {
           value={noteTitle}
           onChange={(e) => setNoteTitle(e.target.value)}
           className="w-full lg:w-4/5 mx-auto text-xl line-clamp-1 forcus:outline-none"
+          // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus
           onBlur={() => handleOnBlur()}
           onKeyDown={(e) => {

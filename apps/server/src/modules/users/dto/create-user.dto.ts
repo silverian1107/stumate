@@ -7,13 +7,7 @@ import {
   IsStrongPassword,
 } from 'class-validator';
 
-export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  OTHER = 'OTHER',
-}
-
-enum Role {
+export enum Role {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }

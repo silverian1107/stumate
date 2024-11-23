@@ -1,7 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { useAccount } from '@/hooks/use-auth';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import Cookies from 'js-cookie';
@@ -9,6 +7,10 @@ import { CloudSun, LayoutGrid, LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { useAccount } from '@/hooks/use-auth';
+
 import IconWrapper from './_components/IconWrapper';
 
 const Main = () => {
@@ -16,22 +18,20 @@ const Main = () => {
   const { data, error, isLoading } = useAccount();
 
   useEffect(() => {
-    console.log(error);
-
     if (error) {
       Cookies.remove('access_token');
       router.push('/login');
       toast('Unauthorized', {
         description: 'Please login to continue',
-        position: 'top-right',
+        position: 'top-right'
       });
     }
   }, [error, data, router]);
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-primary-100">
-        <LoaderCircle className="w-16 h-16 animate-spin" />
+      <div className="flex size-full items-center justify-center bg-primary-100">
+        <LoaderCircle className="size-16 animate-spin" />
       </div>
     );
   }
@@ -44,7 +44,7 @@ const Main = () => {
         <div className="text-primary-950/40 bg-primary-50 border border-primary-950/40 hover:bg-primary-100 hover:border-primary-800 hover:text-primary-800 flex items-center gap-1 px-2 py-1 rounded-sm cursor-pointer">
           Customized
           <span>
-            <LayoutGrid className="w-4 h-4" />
+            <LayoutGrid className="size-4" />
           </span>
         </div>
         <div className="flex flex-col items-end">
@@ -52,13 +52,13 @@ const Main = () => {
             <span>
               {new Date().toLocaleTimeString('en-US', {
                 hour: '2-digit',
-                minute: '2-digit',
+                minute: '2-digit'
               })}
             </span>
             <IconWrapper icon={CloudSun} />
           </div>
           <div>
-            <h1 className="font-bold text-2xl">
+            <h1 className="text-2xl font-bold">
               Morning, {data.data.user.username}
             </h1>
           </div>
@@ -93,8 +93,8 @@ const Main = () => {
           <div className=" element-dashboard row-span-2 col-span-3 ">8</div>
         </div>
         <div className=" w-1/4 h-full grid grid-cols-1 gap-4  box-border">
-          <div className="element-dashboard"></div>
-          <div className="element-dashboard"></div>
+          <div className="element-dashboard" />
+          <div className="element-dashboard" />
         </div>
       </div>
     </div>

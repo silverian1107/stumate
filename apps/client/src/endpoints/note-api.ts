@@ -1,8 +1,9 @@
-import { NoteUpdateDto } from '@/types/note';
+import type { NoteUpdateDto } from '@/types/note';
+
 import { AxiosClient } from './AxiosClient';
 
 export const NoteApi = {
-  findByOwner: async function (params: {
+  async findByOwner(params: {
     currentPage?: number;
     pageSize?: number;
     qs?: string;
@@ -11,22 +12,22 @@ export const NoteApi = {
       params: {
         currentPage: params.currentPage || 1,
         pageSize: params.pageSize || 10,
-        qs: params.qs,
-      },
+        qs: params.qs
+      }
     });
   },
 
-  findById: async function (noteId: string) {
+  async findById(noteId: string) {
     return AxiosClient.get(`/notes/${noteId}`);
   },
 
-  updateById: async function (
+  async updateById(
     noteId: string,
     {
       name,
       body,
-      attachment,
-    }: Pick<NoteUpdateDto, 'name' | 'body' | 'attachment'>,
+      attachment
+    }: Pick<NoteUpdateDto, 'name' | 'body' | 'attachment'>
   ) {
     if (body && typeof body === 'object' && 'version' in body) {
       delete (body as unknown as Record<string, unknown>).version;
@@ -34,7 +35,7 @@ export const NoteApi = {
     return AxiosClient.patch(`/notes/${noteId}`, {
       name,
       body,
-      attachment,
+      attachment
     });
-  },
+  }
 };

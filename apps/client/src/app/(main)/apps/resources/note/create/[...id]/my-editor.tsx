@@ -1,6 +1,9 @@
 'use client';
-import { useNoteById } from '@/hooks/use-note';
+
 import { useParams } from 'next/navigation';
+
+import { useNoteById } from '@/hooks/use-note';
+
 import NoteTitle from '../_components/note-title';
 import MyTextEditor from './my-text-editor';
 
@@ -12,7 +15,7 @@ const MyEditor = () => {
   if (isLoading) return null;
 
   return (
-    <div className="w-full h-full p-5 rounded-sm box-border flex-1 mx-auto overflow-auto pt-[5rem]">
+    <div className="size-full p-5 rounded-sm box-border flex-1 mx-auto overflow-auto pt-20">
       <NoteTitle />
       <div className="mb-5" />
       <MyTextEditor data={data} />

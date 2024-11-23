@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type DeckDocument = HydratedDocument<Deck>;
 
@@ -34,8 +35,8 @@ export class Deck {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
   tags: mongoose.Schema.Types.ObjectId[];
 
-  @Prop({ default: false })
-  isPublished: boolean;
+  // @Prop({ default: false })
+  // isPublished: boolean;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   sharedWithUsers: mongoose.Schema.Types.ObjectId[];
@@ -60,3 +61,5 @@ export class Deck {
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);
+
+DeckSchema.plugin(archivePlugin);

@@ -1,6 +1,5 @@
 import {
   IsDate,
-  IsEmail,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
@@ -8,8 +7,13 @@ import {
   IsString,
   MaxDate,
 } from 'class-validator';
-import { Gender } from './create-user.dto';
 import { Transform } from 'class-transformer';
+
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER',
+}
 
 export class UpdateUserDto {
   @IsNotEmpty()
@@ -23,10 +27,6 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   username: string;
-
-  @IsOptional()
-  @IsEmail()
-  email: string;
 
   @IsOptional()
   @IsDate()
