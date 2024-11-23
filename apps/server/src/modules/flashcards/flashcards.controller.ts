@@ -65,7 +65,7 @@ export class FlashcardsController {
   async updateMultiple(
     @Param('deckId') deckId: string,
     @Body() updateFlashcardData: UpdateMultipleFlashcardDto[],
-  ) {
+  ): Promise<any> {
     const updated = await this.flashcardsService.updateMultiple(
       deckId,
       updateFlashcardData,

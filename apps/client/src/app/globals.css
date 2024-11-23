@@ -135,11 +135,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--primary-100);
+  background-color: var(--primary-200);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--primary-200);
+  background-color: var(--primary-300);
   border-radius: 9999px;
 }

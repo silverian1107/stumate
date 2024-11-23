@@ -1,6 +1,7 @@
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAccount } from '@/hooks/use-auth';
+import { useCreateCollection } from '@/hooks/use-collection';
 import { cn } from '@/lib/utils';
 import {
   Archive,
@@ -19,21 +20,18 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import DocumentList from './DocumentList';
 import SidebarItem from './SidebarItem';
-import { toast } from 'sonner';
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { data, error, isLoading } = useAccount();
-
+  const createCollection = useCreateCollection();
   if (isLoading || error || !data) {
     return null;
   }
 
   const handleCreate = () => {
-    toast('Coming Soon', {
-      description: 'This feature will be available soon.',
-    });
+    createCollection.mutate({ name: 'New Collection' });
   };
 
   return (
@@ -99,10 +97,10 @@ const Sidebar = () => {
           onClick={handleCreate}
         />
         <div className="w-full flex-1 flex flex-col overflow-auto">
-          <div className="w-full overflow-auto flex-1">
+          <div className="w-full overflow-auto flex-1 max-h-[320px]">
             <DocumentList />
           </div>
-          <div>
+          <div className="mt-auto">
             <SidebarItem isButton label="Archive" icon={Archive} />
             <SidebarItem isButton label="Tags" icon={Tags} />
             <SidebarItem isButton label="Guide" icon={CircleHelp} />

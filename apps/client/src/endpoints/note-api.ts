@@ -29,7 +29,7 @@ export const NoteApi = {
     }: Pick<NoteUpdateDto, 'name' | 'body' | 'attachment'>,
   ) {
     if (body && typeof body === 'object' && 'version' in body) {
-      delete (body as Record<string, unknown>).version;
+      delete (body as unknown as Record<string, unknown>).version;
     }
     return AxiosClient.patch(`/notes/${noteId}`, {
       name,

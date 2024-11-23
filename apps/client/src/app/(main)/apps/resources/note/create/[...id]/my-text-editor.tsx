@@ -25,10 +25,10 @@ const MyTextEditor = ({ data }: { data: Note }) => {
         autofocus: true,
         tools: tools,
         onChange: async (event: API) => {
-          const body = (await event.saver.save()) as OutputData;
+          const body = await event.saver.save();
           updateNoteMutate.mutate({
             _id: data._id,
-            body: [body],
+            body,
           });
         },
       });
@@ -40,7 +40,7 @@ const MyTextEditor = ({ data }: { data: Note }) => {
         ref.current.destroy();
       }
     };
-  }, []);
+  }, [data._id, initialData, updateNoteMutate]);
 
   return <div id="editor-js" className="h-fit" />;
 };

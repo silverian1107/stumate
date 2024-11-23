@@ -32,7 +32,7 @@ const NoteTitle = ({}) => {
     <>
       {!isEditing && (
         <div
-          className="w-full text-xl line-clamp-1"
+          className="w-full lg:w-4/5 mx-auto text-xl line-clamp-1"
           onClick={() => setIsEditing(true)}
         >
           {noteTitle}
@@ -42,7 +42,7 @@ const NoteTitle = ({}) => {
         <input
           value={noteTitle}
           onChange={(e) => setNoteTitle(e.target.value)}
-          className="w-full text-xl line-clamp-1 forcus:outline-none"
+          className="w-full lg:w-4/5 mx-auto text-xl line-clamp-1 forcus:outline-none"
           autoFocus
           onBlur={() => handleOnBlur()}
           onKeyDown={(e) => {

@@ -1,3 +1,5 @@
+import { OutputData } from '@editorjs/editorjs';
+
 export interface Note {
   _id: string;
   ownerId: string;
@@ -23,6 +25,6 @@ export interface Note {
 export type NoteUpdateDto = {
   _id: string;
   name?: string;
-  body?: unknown[];
+  body?: OutputData;
   attachment?: string[];
 };
