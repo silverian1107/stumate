@@ -32,6 +32,13 @@ export class QuizQuestion {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    require: true,
+  })
+  userId: mongoose.Schema.Types.ObjectId;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'QuizTest',
     require: true,
   })

@@ -72,13 +72,11 @@ export class FlashcardsController {
   @Post(':id/mark')
   @ResponseMessage('Mark a flashcard')
   async markFlashcard(
-    @Param('deckId') deckId: string,
     @Param('id') id: string,
     @Body() markFlashcardDTO: MarkFlashcardDTO,
     @User() user: IUser,
   ) {
     return await this.flashcardsService.handleMarkFlashcard(
-      deckId,
       id,
       markFlashcardDTO,
       user,
@@ -106,6 +104,17 @@ export class FlashcardsController {
   async findOne(@Param('deckId') deckId: string, @Param('id') id: string) {
     const foundFlashcard = await this.flashcardsService.findOne(deckId, id);
     return foundFlashcard;
+  }
+
+  @Get(':id/review')
+  @ResponseMessage('Fetch flashcard review by id')
+  async findFlashcardReview(
+    @Param('deckId') deckId: string,
+    @Param('id') id: string,
+  ) {
+    const foundFlashcardReview =
+      await this.flashcardsService.findFlashcardReview(deckId, id);
+    return foundFlashcardReview;
   }
 
   @Patch(':id')

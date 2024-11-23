@@ -7,11 +7,15 @@ import { DecksModule } from '../decks/decks.module';
 import { GatewayModule } from 'src/gateway/gateway.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { FlashcardReview, FlashcardReviewSchema } from './schema/flashcard-review.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Flashcard.name, schema: FlashcardSchema },
+    ]),
+    MongooseModule.forFeature([
+      { name: FlashcardReview.name, schema: FlashcardReviewSchema },
     ]),
     forwardRef(() => DecksModule),
     GatewayModule,

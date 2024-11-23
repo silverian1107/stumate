@@ -4,7 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { User as UserModel, UserDocument } from '../users/schema/user.schema';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 
 @Controller('statistics')
@@ -36,8 +36,7 @@ export class StatisticsController {
     }
   }
 
-  @Public()
-  @Get('user')
+  @Get()
   @ResponseMessage('Fetch user statistic')
   async getUserStatistic(@User() user: IUser) {
     return await this.statisticsService.findOne(user);

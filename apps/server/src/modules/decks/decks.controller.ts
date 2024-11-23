@@ -7,14 +7,19 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
 import { IUser } from '../users/users.interface';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Deck } from './schema/deck.schema';
+import { AbilityGuard } from 'src/casl/ability.guard';
 
 @Controller('decks')
+@UseGuards(AbilityGuard)
 export class DecksController {
   constructor(private readonly decksService: DecksService) {}
 
@@ -45,6 +50,7 @@ export class DecksController {
   }
 
   @Get(':id')
+  @CheckPolicies((ability) => ability.can(Action.READ, Deck))
   @ResponseMessage('Fetch deck by id')
   async findOne(@Param('id') id: string) {
     const foundDeck = await this.decksService.findOne(id);
