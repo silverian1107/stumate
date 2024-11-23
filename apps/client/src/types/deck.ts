@@ -1,4 +1,3 @@
-// types/resource.ts
 export type ResourceType = 'decks' | 'quizzes';
 
 export type ENTITY_ACTION = 'create' | 'update' | 'delete';

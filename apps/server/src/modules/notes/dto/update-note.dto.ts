@@ -84,5 +84,5 @@ export class UpdateNoteDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  attachment: string[];
+  attachment?: string[];
 }

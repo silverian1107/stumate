@@ -120,10 +120,11 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.isReady.then(() => {
+        // @ts-expect-error Property 'onChange' does not exist
         editorRef.current?.onChange?.(handleEditorChange);
       });
     }
-  }, []);
+  }, [handleEditorChange]);
 
   if (isLoading || !editorValue) {
     return <p>Loading...</p>;

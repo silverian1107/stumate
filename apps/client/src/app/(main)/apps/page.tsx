@@ -1,20 +1,15 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { useAccount } from '@/hooks/use-auth';
-import Cookies from 'js-cookie';
-import {
-  CloudSun,
-  LayoutGrid,
-  LoaderCircle,
-  MoreHorizontalIcon,
-} from 'lucide-react';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import Cookies from 'js-cookie';
+import { CloudSun, LayoutGrid, LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import IconWrapper from './_components/IconWrapper';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import IconWrapper from './_components/IconWrapper';
 
 const Main = () => {
   const router = useRouter();

@@ -108,7 +108,6 @@ export class CollectionsController {
     @Query() qs: string,
     @User() user: IUser,
   ) {
-    console.log(qs);
     return this.collectionsService.findByOwnerId(
       user._id,
       +currentPage,

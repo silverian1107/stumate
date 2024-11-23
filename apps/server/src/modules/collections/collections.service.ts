@@ -122,8 +122,6 @@ export class CollectionsService {
         .lean()
         .exec();
 
-      console.log(filter);
-
       return {
         meta: {
           current: currentPage,

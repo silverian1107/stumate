@@ -52,7 +52,7 @@ const Editor = forwardRef<EditorJS | null, EditorProps>(function Editor(
         }
       };
     } catch (error) {
-      console.error('EditorJS initialization failed:', error); // Xử lý lỗi khởi tạo
+      console.error('EditorJS initialization failed:', error);
     }
   }, [data, onChange, ref]); // Chỉ chạy lại khi data hoặc onChange thay đổi
 
