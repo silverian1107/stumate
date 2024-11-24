@@ -108,15 +108,18 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-  #editorjs h2, h2 {
+  #editorjs h2,
+  h2 {
     @apply text-4xl font-bold text-black !important;
   }
 
-  #editorjs h3, h3 {
+  #editorjs h3,
+  h3 {
     @apply text-3xl font-bold text-black !important;
   }
 
-  #editorjs h4, h4 {
+  #editorjs h4,
+  h4 {
     @apply text-2xl font-bold text-black !important;
   }
 }
@@ -146,11 +149,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--primary-200);
+  background-color: var(--primary-100);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--primary-300);
+  background-color: var(--primary-200);
   border-radius: 9999px;
 }

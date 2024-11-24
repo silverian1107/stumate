@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { NoteApi } from '@/endpoints/note-api';
@@ -33,7 +34,9 @@ export const useCreateNote = () => {
   });
 };
 
-export const useNoteById = (noteId: string) => {
+export const useNoteById = () => {
+  const { id } = useParams();
+  const noteId = id as string;
   return useQuery({
     queryKey: ['getNoteById', noteId],
     queryFn: async () => {
@@ -45,9 +48,21 @@ export const useNoteById = (noteId: string) => {
 };
 
 export const useUpdateNote = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({ _id, name, body, attachment }: NoteUpdateDto) => {
-      return NoteApi.updateById(_id, { name, body, attachment });
+      const response = await NoteApi.updateById(_id, {
+        name,
+        body,
+        attachment
+      });
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getNoteById', data._id]
+      });
     },
     onError: () => {
       toast.error('Failed to update note', {

@@ -49,6 +49,8 @@ export class FlashcardsController {
     @Body() createFlashcardData: CreateFlashcardDto[],
     @User() user: IUser,
   ) {
+    console.log(createFlashcardData);
+
     const newFlashcards = await this.flashcardsService.createMultiple(
       deckId,
       createFlashcardData,

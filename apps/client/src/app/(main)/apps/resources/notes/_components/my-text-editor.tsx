@@ -37,12 +37,6 @@ const MyTextEditor = ({ data }: { data: Note }) => {
       });
       ref.current = editor;
     }
-
-    return () => {
-      if (ref.current && ref.current.destroy) {
-        ref.current.destroy();
-      }
-    };
   }, [data._id, initialData, updateNoteMutate]);
 
   return <div id="editor-js" className="h-fit" />;

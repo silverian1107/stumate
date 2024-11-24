@@ -7,7 +7,6 @@ import { Button } from './ui/button';
 
 const LoginStatus = () => {
   const { data, isLoading, error } = useAccount();
-  console.log(data);
 
   if (isLoading) {
     return (
@@ -20,7 +19,6 @@ const LoginStatus = () => {
   if (error || !data) {
     return (
       <>
-        {' '}
         <Link href="/login" className="text-gray-600 hover:text-primary ">
           <Button
             variant="secondary"
