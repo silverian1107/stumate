@@ -109,6 +109,18 @@ export function useDeckManager() {
     }
   });
 
+  const cardBulkDelete = useMutation({
+    mutationFn: async (data: { deckId: string; cards: string[] }) => {
+      return FlashcardApi.bulkDelete(data.deckId, data.cards);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['decks', data.data.id]
+      });
+      return data.data.id;
+    }
+  });
+
   const saveResource = async (deck: Deck) => {
     const id = deck._id;
 
@@ -126,19 +138,41 @@ export function useDeckManager() {
           .filter((card) => card.action === 'create')
           .map((card) => ({ ...card, _id: undefined }));
 
+        const deletedCard = deck.flashcards
+          .filter((card) => card.action === 'delete')
+          .map((card) => card._id)
+          .filter((idx) => idx !== undefined) as string[];
+
+        const promises = [];
+
         if (updatedCard.length > 0) {
-          await cardBulkUpdate.mutateAsync({
-            deckId: id,
-            cards: updatedCard
-          });
+          promises.push(
+            cardBulkUpdate.mutateAsync({
+              deckId: id,
+              cards: updatedCard
+            })
+          );
         }
 
         if (createdCard.length > 0) {
-          await cardBulkCreate.mutateAsync({
-            deckId: id,
-            cards: createdCard
-          });
+          promises.push(
+            cardBulkCreate.mutateAsync({
+              deckId: id,
+              cards: createdCard
+            })
+          );
         }
+
+        if (deletedCard.length > 0) {
+          promises.push(
+            cardBulkDelete.mutateAsync({
+              deckId: id,
+              cards: deletedCard
+            })
+          );
+        }
+
+        await Promise.all(promises);
 
         return await deckUpdateMutatation.mutateAsync({ deckId: id, deck });
       }

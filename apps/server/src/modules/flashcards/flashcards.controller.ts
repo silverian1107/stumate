@@ -151,4 +151,13 @@ export class FlashcardsController {
   ): Promise<any> {
     return this.flashcardsService.remove(deckId, id, user);
   }
+
+  @Delete('bulk/delete')
+  @ResponseMessage('Delete multiple flashcards')
+  async removeMultiple(
+    @Param('deckId') deckId: string,
+    @Body() flashcardIds: string[],
+  ): Promise<any> {
+    return await this.flashcardsService.removeMultiple(deckId, flashcardIds);
+  }
 }

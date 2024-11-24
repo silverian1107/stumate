@@ -126,6 +126,29 @@ export class FlashcardsService {
     return rating < 4;
   };
 
+  async removeMultiple(deckId: string, flashcardIds: string[]) {
+    if (!(await this.decks.findOne(deckId))) {
+      throw new NotFoundException('Not found deck');
+    }
+    const flashcards = await this.flashcardModel.find({
+      _id: { $in: flashcardIds },
+      deckId,
+    });
+    if (flashcards.length !== flashcardIds.length) {
+      throw new NotFoundException('Not found flashcard');
+    }
+
+    await this.flashcardModel.deleteMany({
+      _id: { $in: flashcardIds },
+      deckId,
+    });
+    await this.statisticsService.createOrUpdateUserStatistics(
+      flashcards[0].userId.toString(),
+    );
+
+    return flashcards;
+  }
+
   //websocket
   async create(
     deckId: string,
