@@ -60,7 +60,7 @@ export class FlashcardsController {
     }));
   }
 
-  @Post('all')
+  @Get('all')
   @ResponseMessage('Get all flashcards by user and deck')
   async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
