@@ -1,11 +1,14 @@
 import { Controller, Get, Post, Param, Query } from '@nestjs/common';
 import { ArchiveService } from './archive.service';
 import { ResponseMessage } from 'src/decorator/customize';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Archive')
 @Controller('archive')
 export class ArchiveController {
   constructor(private readonly archiveService: ArchiveService) {}
 
+  @ApiOperation({ summary: 'Archive a resource' })
   @Post(':resourceType/archive/:resourceId')
   @ResponseMessage('Archive a resource')
   async archiveResource(
@@ -18,6 +21,7 @@ export class ArchiveController {
     );
   }
 
+  @ApiOperation({ summary: 'Restore a resource' })
   @Post(':resourceType/restore/:resourceId')
   @ResponseMessage('Restore a resource')
   async restoreResource(
@@ -30,6 +34,7 @@ export class ArchiveController {
     );
   }
 
+  @ApiOperation({ summary: 'Fetch list archived resources with pagination' })
   @Get(':resourceType')
   @ResponseMessage('Fetch list archived resources with pagination')
   findAll(
@@ -46,6 +51,7 @@ export class ArchiveController {
     );
   }
 
+  @ApiOperation({ summary: 'Fetch archived resources by id' })
   @Get(':resourceType/:resourceId')
   @ResponseMessage('Fetch archived resources by id')
   async findOne(

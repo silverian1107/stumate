@@ -19,12 +19,15 @@ import {
 } from './dto/update-flashcard.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('decks/:deckId/flashcards')
+@ApiTags('flashcards')
 export class FlashcardsController {
   constructor(private readonly flashcardsService: FlashcardsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new flashcard by deckId' })
   @ResponseMessage('Create a new flashcard by deckId')
   async create(
     @Param('deckId') deckId: string,
@@ -43,6 +46,7 @@ export class FlashcardsController {
   }
 
   @Post('bulk/create')
+  @ApiOperation({ summary: 'Create multiple flashcards by deckId' })
   @ResponseMessage('Create multiple flashcards by deckId')
   async createMultiple(
     @Param('deckId') deckId: string,
@@ -61,12 +65,14 @@ export class FlashcardsController {
   }
 
   @Get('all')
+  @ApiOperation({ summary: 'Get all flashcards by deckId' })
   @ResponseMessage('Get all flashcards by user and deck')
   async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
   }
 
   @Post('bulk/update')
+  @ApiOperation({ summary: 'Update multiple flashcards by deckId' })
   @ResponseMessage('Create multiple flashcards by deckId')
   async updateMultiple(
     @Param('deckId') deckId: string,
@@ -81,12 +87,14 @@ export class FlashcardsController {
   }
 
   @Post('study')
+  @ApiOperation({ summary: 'Study flashcards by deckId' })
   @ResponseMessage('Study flashcards')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleStudyFlashcard(deckId, user);
   }
 
   @Post(':id/mark')
+  @ApiOperation({ summary: 'Mark flashcard as correct or incorrect' })
   @ResponseMessage('Mark a flashcard')
   async markFlashcard(
     @Param('deckId') deckId: string,
@@ -103,12 +111,14 @@ export class FlashcardsController {
   }
 
   @Post('progress')
+  @ApiOperation({ summary: 'Get progress of flashcards by deckId' })
   @ResponseMessage('Get deck progress')
   async getDeckProgress(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleDeckProgress(deckId, user);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all flashcards by deckId' })
   @ResponseMessage('Fetch list flashcard with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -119,6 +129,7 @@ export class FlashcardsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a flashcard by id' })
   @ResponseMessage('Fetch flashcard by id')
   async findOne(@Param('deckId') deckId: string, @Param('id') id: string) {
     const foundFlashcard = await this.flashcardsService.findOne(deckId, id);
@@ -126,6 +137,7 @@ export class FlashcardsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a flashcard' })
   @ResponseMessage('Update a flashcard')
   async update(
     @Param('deckId') deckId: string,
@@ -143,6 +155,7 @@ export class FlashcardsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a flashcard' })
   @ResponseMessage('Delete a flashcard')
   remove(
     @Param('deckId') deckId: string,
@@ -153,6 +166,7 @@ export class FlashcardsController {
   }
 
   @Delete('bulk/delete')
+  @ApiOperation({ summary: 'Delete multiple flashcards' })
   @ResponseMessage('Delete multiple flashcards')
   async removeMultiple(
     @Param('deckId') deckId: string,

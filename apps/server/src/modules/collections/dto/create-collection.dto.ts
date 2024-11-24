@@ -20,7 +20,7 @@ export class CreateCollectionDto {
 
   @ApiProperty({
     description: 'Optional description of the collection',
-    example: 'This is a sample collection.',
+    example: 'This is a sample collection Description',
     required: false,
   })
   @IsOptional()

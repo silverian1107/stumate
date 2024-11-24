@@ -17,6 +17,10 @@ export class CreateNoteDto {
   @Length(1, 100)
   name: string;
 
+  @ApiProperty({
+    description: 'Description of the note',
+    example: 'This is my note',
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

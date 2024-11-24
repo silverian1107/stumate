@@ -12,14 +12,17 @@ import {
 import { AttachmentsService } from './attachments.service';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ResponseMessage } from 'src/decorator/customize';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 // import * as fs from 'fs';
 // import * as path from 'path';
 
 @Controller('attachments')
+@ApiTags('Attachments')
 export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
 
   @Post('uploads')
+  @ApiOperation({ summary: 'Upload multiple files' })
   @ResponseMessage('Upload multiple files')
   @UseInterceptors(AnyFilesInterceptor())
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
@@ -29,6 +32,7 @@ export class AttachmentsController {
   }
 
   @Post('upload')
+  @ApiOperation({ summary: 'Upload single file' })
   @ResponseMessage('Upload single file')
   @UseInterceptors(FileInterceptor('fileUpload'))
   uploadFile(
@@ -49,11 +53,15 @@ export class AttachmentsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all attachments' })
+  @ResponseMessage('Get all attachments')
   findAll() {
     return this.attachmentsService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get single attachment' })
+  @ResponseMessage('Get single attachment')
   findOne(@Param('id') id: string) {
     return this.attachmentsService.findOne(+id);
   }

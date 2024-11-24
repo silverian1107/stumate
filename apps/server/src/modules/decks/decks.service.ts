@@ -32,10 +32,10 @@ export class DecksService {
 
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
     const { name, description } = createDeckDto;
-    //Check name already exists
-    // if (await this.findDeckByName(name, user)) {
-    //   throw new BadRequestException(`Name '${name}' already exists`);
-    // }
+    // Check name already exists
+    if (await this.findDeckByName(name, user)) {
+      throw new BadRequestException(`Name '${name}' already exists`);
+    }
     //Create a new deck
     const newDeck = await this.deckModel.create({
       name,

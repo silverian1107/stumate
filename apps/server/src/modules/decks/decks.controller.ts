@@ -1,24 +1,27 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
-import { IUser } from '../users/users.interface';
-import { ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('decks')
+@ApiTags('decks')
 export class DecksController {
   constructor(private readonly decksService: DecksService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new deck' })
   @ResponseMessage('Create a new deck')
   async create(@Body() createDeckDto: CreateDeckDto, @User() user: IUser) {
     const newDeck = await this.decksService.create(createDeckDto, user);
@@ -29,12 +32,14 @@ export class DecksController {
   }
 
   @Post('user')
+  @ApiOperation({ summary: 'Create a new deck for user' })
   @ResponseMessage('Get deck by user')
   getByUser(@User() user: IUser) {
     return this.decksService.findByUser(user);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all decks' })
   @ResponseMessage('Fetch list deck with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -45,6 +50,7 @@ export class DecksController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get deck by id' })
   @ResponseMessage('Fetch deck by id')
   async findOne(@Param('id') id: string) {
     const foundDeck = await this.decksService.findOne(id);
@@ -52,6 +58,7 @@ export class DecksController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update deck by id' })
   @ResponseMessage('Update a deck')
   async update(
     @Param('id') id: string,
@@ -63,6 +70,7 @@ export class DecksController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete deck by id' })
   @ResponseMessage('Delete a deck')
   remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     return this.decksService.remove(id, user);
