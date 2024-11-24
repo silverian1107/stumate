@@ -7,7 +7,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import IconWrapper from './_components/IconWrapper';
 import { toast } from 'sonner';
-import CreateNote from './resources/note/create/page';
+import Total from './resources/(actions)/_components/Total';
+import Performance from './resources/(actions)/_components/Performance';
+import CalendarDashboard from './resources/(actions)/_components/CalendarDashboard';
+import ShortSession from './resources/(actions)/_components/ShortSession';
+import CardDue from './resources/_components/CardDue';
+import NoteRevision from './resources/_components/NoteRevision';
+import LowAccQuiz from './resources/_components/LowAccQuiz';
+import Achieve from './resources/(actions)/_components/Achieve';
+import Maxim from './resources/(actions)/_components/Maxim';
 
 const Main = () => {
   const router = useRouter();
@@ -37,8 +45,8 @@ const Main = () => {
   if (!data) return null;
 
   return (
-    <div className="flex-1 h-full bg-primary-50">
-      <div className="h-[72px] w-full bg-primary-50 flex justify-between items-end py-2 px-4">
+    <div className="flex-1 flex h-screen bg-primary-50 flex-col box-border">
+      <div className="h-[72px] w-full bg-primary-50 flex justify-between  py-2 px-10 items-center">
         <div className="text-primary-950/40 bg-primary-50 border border-primary-950/40 hover:bg-primary-100 hover:border-primary-800 hover:text-primary-800 flex items-center gap-1 px-2 py-1 rounded-sm cursor-pointer">
           Customized
           <span>
@@ -62,8 +70,22 @@ const Main = () => {
           </div>
         </div>
       </div>
-
-      {/* <div className="grid lg:grid-cols-4 gap-4 w-full h-[calc(100%-72px)] px-4 md:grid-cols-2 grid-cols-1 [&>*]:h-[172px] overflow-auto"></div> */}
+      <div className="flex flex-1 gap-4 w-full  px-10 pb-7">
+        <div className=" w-3/4 max-h-full  grid grid-cols-3 grid-rows-5 gap-4 box-border ">
+          <ShortSession />
+          <CardDue />
+          <NoteRevision />
+          <div className="element-dashboard row-span-2 ">4</div>
+          <LowAccQuiz />
+          <Achieve />
+          <Maxim />
+          <Performance />
+        </div>
+        <div className=" w-1/4 h-full flex flex-col gap-4  box-border">
+          <Total username={data.data.user.username} />
+          <CalendarDashboard />
+        </div>
+      </div>
     </div>
   );
 };

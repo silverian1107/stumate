@@ -73,8 +73,12 @@ const DocumentList = ({
   };
 
   // Handle navigation on click
-  const onRedirect = (documentId: string) => {
-    router.push(`/documents/${documentId}`);
+  const onRedirect = (documentId: string, type: 'Collection' | 'Note') => {
+    if (type === 'Note') {
+      router.push(`/apps/resources/note/create/${documentId}`);
+    } else {
+      router.push(`/apps/resources/${documentId}`);
+    }
   };
 
   // Loading state
@@ -110,11 +114,16 @@ const DocumentList = ({
             // @ts-expect-error Kiểm tra đang là Collection hay Note để lấy tên
             label={document.name || document.title}
             icon={document.type === 'Collection' ? FolderOpen : FileText}
-            onClick={() => onRedirect(document._id)}
+            onClick={() => onRedirect(document._id, document.type)}
             level={level}
             type={document.type}
             onExpand={() => onExpand(document._id)}
             expanded={expanded[document._id]}
+            href={
+              document.type === 'Note'
+                ? `/apps/resources/note/create/${document._id}`
+                : ''
+            }
           />
           {expanded[document._id] && (
             <DocumentList

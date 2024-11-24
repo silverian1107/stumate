@@ -98,7 +98,7 @@ const Sidebar = () => {
           isButton={false}
           onClick={handleCreate}
         />
-        <div className="w-full flex-1 flex flex-col">
+        <div className="w-full flex-1 flex flex-col overflow-auto">
           <div className="w-full overflow-auto flex-1">
             <DocumentList />
           </div>

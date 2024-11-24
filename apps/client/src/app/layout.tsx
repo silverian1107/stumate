@@ -8,11 +8,19 @@ import SnackBar from '@/components/SnackBar';
 
 import RqProvider from './libs/RqProvider';
 import { Toaster } from 'sonner';
+import { Metadata } from 'next';
+
 const lexendDeca = Lexend_Deca({
   variable: '--font-lexend-deca',
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
+
+export const metadata: Metadata = {
+  title: 'Stumate',
+  description: '',
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{

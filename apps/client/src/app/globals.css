@@ -108,15 +108,60 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-  #editorjs h2, h2 {
+}
+@layer components {
+  .element-dashboard {
+    @apply rounded-lg bg-white flex flex-col items-center justify-center px-5 py-1 box-border ;
+  }
+  .element{
+    @apply max-h-[20vh]
+  }
+  .element-total{
+    @apply flex flex-col gap-0.5 items-center justify-center border border-primary-50 py-1
+  }
+  .react-calendar__navigation{
+    @apply flex justify-between items-center mb-4 text-base font-bold text-primary-800;
+  }
+  
+  .react-calendar__navigation button {
+    @apply text-gray-700 bg-transparent hover:bg-blue-200 px-2 py-1 rounded-full transition;
+  }
+  
+  .react-calendar__month-view__weekdays {
+    @apply grid grid-cols-7 text-center text-xs text-gray-500 font-medium uppercase mb-2;
+  }
+  
+  .react-calendar__month-view__days {
+    @apply grid grid-cols-7 gap-y-1;
+  }
+  
+  .react-calendar__tile {
+    @apply text-sm text-center py-2 w-full rounded-lg transition hover:bg-blue-100;
+  }
+  
+  .react-calendar__tile--now {
+    @apply bg-blue-100 text-blue-700 font-semibold;
+  }
+  
+  .react-calendar__tile--active {
+    @apply bg-blue-500 text-white font-bold hover:bg-blue-600;
+  }
+  
+  .react-calendar__tile--disabled {
+    @apply text-gray-300 cursor-not-allowed;
+  }
+  #editorjs h2,
+  h2 {
     @apply text-4xl font-bold text-black !important;
   }
 
-  #editorjs h3, h3 {
+  #editorjs h3,
+  h3 {
     @apply text-3xl font-bold text-black !important;
   }
 
-  #editorjs h4, h4 {
+  #editorjs h4,
+  h4 {
     @apply text-2xl font-bold text-black !important;
   }
 }

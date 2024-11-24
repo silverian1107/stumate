@@ -81,8 +81,9 @@ const Page: React.FC = () => {
         <Note
           key={note.user_id}
           content={note.blocks[0].data.text}
-          time={note.time}
+          time={note.time.split(' ').slice(0, 1).join()}
           category={note.category}
+          hour={note.time.split(' ').slice(1).join(' ')}
         />
       ))}
     </div>
