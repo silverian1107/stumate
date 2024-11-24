@@ -1,7 +1,9 @@
 'use client';
 
+import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'sonner';
 
 import { useDeckManager } from '@/hooks/use-deck';
 import { setFlashcards } from '@/redux/slices/resourceSlice';
@@ -47,7 +49,11 @@ export default function ResourcePage() {
 
       await saveResource(resourceToSubmit);
     } catch (error) {
-      console.error('Error submitting resource:', error);
+      if (error instanceof AxiosError) {
+        toast.error('Error submitting resource', {
+          description: 'Error'
+        });
+      }
     }
   };
 

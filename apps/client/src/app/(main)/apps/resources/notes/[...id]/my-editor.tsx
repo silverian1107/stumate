@@ -13,6 +13,7 @@ const MyEditor = () => {
   const { data, isLoading } = useNoteById(noteId);
 
   if (isLoading) return null;
+  console.log(data);
 
   return (
     <div className="size-full p-5 rounded-sm box-border flex-1 mx-auto overflow-auto pt-20">

@@ -19,6 +19,11 @@ export interface DocumentListProps {
 }
 
 export type CreateCollectionProps = {
-  parentDocumentId?: string;
+  parentId?: string;
+  name: string;
+};
+
+export type CreateNoteProps = {
+  parentId: string;
   name: string;
 };

@@ -1,14 +1,19 @@
+import type { CreateNoteProps } from '@/types/collection';
 import type { NoteUpdateDto } from '@/types/note';
 
-import { AxiosClient } from './AxiosClient';
+import { NoteClient } from './AxiosClient';
 
 export const NoteApi = {
+  async create(data: CreateNoteProps) {
+    return NoteClient.post('', data);
+  },
+
   async findByOwner(params: {
     currentPage?: number;
     pageSize?: number;
     qs?: string;
   }) {
-    return AxiosClient.get('/notes', {
+    return NoteClient.get('/', {
       params: {
         currentPage: params.currentPage || 1,
         pageSize: params.pageSize || 10,
@@ -18,7 +23,8 @@ export const NoteApi = {
   },
 
   async findById(noteId: string) {
-    return AxiosClient.get(`/notes/${noteId}`);
+    const response = await NoteClient.get(`/${noteId}`);
+    return response.data;
   },
 
   async updateById(
@@ -32,7 +38,7 @@ export const NoteApi = {
     if (body && typeof body === 'object' && 'version' in body) {
       delete (body as unknown as Record<string, unknown>).version;
     }
-    return AxiosClient.patch(`/notes/${noteId}`, {
+    return NoteClient.patch(`/${noteId}`, {
       name,
       body,
       attachment

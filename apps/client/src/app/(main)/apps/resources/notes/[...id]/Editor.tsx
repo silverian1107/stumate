@@ -5,7 +5,7 @@ import EditorJS from '@editorjs/editorjs';
 import { forwardRef, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
-import { tools } from '../../../(actions)/_components/tools'; // Đảm bảo đường dẫn đúng
+import { tools } from '../../(actions)/_components/tools'; // Đảm bảo đường dẫn đúng
 
 interface EditorProps {
   data?: OutputData;

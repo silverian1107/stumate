@@ -63,7 +63,9 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
         attachment: fileNames
       }).unwrap();
     } catch (error) {
-      console.error('Failed to update note:', error);
+      toast.error('Failed to update note', {
+        description: 'Please try again.'
+      });
     }
   }, 1000);
 
