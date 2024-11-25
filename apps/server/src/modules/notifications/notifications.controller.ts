@@ -7,18 +7,23 @@ import {
   Param,
   Delete,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { User as UserModel, UserDocument } from '../users/schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from '../users/users.interface';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { StatisticsService } from '../statistics/statistics.service';
+import { AbilityGuard } from 'src/casl/ability.guard';
+import { Notification } from './schema/notification.schema';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
 
 @Controller('notifications')
+@UseGuards(AbilityGuard)
 export class NotificationsController {
   constructor(
     private readonly notificationsService: NotificationsService,
@@ -28,6 +33,7 @@ export class NotificationsController {
   ) {}
 
   @Post('admin/send')
+  @CheckPolicies((ability) => ability.can(Action.CREATE, Notification))
   @ResponseMessage('Create general notifications for users')
   async sendAdminNotification(
     @Body() createNotificationDto: CreateNotificationDto,
@@ -79,18 +85,21 @@ export class NotificationsController {
   }
 
   @Get()
+  @CheckPolicies((ability) => ability.can(Action.READ, Notification))
   @ResponseMessage('Get all notifications')
   async findAll(@User() user: IUser) {
     return await this.notificationsService.findAll(user);
   }
 
   @Patch(':id/read')
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, Notification))
   @ResponseMessage('Mark a notification as read')
   async markNotificationAsRead(@Param('id') id: string) {
     return await this.notificationsService.handleMarkNotificationAsRead(id);
   }
 
   @Patch(':id/all-read')
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, Notification))
   @ResponseMessage('Mark all notification as read')
   async markAllNotificationAsRead(@User() user: IUser) {
     return await this.notificationsService.handleMarkAllNotificationAsRead(
@@ -99,12 +108,14 @@ export class NotificationsController {
   }
 
   @Delete(':id')
+  @CheckPolicies((ability) => ability.can(Action.DELETE, Notification))
   @ResponseMessage('Delete a notification')
   remove(@Param('id') id: string): Promise<any> {
     return this.notificationsService.remove(id);
   }
 
   @Delete('all')
+  @CheckPolicies((ability) => ability.can(Action.DELETE, Notification))
   @ResponseMessage('Delete a notification')
   async removeAll(@User() user: IUser): Promise<any> {
     return await this.notificationsService.removeAll(user);

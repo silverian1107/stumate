@@ -24,7 +24,6 @@ const archivePlugin = (schema: Schema) => {
     next();
   };
 
-  schema.pre('count', archiveMiddleware);
   schema.pre('countDocuments', archiveMiddleware);
   schema.pre('find', archiveMiddleware);
   schema.pre('findOne', archiveMiddleware);

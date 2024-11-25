@@ -7,6 +7,7 @@ import {
 } from './schema/quiz-question.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuizTestsModule } from '../quiz-tests/quiz-tests.module';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { QuizTestsModule } from '../quiz-tests/quiz-tests.module';
       },
     ]),
     forwardRef(() => QuizTestsModule),
+    CaslModule,
   ],
   controllers: [QuizQuestionsController],
   providers: [QuizQuestionsService],

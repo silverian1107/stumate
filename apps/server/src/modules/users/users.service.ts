@@ -31,6 +31,7 @@ import {
   UserStatistic,
   UserStatisticDocument,
 } from '../statistics/schema/user-statistic.schema';
+import { CollectionsService } from '../collections/collections.service';
 
 @Injectable()
 export class UsersService {
@@ -41,6 +42,7 @@ export class UsersService {
     private readonly configService: ConfigService,
     private readonly decksService: DecksService,
     private readonly quizTestsService: QuizTestsService,
+    private readonly collectionsService: CollectionsService,
     private readonly tagsService: TagsService,
     private readonly notificationsService: NotificationsService,
     @InjectModel(UserStatistic.name)
@@ -369,7 +371,14 @@ export class UsersService {
     await Promise.all(
       tags.map((tag: any) => this.tagsService.remove(tag._id.toString(), user)),
     );
-    //soft delete for all deck and flashcard
+    //soft delete for all collection
+    const collections = await this.collectionsService.findByUser(user);
+    await Promise.all(
+      collections.map((collection: any) =>
+        this.collectionsService.deleteById(collection._id.toString()),
+      ),
+    );
+    //soft delete for all deck, flashcard and flashcard review
     const decks = await this.decksService.findByUser(user);
     await Promise.all(
       decks.map((deck: any) =>

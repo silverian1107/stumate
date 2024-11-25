@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type NoteDocument = Note & Document;
 
@@ -78,6 +79,8 @@ export class Note {
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note);
+
+NoteSchema.plugin(archivePlugin);
 
 // Populate children
 NoteSchema.virtual('childrenDocs', {

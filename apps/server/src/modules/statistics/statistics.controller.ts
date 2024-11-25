@@ -1,13 +1,22 @@
-import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  InternalServerErrorException,
+  UseGuards,
+} from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { User as UserModel, UserDocument } from '../users/schema/user.schema';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
+import { AbilityGuard } from 'src/casl/ability.guard';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { UserStatistic } from './schema/user-statistic.schema';
 
 @Controller('statistics')
+@UseGuards(AbilityGuard)
 export class StatisticsController {
   constructor(
     private readonly statisticsService: StatisticsService,
@@ -37,6 +46,7 @@ export class StatisticsController {
   }
 
   @Get()
+  @CheckPolicies((ability) => ability.can(Action.READ, UserStatistic))
   @ResponseMessage('Fetch user statistic')
   async getUserStatistic(@User() user: IUser) {
     return await this.statisticsService.findOne(user);

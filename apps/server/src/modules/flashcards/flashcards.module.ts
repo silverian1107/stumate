@@ -11,6 +11,7 @@ import {
   FlashcardReview,
   FlashcardReviewSchema,
 } from './schema/flashcard-review.schema';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import {
     GatewayModule,
     StatisticsModule,
     NotificationsModule,
+    CaslModule,
   ],
   controllers: [FlashcardsController],
   providers: [FlashcardsService],

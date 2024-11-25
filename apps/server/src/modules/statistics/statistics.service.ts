@@ -27,12 +27,15 @@ import {
   Rating,
   State,
 } from '../flashcards/schema/flashcard-review.schema';
+import { Deck, DeckDocument } from '../decks/schema/deck.schema';
 
 @Injectable()
 export class StatisticsService {
   constructor(
     @InjectModel(UserStatistic.name)
     private readonly userStatisticModel: SoftDeleteModel<UserStatisticDocument>,
+    @InjectModel(Deck.name)
+    private readonly deckModel: SoftDeleteModel<DeckDocument>,
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
     @InjectModel(FlashcardReview.name)
@@ -62,6 +65,7 @@ export class StatisticsService {
     const [
       totalNotesCount,
       totalFlashcardsCount,
+      sharedResourcesCount,
       flashcardsDueTodayCount,
       totalQuizzesCount,
       quizzesCompletedToday,
@@ -74,6 +78,7 @@ export class StatisticsService {
     ] = await Promise.all([
       this.getTotalNotesCount(userId),
       this.getTotalFlashcardsCount(userId),
+      this.getSharedResourcesCount(userId),
       this.getFlashcardsDueTodayCount(userId),
       this.getTotalQuizzesCount(userId),
       this.getQuizzesCompletedToday(userId),
@@ -98,7 +103,7 @@ export class StatisticsService {
             studyStreakDays: 0,
             totalNotesCount,
             totalFlashcardsCount,
-            notesRevisedTodayCount: 0,
+            sharedResourcesCount,
             flashcardsDueTodayCount,
             totalQuizzesCount,
             quizzesCompletedToday,
@@ -126,7 +131,7 @@ export class StatisticsService {
       studyStreakDays: 0,
       totalNotesCount,
       totalFlashcardsCount,
-      notesRevisedTodayCount: 0,
+      sharedResourcesCount,
       flashcardsDueTodayCount,
       totalQuizzesCount,
       quizzesCompletedToday,
@@ -156,27 +161,30 @@ export class StatisticsService {
 
   async getTotalNotesCount(userId: string) {
     const notes = await this.noteModel.countDocuments({
-      ownerId: userId,
+      $or: [{ ownerId: userId }, { sharedWithUsers: { $in: [userId] } }],
     });
     return notes;
   }
 
   async getTotalFlashcardsCount(userId: string) {
-    const flashcards = await this.flashcardModel.countDocuments({ userId });
+    const flashcards = await this.flashcardModel.countDocuments({
+      $or: [{ userId }, { sharedWithUsers: { $in: [userId] } }],
+    });
     return flashcards;
   }
 
-  // async getNotesRevisedTodayCount(userId: string) {
-  //   const startOfDay = new Date();
-  //   startOfDay.setHours(0, 0, 0, 0);
-  //   const endOfDay = new Date();
-  //   endOfDay.setHours(23, 59, 59, 999);
-  //   const notesRevisedToday = await this.noteModel.countDocuments({
-  //     ownerId: userId,
-  //     updatedAt: { $gte: startOfDay, $lte: endOfDay },
-  //   });
-  //   return notesRevisedToday;
-  // }
+  async getSharedResourcesCount(userId: string) {
+    const sharedNotes = await this.noteModel.countDocuments({
+      sharedWithUsers: { $in: [userId] },
+    });
+    const sharedDecks = await this.deckModel.countDocuments({
+      sharedWithUsers: { $in: [userId] },
+    });
+    const sharedQuizzes = await this.quizTestModel.countDocuments({
+      sharedWithUsers: { $in: [userId] },
+    });
+    return sharedNotes + sharedDecks + sharedQuizzes;
+  }
 
   async getFlashcardsDueTodayCount(userId: string) {
     const startOfDay = new Date();
@@ -191,7 +199,9 @@ export class StatisticsService {
   }
 
   async getTotalQuizzesCount(userId: string) {
-    const quizzes = await this.quizTestModel.countDocuments({ userId });
+    const quizzes = await this.quizTestModel.countDocuments({
+      $or: [{ userId }, { sharedWithUsers: { $in: [userId] } }],
+    });
     return quizzes;
   }
 

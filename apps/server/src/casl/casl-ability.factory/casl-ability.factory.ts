@@ -21,6 +21,7 @@ import { Summary } from 'src/modules/summaries/schema/summary.schema';
 import { Tag } from 'src/modules/tags/schema/tag.schema';
 import { Todo } from 'src/modules/todo/schema/todo.schema';
 import { FlashcardReview } from 'src/modules/flashcards/schema/flashcard-review.schema';
+import { Notification } from 'src/modules/notifications/schema/notification.schema';
 
 export enum Action {
   MANAGE = 'MANAGE',
@@ -28,9 +29,12 @@ export enum Action {
   READ = 'READ',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
+  ARCHIVE = 'ARCHIVE',
+  STUDY = 'STUDY',
+  SHARE = 'SHARE',
 }
 
-type Subjects =
+export type Subjects =
   | InferSubjects<
       | typeof User
       | typeof Notification
@@ -66,7 +70,7 @@ export class CaslAbilityFactory {
       can(Action.MANAGE, [User, Notification, Tag]);
 
       can(
-        [Action.READ, Action.DELETE],
+        [Action.READ, Action.ARCHIVE, Action.DELETE],
         [
           Collection,
           Note,
@@ -83,7 +87,7 @@ export class CaslAbilityFactory {
       );
 
       cannot(
-        [Action.CREATE, Action.UPDATE],
+        [Action.CREATE, Action.UPDATE, Action.STUDY, Action.SHARE],
         [
           Collection,
           Note,
@@ -98,14 +102,41 @@ export class CaslAbilityFactory {
           UserStatistic,
         ],
       );
-    } else {
-      can([Action.READ, Action.UPDATE], User, {
-        _id: user._id,
-      } as MongoQuery<User>);
+    }
 
-      cannot([Action.CREATE, Action.DELETE], User);
+    can([Action.READ, Action.UPDATE], User, {
+      _id: user._id,
+    } as MongoQuery<User>);
 
-      can(Action.CREATE, [
+    cannot([Action.CREATE, Action.DELETE], User);
+
+    can(Action.CREATE, [
+      Tag,
+      Collection,
+      Note,
+      Summary,
+      Deck,
+      Flashcard,
+      FlashcardReview,
+      QuizTest,
+      QuizQuestion,
+      QuizAttempt,
+      Todo,
+    ]);
+
+    cannot(Action.CREATE, Notification);
+
+    can(
+      [
+        Action.READ,
+        Action.UPDATE,
+        Action.ARCHIVE,
+        Action.DELETE,
+        Action.STUDY,
+        Action.SHARE,
+      ],
+      [
+        Notification,
         Tag,
         Collection,
         Note,
@@ -117,67 +148,31 @@ export class CaslAbilityFactory {
         QuizQuestion,
         QuizAttempt,
         Todo,
-      ]);
-
-      cannot(Action.CREATE, Notification);
-
-      can(
-        [Action.READ, Action.UPDATE, Action.DELETE],
-        [
-          Notification,
-          Tag,
-          Collection,
-          Note,
-          Summary,
-          Deck,
-          Flashcard,
-          FlashcardReview,
-          QuizTest,
-          QuizQuestion,
-          QuizAttempt,
-          Todo,
-        ],
-        {
-          userId: user._id,
-        },
-      );
-
-      can(Action.READ, UserStatistic, {
+      ],
+      {
         userId: user._id,
-      });
+      },
+    );
 
-      can(
-        Action.READ,
-        [
-          Collection,
-          Note,
-          // Summary,
-          Deck,
-          Flashcard,
-          QuizTest,
-          QuizQuestion,
-        ],
-        {
-          sharedWithUsers: { $in: [user._id] },
-        },
-      );
+    can(Action.READ, UserStatistic, {
+      userId: user._id,
+    });
 
-      cannot(
-        [Action.UPDATE, Action.DELETE],
-        [
-          Collection,
-          Note,
-          // Summary,
-          Deck,
-          Flashcard,
-          QuizTest,
-          QuizQuestion,
-        ],
-        {
-          sharedWithUsers: { $in: [user._id] },
-        },
-      );
-    }
+    can(
+      [Action.READ, Action.STUDY],
+      [Note, Summary, Deck, Flashcard, QuizTest, QuizQuestion],
+      {
+        sharedWithUsers: { $in: [user._id] },
+      },
+    );
+
+    cannot(
+      [Action.UPDATE, Action.ARCHIVE, Action.DELETE, Action.SHARE],
+      [Note, Summary, Deck, Flashcard, QuizTest, QuizQuestion],
+      {
+        sharedWithUsers: { $in: [user._id] },
+      },
+    );
 
     return build({
       detectSubjectType: (item) =>

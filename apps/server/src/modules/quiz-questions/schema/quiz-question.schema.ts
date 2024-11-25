@@ -44,6 +44,9 @@ export class QuizQuestion {
   })
   quizTestId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
+
   @Prop()
   createdAt: Date;
 

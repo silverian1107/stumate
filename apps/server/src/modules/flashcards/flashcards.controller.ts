@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FlashcardsService } from './flashcards.service';
 import {
@@ -14,15 +15,22 @@ import {
   MarkFlashcardDTO,
 } from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Flashcard } from './schema/flashcard.schema';
+import { Deck } from '../decks/schema/deck.schema';
+import { FlashcardReview } from './schema/flashcard-review.schema';
+import { AbilityGuard } from 'src/casl/ability.guard';
 
 @Controller('decks/:deckId/flashcards')
+@UseGuards(AbilityGuard)
 export class FlashcardsController {
   constructor(private readonly flashcardsService: FlashcardsService) {}
 
   @Post()
   @ResponseMessage('Create a new flashcard by deckId')
+  @CheckPolicies((ability) => ability.can(Action.CREATE, Flashcard))
   async create(
     @Param('deckId') deckId: string,
     @Body() createFlashcardDto: CreateFlashcardDto,
@@ -40,6 +48,7 @@ export class FlashcardsController {
   }
 
   @Post('multiple')
+  @CheckPolicies((ability) => ability.can(Action.CREATE, Flashcard))
   @ResponseMessage('Create multiple flashcards by deckId')
   async createMultiple(
     @Param('deckId') deckId: string,
@@ -58,18 +67,21 @@ export class FlashcardsController {
   }
 
   @Post('all')
+  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Get all flashcards by user and deck')
   async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
   }
 
   @Post('study')
+  @CheckPolicies((ability) => ability.can(Action.STUDY, Deck))
   @ResponseMessage('Study flashcards')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleStudyFlashcard(deckId, user);
   }
 
   @Post(':id/mark')
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, FlashcardReview))
   @ResponseMessage('Mark a flashcard')
   async markFlashcard(
     @Param('id') id: string,
@@ -84,12 +96,14 @@ export class FlashcardsController {
   }
 
   @Post('progress')
+  @CheckPolicies((ability) => ability.can(Action.READ, Deck))
   @ResponseMessage('Get deck progress')
   async getDeckProgress(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleDeckProgress(deckId, user);
   }
 
   @Get()
+  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Fetch list flashcard with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -100,6 +114,7 @@ export class FlashcardsController {
   }
 
   @Get(':id')
+  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Fetch flashcard by id')
   async findOne(@Param('deckId') deckId: string, @Param('id') id: string) {
     const foundFlashcard = await this.flashcardsService.findOne(deckId, id);
@@ -107,6 +122,7 @@ export class FlashcardsController {
   }
 
   @Get(':id/review')
+  @CheckPolicies((ability) => ability.can(Action.READ, FlashcardReview))
   @ResponseMessage('Fetch flashcard review by id')
   async findFlashcardReview(
     @Param('deckId') deckId: string,
@@ -118,6 +134,7 @@ export class FlashcardsController {
   }
 
   @Patch(':id')
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, Flashcard))
   @ResponseMessage('Update a flashcard')
   async update(
     @Param('deckId') deckId: string,
@@ -135,6 +152,7 @@ export class FlashcardsController {
   }
 
   @Delete(':id')
+  @CheckPolicies((ability) => ability.can(Action.DELETE, Flashcard))
   @ResponseMessage('Delete a flashcard')
   remove(
     @Param('deckId') deckId: string,

@@ -10,6 +10,8 @@ import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
 import { QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
 import { GatewayModule } from 'src/gateway/gateway.module';
 import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
+import { CaslModule } from 'src/casl/casl.module';
+import { DeckSchema } from '../decks/schema/deck.schema';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.sch
       { name: 'UserStatistic', schema: UserStatisticSchema },
     ]),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'Deck', schema: DeckSchema }]),
     MongooseModule.forFeature([{ name: 'Flashcard', schema: FlashcardSchema }]),
     MongooseModule.forFeature([
       { name: 'FlashcardReview', schema: FlashcardReviewSchema },
@@ -35,6 +38,7 @@ import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.sch
       },
     ]),
     GatewayModule,
+    CaslModule,
   ],
   controllers: [StatisticsController],
   providers: [StatisticsService],

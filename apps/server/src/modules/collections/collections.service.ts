@@ -1,3 +1,4 @@
+import { SoftDeleteModel } from 'mongoose-delete';
 import {
   BadRequestException,
   Injectable,
@@ -5,7 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+
 import { Collection, CollectionDocument } from './schema/collection.schema';
 
 import { CreateCollectionDto } from './dto/create-collection.dto';
@@ -13,12 +14,19 @@ import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 import aqp from 'api-query-params';
 import { validateObjectId } from 'src/helpers/utils';
+import { NoteDocument } from '../notes/schema/note.schema';
+import { SummaryDocument } from '../summaries/schema/summary.schema';
+import { IUser } from '../users/users.interface';
 
 @Injectable()
 export class CollectionsService {
   constructor(
     @InjectModel('Collection')
-    private readonly collectionModel: Model<CollectionDocument>,
+    private readonly collectionModel: SoftDeleteModel<CollectionDocument>,
+    @InjectModel('Note')
+    private readonly noteModel: SoftDeleteModel<NoteDocument>,
+    @InjectModel('Summary')
+    private readonly summaryModel: SoftDeleteModel<SummaryDocument>,
   ) {}
 
   async create(
@@ -28,9 +36,9 @@ export class CollectionsService {
       const newCollection = new this.collectionModel(newCollectionData);
 
       if ('parentId' in newCollectionData) {
-        const parent = await this.collectionModel.findById(
-          newCollection.parentId,
-        );
+        const parent = await this.collectionModel.findOne({
+          _id: newCollection.parentId,
+        });
 
         if (!parent) {
           throw new NotFoundException("Couldn' find the parent id");
@@ -91,7 +99,7 @@ export class CollectionsService {
     const { sort } = qs ? aqp(qs) : { sort: { position: -1 } }; // Default sorting by createdAt if qs is not provided
     const limit = pageSize || 10;
     const skip = (currentPage - 1) * limit;
-    const filter = { level: 0, isArchived: false, isDeleted: false };
+    const filter = { level: 0 };
 
     try {
       const totalItems = await this.collectionModel.countDocuments(filter);
@@ -120,6 +128,10 @@ export class CollectionsService {
     }
   }
 
+  async findByUser(user: IUser) {
+    return await this.collectionModel.find({ userId: user._id });
+  }
+
   async findByOwnerId(
     userId: string,
     currentPage = 1,
@@ -134,8 +146,6 @@ export class CollectionsService {
       const filter = {
         ownerId: userId,
         level: 0,
-        isArchived: false,
-        isDeleted: false,
       };
 
       const totalItems = await this.collectionModel.countDocuments(filter);
@@ -169,7 +179,7 @@ export class CollectionsService {
   async findById(collectionId: string): Promise<Collection> {
     validateObjectId(collectionId, 'Collection');
     const collection = await this.collectionModel
-      .findById(collectionId)
+      .findOne({ _id: collectionId })
       .populate('childrenDocs')
       .exec();
     if (!collection) {
@@ -180,70 +190,10 @@ export class CollectionsService {
     return collection;
   }
 
-  async findArchivedByOwnerId(
-    ownerId: string,
-    currentPage = 1,
-    pageSize = 10,
-    qs?: string,
-  ): Promise<{
-    meta: {
-      current: number;
-      pageSize: number;
-      pages: number;
-      total: number;
-    };
-    result: Collection[];
-  }> {
-    validateObjectId(ownerId, 'User');
-
-    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
-    const limit = pageSize || 10;
-    const skip = (currentPage - 1) * limit;
-
-    try {
-      const result = await this.collectionModel
-        .find({
-          ownerId,
-          level: 0,
-          isArchived: true,
-          isDeleted: false,
-        })
-        .sort(sort as any)
-        .skip(skip)
-        .limit(limit)
-        .populate('childrenDocs')
-        .lean<Collection[]>()
-        .exec();
-
-      const totalItems = await this.collectionModel.countDocuments({
-        ownerId,
-        level: 0,
-        isArchived: true,
-        isDeleted: false,
-      });
-
-      const totalPages = Math.ceil(totalItems / limit);
-
-      return {
-        meta: {
-          current: currentPage,
-          pageSize: limit,
-          pages: totalPages,
-          total: totalItems,
-        },
-        result,
-      };
-    } catch (error) {
-      throw new Error(
-        `Failed to fetch archived collections by owner ID: ${error.message}`,
-      );
-    }
-  }
-
   async updateById(collectionId: string, updateData: UpdateCollectionDto) {
     validateObjectId(collectionId, 'Collection');
     const updatedCollection = await this.collectionModel
-      .findByIdAndUpdate(collectionId, updateData, { new: true })
+      .findOneAndUpdate({ _id: collectionId }, { updateData }, { new: true })
       .exec();
     if (!updatedCollection) {
       throw new NotFoundException(
@@ -253,55 +203,50 @@ export class CollectionsService {
     return updatedCollection;
   }
 
-  async archiveById(collectionId: string) {
-    validateObjectId(collectionId, 'Collection');
-    const archivedCollection = await this.collectionModel
-      .findById(collectionId)
-      .exec();
-
-    if (!archivedCollection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
-    archivedCollection.isArchived = true;
-    return archivedCollection.save();
-  }
-
-  async restoreById(collectionId: string) {
-    validateObjectId(collectionId, 'Collection');
-    const restoredCollection = await this.collectionModel
-      .findById(collectionId)
-      .exec();
-
-    if (!restoredCollection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
-
-    restoredCollection.isArchived = false;
-    return restoredCollection.save();
-  }
-
   async deleteById(collectionId: string) {
     validateObjectId(collectionId, 'Collection');
-    const deletedCollection = await this.collectionModel
-      .findById(collectionId)
-      .exec();
+    const deletedCollection = await this.collectionModel.findOne({
+      _id: collectionId,
+    });
 
     if (!deletedCollection) {
       throw new NotFoundException(
         `Collection with ID ${collectionId} not found`,
       );
     }
-    if (!deletedCollection.isArchived) {
-      throw new BadRequestException(
-        'Collection must be archived before delete',
-      );
+
+    const ownerId = deletedCollection.ownerId;
+
+    const collectionsToDelete = [];
+    const notesToDelete = [];
+    const stack = [collectionId];
+
+    while (stack.length > 0) {
+      const currentCollectionId = stack.pop();
+      const currentCollection = await this.collectionModel.findOne({
+        _id: currentCollectionId,
+      });
+
+      if (currentCollection) {
+        collectionsToDelete.push(currentCollection._id);
+        for (const child of currentCollection.children) {
+          if (child.type === 'Collection') {
+            stack.push(child._id.toString());
+          } else if (child.type === 'Note') {
+            notesToDelete.push(child._id.toString());
+          }
+        }
+      }
     }
 
-    deletedCollection.isDeleted = true;
-    return deletedCollection.save();
+    await this.summaryModel.delete({ noteId: { $in: notesToDelete } }, ownerId);
+    await this.noteModel.delete({ _id: { $in: notesToDelete } }, ownerId);
+
+    await this.collectionModel.delete(
+      { _id: { $in: collectionsToDelete } },
+      ownerId,
+    );
+
+    return 'Collection was deleted successfully';
   }
 }
