@@ -150,18 +150,15 @@ body {
   .react-calendar__tile--disabled {
     @apply text-gray-300 cursor-not-allowed;
   }
-  #editorjs h2,
-  h2 {
+  #editorjs h2 {
     @apply text-4xl font-bold text-black !important;
   }
 
-  #editorjs h3,
-  h3 {
+  #editorjs h3 {
     @apply text-3xl font-bold text-black !important;
   }
 
-  #editorjs h4,
-  h4 {
+  #editorjs h4 {
     @apply text-2xl font-bold text-black !important;
   }
 }

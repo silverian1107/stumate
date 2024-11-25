@@ -6,7 +6,7 @@ const CalendarDashboard = () => {
   return (
     <div className="flex flex-col bg-white rounded-lg h-full box-border border border-primary-100 ">
       <Calendar
-        className="bg-white rounded-lg  px-2 py-2 flex flex-col gap-2 items-center"
+        className="bg-white rounded-lg  px-2 py-2 flex flex-col gap-2 items-center h-[50%]"
         tileClassName={({ date, view }) => {
           if (
             view === 'month' &&

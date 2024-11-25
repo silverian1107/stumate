@@ -16,11 +16,14 @@ import NoteRevision from './resources/_components/NoteRevision';
 import LowAccQuiz from './resources/_components/LowAccQuiz';
 import Achieve from './resources/(actions)/_components/Achieve';
 import Maxim from './resources/(actions)/_components/Maxim';
+import { useStatisticsQuery } from '@/service/rootApi';
 
 const Main = () => {
   const router = useRouter();
   const { data, error, isLoading } = useAccount();
-
+  // const response = useStatisticsQuery(data?.data.user._id);
+  // console.log("response: ", response);
+  
   useEffect(() => {
     console.log(error);
 
@@ -33,6 +36,8 @@ const Main = () => {
       });
     }
   }, [error, data, router]);
+
+  
 
   if (isLoading) {
     return (

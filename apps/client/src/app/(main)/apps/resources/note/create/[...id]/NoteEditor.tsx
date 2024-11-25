@@ -17,6 +17,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   const [updateNote] = useUpdateNoteMutation();
 
   const response = useGetNoteByIdQuery(noteId);
+  // console.log("response: ", response);
   // console.log('Data: ', data);
 
   const editorRef = useRef<EditorJS | null>(null);
@@ -43,7 +44,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
       });
     }
   }, [response.data?.data]);
-  console.log('response: ', response.data?.data);
+  // console.log('response: ', response.data?.data);
   const throttledUpdateNote = throttle(async (editorContent: OutputData) => {
     try {
       const fileNames = uploadedFilesRef.current.map((file) => file.name);
