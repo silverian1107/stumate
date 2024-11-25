@@ -26,6 +26,9 @@ importers:
       '@mui/material':
         specifier: ^6.1.5
         version: 6.1.6(@emotion/react@11.13.3(@types/react@18.3.11)(react@19.0.0-rc-65a56d0e-20241020))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.11)(react@19.0.0-rc-65a56d0e-20241020))(@types/react@18.3.11)(react@19.0.0-rc-65a56d0e-20241020))(@types/react@18.3.11)(react-dom@19.0.0-rc-65a56d0e-20241020(react@19.0.0-rc-65a56d0e-20241020))(react@19.0.0-rc-65a56d0e-20241020)
+      '@nestjs/mapped-types':
+        specifier: '*'
+        version: 2.0.5(@nestjs/common@10.4.6(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
       '@reduxjs/toolkit':
         specifier: ^2.3.0
         version: 2.3.0(react-redux@9.1.2(@types/react@18.3.11)(react@19.0.0-rc-65a56d0e-20241020)(redux@5.0.1))(react@19.0.0-rc-65a56d0e-20241020)

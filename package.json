@@ -1,7 +1,4 @@
 {
-  "dependencies": {
-    "@nestjs/mapped-types": "*"
-  },
   "name": "stumate",
   "version": "1.0.0",
   "description": "",
@@ -25,6 +22,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@nestjs/mapped-types": "*",
     "@hookform/resolvers": "^3.9.0",
     "@reduxjs/toolkit": "^2.3.0",
     "react-hook-form": "^7.53.1",
