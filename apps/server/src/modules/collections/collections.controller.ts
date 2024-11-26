@@ -17,7 +17,7 @@ import {
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { Public, User } from 'src/decorator/customize';
+import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 
 @ApiTags('Collections')
@@ -42,7 +42,6 @@ export class CollectionsController {
     return this.collectionsService.create(collectionData, _id);
   }
 
-  @Public()
   @Get('all')
   @ApiOperation({ summary: 'Get all collections' })
   @ApiQuery({
@@ -108,7 +107,6 @@ export class CollectionsController {
     @Query() qs: string,
     @User() user: IUser,
   ) {
-    console.log(qs);
     return this.collectionsService.findByOwnerId(
       user._id,
       +currentPage,

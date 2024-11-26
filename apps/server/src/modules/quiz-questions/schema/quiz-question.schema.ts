@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type QuizQuestionDocument = HydratedDocument<QuizQuestion>;
 
@@ -56,3 +57,5 @@ export class QuizQuestion {
 }
 
 export const QuizQuestionSchema = SchemaFactory.createForClass(QuizQuestion);
+
+QuizQuestionSchema.plugin(archivePlugin);

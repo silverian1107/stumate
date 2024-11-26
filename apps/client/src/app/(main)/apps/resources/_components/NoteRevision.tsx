@@ -14,7 +14,7 @@ const NoteRevision = () => {
       <div className="flex flex-col gap-1 items-center">
         <p className="font-bold text-4xl  text-primary-500">2</p>
         <Link href="" className=" text-xs text-gray-400">
-          Let's Revision{' '}
+          Let&apos;s Revision{' '}
           <ArrowForwardIcon fontSize="small" sx={{ color: 'lightgray' }} />{' '}
         </Link>
       </div>

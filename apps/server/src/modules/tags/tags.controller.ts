@@ -16,7 +16,7 @@ import { IUser } from '../users/users.interface';
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
-  @Post(':resourceType/:resourceId/:id')
+  @Post('assign-tag/:resourceType/:resourceId/:id')
   @ResponseMessage('Assign tag')
   async addTag(
     @Param('resourceType') resourceType: string,
@@ -26,7 +26,7 @@ export class TagsController {
     return await this.tagsService.handleAddTag(resourceType, resourceId, id);
   }
 
-  @Delete(':resourceType/:resourceId/:id')
+  @Delete('remove-tag/:resourceType/:resourceId/:id')
   @ResponseMessage('Remove tag')
   async removeTag(
     @Param('resourceType') resourceType: string,
@@ -48,8 +48,8 @@ export class TagsController {
 
   @Get()
   @ResponseMessage('Fetch list tag')
-  findAll(@User() user: IUser) {
-    return this.tagsService.findAll(user);
+  async findAll(@User() user: IUser) {
+    return await this.tagsService.findAll(user);
   }
 
   @Get(':id')

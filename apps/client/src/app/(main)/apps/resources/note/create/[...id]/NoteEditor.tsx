@@ -115,9 +115,12 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.isReady.then(() => {
-        editorRef.current?.onChange?.(handleEditorChange);
+        editorRef.current?.on('change', handleEditorChange);
       });
     }
+    return () => {
+      editorRef.current?.off('change', handleEditorChange); // Clean up the listener on unmount
+    };
   }, []);
 
   if (response.isLoading || !editorValue) {

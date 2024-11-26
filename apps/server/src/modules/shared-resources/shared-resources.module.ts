@@ -6,10 +6,12 @@ import { CollectionSchema } from '../collections/schema/collection.schema';
 import { NoteSchema } from '../notes/schema/note.schema';
 import { DeckSchema } from '../decks/schema/deck.schema';
 import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
-import { User, UserSchema } from '../users/schema/user.schema';
+import { UserSchema } from '../users/schema/user.schema';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: 'Collection', schema: CollectionSchema },
     ]),
@@ -21,7 +23,7 @@ import { User, UserSchema } from '../users/schema/user.schema';
         schema: QuizTestSchema,
       },
     ]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    NotificationsModule,
   ],
   controllers: [SharedResourcesController],
   providers: [SharedResourcesService],

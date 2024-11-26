@@ -21,9 +21,11 @@ import { useStatisticsQuery } from '@/service/rootApi';
 const Main = () => {
   const router = useRouter();
   const { data, error, isLoading } = useAccount();
-  // const response = useStatisticsQuery(data?.data.user._id);
-  // console.log("response: ", response);
-  
+  const response = useStatisticsQuery(data?.data.user._id);
+  if (response.isSuccess) {
+    console.log('response: ', response.data);
+  }
+
   useEffect(() => {
     console.log(error);
 
@@ -36,8 +38,6 @@ const Main = () => {
       });
     }
   }, [error, data, router]);
-
-  
 
   if (isLoading) {
     return (

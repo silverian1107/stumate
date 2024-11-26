@@ -236,11 +236,11 @@ export const rootApi = createApi({
         method: 'PATCH',
       }),
     }),
-    statistics: builder.query ({
-      query : () => {
-        return  '/user-statistics';
-      }
-    })
+    statistics: builder.query({
+      query: () => {
+        return '/statistics/user';
+      },
+    }),
   }),
 });
 
@@ -256,5 +256,5 @@ export const {
   useUpdateNoteMutation,
   useGetNoteByIdQuery,
   useArchiveNoteByIdMutation,
-  useStatisticsQuery
+  useStatisticsQuery,
 } = rootApi;

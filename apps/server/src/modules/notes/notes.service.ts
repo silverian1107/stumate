@@ -3,16 +3,15 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import aqp from 'api-query-params';
 import mongoose, { Model } from 'mongoose';
+import { validateObjectId } from 'src/helpers/utils';
+import { CollectionsService } from '../collections/collections.service';
+import { StatisticsService } from '../statistics/statistics.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note, NoteDocument } from './schema/note.schema';
-import { CollectionsService } from '../collections/collections.service';
-import { validateObjectId } from 'src/helpers/utils';
 
 @Injectable()
 export class NotesService {
@@ -20,6 +19,7 @@ export class NotesService {
     @InjectModel('Note')
     private readonly noteModel: Model<NoteDocument>,
     private readonly collectionService: CollectionsService,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   async create(newNoteData: CreateNoteDto, userId: string) {
@@ -33,7 +33,7 @@ export class NotesService {
         ...newNoteData,
         ownerId: userId,
       });
-      const { parentId, attachment } = newNoteData;
+      const { parentId } = newNoteData;
 
       const [parentNote, parentCollection] = await Promise.all([
         this.noteModel.findById(parentId),
@@ -47,15 +47,6 @@ export class NotesService {
         throw new NotFoundException(
           `Couldn't find the collection with ID: ${parentId}`,
         );
-      if (parent.ownerId.toString() !== userId)
-        throw new UnauthorizedException(
-          'You are not authorized to create a note in this collection',
-        );
-
-      // Add new attachments
-      if (attachment && attachment.length > 0) {
-        newNote.attachment = attachment;
-      }
 
       newNote.parentId = parent._id as string;
       parent.children.push({
@@ -67,7 +58,9 @@ export class NotesService {
       newNote.level = parent.level + 1;
 
       await parent.save();
-      return newNote.save();
+      await newNote.save();
+      await this.statisticsService.createOrUpdateUserStatistics(userId);
+      return newNote;
     } catch (error) {
       throw new InternalServerErrorException(
         `Failed to create note: ${error.message}`,
@@ -75,14 +68,18 @@ export class NotesService {
     }
   }
 
-  async findAll(currentPage = 1, pageSize = 10, qs?: string) {
+  async findAll(
+    currentPage = 1,
+    pageSize = 10,
+    // qs?: string
+  ) {
     if (!Number.isInteger(currentPage) || currentPage <= 0) {
       throw new BadRequestException('Current page must be a positive integer');
     }
     if (!Number.isInteger(pageSize) || pageSize <= 0) {
       throw new BadRequestException('Page size must be a positive integer');
     }
-    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
+    // const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
     const limit = pageSize;
     const skip = (currentPage - 1) * limit;
     const filter = {
@@ -116,7 +113,7 @@ export class NotesService {
               isDeleted: false,
             },
           },
-          { $sort: sort as any },
+          // { $sort: sort as any },
           { $skip: skip },
           { $limit: limit },
           {
@@ -152,7 +149,7 @@ export class NotesService {
     ownerId: string,
     currentPage = 1,
     pageSize = 10,
-    qs?: string,
+    // qs?: string,
   ) {
     if (!Number.isInteger(currentPage) || currentPage <= 0)
       throw new BadRequestException('Current page must be a positive integer');
@@ -162,9 +159,9 @@ export class NotesService {
     if (!mongoose.isValidObjectId(ownerId))
       throw new BadRequestException('Invalid UserId');
 
-    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
+    // const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
     const limit = pageSize || 10;
-    const skip = (currentPage - 1) * limit;
+    // const skip = (currentPage - 1) * limit;
 
     // Define the filter to find notes by ownerId
     const filter = {
@@ -177,45 +174,7 @@ export class NotesService {
       // Count total items matching the filter
       const totalItems = await this.noteModel.countDocuments(filter);
       const totalPages = Math.ceil(totalItems / limit);
-
-      const notes = await this.noteModel
-        .aggregate([
-          {
-            $match: filter,
-          },
-          {
-            $lookup: {
-              from: 'collections',
-              localField: 'parentId',
-              foreignField: '_id',
-              as: 'parentCollection',
-            },
-          },
-          {
-            $unwind: {
-              path: '$parentCollection',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $match: {
-              'parentCollection.type': 'Collection',
-            },
-          },
-          { $sort: sort as any },
-          { $skip: skip },
-          { $limit: limit },
-          {
-            $lookup: {
-              from: 'notes',
-              localField: 'children._id',
-              foreignField: '_id',
-              as: 'childrenDocs',
-            },
-          },
-          { $project: { parentCollection: 0 } },
-        ])
-        .exec();
+      const notes = await this.noteModel.find(filter);
 
       return {
         meta: {
@@ -283,6 +242,7 @@ export class NotesService {
     return restoredNote.save();
   }
 
+  //websocket
   async deleteById(noteId: string) {
     validateObjectId(noteId, 'Note');
     const deletedNote = await this.noteModel.findById(noteId).exec();
@@ -295,7 +255,12 @@ export class NotesService {
       throw new BadRequestException('Note must be archived before delete');
     }
 
+    const userId = deletedNote.ownerId;
+
     deletedNote.isDeleted = true;
-    return deletedNote.save();
+    await deletedNote.save();
+
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
+    return 'Note was deleted successfully';
   }
 }

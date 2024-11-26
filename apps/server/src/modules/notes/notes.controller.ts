@@ -38,7 +38,7 @@ export class NotesController {
     return this.notesService.create(noteData, user._id);
   }
 
-  @Get()
+  @Get('all')
   @ApiOperation({ summary: 'Get all notes' })
   @ApiQuery({
     name: 'currentPage',
@@ -62,12 +62,16 @@ export class NotesController {
   async findAll(
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query() qs: string,
+    // @Query() qs: string,
   ) {
-    return this.notesService.findAll(+currentPage, +pageSize, qs);
+    return this.notesService.findAll(
+      +currentPage,
+      +pageSize,
+      // qs
+    );
   }
 
-  @Get(':ownerId/notes')
+  @Get('')
   @ApiOperation({ summary: 'Get notes by owner ID' })
   @ApiParam({ name: 'ownerId', required: true })
   @ApiQuery({
@@ -96,14 +100,14 @@ export class NotesController {
   async findByOwner(
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
-    @Query('qs') qs: string,
+    // @Query('qs') qs: string,
     @User() user: IUser,
   ) {
     return this.notesService.findByOwnerId(
       user._id,
       +currentPage,
       +pageSize,
-      qs,
+      // qs,
     );
   }
 

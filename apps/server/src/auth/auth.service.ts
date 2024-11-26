@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
@@ -15,10 +19,47 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
+  async handleSocialAuthRedirect(user: IUser, response: Response) {
+    if (!user) {
+      throw new NotFoundException('Not found user account');
+    }
+    let foundUser = await this.usersService.findUserByUsernameOrEmail(
+      user.email,
+    );
+    if (!foundUser) {
+      foundUser = await this.usersService.createSocialAccount(user);
+    }
+    if (!foundUser.accountId) {
+      foundUser = await this.usersService.updateUserSocialAccount(
+        foundUser._id.toString(),
+        user,
+      );
+    } else if (foundUser.accountId !== user.accountId) {
+      throw new BadRequestException(
+        'Email already exists with a different accountId. Please choose another login method',
+      );
+    }
+    const typedFoundUser: IUser = {
+      _id: foundUser._id.toString(),
+      name: foundUser.name,
+      username: foundUser.username,
+      email: foundUser.email,
+      role: foundUser.role,
+      accountId: foundUser.accountId,
+      accountType: foundUser.accountType,
+    };
+    return await this.login(typedFoundUser, response);
+  }
+
   async validateUser(usernameOrEmail: string, pass: string): Promise<any> {
     const user =
       await this.usersService.findUserByUsernameOrEmail(usernameOrEmail);
     if (user) {
+      if (!user.password) {
+        throw new BadRequestException(
+          'This email is associated with an another login method. Please use the correct login method',
+        );
+      }
       const isValidPassword = await comparePassword(pass, user.password);
       if (isValidPassword === true) {
         return user;
@@ -28,12 +69,11 @@ export class AuthService {
   }
 
   async login(user: IUser, response: Response) {
-    const { _id, name, username, email, role } = user;
+    const { _id, username, email, role } = user;
     const payload = {
       sub: 'token login',
       iss: 'from server',
       _id,
-      name,
       username,
       email,
       role,
@@ -52,7 +92,6 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
       user: {
         _id,
-        name,
         username,
         email,
         role,

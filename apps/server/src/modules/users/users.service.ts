@@ -26,6 +26,11 @@ import { DecksService } from '../decks/decks.service';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { TagsService } from '../tags/tags.service';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { NotificationsService } from '../notifications/notifications.service';
+import {
+  UserStatistic,
+  UserStatisticDocument,
+} from '../statistics/schema/user-statistic.schema';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +42,34 @@ export class UsersService {
     private readonly decksService: DecksService,
     private readonly quizTestsService: QuizTestsService,
     private readonly tagsService: TagsService,
+    private readonly notificationsService: NotificationsService,
+    @InjectModel(UserStatistic.name)
+    private readonly userStatisticModel: SoftDeleteModel<UserStatisticDocument>,
   ) {}
+
+  async updateUserSocialAccount(userId: string, user: IUser) {
+    return await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        accountId: user.accountId,
+        accountType: user.accountType,
+        isActive: true,
+      },
+      { new: true },
+    );
+  }
+
+  async createSocialAccount(user: IUser) {
+    const newUser = await this.userModel.create({
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      isActive: true,
+      accountId: user.accountId,
+      accountType: user.accountType,
+    });
+    return newUser;
+  }
 
   async updateLastLogin(userId: string): Promise<void> {
     await this.userModel.updateOne({ _id: userId }, { lastLogin: new Date() });
@@ -155,10 +187,12 @@ export class UsersService {
   };
 
   handleVerifyPasswordResetCode = async (codeAuthDto: CodeAuthDto) => {
-    const user = await this.userModel.findOne({
-      _id: codeAuthDto.email,
-      codeId: codeAuthDto.codeId,
-    });
+    const user = await this.userModel
+      .findOne({
+        email: codeAuthDto.email,
+        codeId: codeAuthDto.codeId,
+      })
+      .select('-password');
     if (!user) {
       throw new BadRequestException('Account does not exist');
     }
@@ -173,9 +207,11 @@ export class UsersService {
   handleChangePassword = async (
     changePasswordAuthDto: ChangePasswordAuthDto,
   ) => {
-    const user = await this.userModel.findOne({
-      email: changePasswordAuthDto.email,
-    });
+    const user = await this.userModel
+      .findOne({
+        email: changePasswordAuthDto.email,
+      })
+      .select('-password');
     if (!user) {
       throw new BadRequestException('Account does not exist');
     }
@@ -288,7 +324,7 @@ export class UsersService {
   }
 
   async update(updateUserDto: UpdateUserDto, @User() user: IUser) {
-    return await this.userModel.updateOne(
+    const updatedProfile = await this.userModel.findOneAndUpdate(
       { _id: updateUserDto._id },
       {
         ...updateUserDto,
@@ -297,7 +333,15 @@ export class UsersService {
           username: user.username,
         },
       },
+      { new: true },
     );
+    //send notification
+    await this.notificationsService.sendSuccessNotification(
+      updatedProfile,
+      `Profile Updated`,
+      `Your profile has been updated successfully.`,
+    );
+    return updatedProfile;
   }
 
   async remove(id: string, @User() user: IUser) {
@@ -327,6 +371,10 @@ export class UsersService {
         this.quizTestsService.remove(quizTest._id.toString(), user),
       ),
     );
+    //soft delete for all notification
+    await this.notificationsService.removeAll(user);
+    //soft delete for all statistic
+    this.userStatisticModel.delete({ userId: id });
     //soft delete for user
     return this.userModel.delete({ _id: id }, user._id);
   }

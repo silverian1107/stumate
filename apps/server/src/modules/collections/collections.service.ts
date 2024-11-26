@@ -122,8 +122,6 @@ export class CollectionsService {
         .lean()
         .exec();
 
-      console.log(filter);
-
       return {
         meta: {
           current: currentPage,
@@ -155,36 +153,22 @@ export class CollectionsService {
     }
 
     const { sort } = qs ? aqp(qs) : { sort: { position: -1 } }; // Default sorting by createdAt if qs is not provided
-    const limit = pageSize || 10;
-    const skip = (currentPage - 1) * limit;
 
     try {
       const filter = {
         ownerId: userId,
         level: 0,
         isArchived: false,
-        // isDeleted: false,
       };
-
-      const totalItems = await this.collectionModel.countDocuments(filter);
-      const totalPages = Math.ceil(totalItems / limit);
 
       const result = await this.collectionModel
         .find(filter)
         .sort(sort as any)
-        .skip(skip)
-        .limit(limit)
         .populate('childrenDocs')
         .lean<Collection[]>()
         .exec();
 
       return {
-        meta: {
-          current: currentPage,
-          pageSize: limit,
-          pages: totalPages,
-          total: totalItems,
-        },
         result,
       };
     } catch (error) {
