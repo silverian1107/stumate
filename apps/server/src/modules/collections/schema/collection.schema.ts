@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type CollectionDocument = Collection & Document;
 
@@ -42,9 +43,6 @@ export class Collection {
   @Prop({ default: 0 })
   position: number;
 
-  // @Prop({ default: false })
-  // isPublished: boolean;
-
   @Prop({ default: false })
   isArchived: boolean;
 
@@ -56,12 +54,11 @@ export class Collection {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
   tags: mongoose.Schema.Types.ObjectId[];
-
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
 }
 
 export const CollectionSchema = SchemaFactory.createForClass(Collection);
+
+CollectionSchema.plugin(archivePlugin);
 
 CollectionSchema.index({ ownerId: 1 });
 CollectionSchema.index({ parentId: 1 });

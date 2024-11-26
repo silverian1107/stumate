@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GatewayModule } from 'src/gateway/gateway.module';
 import { UserSchema } from '../users/schema/user.schema';
 import { StatisticsModule } from '../statistics/statistics.module';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
     ]),
     GatewayModule,
     StatisticsModule,
+    CaslModule,
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService],

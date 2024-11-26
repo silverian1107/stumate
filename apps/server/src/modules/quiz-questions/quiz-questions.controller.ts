@@ -7,18 +7,24 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { QuizQuestionsService } from './quiz-questions.service';
 import { CreateQuizQuestionDto } from './dto/create-quiz-question.dto';
 import { UpdateQuizQuestionDto } from './dto/update-quiz-question.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
+import { AbilityGuard } from 'src/casl/ability.guard';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { QuizQuestion } from './schema/quiz-question.schema';
 
 @Controller('quiz-tests/:quizTestId/quiz-questions')
+@UseGuards(AbilityGuard)
 export class QuizQuestionsController {
   constructor(private readonly quizQuestionsService: QuizQuestionsService) {}
 
   @Post()
+  @CheckPolicies((ability) => ability.can(Action.CREATE, QuizQuestion))
   @ResponseMessage('Create a new quiz question')
   async create(
     @Param('quizTestId') quizTestId: string,
@@ -37,6 +43,7 @@ export class QuizQuestionsController {
   }
 
   @Post('multiple')
+  @CheckPolicies((ability) => ability.can(Action.CREATE, QuizQuestion))
   @ResponseMessage('Create multiple quiz questions')
   async createMultiple(
     @Param('quizTestId') quizTestId: string,
@@ -55,12 +62,14 @@ export class QuizQuestionsController {
   }
 
   @Post('all')
+  @CheckPolicies((ability) => ability.can(Action.READ, QuizQuestion))
   @ResponseMessage('Get quiz question by quiz test')
   getByQuizTestId(@Param('quizTestId') quizTestId: string) {
     return this.quizQuestionsService.findByQuizTestId(quizTestId);
   }
 
   @Get()
+  @CheckPolicies((ability) => ability.can(Action.READ, QuizQuestion))
   @ResponseMessage('Fetch list quiz question with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -71,6 +80,7 @@ export class QuizQuestionsController {
   }
 
   @Get(':id')
+  @CheckPolicies((ability) => ability.can(Action.READ, QuizQuestion))
   @ResponseMessage('Fetch quiz question by id')
   async findOne(
     @Param('quizTestId') quizTestId: string,
@@ -84,6 +94,7 @@ export class QuizQuestionsController {
   }
 
   @Patch(':id')
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, QuizQuestion))
   @ResponseMessage('Update a quiz question')
   async update(
     @Param('quizTestId') quizTestId: string,
@@ -101,6 +112,7 @@ export class QuizQuestionsController {
   }
 
   @Delete(':id')
+  @CheckPolicies((ability) => ability.can(Action.DELETE, QuizQuestion))
   @ResponseMessage('Delete a quiz question')
   remove(
     @Param('quizTestId') quizTestId: string,

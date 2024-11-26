@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FlashcardsService } from './flashcards.service';
 import {
@@ -17,18 +18,25 @@ import {
   UpdateFlashcardDto,
   UpdateMultipleFlashcardDto,
 } from './dto/update-flashcard.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
-import { IUser } from '../users/users.interface';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Flashcard } from './schema/flashcard.schema';
+import { Deck } from '../decks/schema/deck.schema';
+import { FlashcardReview } from './schema/flashcard-review.schema';
+import { AbilityGuard } from 'src/casl/ability.guard';
 
 @Controller('decks/:deckId/flashcards')
 @ApiTags('flashcards')
+@UseGuards(AbilityGuard)
 export class FlashcardsController {
   constructor(private readonly flashcardsService: FlashcardsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new flashcard by deckId' })
   @ResponseMessage('Create a new flashcard by deckId')
+  @CheckPolicies((ability) => ability.can(Action.CREATE, Flashcard))
   async create(
     @Param('deckId') deckId: string,
     @Body() createFlashcardDto: CreateFlashcardDto,
@@ -47,6 +55,7 @@ export class FlashcardsController {
 
   @Post('bulk/create')
   @ApiOperation({ summary: 'Create multiple flashcards by deckId' })
+  @CheckPolicies((ability) => ability.can(Action.CREATE, Flashcard))
   @ResponseMessage('Create multiple flashcards by deckId')
   async createMultiple(
     @Param('deckId') deckId: string,
@@ -66,6 +75,7 @@ export class FlashcardsController {
 
   @Get('all')
   @ApiOperation({ summary: 'Get all flashcards by deckId' })
+  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Get all flashcards by user and deck')
   async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
@@ -88,6 +98,7 @@ export class FlashcardsController {
 
   @Post('study')
   @ApiOperation({ summary: 'Study flashcards by deckId' })
+  @CheckPolicies((ability) => ability.can(Action.STUDY, Deck))
   @ResponseMessage('Study flashcards')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleStudyFlashcard(deckId, user);
@@ -95,15 +106,14 @@ export class FlashcardsController {
 
   @Post(':id/mark')
   @ApiOperation({ summary: 'Mark flashcard as correct or incorrect' })
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, FlashcardReview))
   @ResponseMessage('Mark a flashcard')
   async markFlashcard(
-    @Param('deckId') deckId: string,
     @Param('id') id: string,
     @Body() markFlashcardDTO: MarkFlashcardDTO,
     @User() user: IUser,
   ) {
     return await this.flashcardsService.handleMarkFlashcard(
-      deckId,
       id,
       markFlashcardDTO,
       user,
@@ -112,6 +122,7 @@ export class FlashcardsController {
 
   @Post('progress')
   @ApiOperation({ summary: 'Get progress of flashcards by deckId' })
+  @CheckPolicies((ability) => ability.can(Action.READ, Deck))
   @ResponseMessage('Get deck progress')
   async getDeckProgress(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleDeckProgress(deckId, user);
@@ -119,6 +130,7 @@ export class FlashcardsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all flashcards by deckId' })
+  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Fetch list flashcard with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -130,14 +142,28 @@ export class FlashcardsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a flashcard by id' })
+  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Fetch flashcard by id')
   async findOne(@Param('deckId') deckId: string, @Param('id') id: string) {
     const foundFlashcard = await this.flashcardsService.findOne(deckId, id);
     return foundFlashcard;
   }
 
+  @Get(':id/review')
+  @CheckPolicies((ability) => ability.can(Action.READ, FlashcardReview))
+  @ResponseMessage('Fetch flashcard review by id')
+  async findFlashcardReview(
+    @Param('deckId') deckId: string,
+    @Param('id') id: string,
+  ) {
+    const foundFlashcardReview =
+      await this.flashcardsService.findFlashcardReview(deckId, id);
+    return foundFlashcardReview;
+  }
+
   @Patch(':id')
   @ApiOperation({ summary: 'Update a flashcard' })
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, Flashcard))
   @ResponseMessage('Update a flashcard')
   async update(
     @Param('deckId') deckId: string,
@@ -156,6 +182,7 @@ export class FlashcardsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a flashcard' })
+  @CheckPolicies((ability) => ability.can(Action.DELETE, Flashcard))
   @ResponseMessage('Delete a flashcard')
   remove(
     @Param('deckId') deckId: string,

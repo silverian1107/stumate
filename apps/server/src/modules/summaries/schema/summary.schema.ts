@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import archivePlugin from 'src/core/archive.plugin';
 
 export type SummaryDocument = HydratedDocument<Summary>;
 
@@ -20,6 +21,9 @@ export class Summary {
   @Prop()
   updatedAt: Date;
 
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
+
   @Prop({ type: Object })
   createdBy: {
     _id: mongoose.Schema.Types.ObjectId;
@@ -34,3 +38,5 @@ export class Summary {
 }
 
 export const SummarySchema = SchemaFactory.createForClass(Summary);
+
+SummarySchema.plugin(archivePlugin);
