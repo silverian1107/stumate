@@ -12,7 +12,7 @@ import type { RootState } from '@/redux/store';
 import type { Deck } from '@/types/deck';
 
 import { ResourceElements } from '../../../_components/creator';
-import { ResourceHeader } from '../../../_components/header';
+import { DeckActionHeader } from '../../../_components/header';
 
 export default function ResourcePage() {
   const dispatch = useDispatch();
@@ -72,7 +72,7 @@ export default function ResourcePage() {
 
   return (
     <>
-      <ResourceHeader
+      <DeckActionHeader
         initialData={initialResource}
         isEditing={isEditing}
         onSubmit={handleSubmit}

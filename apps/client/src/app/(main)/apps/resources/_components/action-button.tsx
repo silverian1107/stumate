@@ -1,3 +1,4 @@
+import { StackIcon } from '@radix-ui/react-icons';
 import { PlusIcon, Settings } from 'lucide-react';
 import Link from 'next/link';
 
@@ -28,7 +29,13 @@ const ActionButton = () => {
 
         <DropdownMenuContent>
           <DropdownMenuItem>
-            <Link href="decks/new">Flashcard</Link>
+            <Link href="decks/new">
+              <StackIcon className="inline-block mr-2" />
+              Flashcard
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="quizzes/new">Quizzes</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

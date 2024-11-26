@@ -50,13 +50,13 @@ export class QuizTestsController {
   //   }));
   // }
 
-  @Post('user')
+  @Get()
   @ResponseMessage('Get quiz test by user')
   getByUser(@User() user: IUser) {
     return this.quizTestsService.findByUser(user);
   }
 
-  @Get()
+  @Get('all')
   @ResponseMessage('Fetch list quiz test with pagination')
   findAll(
     @Query('current') currentPage: string,

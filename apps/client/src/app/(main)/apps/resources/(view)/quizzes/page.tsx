@@ -1,27 +1,14 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 
-import { DeckApi } from '@/endpoints/deck-api';
+import { useQuizzesByOwner } from '@/hooks/use-quiz';
+import type { Quiz } from '@/types/deck';
 
-import ResourceCard from '../../_components/resource-card';
+import QuizCard from './quiz-card';
 
-interface Deck {
-  _id: string;
-  name: string;
-  description: string;
-}
-
-const Flashcards = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['resourcesByOwner'],
-    queryFn: async () => {
-      const response = await DeckApi.findByOwner();
-      return response.data;
-    },
-    retry: false
-  });
+const Quizzes = () => {
+  const { data, isLoading, error } = useQuizzesByOwner();
 
   if (isLoading) {
     return (
@@ -39,27 +26,26 @@ const Flashcards = () => {
     );
   }
 
-  if (data.data.result.length === 0) {
+  if (!data) {
     return (
       <div className="flex size-full items-center justify-center bg-primary-100">
-        <p>No data found</p>
+        <p>No quizzes found</p>
       </div>
     );
   }
 
-  const { result } = data.data;
   return (
     <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 lg:grid-cols-4 ">
-      {result.map((deck: Deck) => (
-        <ResourceCard
-          key={deck._id}
-          id={deck._id}
-          name={deck.name}
-          description={deck.description}
+      {data.map((quiz: Quiz) => (
+        <QuizCard
+          key={quiz._id}
+          id={quiz._id}
+          name={quiz.name}
+          description={quiz.description}
         />
       ))}
     </div>
   );
 };
 
-export default Flashcards;
+export default Quizzes;

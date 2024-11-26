@@ -18,11 +18,14 @@ export interface FlashcardElement {
 export interface QuizElement {
   id?: string;
   question: string;
-  answers: {
-    id?: string;
-    text: string;
-    correct: boolean;
+  questionType: string;
+  answerOptions: {
+    option: string;
+    isCorrect: boolean;
   }[];
+  answerText: string;
+  point: number;
+  quizTestId: string;
 }
 
 export interface FlashcardElementWithAction extends FlashcardElement {
@@ -38,6 +41,8 @@ export interface Deck extends BaseResource {
 }
 
 export interface Quiz extends BaseResource {
+  numberOfQuestion: number;
+  duration: number;
   elements: QuizElement[];
 }
 

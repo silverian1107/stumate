@@ -18,7 +18,7 @@ const DeckSchema = z.object({
 });
 
 type ResourceFormData = z.infer<typeof DeckSchema>;
-export function ResourceHeader({
+export function DeckActionHeader({
   initialData = {} as Deck,
   isEditing,
   onSubmit,
