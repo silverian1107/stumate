@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -8,10 +9,18 @@ import {
 } from 'class-validator';
 
 class Answers {
+  @ApiProperty({
+    description: 'Quiz question id',
+    example: '1234567890',
+  })
   @IsOptional()
   @IsMongoId()
   quizQuestionId: string;
 
+  @ApiProperty({
+    description: 'Answer',
+    example: 'Paris',
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

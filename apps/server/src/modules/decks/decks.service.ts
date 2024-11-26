@@ -16,6 +16,10 @@ import {
   Flashcard,
   FlashcardDocument,
 } from '../flashcards/schema/flashcard.schema';
+import {
+  FlashcardReview,
+  FlashcardReviewDocument,
+} from '../flashcards/schema/flashcard-review.schema';
 
 @Injectable()
 export class DecksService {
@@ -24,6 +28,8 @@ export class DecksService {
     private readonly deckModel: SoftDeleteModel<DeckDocument>,
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
+    @InjectModel(FlashcardReview.name)
+    private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
   ) {}
 
   async findDeckByName(name: string, @User() user: IUser) {
@@ -32,10 +38,10 @@ export class DecksService {
 
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
     const { name, description } = createDeckDto;
-    //Check name already exists
-    // if (await this.findDeckByName(name, user)) {
-    //   throw new BadRequestException(`Name '${name}' already exists`);
-    // }
+    // Check name already exists
+    if (await this.findDeckByName(name, user)) {
+      throw new BadRequestException(`Name '${name}' already exists`);
+    }
     //Create a new deck
     const newDeck = await this.deckModel.create({
       name,
@@ -119,6 +125,16 @@ export class DecksService {
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
+    //soft delete for all flashcard review
+    const flashcards = await this.flashcardModel.find({ deckId: id });
+    await Promise.all(
+      flashcards.map((flashcard: any) =>
+        this.flashcardReviewModel.delete(
+          { flashcardId: flashcard._id },
+          user._id,
+        ),
+      ),
+    );
     //soft delete for all flashcard
     await this.flashcardModel.delete({ deckId: id }, user._id);
     //soft delete for deck
