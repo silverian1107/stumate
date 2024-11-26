@@ -1,3 +1,4 @@
+import { SoftDeleteModel } from 'mongoose-delete';
 import {
   BadRequestException,
   Injectable,
@@ -7,26 +8,32 @@ import {
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose from 'mongoose';
 import { Collection, CollectionDocument } from './schema/collection.schema';
 
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 import aqp from 'api-query-params';
+import { NoteDocument } from '../notes/schema/note.schema';
+import { SummaryDocument } from '../summaries/schema/summary.schema';
+import { IUser } from '../users/users.interface';
 
 @Injectable()
 export class CollectionsService {
   constructor(
     @InjectModel('Collection')
-    private readonly collectionModel: Model<CollectionDocument>,
+    private readonly collectionModel: SoftDeleteModel<CollectionDocument>,
+    @InjectModel('Note')
+    private readonly noteModel: SoftDeleteModel<NoteDocument>,
+    @InjectModel('Summary')
+    private readonly summaryModel: SoftDeleteModel<SummaryDocument>,
   ) {}
 
   async create(
     newCollectionData: CreateCollectionDto,
     userId: string,
   ): Promise<CollectionDocument> {
-    console.log(userId);
     if (!mongoose.isValidObjectId(userId)) {
       throw new BadRequestException('Invalid UserId');
     }
@@ -36,12 +43,11 @@ export class CollectionsService {
         ownerId: userId,
       });
 
-      console.log(newCollection);
-
       if (newCollection.parentId) {
-        const parent = await this.collectionModel.findById(
-          newCollection.parentId,
-        );
+        const parent = await this.collectionModel.findOne({
+          _id: newCollection.parentId,
+        });
+
         if (!parent) {
           throw new NotFoundException("Couldn't find the parent id");
         }
@@ -107,7 +113,7 @@ export class CollectionsService {
     const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
     const limit = pageSize || 10;
     const skip = (currentPage - 1) * limit;
-    const filter = { level: 0, isArchived: false, isDeleted: false };
+    const filter = { level: 0 };
 
     try {
       const totalItems = await this.collectionModel.countDocuments(filter);
@@ -136,6 +142,10 @@ export class CollectionsService {
     }
   }
 
+  async findByUser(user: IUser) {
+    return await this.collectionModel.find({ userId: user._id });
+  }
+
   async findByOwnerId(
     userId: string,
     currentPage = 1,
@@ -158,7 +168,6 @@ export class CollectionsService {
       const filter = {
         ownerId: userId,
         level: 0,
-        isArchived: false,
       };
 
       const result = await this.collectionModel
@@ -261,7 +270,6 @@ export class CollectionsService {
         `Collection with ID ${collectionId} not found`,
       );
     }
-
     return collection;
   }
 
@@ -295,51 +303,6 @@ export class CollectionsService {
     return updatedCollection;
   }
 
-  async archiveById(collectionId: string, userId: string) {
-    if (!mongoose.isValidObjectId(collectionId))
-      throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
-
-    const archivedCollection = await this.collectionModel
-      .findOne({
-        _id: collectionId,
-        ownerId: userId,
-      })
-      .exec();
-
-    if (!archivedCollection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
-    archivedCollection.isArchived = true;
-    await archivedCollection.save();
-  }
-
-  async restoreById(collectionId: string, userId: string) {
-    if (!mongoose.isValidObjectId(collectionId))
-      throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
-
-    const restoredCollection = await this.collectionModel
-      .findOne({
-        _id: collectionId,
-        ownerId: userId,
-      })
-      .exec();
-
-    if (!restoredCollection || restoredCollection.isDeleted) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
-
-    restoredCollection.isArchived = false;
-    await restoredCollection.save();
-  }
-
   async deleteById(collectionId: string, userId: string) {
     if (!mongoose.isValidObjectId(collectionId))
       throw new BadRequestException('Invalid CollectionId');
@@ -356,14 +319,39 @@ export class CollectionsService {
     if (!deletedCollection) {
       throw new NotFoundException(`Collection not found`);
     }
-    if (!deletedCollection.isArchived) {
-      throw new BadRequestException(
-        'Collection must be archived before delete',
-      );
+
+    const ownerId = deletedCollection.ownerId;
+
+    const collectionsToDelete = [];
+    const notesToDelete = [];
+    const stack = [collectionId];
+
+    while (stack.length > 0) {
+      const currentCollectionId = stack.pop();
+      const currentCollection = await this.collectionModel.findOne({
+        _id: currentCollectionId,
+      });
+
+      if (currentCollection) {
+        collectionsToDelete.push(currentCollection._id);
+        for (const child of currentCollection.children) {
+          if (child.type === 'Collection') {
+            stack.push(child._id.toString());
+          } else if (child.type === 'Note') {
+            notesToDelete.push(child._id.toString());
+          }
+        }
+      }
     }
 
-    deletedCollection.deletedAt = new Date();
-    deletedCollection.isDeleted = true;
-    await deletedCollection.save();
+    await this.summaryModel.delete({ noteId: { $in: notesToDelete } }, ownerId);
+    await this.noteModel.delete({ _id: { $in: notesToDelete } }, ownerId);
+
+    await this.collectionModel.delete(
+      { _id: { $in: collectionsToDelete } },
+      ownerId,
+    );
+
+    return 'Collection was deleted successfully';
   }
 }

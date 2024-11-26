@@ -2,10 +2,9 @@
 
 import { useAccount } from '@/hooks/use-auth';
 import Cookies from 'js-cookie';
-import { CloudSun, LayoutGrid, LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import IconWrapper from './_components/IconWrapper';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Total from './resources/(actions)/_components/Total';
 import Performance from './resources/(actions)/_components/Performance';
@@ -16,19 +15,68 @@ import NoteRevision from './resources/_components/NoteRevision';
 import LowAccQuiz from './resources/_components/LowAccQuiz';
 import Achieve from './resources/(actions)/_components/Achieve';
 import Maxim from './resources/(actions)/_components/Maxim';
+import { io } from 'socket.io-client';
+import Header from './resources/_components/Header';
 import { useStatisticsQuery } from '@/service/rootApi';
 
 const Main = () => {
   const router = useRouter();
   const { data, error, isLoading } = useAccount();
-  const response = useStatisticsQuery(data?.data.user._id);
-  if (response.isSuccess) {
-    console.log('response: ', response.data);
-  }
+  const [socket, setSocket] = useState<any>(null);
+  const [statistics, setStatistics] = useState({});
+
+  const response = useStatisticsQuery(data?.data.user);
 
   useEffect(() => {
-    console.log(error);
+    if (data?.data?.user) {
+      if (response.isSuccess) {
+        console.log('response: ', response.data);
+        setStatistics(response.data);
+      }
+      // Khởi tạo kết nối Socket.IO với token trong header
+      const newSocket = io('http://localhost:3000', {
+        auth: {
+          token: Cookies.get('access_token'), // Token lưu trong cookie
+        },
+        transports: ['websocket'], // Chỉ dùng WebSocket
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 3000,
+      });
+      // console.log("access", Cookies.get('access_token'))
+      newSocket.on('connect', () => {
+        console.log('Connected to server via Socket.IO');
+        // setStatistics(statistic);
+        // console.log("successfull!")
+      });
 
+      newSocket.on('update-user-statistic', (updatedStatistics: any) => {
+        console.log('Received updated statistics:', updatedStatistics);
+        setStatistics(updatedStatistics);
+      });
+
+      newSocket.on('disconnect', () => {
+        console.log('Disconnected from server.');
+      });
+
+      setSocket(newSocket);
+
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+  }, [data]);
+  console.log('statistic: ', statistics);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-primary-100">
+        <LoaderCircle className="w-16 h-16 animate-spin" />
+      </div>
+    );
+  }
+  
+  useEffect(() => {
     if (error) {
       Cookies.remove('access_token');
       router.push('/login');
@@ -39,42 +87,11 @@ const Main = () => {
     }
   }, [error, data, router]);
 
-  if (isLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-primary-100">
-        <LoaderCircle className="w-16 h-16 animate-spin" />
-      </div>
-    );
-  }
-
   if (!data) return null;
 
   return (
     <div className="flex-1 flex h-screen bg-primary-50 flex-col box-border">
-      <div className="h-[72px] w-full bg-primary-50 flex justify-between  py-2 px-10 items-center">
-        <div className="text-primary-950/40 bg-primary-50 border border-primary-950/40 hover:bg-primary-100 hover:border-primary-800 hover:text-primary-800 flex items-center gap-1 px-2 py-1 rounded-sm cursor-pointer">
-          Customized
-          <span>
-            <LayoutGrid className="w-4 h-4" />
-          </span>
-        </div>
-        <div className="flex flex-col items-end">
-          <div className="flex items-center gap-2">
-            <span>
-              {new Date().toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </span>
-            <IconWrapper icon={CloudSun} />
-          </div>
-          <div>
-            <h1 className="font-bold text-2xl">
-              Morning, {data.data.user.username}
-            </h1>
-          </div>
-        </div>
-      </div>
+      <Header username={data.data.user.username} />
       <div className="flex flex-1 gap-4 w-full  px-10 pb-7">
         <div className=" w-3/4 max-h-full  grid grid-cols-3 grid-rows-5 gap-4 box-border ">
           <ShortSession />

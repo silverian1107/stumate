@@ -4,6 +4,7 @@ import { SummariesController } from './summaries.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SummarySchema } from './schema/summary.schema';
 import { NoteSchema } from '../notes/schema/note.schema';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { NoteSchema } from '../notes/schema/note.schema';
         schema: NoteSchema,
       },
     ]),
+    CaslModule,
   ],
   controllers: [SummariesController],
   providers: [SummariesService],

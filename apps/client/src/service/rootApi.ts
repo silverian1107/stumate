@@ -12,7 +12,7 @@ import { RootState } from '../redux/store';
 interface AuthResponse {
   accessToken: string;
   refreshToken: string;
-  userInfo?: Record<string, any>;
+  // userInfo?: Record<string, any>;
 }
 interface RefreshResponse {
   accessToken: string;
@@ -186,7 +186,7 @@ export const rootApi = createApi({
       query: ({ refreshToken }) => ({
         url: '/auth/refresh',
         body: { refreshToken },
-        method: 'POST',
+        method: 'GET',
       }),
     }),
     uploadFiles: builder.mutation<UploadResponse, FormData>({
@@ -238,7 +238,7 @@ export const rootApi = createApi({
     }),
     statistics: builder.query({
       query: () => {
-        return '/statistics/user';
+        return '/statistics';
       },
     }),
   }),
