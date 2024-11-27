@@ -48,6 +48,7 @@
         "jsx-a11y/control-has-associated-label": "off", // Disable A11y for icon button
         "jsx-a11y/click-events-have-key-events": "off",
         "jsx-a11y/anchor-is-valid": "off",
+        "jsx-a11y/label-has-associated-control": "off",
         "react/function-component-definition": "off", // Disable Airbnb's specific function type
         "react/destructuring-assignment": "off", // Vscode doesn't support automatically destructuring, it's a pain to add a new variable
         "react/no-array-index-key": "warn", // Disable when array is often constant
@@ -81,7 +82,9 @@
         ],
         "no-underscore-dangle": "off",
         "tailwindcss/no-custom-classname": "off",
-        "tailwindcss/classnames-order": "off"
+        "tailwindcss/classnames-order": "off",
+        "@typescript-eslint/lines-between-class-members": "off",
+        "@typescript-eslint/no-throw-literal": "off"
       }
     },
     // Configuration for testing

@@ -17,16 +17,18 @@ export const CollectionApi = {
     pageSize?: number;
     qs?: string;
   }) {
-    return CollectionClient.get('', {
+    const response = await CollectionClient.get('', {
       params: {
         currentPage: params.currentPage || 1,
         pageSize: params.pageSize || 10,
         qs: params.qs
       }
     });
+    return response.data;
   },
 
   async findById(collectionId: string) {
-    return CollectionClient.get(`/${collectionId}`);
+    const response = await CollectionClient.get(`/${collectionId}`);
+    return response.data;
   }
 };

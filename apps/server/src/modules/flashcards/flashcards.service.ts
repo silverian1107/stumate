@@ -404,4 +404,32 @@ export class FlashcardsService {
 
     return flashcards;
   }
+
+  //websocket
+  async removeAll(deckId: string, id: string, @User() user: IUser) {
+    const deck = await this.decks.findOne(deckId);
+    if (!deck) {
+      throw new NotFoundException('Deck not found');
+    }
+
+    const flashcards = await this.handleGetAllFlashcards(deckId, user);
+    if (!flashcards || flashcards.length === 0) {
+      throw new NotFoundException('No flashcards found in this deck');
+    }
+
+    const flashcard = flashcards.find((card) => card._id.toString() === id);
+    if (!flashcard) {
+      throw new NotFoundException('Flashcard not found');
+    }
+
+    await this.flashcardModel.deleteOne({ _id: id, deckId });
+
+    const userId = user._id.toString();
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
+
+    return {
+      message: 'Flashcard deleted successfully',
+      flashcard: flashcard,
+    };
+  }
 }

@@ -1,0 +1,32 @@
+.react-calendar__navigation{
+    display: flex;
+    gap: 8px;
+}
+.react-calendar__navigation__label{
+    font-size: medium;
+    color: hsl(247, 45.1%, 20%);
+    
+}
+.react-calendar__month-view__weekdays{
+    font-size: smaller;
+    color: #9ca3af ;
+    justify-items: center;
+}
+
+.react-calendar__month-view__days{
+    margin-bottom: 2px;
+
+}
+
+.react-calendar__month-view__days button {
+    font-size: smaller;
+    color: #1C254A;
+}
+
+.react-calendar .today-highlight {
+    /* border: 1px solid ; */
+    border-radius: 9999px;
+    background-color: hsl(242, 81.4%, 68.4%); /* Nền nhạt */
+    color: #fff ; /* Màu chữ */
+    /* font-weight: bold; */
+  }

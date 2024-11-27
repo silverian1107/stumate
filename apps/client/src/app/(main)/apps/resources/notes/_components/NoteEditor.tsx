@@ -62,8 +62,10 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
         },
         attachment: fileNames
       }).unwrap();
-    } catch (error) {
-      console.error('Failed to update note:', error);
+    } catch {
+      toast.error('Failed to update note', {
+        description: 'Please try again.'
+      });
     }
   }, 1000);
 
@@ -93,7 +95,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
           const savedData = await editorRef.current.save();
           throttledUpdateNote(savedData);
         }
-      } catch (error) {
+      } catch {
         toast.error('Failed to upload files', {
           description: 'Please try again.'
         });
@@ -112,7 +114,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
         throttledUpdateNote(savedData);
       }
       toast('File removed successfully!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to remove file', {
         description: 'Please try again.'
       });

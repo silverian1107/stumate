@@ -61,7 +61,9 @@ export default function LoginForm() {
           })
         );
         dispatch(openSnackbar({ message: data?.message }));
-        Cookies.set('access_token', data.data.access_token);
+        Cookies.set('access_token', data.data.access_token, {
+          expires: 30 * 1000 * 60
+        });
         redirect('/apps');
       } else {
         const email = getValues('username');

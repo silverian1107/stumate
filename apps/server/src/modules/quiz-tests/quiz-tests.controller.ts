@@ -57,14 +57,14 @@ export class QuizTestsController {
   //   }));
   // }
 
-  @Post('user')
+  @Get()
   @CheckPolicies((ability) => ability.can(Action.READ, QuizTest))
   @ResponseMessage('Get quiz test by user')
   getByUser(@User() user: IUser) {
     return this.quizTestsService.findByUser(user);
   }
 
-  @Get()
+  @Get('all')
   @CheckPolicies((ability) => ability.can(Action.READ, QuizTest))
   @ResponseMessage('Fetch list quiz test with pagination')
   findAll(

@@ -35,9 +35,9 @@ export class QuizTestsService {
   //websocket
   async create(createQuizTestDto: CreateQuizTestDto, @User() user: IUser) {
     //Check title already exists
-    if (await this.findQuizTestByTitle(createQuizTestDto.title, user._id)) {
+    if (await this.findQuizTestByTitle(createQuizTestDto.name, user._id)) {
       throw new BadRequestException(
-        `Title '${createQuizTestDto.title}' already exists`,
+        `Title '${createQuizTestDto.name}' already exists`,
       );
     }
     //Create a new quiz test

@@ -12,10 +12,75 @@ import type { RootState } from '../redux/store';
 interface AuthResponse {
   accessToken: string;
   refreshToken: string;
-  userInfo?: Record<string, any>;
+  // userInfo?: Record<string, any>;
 }
 interface RefreshResponse {
   accessToken: string;
+}
+
+interface UploadResponse {
+  success: boolean;
+  message: string;
+  fileURL: string;
+}
+
+interface CreateNoteResponse {
+  status: number;
+  description: string;
+}
+
+interface INoteBody {
+  time: number;
+  blocks: any[];
+}
+
+interface CreateNoteRequest {
+  // ownerId: string;
+  // body: INoteBody;
+  name: string;
+  parentId: string;
+  // attachment: string[];
+}
+
+interface IUpdateNoteRequest {
+  noteId: string;
+  name: string;
+  body: INoteBody;
+  attachment: string[];
+}
+
+interface INoteRoot {
+  _id: string;
+  ownerId: string;
+  parentId: string;
+  type: string;
+  name: string;
+  level: number;
+  position: number;
+  isPublished: boolean;
+  isArchived: boolean;
+  isDeleted: boolean;
+  attachment: string[];
+  tags: any[];
+  sharedWithUsers: any[];
+  deleted: boolean;
+  children: any[];
+  createdAt: string;
+  updatedAt: string;
+  body: IBody;
+}
+
+interface IBody {
+  time: number;
+  blocks: any[];
+  _id: string;
+  deleted: boolean;
+}
+
+interface SingleNodeRespone {
+  data: INoteRoot;
+  message: string;
+  statusCode: number;
 }
 
 interface UploadResponse {
@@ -186,7 +251,7 @@ export const rootApi = createApi({
       query: ({ refreshToken }) => ({
         url: '/auth/refresh',
         body: { refreshToken },
-        method: 'POST'
+        method: 'GET'
       })
     }),
     uploadFiles: builder.mutation<UploadResponse, FormData>({
@@ -235,6 +300,11 @@ export const rootApi = createApi({
         url: `/notes/${id}/archive`,
         method: 'PATCH'
       })
+    }),
+    statistics: builder.query({
+      query: () => {
+        return '/statistics';
+      }
     })
   })
 });
@@ -250,5 +320,6 @@ export const {
   useCreateNoteMutation,
   useUpdateNoteMutation,
   useGetNoteByIdQuery,
-  useArchiveNoteByIdMutation
+  useArchiveNoteByIdMutation,
+  useStatisticsQuery
 } = rootApi;

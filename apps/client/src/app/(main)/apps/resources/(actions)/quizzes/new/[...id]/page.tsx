@@ -1,63 +1,35 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
 
-import { useDeckManager } from '@/hooks/use-deck';
-import { setFlashcards } from '@/redux/slices/resourceSlice';
-import type { RootState } from '@/redux/store';
-import type { Deck } from '@/types/deck';
+import type { QuizCreateDto } from '@/endpoints/quiz-api';
+import { useQuizCreate } from '@/hooks/use-quiz';
 
 import { ResourceElements } from '../../../_components/creator';
-import { ResourceHeader } from '../../../_components/header';
+import { QuizHeader } from '../../_components/headers';
 
 export default function ResourcePage() {
-  const dispatch = useDispatch();
-  const resource = useSelector((state: RootState) => state.decks);
+  const { id } = useParams();
+  const createQuiz = useQuizCreate();
 
-  const {
-    isEditing,
-    deck: initialResource,
-    saveResource,
-    isSubmitting,
-    isLoading
-  } = useDeckManager();
-
-  useEffect(() => {
-    if (initialResource && initialResource.flashcards) {
-      dispatch(setFlashcards(initialResource.flashcards));
-    }
-  }, [initialResource, dispatch]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  const handleSubmit = async (formData: {
-    name: string;
-    description?: string;
-  }) => {
+  const handleSubmit = async (formData: QuizCreateDto) => {
     try {
-      const resourceToSubmit: Deck = {
-        ...initialResource,
-        flashcards: resource.flashcards,
-        name: formData.name,
-        description: formData.description
-      } as Deck;
-
-      await saveResource(resourceToSubmit);
-    } catch (error) {
-      console.error('Error submitting resource:', error);
+      if (!id) {
+        await createQuiz.mutateAsync(formData);
+      }
+    } catch {
+      toast.error('Failed to create resource');
     }
   };
 
   return (
     <>
-      <ResourceHeader
-        initialData={initialResource}
-        isEditing={isEditing}
+      <QuizHeader
+        // initialData={initialResource}
+        // isEditing={isEditing}
         onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
+        // isSubmitting={isSubmitting}
       />
       <ResourceElements />
     </>
