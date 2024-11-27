@@ -18,7 +18,7 @@ import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
 import { Flashcard, FlashcardDocument } from './schema/flashcard.schema';
 import aqp from 'api-query-params';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { DecksService } from '../decks/decks.service';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { StatisticsService } from '../statistics/statistics.service';
@@ -378,26 +378,36 @@ export class FlashcardsService {
     if (!(await this.decks.findOne(deckId))) {
       throw new NotFoundException('Not found deck');
     }
+
+    const objectIdFlashcardIds = flashcardIds.map(
+      (id) => new Types.ObjectId(id),
+    );
+
     const flashcards = await this.flashcardModel.find({
-      _id: { $in: flashcardIds },
+      _id: { $in: objectIdFlashcardIds },
       deckId,
     });
+
     if (flashcards.length !== flashcardIds.length) {
       throw new NotFoundException('Not found flashcard');
     }
 
-    await this.flashcardReviewModel.updateMany({
-      flashcardId: { $in: flashcardIds },
-      nextReview: null,
-    });
+    await this.flashcardReviewModel.updateMany(
+      {
+        flashcardId: { $in: objectIdFlashcardIds },
+        nextReview: null,
+      },
+      { $set: { updated: true } },
+    );
 
     await this.flashcardModel.delete(
       {
-        _id: { $in: flashcardIds },
+        _id: { $in: objectIdFlashcardIds },
         deckId,
       },
       flashcards[0].userId,
     );
+
     await this.statisticsService.createOrUpdateUserStatistics(
       flashcards[0].userId.toString(),
     );

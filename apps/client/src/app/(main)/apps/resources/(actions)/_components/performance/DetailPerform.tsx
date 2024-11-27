@@ -1,7 +1,3 @@
-
-import React from 'react';
-
-import EachPerfrom from './EachPerform';
 import {
   BookOpenCheck,
   BookPlus,
@@ -10,6 +6,9 @@ import {
   NotebookText,
   Target
 } from 'lucide-react';
+import React from 'react';
+
+import EachPerfrom from './EachPerform';
 
 const DetailPerform = () => {
   return (

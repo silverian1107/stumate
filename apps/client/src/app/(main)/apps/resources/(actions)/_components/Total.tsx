@@ -1,12 +1,13 @@
 import { Avatar } from '@mui/material';
 import {
-  Flame,
   BookText,
+  ClipboardList,
+  Flame,
   Layers3,
-  Target,
   PencilLine,
-  ClipboardList
+  Target
 } from 'lucide-react';
+
 import StatisticItem from './total/StatisticItem';
 
 const Total = ({

@@ -1,7 +1,8 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Link from 'next/link';
-import IconDashboard from '../../_components/IconDashboard';
 import { ClipboardList } from 'lucide-react';
+import Link from 'next/link';
+
+import IconDashboard from '../../_components/IconDashboard';
 
 const LowAccQuiz = ({
   quizzesCompletedToday = 0

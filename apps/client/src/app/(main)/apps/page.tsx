@@ -4,12 +4,14 @@ import Cookies from 'js-cookie';
 import { LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
 import { toast } from 'sonner';
 
 import { useAccount } from '@/hooks/use-auth';
+import type { IUserStatistic } from '@/service/rootApi';
+import { useStatisticsQuery } from '@/service/rootApi';
 
 import CardDue from './resources/_components/CardDue';
-import { io } from 'socket.io-client';
 import Header from './resources/_components/Header';
 import LowAccQuiz from './resources/_components/LowAccQuiz';
 import NoteRevision from './resources/_components/NoteRevision';
@@ -19,11 +21,11 @@ import Maxim from './resources/(actions)/_components/Maxim';
 import Performance from './resources/(actions)/_components/Performance';
 import ShortSession from './resources/(actions)/_components/ShortSession';
 import Total from './resources/(actions)/_components/Total';
-import { IUserStatistic, useStatisticsQuery } from '@/service/rootApi';
 
 const Main = () => {
   const router = useRouter();
   const { data, error, isLoading } = useAccount();
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const [socket, setSocket] = useState<any>(null);
   const [statistics, setStatistics] = useState<IUserStatistic | null>(null);
 
