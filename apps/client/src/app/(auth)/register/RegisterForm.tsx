@@ -36,7 +36,6 @@ export default function RegisterForm() {
 
   const [register, { isSuccess }] = useRegisterMutation();
   function onSubmit(formData: RegisterValues) {
-    console.log({ formData });
     register(formData);
   }
 

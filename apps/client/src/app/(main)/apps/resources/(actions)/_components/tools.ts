@@ -1,42 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import Embed from "@editorjs/embed";
 import CodeTool from '@editorjs/code';
+import type { ToolConstructable, ToolSettings } from '@editorjs/editorjs';
 import Header from '@editorjs/header';
-// import Image from "@editorjs/image";
 import InlineCode from '@editorjs/inline-code';
-// import Link from "@editorjs/link";
 import List from '@editorjs/list';
-// import Marker from "@editorjs/marker";
 import Quote from '@editorjs/quote';
+import Table from '@editorjs/table';
 
-export const tools: Record<
-  string,
-  | {
-      class: any;
-      config?: Record<string, any>;
-      inlineToolBar?: boolean;
-    }
-  | any
-> = {
-  //   embed: Embed,
+export const tools: { [toolName: string]: ToolConstructable | ToolSettings } = {
   header: {
-    class: Header,
+    class: Header as unknown as ToolConstructable, // Cast to ToolConstructable
     config: {
       placeholder: 'Type Heading...',
       levels: [2, 3],
       defaultLevel: 2
     }
   },
-  inlineCode: InlineCode,
-  // link: Link,
+  inlineCode: { class: InlineCode as unknown as ToolConstructable },
   list: {
-    class: List,
-    inlineToolBar: true
+    class: List as unknown as ToolConstructable
+    // inlineToolBar: true,
   },
-  //   marker: Marker,
   quote: {
-    class: Quote,
-    inlineToolBar: true
+    class: Quote as unknown as ToolConstructable
+    // inlineToolBar: true,
   },
-  code: CodeTool
+  code: { class: CodeTool as unknown as ToolConstructable },
+  table: { class: Table as unknown as ToolConstructable }
+  // image: { class: Image as unknown as ToolConstructable },
 };

@@ -12,6 +12,7 @@ import {
   QuizAttemptSchema,
 } from '../quiz-attempts/schema/quiz-attempt.schema';
 import { StatisticsModule } from '../statistics/statistics.module';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
       },
     ]),
     StatisticsModule,
+    CaslModule,
   ],
   controllers: [QuizTestsController],
   providers: [QuizTestsService],

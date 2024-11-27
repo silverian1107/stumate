@@ -36,7 +36,6 @@ export default function LoginForm() {
   });
 
   function onSubmit(formData: LoginValues) {
-    console.log({ formData });
     login(formData);
   }
 
@@ -62,7 +61,6 @@ export default function LoginForm() {
           })
         );
         dispatch(openSnackbar({ message: data?.message }));
-        console.log({ data });
         Cookies.set('access_token', data.data.access_token);
         redirect('/apps');
       } else {

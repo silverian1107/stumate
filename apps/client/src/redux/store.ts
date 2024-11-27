@@ -11,7 +11,7 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import { rootApi } from '../service/rootApi'; // Assuming rootApi is defined in your services folder
+import { rootApi } from '../service/rootApi';
 // eslint-disable-next-line import/no-cycle
 import { logOutMiddleware } from './middlewares';
 import authReducer from './slices/authSlice';
@@ -51,8 +51,6 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-// Type for RootState based on the configured store
 export type AppStore = typeof store;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = AppStore['dispatch'];
-// Export persistor for managing persisted state

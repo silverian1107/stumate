@@ -37,7 +37,7 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
         <h1 className="-mb-1 text-xl font-bold">
           {name}{' '}
           <span className="text-lg font-semibold text-primary-600 ">
-            ({data.length} cards)
+            {/* ({data.length} cards) */}
           </span>
         </h1>
         <h2 className="line-clamp-1 text-sm font-medium text-primary-950/50">

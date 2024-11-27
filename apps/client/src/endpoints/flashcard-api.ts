@@ -14,8 +14,15 @@ export const FlashcardApi = {
   async bulkCreate(deckId: string, flashcards: FlashcardElement[]) {
     return DeckClient.post(`/${deckId}/flashcards/bulk/create`, flashcards);
   },
+
   async bulkUpdate(deckId: string, flashcards: FlashcardElement[]) {
     return DeckClient.post(`/${deckId}/flashcards/bulk/update`, flashcards);
+  },
+
+  async bulkDelete(deckId: string, flashcardIds: string[]) {
+    return DeckClient.delete(`/${deckId}/flashcards/bulk/delete`, {
+      data: JSON.stringify(flashcardIds)
+    });
   },
 
   async findAllInDeck(deckId: string) {

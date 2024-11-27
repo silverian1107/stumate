@@ -81,8 +81,13 @@ export class UpdateNoteDto {
   @Type(() => UpdateNoteBodyDto)
   body?: UpdateNoteBodyDto;
 
+  @ApiProperty({
+    description: 'Attachment of the note',
+    required: false,
+    type: [String],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  attachment: string[];
+  attachment?: string[];
 }

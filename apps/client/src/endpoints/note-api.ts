@@ -1,3 +1,5 @@
+import type { NoteUpdateDto } from '@/types/note';
+
 import { AxiosClient } from './AxiosClient';
 
 export const NoteApi = {
@@ -15,7 +17,25 @@ export const NoteApi = {
     });
   },
 
-  async findById(collectionId: string) {
-    return AxiosClient.get(`/notes/${collectionId}`);
+  async findById(noteId: string) {
+    return AxiosClient.get(`/notes/${noteId}`);
+  },
+
+  async updateById(
+    noteId: string,
+    {
+      name,
+      body,
+      attachment
+    }: Pick<NoteUpdateDto, 'name' | 'body' | 'attachment'>
+  ) {
+    if (body && typeof body === 'object' && 'version' in body) {
+      delete (body as unknown as Record<string, unknown>).version;
+    }
+    return AxiosClient.patch(`/notes/${noteId}`, {
+      name,
+      body,
+      attachment
+    });
   }
 };

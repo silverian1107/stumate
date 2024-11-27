@@ -6,35 +6,30 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from 'src/decorator/customize';
+import { IUser } from '../users/users.interface';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { User } from 'src/decorator/customize';
-import { IUser } from '../users/users.interface';
+import { AbilityGuard } from 'src/casl/ability.guard';
+import { CheckPolicies } from 'src/decorator/customize';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Collection } from './schema/collection.schema';
 
 @ApiTags('Collections')
 @Controller('collections')
+@UseGuards(AbilityGuard)
 export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
   @Post()
+  @CheckPolicies((ability) => ability.can(Action.CREATE, Collection))
   @ApiOperation({ summary: 'Create a new collection' })
   @ApiBody({ type: CreateCollectionDto })
-  @ApiResponse({
-    status: 201,
-    description: 'The collection has been successfully created.',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid data or validation error.',
-  })
+  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 400 })
   async create(
     @Body() collectionData: CreateCollectionDto,
     @User() { _id }: IUser,
@@ -43,30 +38,9 @@ export class CollectionsController {
   }
 
   @Get('all')
+  @CheckPolicies((ability) => ability.can(Action.READ, Collection))
   @ApiOperation({ summary: 'Get all collections' })
-  @ApiQuery({
-    name: 'currentPage',
-    description: 'The current page number',
-    required: false,
-    type: String,
-  })
-  @ApiQuery({
-    name: 'pageSize',
-    description: 'The number of items per page',
-    required: false,
-    type: String,
-  })
-  @ApiQuery({
-    name: 'qs',
-    description: 'Query string for sorting and filtering',
-    required: false,
-    type: String,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The list of collections.',
-    isArray: true,
-  })
+  @ApiResponse({ status: 200 })
   async findAll(
     @Query('currentPage') currentPage = '1',
     @Query('pageSize') pageSize = '10',
@@ -77,37 +51,15 @@ export class CollectionsController {
   }
 
   @Get()
+  @CheckPolicies((ability) => ability.can(Action.READ, Collection))
   @ApiOperation({ summary: 'Retrieve collections by user id' })
-  @ApiQuery({
-    name: 'currentPage',
-    description: 'The current page number',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'pageSize',
-    description: 'The number of items per page',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'qs',
-    description: 'Query string for sorting and filtering',
-    required: false,
-    type: String,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The list of root-level collections.',
-    isArray: true,
-  })
+  @ApiResponse({ status: 200 })
   async findByOwnerId(
     @Query('currentPage') currentPage = 1,
     @Query('pageSize') pageSize = 10,
     @Query() qs: string,
     @User() user: IUser,
   ) {
-    console.log(qs);
     return this.collectionsService.findByOwnerId(
       user._id,
       +currentPage,
@@ -118,29 +70,7 @@ export class CollectionsController {
 
   @Get('archived')
   @ApiOperation({ summary: 'Retrieve archived collections by user id' })
-  @ApiQuery({
-    name: 'currentPage',
-    description: 'The current page number',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'pageSize',
-    description: 'The number of items per page',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'qs',
-    description: 'Query string for sorting and filtering',
-    required: false,
-    type: String,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The list of archived collections.',
-    isArray: true,
-  })
+  @ApiResponse({ status: 200 })
   async findArchivedByOwnerId(
     @User() user: IUser,
     @Query('currentPage') currentPage = 1,
@@ -156,15 +86,10 @@ export class CollectionsController {
   }
 
   @Get(':collectionId')
+  @CheckPolicies((ability) => ability.can(Action.READ, Collection))
   @ApiOperation({ summary: 'Get collection by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successful retrieval of collection',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid collection ID or validation error',
-  })
+  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 400 })
   async findById(
     @Param('collectionId') collectionId: string,
     @User() user: IUser,
@@ -173,13 +98,11 @@ export class CollectionsController {
   }
 
   @Patch(':collectionId')
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, Collection))
   @ApiOperation({ summary: 'Update a collection by id' })
   @ApiBody({ type: UpdateCollectionDto })
   @ApiResponse({ status: 200, description: 'The updated collection.' })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid data or validation error.',
-  })
+  @ApiResponse({ status: 400 })
   async update(
     @Param('collectionId') collectionId: string,
     @Body() updateData: UpdateCollectionDto,
@@ -192,45 +115,34 @@ export class CollectionsController {
     );
   }
 
-  @Patch(':collectionId/archive')
-  @ApiOperation({ summary: 'Archive a collection by id' })
-  @ApiResponse({ status: 200, description: 'The archived collection.' })
-  @ApiResponse({
-    status: 404,
-    description: 'Collection with specified ID not found.',
-  })
-  async archive(
-    @Param('collectionId') collectionId: string,
-    @User() user: IUser,
-  ) {
-    return this.collectionsService.archiveById(collectionId, user._id);
-  }
+  // @Patch(':collectionId/archive')
+  // @ApiOperation({ summary: 'Archive a collection by id' })
+  // @ApiResponse({ status: 200, description: 'The archived collection.' })
+  // @ApiResponse({ status: 404 })
+  // async archive(
+  //   @Param('collectionId') collectionId: string,
+  //   @User() user: IUser,
+  // ) {
+  //   return this.collectionsService.archiveById(collectionId, user._id);
+  // }
 
-  @Patch(':collectionId/restore')
-  @ApiOperation({ summary: 'Restore an archived collection by ID' })
-  @ApiResponse({ status: 200, description: 'The restored collection.' })
-  @ApiResponse({
-    status: 404,
-    description: 'Collection with specified ID not found.',
-  })
-  async restore(
-    @Param('collectionId') collectionId: string,
-    @User() user: IUser,
-  ) {
-    return this.collectionsService.restoreById(collectionId, user._id);
-  }
+  // @Patch(':collectionId/restore')
+  // @ApiOperation({ summary: 'Restore an archived collection by ID' })
+  // @ApiResponse({ status: 200, description: 'The restored collection.' })
+  // @ApiResponse({ status: 404 })
+  // async restore(
+  //   @Param('collectionId') collectionId: string,
+  //   @User() user: IUser,
+  // ) {
+  //   return this.collectionsService.restoreById(collectionId, user._id);
+  // }
 
   @Patch(':collectionId/delete')
+  @CheckPolicies((ability) => ability.can(Action.DELETE, Collection))
   @ApiOperation({ summary: 'Delete a collection by ID' })
   @ApiResponse({ status: 200, description: 'The deleted collection.' })
-  @ApiResponse({
-    status: 400,
-    description: 'Collection must be archived before delete.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Collection with specified ID not found.',
-  })
+  @ApiResponse({ status: 400 })
+  @ApiResponse({ status: 404 })
   async delete(
     @Param('collectionId') collectionId: string,
     @User() user: IUser,

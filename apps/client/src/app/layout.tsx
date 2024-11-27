@@ -1,9 +1,8 @@
-'use client';
-
 import './globals.css';
 
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import type { Metadata } from 'next';
 import { Lexend_Deca } from 'next/font/google';
 import { Toaster } from 'sonner';
 
@@ -18,7 +17,13 @@ const lexendDeca = Lexend_Deca({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 });
-export default function RootLayout({
+
+export const metadata: Metadata = {
+  title: 'Stumate',
+  description: ''
+};
+
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;

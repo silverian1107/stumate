@@ -1,11 +1,14 @@
 'use client';
 
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Cookies from 'js-cookie';
 import { CloudSun, LayoutGrid, LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
+import { Button } from '@/components/ui/button';
 import { useAccount } from '@/hooks/use-auth';
 
 import IconWrapper from './_components/IconWrapper';
@@ -15,8 +18,6 @@ const Main = () => {
   const { data, error, isLoading } = useAccount();
 
   useEffect(() => {
-    console.log(error);
-
     if (error) {
       Cookies.remove('access_token');
       router.push('/login');
@@ -38,9 +39,9 @@ const Main = () => {
   if (!data) return null;
 
   return (
-    <div className="h-full flex-1 bg-primary-50">
-      <div className="flex h-[72px] w-full items-end justify-between bg-primary-50 px-4 py-2">
-        <div className="flex cursor-pointer items-center gap-1 rounded-sm border border-primary-950/40 bg-primary-50 px-2 py-1 text-primary-950/40 hover:border-primary-800 hover:bg-primary-100 hover:text-primary-800">
+    <div className="flex-1 flex h-screen bg-primary-50 flex-col box-border">
+      <div className="h-[72px] w-full bg-primary-50 flex justify-between  py-2 px-10 items-center">
+        <div className="text-primary-950/40 bg-primary-50 border border-primary-950/40 hover:bg-primary-100 hover:border-primary-800 hover:text-primary-800 flex items-center gap-1 px-2 py-1 rounded-sm cursor-pointer">
           Customized
           <span>
             <LayoutGrid className="size-4" />
@@ -63,8 +64,39 @@ const Main = () => {
           </div>
         </div>
       </div>
-
-      {/* <div className="grid lg:grid-cols-4 gap-4 w-full h-[calc(100%-72px)] px-4 md:grid-cols-2 grid-cols-1 [&>*]:h-[172px] overflow-auto"></div> */}
+      <div className="flex flex-1 gap-4 w-full   px-10 pb-7">
+        <div className=" w-3/4 h-full  grid grid-cols-3 grid-rows-5 gap-4 box-border ">
+          <div className="element-dashboard">
+            <div className="flex text-xs">
+              <p className="font-bold text-primary-950 mr-1">Short session </p>
+              <p className="text-gray-500 mr-7">Long Break</p>
+              <MoreHorizIcon fontSize="small" />
+            </div>
+            <div className="flex flex-col gap-1 items-center">
+              <div className="relative">
+                <p className="font-bold text-4xl text-primary-500">25:00</p>
+                <RefreshIcon
+                  fontSize="small"
+                  color="primary"
+                  className="absolute top-[10px] right-[-25px]"
+                />
+              </div>
+              <Button>Start</Button>
+            </div>
+          </div>
+          <div className="element-dashboard">2</div>
+          <div className=" element-dashboard">3</div>
+          <div className="element-dashboard row-span-2 ">4</div>
+          <div className="element-dashboard">5</div>
+          <div className=" element-dashboard">6</div>
+          <div className=" element-dashboard col-span-2 ">7</div>
+          <div className=" element-dashboard row-span-2 col-span-3 ">8</div>
+        </div>
+        <div className=" w-1/4 h-full grid grid-cols-1 gap-4  box-border">
+          <div className="element-dashboard" />
+          <div className="element-dashboard" />
+        </div>
+      </div>
     </div>
   );
 };

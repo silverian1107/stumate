@@ -16,20 +16,27 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
-import { Flashcard, FlashcardDocument, State } from './schema/flashcard.schema';
+import { Flashcard, FlashcardDocument } from './schema/flashcard.schema';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { DecksService } from '../decks/decks.service';
-import dayjs from 'dayjs';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { StatisticsService } from '../statistics/statistics.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import {
+  FlashcardReview,
+  FlashcardReviewDocument,
+  State,
+} from './schema/flashcard-review.schema';
+import { reviewFlashcard } from './../../helpers/utils';
 
 @Injectable()
 export class FlashcardsService {
   constructor(
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
+    @InjectModel(FlashcardReview.name)
+    private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
     @Inject(forwardRef(() => DecksService))
     private readonly decks: DecksService,
     private readonly statisticsService: StatisticsService,
@@ -85,46 +92,9 @@ export class FlashcardsService {
       },
     }));
 
-    const result = await this.flashcardModel.bulkWrite(bulkOperations);
-    return result;
+    await this.flashcardModel.bulkWrite(bulkOperations);
+    return { message: 'Update flashcard successfully' };
   }
-
-  getIntervalDate = (interval: number, date?: number) => {
-    return dayjs(date ?? Date.now())
-      .add(interval, 'day')
-      .valueOf();
-  };
-
-  reviewFlashcard = (
-    flashcard: FlashcardDocument,
-    rating: number,
-    reviewDate?: number,
-  ) => {
-    let interval: number;
-    if (rating >= 3) {
-      if (flashcard.repetitions === 0) {
-        interval = 1;
-      } else if (flashcard.repetitions === 1) {
-        interval = 6;
-      } else {
-        interval = Math.round(flashcard.interval * flashcard.easiness);
-      }
-      flashcard.repetitions++;
-      let easiness =
-        flashcard.easiness +
-        (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
-      if (easiness < 1.3) {
-        easiness = 1.3;
-      }
-      flashcard.easiness = easiness;
-    } else {
-      flashcard.repetitions = 0;
-      interval = 1;
-    }
-    flashcard.interval = interval;
-    flashcard.nextReview = this.getIntervalDate(interval, reviewDate);
-    return rating < 4;
-  };
 
   //websocket
   async create(
@@ -155,22 +125,39 @@ export class FlashcardsService {
       throw new NotFoundException('Not found deck');
     }
     const flashcards = await this.flashcardModel.find({
-      userId: user._id,
+      $or: [{ userId: user._id }, { sharedWithUsers: { $in: [user._id] } }],
       deckId,
     });
+
+    const dueFlashcardReviews = [];
+
     await Promise.all(
       flashcards.map(async (flashcard) => {
-        if (flashcard.state === State.New) {
-          flashcard.state = State.Learning;
-          flashcard.save();
+        let flashcardReview = await this.flashcardReviewModel
+          .findOne({
+            userId: user._id,
+            flashcardId: flashcard._id,
+          })
+          .populate('flashcardId');
+        if (!flashcardReview) {
+          flashcardReview = await this.flashcardReviewModel.create({
+            flashcardId: flashcard._id,
+            userId: user._id,
+            state: State.New,
+          });
+          flashcardReview = await flashcardReview.populate('flashcardId');
+        }
+        if (flashcardReview.state === State.New) {
+          flashcardReview.state = State.Learning;
+          await flashcardReview.save();
+        }
+        if (flashcardReview.nextReview <= Date.now()) {
+          dueFlashcardReviews.push(flashcardReview);
         }
       }),
     );
-    const dueFlashcards = flashcards.filter(
-      (flashcard) => flashcard.nextReview <= Date.now(),
-    );
 
-    const sortedFlashcards = dueFlashcards.sort((a, b) => {
+    const sortedFlashcards = dueFlashcardReviews.sort((a, b) => {
       if (a.nextReview !== b.nextReview) {
         return a.nextReview - b.nextReview;
       } else {
@@ -186,34 +173,38 @@ export class FlashcardsService {
 
   //websocket
   async handleMarkFlashcard(
-    deckId: string,
-    id: string,
+    flashcardId: string,
     markFlashcardDTO: MarkFlashcardDTO,
     user: IUser,
   ) {
-    const flashcard = await this.flashcardModel.findOne({
-      _id: id,
-      deckId,
-      userId: user._id,
-    });
-    if (!flashcard) {
-      throw new NotFoundException('Flashcard not found');
+    const flashcardReview = await this.flashcardReviewModel
+      .findOne({
+        userId: user._id,
+        flashcardId: flashcardId,
+      })
+      .populate('flashcardId');
+    if (!flashcardReview) {
+      throw new NotFoundException('Not found flashcard review');
     }
-    const isDueForReview = this.reviewFlashcard(
-      flashcard,
+    const isDueForReview = reviewFlashcard(
+      flashcardReview,
       markFlashcardDTO.rating,
       markFlashcardDTO.reviewDate,
     );
-    flashcard.rating = markFlashcardDTO.rating;
+    flashcardReview.rating = markFlashcardDTO.rating;
     if (markFlashcardDTO.rating < 3) {
-      flashcard.state = State.Relearning;
-    } else if (flashcard.state === 0 || flashcard.state === 1) {
-      flashcard.state = State.Review;
+      flashcardReview.state = State.Relearning;
+    } else if (
+      flashcardReview.state === 0 ||
+      flashcardReview.state === 1 ||
+      flashcardReview.state === 3
+    ) {
+      flashcardReview.state = State.Review;
     }
-    await flashcard.save();
+    await flashcardReview.save();
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return {
-      flashcard,
+      flashcardReview,
       isDueForReview,
     };
   }
@@ -221,19 +212,22 @@ export class FlashcardsService {
   async handleDeckProgress(deckId: string, user: IUser) {
     const deck = await this.decks.findOne(deckId);
     if (!deck) {
-      throw new NotFoundException('Deck not found');
+      throw new NotFoundException('Not found deck');
     }
-
     const flashcards = await this.flashcardModel.find({
-      userId: user._id,
+      $or: [{ userId: user._id }, { sharedWithUsers: { $in: [user._id] } }],
       deckId,
     });
+    const flashcardReviews = await this.flashcardReviewModel.find({
+      userId: user._id,
+      flashcardId: { $in: flashcards.map((flashcard) => flashcard._id) },
+    });
     const totalCards = flashcards.length;
-    const reviewedCards = flashcards.filter(
-      (flashcard) => flashcard.state === State.Review,
+    const reviewedCards = flashcardReviews.filter(
+      (flashcardReview) => flashcardReview.state === State.Review,
     ).length;
-    const dueToday = flashcards.filter(
-      (flashcard) => flashcard.nextReview <= Date.now(),
+    const dueToday = flashcardReviews.filter(
+      (flashcardReview) => flashcardReview.nextReview <= Date.now(),
     ).length;
     const progress = totalCards > 0 ? (reviewedCards / totalCards) * 100 : 0;
 
@@ -312,6 +306,23 @@ export class FlashcardsService {
     return flashcard;
   }
 
+  async findFlashcardReview(deckId: string, id: string) {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Flashcard ID');
+    }
+    const flashcard = await this.flashcardModel.findOne({ _id: id, deckId });
+    if (!flashcard) {
+      throw new NotFoundException('Not found flashcard');
+    }
+    const flashcardReview = await this.flashcardReviewModel.findOne({
+      flashcardId: id,
+    });
+    if (!flashcardReview) {
+      throw new NotFoundException('Not found flashcard review');
+    }
+    return flashcardReview;
+  }
+
   async update(
     deckId: string,
     id: string,
@@ -341,9 +352,38 @@ export class FlashcardsService {
       throw new NotFoundException('Not found flashcard');
     }
     const userId = flashcard.userId.toString();
+    //soft delete for all flashcard review
+    await this.flashcardReviewModel.delete({ flashcardId: id }, user._id);
+    //soft delete for all flashcard
     await this.flashcardModel.delete({ _id: id, deckId }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
     return 'Flashcard was deleted successfully';
+  }
+
+  async removeMultiple(deckId: string, flashcardIds: string[]) {
+    if (!(await this.decks.findOne(deckId))) {
+      throw new NotFoundException('Not found deck');
+    }
+    const flashcards = await this.flashcardModel.find({
+      _id: { $in: flashcardIds },
+      deckId,
+    });
+    if (flashcards.length !== flashcardIds.length) {
+      throw new NotFoundException('Not found flashcard');
+    }
+
+    await this.flashcardModel.delete(
+      {
+        _id: { $in: flashcardIds },
+        deckId,
+      },
+      flashcards[0].userId,
+    );
+    await this.statisticsService.createOrUpdateUserStatistics(
+      flashcards[0].userId.toString(),
+    );
+
+    return flashcards;
   }
 
   //websocket
