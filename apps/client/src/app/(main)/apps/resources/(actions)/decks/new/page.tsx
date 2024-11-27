@@ -5,10 +5,10 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import { useDeckManager } from '@/hooks/use-deck';
+import { useCardBulkCreate, useDeckCreateMutatation } from '@/hooks/use-deck';
 import { setFlashcards } from '@/redux/slices/resourceSlice';
 import type { RootState } from '@/redux/store';
-import type { Deck } from '@/types/deck';
+import type { DeckCreateDto } from '@/types/deck';
 
 import { ResourceElements } from '../../_components/creator';
 import { DeckActionHeader } from '../../_components/header';
@@ -17,45 +17,29 @@ export default function ResourcePage() {
   const dispatch = useDispatch();
   const resource = useSelector((state: RootState) => state.decks);
 
-  const {
-    isEditing,
-    deck: initialResource,
-    saveResource,
-    isSubmitting,
-    isLoading
-  } = useDeckManager();
+  const createDeck = useDeckCreateMutatation();
+  const bulkCreateFlashcards = useCardBulkCreate();
 
   useEffect(() => {
-    if (initialResource && initialResource.flashcards) {
-      dispatch(setFlashcards(initialResource.flashcards));
-    }
-  }, [initialResource, dispatch]);
+    dispatch(setFlashcards([]));
+  }, [dispatch]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  const handleSubmit = async (formData: {
-    name: string;
-    description?: string;
-  }) => {
+  const handleSubmit = async (formData: DeckCreateDto) => {
     try {
       const invalidFlashcards = resource.flashcards.filter(
         (fc) => !fc.front.trim() || !fc.back.trim()
       );
 
       if (invalidFlashcards.length > 0) {
-        return; // Prevent submission
+        return;
       }
 
-      const resourceToSubmit: Deck = {
-        ...initialResource,
-        flashcards: resource.flashcards,
-        name: formData.name,
-        description: formData.description
-      } as Deck;
+      const newDeck = await createDeck.mutateAsync(formData);
 
-      await saveResource(resourceToSubmit);
+      await bulkCreateFlashcards.mutateAsync({
+        deckId: newDeck._id,
+        cards: resource.flashcards
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error('Error submitting resource', {
@@ -67,12 +51,7 @@ export default function ResourcePage() {
 
   return (
     <>
-      <DeckActionHeader
-        initialData={initialResource}
-        isEditing={isEditing}
-        onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-      />
+      <DeckActionHeader onSubmit={handleSubmit} />
       <ResourceElements />
     </>
   );
