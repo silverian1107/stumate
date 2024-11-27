@@ -26,6 +26,7 @@ import { ArchiveModule } from './modules/archive/archive.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { TodoModule } from './modules/todo/todo.module';
 import { SummariesModule } from './modules/summaries/summaries.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -94,6 +95,7 @@ import { SummariesModule } from './modules/summaries/summaries.module';
     NotificationsModule,
     TodoModule,
     SummariesModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [AppService],

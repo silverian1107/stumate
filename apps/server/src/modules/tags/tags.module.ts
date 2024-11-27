@@ -7,6 +7,7 @@ import { DeckSchema } from '../decks/schema/deck.schema';
 import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CollectionSchema } from '../collections/schema/collection.schema';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CollectionSchema } from '../collections/schema/collection.schema';
         schema: QuizTestSchema,
       },
     ]),
+    CaslModule,
   ],
   controllers: [TagsController],
   providers: [TagsService],

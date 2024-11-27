@@ -48,6 +48,7 @@ export class QuizQuestionsService {
     //Create a new quiz question
     const newQuizQuestion = await this.quizQuestionModel.create({
       ...createQuizQuestionDto,
+      userId: user._id,
       quizTestId: quizTestId,
       createdBy: {
         _id: user._id,
@@ -81,6 +82,7 @@ export class QuizQuestionsService {
     const questionsToCreate = createQuizQuestionDtos.map(
       (createQuizQuestionDto) => ({
         ...createQuizQuestionDto,
+        userId: user._id,
         quizTestId: quizTestId,
         createdBy: {
           _id: user._id,

@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { QuizQuestionsModule } from '../quiz-questions/quiz-questions.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     forwardRef(() => QuizQuestionsModule),
     StatisticsModule,
     NotificationsModule,
+    CaslModule,
   ],
   controllers: [QuizAttemptsController],
   providers: [QuizAttemptsService],
