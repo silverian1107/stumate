@@ -29,7 +29,7 @@ export class QuizTestsService {
   ) {}
 
   async findQuizTestByTitle(title: string, userId: string) {
-    return await this.quizTestModel.findOne({ title, userId });
+    return await this.quizTestModel.findOne({ name: title, userId });
   }
 
   //websocket

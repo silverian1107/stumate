@@ -32,7 +32,7 @@ export class TagsController {
     return await this.tagsService.handleAddTag(resourceType, resourceId, id);
   }
 
-  @Delete('remove-tag/:resourceType/:resourceId/:id')
+  @Post('remove-tag/:resourceType/:resourceId/:id')
   @CheckPolicies((ability) => ability.can(Action.UPDATE, Tag))
   @ResponseMessage('Remove tag')
   async removeTag(
