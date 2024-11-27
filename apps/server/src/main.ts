@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
 import { ValidationPipe } from '@nestjs/common';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -15,6 +16,9 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
+
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

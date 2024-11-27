@@ -11,7 +11,7 @@ import type { RootState } from '@/redux/store';
 import type { Deck } from '@/types/deck';
 
 import { ResourceElements } from '../../_components/creator';
-import { ResourceHeader } from '../../_components/header';
+import { DeckActionHeader } from '../../_components/header';
 
 export default function ResourcePage() {
   const dispatch = useDispatch();
@@ -40,6 +40,15 @@ export default function ResourcePage() {
     description?: string;
   }) => {
     try {
+      const invalidFlashcards = resource.flashcards.filter(
+        (fc) => !fc.front.trim() || !fc.back.trim()
+      );
+      console.log(invalidFlashcards);
+
+      if (invalidFlashcards.length > 0) {
+        return; // Prevent submission
+      }
+
       const resourceToSubmit: Deck = {
         ...initialResource,
         flashcards: resource.flashcards,
@@ -59,7 +68,7 @@ export default function ResourcePage() {
 
   return (
     <>
-      <ResourceHeader
+      <DeckActionHeader
         initialData={initialResource}
         isEditing={isEditing}
         onSubmit={handleSubmit}

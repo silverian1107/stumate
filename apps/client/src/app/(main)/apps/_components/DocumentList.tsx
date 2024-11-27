@@ -47,7 +47,7 @@ const DocumentList = ({
     }
   };
 
-  const onCreateNote = (document: Collection | Note) => {
+  const onCreateNote = async (document: Collection | Note) => {
     createNote.mutate(
       {
         name: 'New Note',

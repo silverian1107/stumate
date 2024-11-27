@@ -15,7 +15,7 @@ enum Status {
 @Schema({ timestamps: true })
 export class QuizTest {
   @Prop({ required: true })
-  title: string;
+  name: string;
 
   @Prop({ default: 'Description' })
   description: string;
@@ -28,9 +28,6 @@ export class QuizTest {
 
   @Prop({ enum: Status, default: Status.NOT_STARTED })
   status: string;
-
-  // @Prop()
-  // isPublished: boolean;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

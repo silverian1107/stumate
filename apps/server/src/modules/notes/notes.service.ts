@@ -1,3 +1,4 @@
+import { SummaryDocument } from './../summaries/schema/summary.schema';
 import {
   BadRequestException,
   Injectable,
@@ -5,19 +6,22 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
-import { validateObjectId } from 'src/helpers/utils';
-import { CollectionsService } from '../collections/collections.service';
-import { StatisticsService } from '../statistics/statistics.service';
+import mongoose from 'mongoose';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note, NoteDocument } from './schema/note.schema';
+import { CollectionsService } from '../collections/collections.service';
+import { validateObjectId } from 'src/helpers/utils';
+import { StatisticsService } from '../statistics/statistics.service';
+import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
 export class NotesService {
   constructor(
     @InjectModel('Note')
-    private readonly noteModel: Model<NoteDocument>,
+    private readonly noteModel: SoftDeleteModel<NoteDocument>,
+    @InjectModel('Summary')
+    private readonly summaryModel: SoftDeleteModel<SummaryDocument>,
     private readonly collectionService: CollectionsService,
     private readonly statisticsService: StatisticsService,
   ) {}
@@ -36,7 +40,7 @@ export class NotesService {
       const { parentId } = newNoteData;
 
       const [parentNote, parentCollection] = await Promise.all([
-        this.noteModel.findById(parentId),
+        this.noteModel.findOne({ _id: parentId }),
         this.collectionService.findById(parentId, userId).catch(() => {
           return null;
         }),
@@ -82,13 +86,9 @@ export class NotesService {
     // const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
     const limit = pageSize;
     const skip = (currentPage - 1) * limit;
-    const filter = {
-      isArchived: false,
-      isDeleted: false,
-    };
 
     try {
-      const totalItems = await this.noteModel.countDocuments(filter).exec();
+      const totalItems = await this.noteModel.countDocuments().exec();
       const totalPages = Math.ceil(totalItems / limit);
       const notes = await this.noteModel
         .aggregate([
@@ -166,9 +166,8 @@ export class NotesService {
     // Define the filter to find notes by ownerId
     const filter = {
       ownerId,
-      isArchived: false,
-      isDeleted: false,
     };
+    console.log(ownerId);
 
     try {
       // Count total items matching the filter
@@ -197,7 +196,7 @@ export class NotesService {
       throw new BadRequestException('Invalid NoteId');
 
     const collection = await this.noteModel
-      .findById(noteId)
+      .findOne({ _id: noteId })
       .populate('childrenDocs')
       .lean<Note>()
       .exec();
@@ -218,49 +217,36 @@ export class NotesService {
     return updatedCollection;
   }
 
-  async archiveById(noteId: string) {
-    validateObjectId(noteId, 'Note');
-    const archiveNote = await this.noteModel.findById(noteId).exec();
-
-    if (!archiveNote) {
-      throw new NotFoundException(`Note with ID ${noteId} not found`);
-    }
-
-    archiveNote.isArchived = true;
-    return archiveNote.save();
-  }
-
-  async restoreById(noteId: string) {
-    validateObjectId(noteId, 'Note');
-    const restoredNote = await this.noteModel.findById(noteId).exec();
-
-    if (!restoredNote) {
-      throw new NotFoundException(`Note with ID ${noteId} not found`);
-    }
-
-    restoredNote.isArchived = false;
-    return restoredNote.save();
-  }
-
   //websocket
   async deleteById(noteId: string) {
     validateObjectId(noteId, 'Note');
-    const deletedNote = await this.noteModel.findById(noteId).exec();
-
+    const deletedNote = await this.noteModel.findOne({ _id: noteId });
     if (!deletedNote) {
       throw new NotFoundException(`Note with ID ${noteId} not found`);
     }
 
-    if (!deletedNote.isArchived) {
-      throw new BadRequestException('Note must be archived before delete');
+    const ownerId = deletedNote.ownerId;
+
+    const notesToDelete = [];
+    const stack = [noteId];
+
+    while (stack.length > 0) {
+      const currentNoteId = stack.pop();
+      const currentNote = await this.noteModel.findOne({ _id: currentNoteId });
+
+      if (currentNote) {
+        notesToDelete.push(currentNote._id);
+        const childNotes = await this.noteModel.find({
+          'parentId._id': currentNoteId,
+        });
+        stack.push(...childNotes.map((child) => child._id.toString()));
+      }
     }
 
-    const userId = deletedNote.ownerId;
+    await this.summaryModel.delete({ noteId: { $in: notesToDelete } }, ownerId);
+    await this.noteModel.delete({ _id: { $in: notesToDelete } }, ownerId);
 
-    deletedNote.isDeleted = true;
-    await deletedNote.save();
-
-    await this.statisticsService.createOrUpdateUserStatistics(userId);
+    await this.statisticsService.createOrUpdateUserStatistics(ownerId);
     return 'Note was deleted successfully';
   }
 }

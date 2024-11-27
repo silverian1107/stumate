@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,13 +21,19 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 import { NotesService } from './notes.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
+import { AbilityGuard } from 'src/casl/ability.guard';
+import { CheckPolicies } from 'src/decorator/customize';
+import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Note } from './schema/note.schema';
 
 @ApiTags('Notes')
 @Controller('notes')
+@UseGuards(AbilityGuard)
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
   @Post()
+  @CheckPolicies((ability) => ability.can(Action.CREATE, Note))
   @ApiOperation({ summary: 'Create a new note' })
   @ApiResponse({
     status: 201,
@@ -39,6 +46,7 @@ export class NotesController {
   }
 
   @Get('all')
+  @CheckPolicies((ability) => ability.can(Action.READ, Note))
   @ApiOperation({ summary: 'Get all notes' })
   @ApiQuery({
     name: 'currentPage',
@@ -71,7 +79,8 @@ export class NotesController {
     );
   }
 
-  @Get('')
+  @Get()
+  @CheckPolicies((ability) => ability.can(Action.READ, Note))
   @ApiOperation({ summary: 'Get notes by owner ID' })
   @ApiParam({ name: 'ownerId', required: true })
   @ApiQuery({
@@ -112,6 +121,7 @@ export class NotesController {
   }
 
   @Get(':noteId')
+  @CheckPolicies((ability) => ability.can(Action.READ, Note))
   @ApiOperation({ summary: 'Get a note by ID' })
   @ApiParam({ name: 'noteId', required: true })
   @ApiResponse({ status: 200, description: 'Return the note.' })
@@ -121,6 +131,7 @@ export class NotesController {
   }
 
   @Patch(':noteId')
+  @CheckPolicies((ability) => ability.can(Action.UPDATE, Note))
   @ApiOperation({ summary: 'Update a note by ID' })
   @ApiParam({ name: 'noteId', required: true })
   @ApiResponse({
@@ -136,31 +147,8 @@ export class NotesController {
     return this.notesService.updateById(noteId, updateData);
   }
 
-  @Patch(':noteId/archive')
-  @ApiOperation({ summary: 'Archive a note by ID' })
-  @ApiParam({ name: 'noteId', required: true })
-  @ApiResponse({
-    status: 200,
-    description: 'The note has been successfully archived.',
-  })
-  @ApiResponse({ status: 404, description: 'Note not found.' })
-  async archiveById(@Param('noteId') noteId: string) {
-    return this.notesService.archiveById(noteId);
-  }
-
-  @Patch(':noteId/restore')
-  @ApiOperation({ summary: 'Restore a note by ID' })
-  @ApiParam({ name: 'noteId', required: true })
-  @ApiResponse({
-    status: 200,
-    description: 'The note has been successfully restored.',
-  })
-  @ApiResponse({ status: 404, description: 'Note not found.' })
-  async restoreById(@Param('noteId') noteId: string) {
-    return this.notesService.restoreById(noteId);
-  }
-
   @Patch(':noteId/delete')
+  @CheckPolicies((ability) => ability.can(Action.DELETE, Note))
   @ApiOperation({ summary: 'Delete a note by ID' })
   @ApiParam({ name: 'noteId', required: true })
   @ApiResponse({

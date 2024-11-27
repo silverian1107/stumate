@@ -39,9 +39,15 @@ export class QuizAttemptsService {
     }
     //Update status for quiz test
     if (quizTest.status === 'NOT_STARTED') {
-      await quizTest.updateOne({ _id: quizTestId }, { status: 'IN_PROGRESS' });
+      await quizTest.updateOne(
+        { _id: quizTestId, userId: quizTest.userId },
+        { status: 'IN_PROGRESS' },
+      );
     } else {
-      await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWING' });
+      await quizTest.updateOne(
+        { _id: quizTestId, userId: quizTest.userId },
+        { status: 'REVIEWING' },
+      );
     }
     //Create a new quiz attempt
     const newQuizAttempt = await this.quizAttemptModel.create({
@@ -70,7 +76,7 @@ export class QuizAttemptsService {
       throw new NotFoundException('Not found quiz test');
     }
     const updatedQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
-      { _id: id, quizTestId },
+      { _id: id, quizTestId, userId: user._id },
       {
         ...userAnswersDto,
         updatedBy: {
@@ -84,7 +90,7 @@ export class QuizAttemptsService {
     await this.notificationsService.sendInfoNotification(
       user,
       `Quiz Submission Reminder`,
-      `Your quiz '${quizTest.title}' is in progress and has not been submitted. Don't forget to submit it when you're done!`,
+      `Your quiz '${quizTest.name}' is in progress and has not been submitted. Don't forget to submit it when you're done!`,
     );
     return updatedQuizAttempt;
   }
@@ -172,9 +178,15 @@ export class QuizAttemptsService {
     }
     //Update quiz test status
     if (quizTest.status === 'IN_PROGRESS') {
-      await quizTest.updateOne({ _id: quizTestId }, { status: 'COMPLETED' });
+      await quizTest.updateOne(
+        { _id: quizTestId, userId: quizTest.userId },
+        { status: 'COMPLETED' },
+      );
     } else {
-      await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWED' });
+      await quizTest.updateOne(
+        { _id: quizTestId, userId: quizTest.userId },
+        { status: 'REVIEWED' },
+      );
     }
     //Update quiz attempt
     const updateQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
@@ -199,7 +211,7 @@ export class QuizAttemptsService {
       this.message(
         updateQuizAttempt.correctAnswers,
         updateQuizAttempt.totalQuestions,
-        quizTest.title,
+        quizTest.name,
       ),
     );
     return updateQuizAttempt;

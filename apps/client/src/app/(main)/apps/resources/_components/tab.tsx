@@ -50,7 +50,7 @@ export const SlidingTabBar = () => {
   }, [activeTabIndex]);
 
   return (
-    <div className="relative flex rounded border border-primary-950/40 bg-primary-100 backdrop-blur-sm">
+    <div className="relative flex rounded border border-primary-600/20 bg-primary-100 backdrop-blur-sm">
       <span
         className="absolute inset-y-0 -z-10 flex overflow-hidden transition-all duration-300"
         style={{ left: tabUnderlineLeft, width: tabUnderlineWidth }}

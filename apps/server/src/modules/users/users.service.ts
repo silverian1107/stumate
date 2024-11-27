@@ -1,3 +1,4 @@
+import { getCodeId } from './../../helpers/utils';
 import {
   BadRequestException,
   Injectable,
@@ -18,7 +19,6 @@ import {
   RegisterUserDto,
 } from 'src/auth/dto/create-auth.dto';
 import { MailerService } from '@nestjs-modules/mailer';
-import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
@@ -31,6 +31,7 @@ import {
   UserStatistic,
   UserStatisticDocument,
 } from '../statistics/schema/user-statistic.schema';
+import { CollectionsService } from '../collections/collections.service';
 
 @Injectable()
 export class UsersService {
@@ -41,6 +42,7 @@ export class UsersService {
     private readonly configService: ConfigService,
     private readonly decksService: DecksService,
     private readonly quizTestsService: QuizTestsService,
+    private readonly collectionsService: CollectionsService,
     private readonly tagsService: TagsService,
     private readonly notificationsService: NotificationsService,
     @InjectModel(UserStatistic.name)
@@ -101,14 +103,6 @@ export class UsersService {
     });
   };
 
-  getCodeId = () => {
-    let uuidDigits = uuidv4().replace(/\D/g, '');
-    while (uuidDigits.length < 6) {
-      uuidDigits += Math.floor(Math.random() * 10).toString();
-    }
-    return uuidDigits.slice(0, 6);
-  };
-
   async findOne(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid User ID');
@@ -154,14 +148,20 @@ export class UsersService {
     if (user.isActive) {
       throw new BadRequestException('Your account has been activated');
     }
-    await this.userModel.updateOne({
-      codeId: this.getCodeId(),
-      codeExpire: dayjs().add(
-        ms(this.configService.get<string>('CODE_EXPIRE_TIME')),
-      ),
-    });
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      {
+        email,
+      },
+      {
+        codeId: getCodeId(),
+        codeExpire: dayjs().add(
+          ms(this.configService.get<string>('CODE_EXPIRE_TIME')),
+        ),
+      },
+      { new: true },
+    );
     await this.handleSendEmail(
-      user,
+      updatedUser,
       'Activate your account',
       'account-activation-email',
     );
@@ -176,13 +176,23 @@ export class UsersService {
     if (!user.isActive) {
       throw new BadRequestException('Your account has not been activated');
     }
-    await this.userModel.updateOne({
-      codeId: this.getCodeId(),
-      codeExpire: dayjs().add(
-        ms(this.configService.get<string>('CODE_EXPIRE_TIME')),
-      ),
-    });
-    await this.handleSendEmail(user, 'Password reset', 'reset-password-email');
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      {
+        email,
+      },
+      {
+        codeId: getCodeId(),
+        codeExpire: dayjs().add(
+          ms(this.configService.get<string>('CODE_EXPIRE_TIME')),
+        ),
+      },
+      { new: true },
+    );
+    await this.handleSendEmail(
+      updatedUser,
+      'Password reset',
+      'reset-password-email',
+    );
     return { _id: user._id, email: user.email };
   };
 
@@ -216,7 +226,10 @@ export class UsersService {
       throw new BadRequestException('Account does not exist');
     }
     const newPassword = await getHashPassword(changePasswordAuthDto.password);
-    await user.updateOne({ password: newPassword });
+    await this.userModel.updateOne(
+      { email: user.email },
+      { password: newPassword },
+    );
     return user;
   };
 
@@ -236,7 +249,7 @@ export class UsersService {
     }
     //Hash password
     const hashPassword = await getHashPassword(password);
-    const codeId = this.getCodeId();
+    const codeId = getCodeId();
     const newUser = await this.userModel.create({
       username,
       email,
@@ -357,7 +370,14 @@ export class UsersService {
     await Promise.all(
       tags.map((tag: any) => this.tagsService.remove(tag._id.toString(), user)),
     );
-    //soft delete for all deck and flashcard
+    //soft delete for all collection
+    const collections = await this.collectionsService.findByUser(user);
+    await Promise.all(
+      collections.map((collection: any) =>
+        this.collectionsService.deleteById(collection._id.toString(), user._id),
+      ),
+    );
+    //soft delete for all deck, flashcard and flashcard review
     const decks = await this.decksService.findByUser(user);
     await Promise.all(
       decks.map((deck: any) =>

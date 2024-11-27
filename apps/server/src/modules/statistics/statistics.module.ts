@@ -9,6 +9,9 @@ import { NoteSchema } from '../notes/schema/note.schema';
 import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
 import { QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
 import { GatewayModule } from 'src/gateway/gateway.module';
+import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
+import { CaslModule } from 'src/casl/casl.module';
+import { DeckSchema } from '../decks/schema/deck.schema';
 
 @Module({
   imports: [
@@ -16,7 +19,11 @@ import { GatewayModule } from 'src/gateway/gateway.module';
       { name: 'UserStatistic', schema: UserStatisticSchema },
     ]),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'Deck', schema: DeckSchema }]),
     MongooseModule.forFeature([{ name: 'Flashcard', schema: FlashcardSchema }]),
+    MongooseModule.forFeature([
+      { name: 'FlashcardReview', schema: FlashcardReviewSchema },
+    ]),
     MongooseModule.forFeature([{ name: 'Note', schema: NoteSchema }]),
     MongooseModule.forFeature([
       {
@@ -31,6 +38,7 @@ import { GatewayModule } from 'src/gateway/gateway.module';
       },
     ]),
     GatewayModule,
+    CaslModule,
   ],
   controllers: [StatisticsController],
   providers: [StatisticsService],
