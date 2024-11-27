@@ -28,18 +28,18 @@ export class QuizTestsService {
     private readonly statisticsService: StatisticsService,
   ) {}
 
-  async findQuizTestByTitle(title: string, userId: string) {
-    return await this.quizTestModel.findOne({ name: title, userId });
+  async findQuizTestByTitle(name: string, userId: string) {
+    return await this.quizTestModel.findOne({ name, userId });
   }
 
   //websocket
   async create(createQuizTestDto: CreateQuizTestDto, @User() user: IUser) {
     //Check title already exists
-    if (await this.findQuizTestByTitle(createQuizTestDto.name, user._id)) {
-      throw new BadRequestException(
-        `Title '${createQuizTestDto.name}' already exists`,
-      );
-    }
+    // if (await this.findQuizTestByTitle(createQuizTestDto.name, user._id)) {
+    //   throw new BadRequestException(
+    //     `Title '${createQuizTestDto.name}' already exists`,
+    //   );
+    // }
     //Create a new quiz test
     const newQuizTest = await this.quizTestModel.create({
       ...createQuizTestDto,

@@ -11,6 +11,7 @@ import { setFlashcards } from '@/redux/slices/resourceSlice';
 
 import type {
   Deck,
+  DeckCreateDto,
   FlashcardElement,
   FlashcardElementWithAction
 } from '../types/deck';
@@ -201,3 +202,45 @@ export function useDeckManager() {
     isSubmitting: deckCreateMutatation.isPending
   };
 }
+
+interface NewDeckResponse {
+  _id: string;
+  createdAt: string;
+}
+
+export const useDeckCreateMutatation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (deck: DeckCreateDto): Promise<NewDeckResponse> => {
+      const response = await DeckApi.create(deck);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
+    }
+  });
+};
+
+export const useCardBulkCreate = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { deckId: string; cards: FlashcardElement[] }) => {
+      const { deckId, cards } = data;
+
+      const filteredCards = cards.map(({ front, back }) => ({ front, back }));
+      const response = await FlashcardApi.bulkCreate(deckId, filteredCards);
+
+      return response;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['decks', data.data.id]
+      });
+      return data.data.id;
+    },
+    onError: (error) => {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  });
+};
