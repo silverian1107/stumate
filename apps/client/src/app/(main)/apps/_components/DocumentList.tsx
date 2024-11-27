@@ -99,6 +99,7 @@ const DocumentList = ({
       </p>
     );
   }
+  console.log('documents', documents);
 
   return (
     <>
