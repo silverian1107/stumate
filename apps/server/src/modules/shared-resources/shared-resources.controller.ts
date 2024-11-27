@@ -45,6 +45,26 @@ export class SharedResourcesController {
     );
   }
 
+  @Post(':resourceId/clone')
+  @CheckPolicies(
+    (ability) =>
+      ability.can(Action.READ, Note) ||
+      ability.can(Action.READ, Deck) ||
+      ability.can(Action.READ, QuizTest),
+  )
+  @ResponseMessage('Clone resource with another user')
+  async cloneResource(
+    @Param('resourceType') resourceType: string,
+    @Param('resourceId') resourceId: string,
+    @User() user: IUser,
+  ) {
+    return await this.sharedResourcesService.handleCloneResource(
+      resourceType,
+      resourceId,
+      user,
+    );
+  }
+
   @Post(':resourceId/unshare')
   @CheckPolicies(
     (ability) =>
@@ -75,14 +95,14 @@ export class SharedResourcesController {
       ability.can(Action.READ, QuizTest),
   )
   @ResponseMessage('Get all shared resources')
-  async findAll(
+  async findAllSharedResources(
     @User() user: IUser,
     @Param('resourceType') resourceType: string,
     @Query('current') currentPage: string,
     @Query('pageSize') pageSize: string,
     @Query() qs: string,
   ) {
-    return await this.sharedResourcesService.findAll(
+    return await this.sharedResourcesService.findAllSharedResources(
       user,
       resourceType,
       +currentPage,
@@ -91,7 +111,31 @@ export class SharedResourcesController {
     );
   }
 
-  @Get(':resourceType/shared-resource')
+  @Get('cloned-resources')
+  @CheckPolicies(
+    (ability) =>
+      ability.can(Action.READ, Note) ||
+      ability.can(Action.READ, Deck) ||
+      ability.can(Action.READ, QuizTest),
+  )
+  @ResponseMessage('Get all cloned resources')
+  async findAllClonedResources(
+    @User() user: IUser,
+    @Param('resourceType') resourceType: string,
+    @Query('current') currentPage: string,
+    @Query('pageSize') pageSize: string,
+    @Query() qs: string,
+  ) {
+    return await this.sharedResourcesService.findAllClonedResources(
+      user,
+      resourceType,
+      +currentPage,
+      +pageSize,
+      qs,
+    );
+  }
+
+  @Get(':resourceId/shared-resource')
   @CheckPolicies(
     (ability) =>
       ability.can(Action.READ, Note) ||
@@ -99,12 +143,32 @@ export class SharedResourcesController {
       ability.can(Action.READ, QuizTest),
   )
   @ResponseMessage('Fetch shared resource by id')
-  async findOne(
+  async findSharedResource(
     @Param('resourceType') resourceType: string,
     @Param('resourceId') resourceId: string,
     @User() user: IUser,
   ) {
-    return await this.sharedResourcesService.findOne(
+    return await this.sharedResourcesService.findSharedResource(
+      resourceType,
+      resourceId,
+      user,
+    );
+  }
+
+  @Get(':resourceId/cloned-resource')
+  @CheckPolicies(
+    (ability) =>
+      ability.can(Action.READ, Note) ||
+      ability.can(Action.READ, Deck) ||
+      ability.can(Action.READ, QuizTest),
+  )
+  @ResponseMessage('Fetch cloned resource by id')
+  async findClonedResource(
+    @Param('resourceType') resourceType: string,
+    @Param('resourceId') resourceId: string,
+    @User() user: IUser,
+  ) {
+    return await this.sharedResourcesService.findClonedResource(
       resourceType,
       resourceId,
       user,

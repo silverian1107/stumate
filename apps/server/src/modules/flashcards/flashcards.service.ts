@@ -74,6 +74,17 @@ export class FlashcardsService {
       },
     }));
     const newFlashcards = await this.flashcardModel.insertMany(flashcards);
+
+    const flashcardReviews = newFlashcards.map((flashcard) => ({
+      flashcardId: flashcard._id,
+      userId: user._id,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    }));
+    await this.flashcardReviewModel.insertMany(flashcardReviews);
+
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newFlashcards;
   }
@@ -115,6 +126,14 @@ export class FlashcardsService {
         username: user.username,
       },
     });
+    await this.flashcardReviewModel.create({
+      flashcardId: newFlashcard._id,
+      userId: user._id,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    });
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newFlashcard;
   }
@@ -125,7 +144,7 @@ export class FlashcardsService {
       throw new NotFoundException('Not found deck');
     }
     const flashcards = await this.flashcardModel.find({
-      $or: [{ userId: user._id }, { sharedWithUsers: { $in: [user._id] } }],
+      userId: user._id,
       deckId,
     });
 
@@ -133,20 +152,12 @@ export class FlashcardsService {
 
     await Promise.all(
       flashcards.map(async (flashcard) => {
-        let flashcardReview = await this.flashcardReviewModel
+        const flashcardReview = await this.flashcardReviewModel
           .findOne({
             userId: user._id,
             flashcardId: flashcard._id,
           })
           .populate('flashcardId');
-        if (!flashcardReview) {
-          flashcardReview = await this.flashcardReviewModel.create({
-            flashcardId: flashcard._id,
-            userId: user._id,
-            state: State.New,
-          });
-          flashcardReview = await flashcardReview.populate('flashcardId');
-        }
         if (flashcardReview.state === State.New) {
           flashcardReview.state = State.Learning;
           await flashcardReview.save();
@@ -215,7 +226,7 @@ export class FlashcardsService {
       throw new NotFoundException('Not found deck');
     }
     const flashcards = await this.flashcardModel.find({
-      $or: [{ userId: user._id }, { sharedWithUsers: { $in: [user._id] } }],
+      userId: user._id,
       deckId,
     });
     const flashcardReviews = await this.flashcardReviewModel.find({
@@ -353,7 +364,10 @@ export class FlashcardsService {
     }
     const userId = flashcard.userId.toString();
     //soft delete for all flashcard review
-    await this.flashcardReviewModel.delete({ flashcardId: id }, user._id);
+    await this.flashcardReviewModel.updateOne({
+      flashcardId: id,
+      nextReview: null,
+    });
     //soft delete for all flashcard
     await this.flashcardModel.delete({ _id: id, deckId }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
@@ -371,6 +385,11 @@ export class FlashcardsService {
     if (flashcards.length !== flashcardIds.length) {
       throw new NotFoundException('Not found flashcard');
     }
+
+    await this.flashcardReviewModel.updateMany({
+      flashcardId: { $in: flashcardIds },
+      nextReview: null,
+    });
 
     await this.flashcardModel.delete(
       {

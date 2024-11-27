@@ -10,6 +10,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { UserStatisticSchema } from '../statistics/schema/user-statistic.schema';
 import { CollectionsModule } from '../collections/collections.module';
 import { CaslModule } from 'src/casl/casl.module';
+import { QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
 
 @Module({
   controllers: [UsersController],
@@ -18,6 +19,9 @@ import { CaslModule } from 'src/casl/casl.module';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: 'UserStatistic', schema: UserStatisticSchema },
+    ]),
+    MongooseModule.forFeature([
+      { name: 'QuizAttempt', schema: QuizAttemptSchema },
     ]),
     QuizTestsModule,
     DecksModule,

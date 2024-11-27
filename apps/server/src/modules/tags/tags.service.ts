@@ -44,25 +44,25 @@ export class TagsService {
     switch (resourceType) {
       case 'collection':
         return await this.collectionModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
       case 'note':
         return await this.noteModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
       case 'deck':
         return await this.deckModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
       case 'quiz':
         return await this.quizTestModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
@@ -79,25 +79,25 @@ export class TagsService {
     switch (resourceType) {
       case 'collection':
         return await this.collectionModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
       case 'note':
         return await this.noteModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
       case 'deck':
         return await this.deckModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
       case 'quiz':
         return await this.quizTestModel.findOneAndUpdate(
-          { id: resourceId },
+          { _id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
@@ -106,14 +106,14 @@ export class TagsService {
     }
   }
 
-  async findByName(name: string) {
-    return await this.tagModel.findOne({ name });
+  async findByName(name: string, user: IUser) {
+    return await this.tagModel.findOne({ name, userId: user._id });
   }
 
   async create(createTagDto: CreateTagDto, @User() user: IUser) {
     const { name } = createTagDto;
     //Check name already exists
-    if (await this.findByName(name)) {
+    if (await this.findByName(name, user)) {
       throw new BadRequestException(`Name '${name}' already exists`);
     }
     //Create a new tag
