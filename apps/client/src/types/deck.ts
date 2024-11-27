@@ -2,6 +2,10 @@ export type ResourceType = 'decks' | 'quizzes';
 
 export type EntityAction = 'create' | 'update' | 'delete';
 
+export type DeckCreateDto = {
+  name: string;
+  description?: string;
+};
 export interface BaseResource {
   _id?: string;
   name: string;

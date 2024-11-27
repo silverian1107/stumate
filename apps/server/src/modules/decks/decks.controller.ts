@@ -31,6 +31,8 @@ export class DecksController {
   @ResponseMessage('Create a new deck')
   async create(@Body() createDeckDto: CreateDeckDto, @User() user: IUser) {
     const newDeck = await this.decksService.create(createDeckDto, user);
+    console.log(newDeck);
+
     return {
       _id: newDeck?._id,
       createdAt: newDeck?.createdAt,
