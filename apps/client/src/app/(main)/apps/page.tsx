@@ -1,22 +1,24 @@
 'use client';
 
-import { useAccount } from '@/hooks/use-auth';
 import Cookies from 'js-cookie';
 import { LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import Total from './resources/(actions)/_components/Total';
-import Performance from './resources/(actions)/_components/Performance';
-import CalendarDashboard from './resources/(actions)/_components/CalendarDashboard';
-import ShortSession from './resources/(actions)/_components/ShortSession';
+
+import { useAccount } from '@/hooks/use-auth';
+
 import CardDue from './resources/_components/CardDue';
-import NoteRevision from './resources/_components/NoteRevision';
-import LowAccQuiz from './resources/_components/LowAccQuiz';
-import Achieve from './resources/(actions)/_components/Achieve';
-import Maxim from './resources/(actions)/_components/Maxim';
 // import { io } from 'socket.io-client';
 import Header from './resources/_components/Header';
+import LowAccQuiz from './resources/_components/LowAccQuiz';
+import NoteRevision from './resources/_components/NoteRevision';
+import Achieve from './resources/(actions)/_components/Achieve';
+import CalendarDashboard from './resources/(actions)/_components/CalendarDashboard';
+import Maxim from './resources/(actions)/_components/Maxim';
+import Performance from './resources/(actions)/_components/Performance';
+import ShortSession from './resources/(actions)/_components/ShortSession';
+import Total from './resources/(actions)/_components/Total';
 // import { useStatisticsQuery } from '@/service/rootApi';
 
 const Main = () => {
@@ -74,15 +76,15 @@ const Main = () => {
       router.push('/login');
       toast('Unauthorized', {
         description: 'Please login to continue',
-        position: 'top-right',
+        position: 'top-right'
       });
     }
   }, [error, data, router]);
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-primary-100">
-        <LoaderCircle className="w-16 h-16 animate-spin" />
+      <div className="flex size-full items-center justify-center bg-primary-100">
+        <LoaderCircle className="size-16 animate-spin" />
       </div>
     );
   }
@@ -108,6 +110,8 @@ const Main = () => {
           <CalendarDashboard />
         </div>
       </div>
+
+      {/* <div className="grid lg:grid-cols-4 gap-4 w-full h-[calc(100%-72px)] px-4 md:grid-cols-2 grid-cols-1 [&>*]:h-[172px] overflow-auto"></div> */}
     </div>
   );
 };

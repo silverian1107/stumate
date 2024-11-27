@@ -1,9 +1,9 @@
-import { SvgIconProps } from '@mui/material';
+import type { SvgIconProps } from '@mui/material';
 
 const EachPerfrom = ({
   icon: Icon,
   label,
-  value,
+  value
 }: {
   icon: React.ComponentType<SvgIconProps>;
   label: string;

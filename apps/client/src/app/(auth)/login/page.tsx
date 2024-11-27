@@ -1,39 +1,41 @@
-import Link from 'next/link';
-import LoginForm from './LoginForm';
 import { Apple } from '@mui/icons-material';
+import Link from 'next/link';
+
 import GoogleIcon from '@/access/GoogleIcon';
+
+import LoginForm from './LoginForm';
 
 export default function LoginPage() {
   return (
-    <div className="flex items-center w-full h-full flex-col gap-4 justify-evenly py-40">
-      <p className="font-extrabold text-[3rem] text-primary-main -mb-10">
+    <div className="flex size-full flex-col items-center justify-evenly gap-4 py-40">
+      <p className="-mb-10 text-[3rem] font-extrabold text-primary-main">
         Log in
       </p>
-      <div className="bg-white px-8 py-8 rounded w-[380px] lg:w-[480px] border border-primary-main/40">
+      <div className="w-[380px] rounded border border-primary-main/40 bg-white p-8 lg:w-[480px]">
         <LoginForm />
         <div className="flex flex-col items-center text-sm">
           <p className="mt-4 font-bold ">
             If you don&apos;t have an account?{' '}
-            <Link className="text-primary-main font-semibold" href="/register">
+            <Link className="font-semibold text-primary-main" href="/register">
               Sign up here
             </Link>
           </p>
         </div>
         <div className="mt-5">
-          <div className="flex items-center justify-center h-[1px] bg-black w-full relative">
-            <span className="text-center bg-white px-2 text-sm">Or</span>
+          <div className="relative flex h-px w-full items-center justify-center bg-black">
+            <span className="bg-white px-2 text-center text-sm">Or</span>
           </div>
-          <div className="flex gap-2 text-[12px] leading-5 mt-5 justify-between w-full">
+          <div className="mt-5 flex w-full justify-between gap-2 text-[12px] leading-5">
             <Link
               href=""
-              className="flex gap-0.5 px-1 py-1 items-center justify-center grow border border-black/20 rounded"
+              className="flex grow items-center justify-center gap-0.5 rounded border border-black/20 p-1"
             >
               <Apple className="text-gray-500" />
               <span className="text-black/60">Sign in with Apple</span>
             </Link>
             <Link
               href=""
-              className="flex gap-0.5 px-1 py-1 items-center justify-center grow border border-black/20 rounded"
+              className="flex grow items-center justify-center gap-0.5 rounded border border-black/20 p-1"
             >
               <GoogleIcon />
               <span className="text-black/60">Sign in with Google</span>

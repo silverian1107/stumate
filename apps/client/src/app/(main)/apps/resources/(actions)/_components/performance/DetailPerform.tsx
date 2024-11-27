@@ -1,11 +1,12 @@
-import React from 'react';
-import EachPerfrom from './EachPerform';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import FlagCircleIcon from '@mui/icons-material/FlagCircle';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FlagCircleIcon from '@mui/icons-material/FlagCircle';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import React from 'react';
+
+import EachPerfrom from './EachPerform';
 
 const DetailPerform = () => {
   return (

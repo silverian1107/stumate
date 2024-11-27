@@ -1,6 +1,6 @@
 {
   "name": "@stumate/client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
@@ -15,18 +15,21 @@
     "@editorjs/editorjs": "^2.30.7",
     "@editorjs/embed": "^2.7.6",
     "@editorjs/header": "^2.8.8",
+    "@editorjs/image": "^2.10.0",
     "@editorjs/inline-code": "^1.5.1",
     "@editorjs/list": "^2.0.0",
     "@editorjs/marker": "^1.4.0",
     "@editorjs/quote": "^2.7.2",
+    "@editorjs/simple-image": "^1.6.0",
+    "@editorjs/table": "^2.4.2",
     "@emotion/cache": "11.13.1",
     "@emotion/react": "11.13.3",
     "@emotion/styled": "11.13.0",
     "@headlessui/react": "2.2.0",
     "@heroicons/react": "2.1.5",
     "@hookform/resolvers": "3.9.1",
-    "@mui/icons-material": "^6.1.6",
-    "@mui/material": "^6.1.6",
+    "@mui/icons-material": "6.1.6",
+    "@mui/material": "6.1.6",
     "@mui/material-nextjs": "6.1.6",
     "@mui/x-date-pickers": "^7.22.3",
     "@radix-ui/react-avatar": "^1.1.1",
@@ -51,7 +54,6 @@
     "json-server": "1.0.0-beta.3",
     "jsonwebtoken": "9.0.2",
     "jwt-decode": "4.0.0",
-    "lint": "^0.8.19",
     "lodash": "^4.17.21",
     "lucide-react": "0.454.0",
     "mui-one-time-password-input": "2.0.3",
@@ -86,10 +88,10 @@
     "@types/three": "0.169.0",
     "eslint": "9.14.0",
     "eslint-config-next": "15.0.2",
-    "husky": "^9.1.7",
     "postcss": "8.4.47",
     "react-calendar": "^5.1.0",
     "tailwindcss": "3.4.14",
-    "typescript": "5.6.3"
+    "tsx": "^4.7.0",
+    "typescript": "^5.6.3"
   }
 }

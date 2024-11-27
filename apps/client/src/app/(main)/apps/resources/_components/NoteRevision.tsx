@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import ArticleIcon from '@mui/icons-material/Article';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArticleIcon from '@mui/icons-material/Article';
+import Link from 'next/link';
 
 const NoteRevision = () => {
   return (

@@ -1,13 +1,14 @@
-// components/ResourceElements.tsx
 'use client';
+
+import { useSelector } from 'react-redux';
 
 import {
   addFlashcard,
   clearFlashcards,
-  removeAllCards,
+  restoreAllCards
 } from '@/redux/slices/resourceSlice';
-import { RootState } from '@/redux/store';
-import { useSelector } from 'react-redux';
+import type { RootState } from '@/redux/store';
+
 import FlashcardField from './flashcard-field';
 import ResourceActionButton from './resource-action-button';
 
@@ -20,16 +21,22 @@ export function ResourceElements() {
   }
 
   return (
-    <div className="space-y-4 w-full flex flex-col flex-1 overflow-auto">
+    <div className="flex w-full flex-1 flex-col space-y-4 overflow-auto">
       <h3>Total Cards ({flashcards.length})</h3>
-      <div className="flex flex-col overflow-auto gap-3">
+      <div className="flex flex-col gap-3 overflow-auto">
         {flashcards.map((element, index) => (
-          <FlashcardField element={element} index={index} key={element._id} />
+          <FlashcardField
+            element={element}
+            index={index}
+            key={element._id}
+            frontError={element.frontError}
+            backError={element.backError}
+          />
         ))}
       </div>
       <ResourceActionButton
         resouces={flashcards}
-        removeAction={removeAllCards}
+        restoreAction={restoreAllCards}
         addNewAction={addFlashcard}
         clearAction={clearFlashcards}
       />

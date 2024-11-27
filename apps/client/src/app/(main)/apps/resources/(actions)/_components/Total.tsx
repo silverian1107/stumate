@@ -1,10 +1,11 @@
-import { Avatar } from '@mui/material';
-import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import ArticleIcon from '@mui/icons-material/Article';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 import FlagCircleIcon from '@mui/icons-material/FlagCircle';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
+import { Avatar } from '@mui/material';
+
 import StatisticItem from './total/StatisticItem';
 
 const Total = ({ username }: { username: string }) => {

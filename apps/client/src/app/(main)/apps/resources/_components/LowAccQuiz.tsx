@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import Link from 'next/link';
 
 const LowAccQuiz = () => {
   return (

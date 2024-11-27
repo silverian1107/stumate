@@ -1,0 +1,95 @@
+'use client';
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
+
+import { CollectionApi } from '@/endpoints/collection-api';
+import { NoteApi } from '@/endpoints/note-api';
+import type {
+  Collection,
+  CreateCollectionProps,
+  DocumentListProps,
+  Note
+} from '@/types/collection';
+
+type ChildDocSortField = {
+  type: 'Collection' | 'Note';
+  position: number;
+};
+
+export const useCollection = (collectionById: string) => {
+  return useQuery({
+    queryKey: ['getNoteById', collectionById],
+    queryFn: async () => {
+      return CollectionApi.findById(collectionById)
+        .then((res) => res.data.data)
+        .catch();
+    }
+  });
+};
+
+export const useCreateCollection = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (collection: CreateCollectionProps) => {
+      return CollectionApi.create(collection);
+    },
+    onSuccess: (data) => {
+      toast('Collection Created', {
+        description: 'success'
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments', data.data.parentId]
+      });
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  });
+};
+
+export const useDocuments = ({
+  parentDocumentId,
+  level = 0,
+  type = 'Collection'
+}: DocumentListProps) => {
+  return useQuery<Collection[] | Note[], AxiosError>({
+    queryKey: ['getDocuments', parentDocumentId, type],
+    queryFn: async () => {
+      if (!parentDocumentId && type === 'Collection') {
+        const response = await CollectionApi.findByOwner({
+          currentPage: 1,
+          pageSize: 10,
+          qs: ''
+        });
+
+        return response.data.result;
+      }
+
+      if (parentDocumentId && type === 'Collection') {
+        const response = await CollectionApi.findById(parentDocumentId);
+        const childrenDocs: ChildDocSortField[] =
+          response.data.childrenDocs || [];
+
+        childrenDocs.sort((a, b) => {
+          if (a.type === 'Collection' && b.type !== 'Collection') return -1;
+          if (a.type !== 'Collection' && b.type === 'Collection') return 1;
+          return a.position - b.position;
+        });
+
+        return childrenDocs;
+      }
+      if (parentDocumentId && type === 'Note') {
+        const response = await NoteApi.findById(parentDocumentId);
+        return response.data.childrenDocs || [];
+      }
+      return [];
+    },
+    enabled: !!parentDocumentId || level === 0
+  });
+};

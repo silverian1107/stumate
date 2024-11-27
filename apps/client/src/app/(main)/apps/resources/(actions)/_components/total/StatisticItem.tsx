@@ -1,9 +1,9 @@
-import { SvgIconProps } from '@mui/material';
+import type { SvgIconProps } from '@mui/material';
 
 const StatisticItem = ({
   icon: Icon,
   label,
-  value,
+  value
 }: {
   icon: React.ComponentType<SvgIconProps>;
   label: string;

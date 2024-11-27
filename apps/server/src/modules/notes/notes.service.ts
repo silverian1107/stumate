@@ -167,6 +167,7 @@ export class NotesService {
     const filter = {
       ownerId,
     };
+    console.log(ownerId);
 
     try {
       // Count total items matching the filter

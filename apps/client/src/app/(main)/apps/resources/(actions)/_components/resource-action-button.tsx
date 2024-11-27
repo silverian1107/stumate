@@ -1,23 +1,24 @@
-import { Button } from '@/components/ui/button';
-import { FlashcardElement, QuizElement } from '@/types/deck';
-import { UnknownAction } from '@reduxjs/toolkit';
+import type { UnknownAction } from '@reduxjs/toolkit';
 import { PlusIcon, Trash2Icon, UndoIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 
+import { Button } from '@/components/ui/button';
+import type { FlashcardElement, QuizElement } from '@/types/deck';
+
 interface ResourceActionButtonProps {
   resouces: FlashcardElement[] | QuizElement[];
   addNewAction: () => UnknownAction;
   clearAction: () => UnknownAction;
-  removeAction: () => UnknownAction;
+  restoreAction: () => UnknownAction;
 }
 
 const ResourceActionButton = ({
   resouces,
   addNewAction,
   clearAction,
-  removeAction,
+  restoreAction
 }: ResourceActionButtonProps) => {
   const [isRemoveAll, setIsRemoveAll] = useState(false);
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const ResourceActionButton = ({
   const handlePermanentDelete = () => {
     // dispatch(permanentlyDeleteCards());
     toast('Cards Permanently Deleted', {
-      description: "Haven't implemented yet.",
+      description: "Haven't implemented yet."
     });
     // setIsRemoveAll(false);
   };
@@ -34,7 +35,7 @@ const ResourceActionButton = ({
     <div className="flex justify-end gap-2">
       {isRemoveAll && (
         <Button
-          variant={'destructive'}
+          variant="destructive"
           onClick={handlePermanentDelete}
           className="inline-flex"
         >
@@ -47,7 +48,7 @@ const ResourceActionButton = ({
         <Button
           variant="secondary"
           onClick={() => {
-            dispatch(removeAction());
+            dispatch(restoreAction());
             setIsRemoveAll(false);
           }}
           className="ml-auto rounded"
@@ -72,7 +73,7 @@ const ResourceActionButton = ({
 
       <Button
         onClick={() => dispatch(addNewAction())}
-        className="text-white rounded"
+        className="rounded text-white"
       >
         <PlusIcon />
         Add Element

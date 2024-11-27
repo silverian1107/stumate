@@ -2,7 +2,7 @@
 import type { Config } from 'tailwindcss';
 
 const {
-  default: flattenColorPalette,
+  default: flattenColorPalette
   // eslint-disable-next-line @typescript-eslint/no-var-requires
 } = require('tailwindcss/lib/util/flattenColorPalette');
 
@@ -11,7 +11,7 @@ const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
     extend: {
@@ -32,7 +32,7 @@ const config: Config = {
           '950': 'hsl(247, 45.1%, 20%)',
           main: '#716DF0',
           DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          foreground: 'hsl(var(--primary-foreground))'
         },
         accent: {
           '50': 'hsl(169, 100%, 96.7%)',
@@ -48,27 +48,27 @@ const config: Config = {
           '950': 'hsl(183, 100%, 10.4%)',
           main: '#00C2B3',
           DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          foreground: 'hsl(var(--accent-foreground))'
         },
         card: {
           DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          foreground: 'hsl(var(--card-foreground))'
         },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          foreground: 'hsl(var(--popover-foreground))'
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          foreground: 'hsl(var(--secondary-foreground))'
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          foreground: 'hsl(var(--muted-foreground))'
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          foreground: 'hsl(var(--destructive-foreground))'
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -78,39 +78,39 @@ const config: Config = {
           '2': 'hsl(var(--chart-2))',
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
+          '5': 'hsl(var(--chart-5))'
+        }
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        sm: 'calc(var(--radius) - 4px)'
       },
       keyframes: {
         shine: {
           from: {
-            backgroundPosition: '200% 0',
+            backgroundPosition: '200% 0'
           },
           to: {
-            backgroundPosition: '-200% 0',
-          },
+            backgroundPosition: '-200% 0'
+          }
         },
         aurora: {
           from: {
-            backgroundPosition: '50% 50%, 50% 50%',
+            backgroundPosition: '50% 50%, 50% 50%'
           },
           to: {
-            backgroundPosition: '350% 50%, 350% 50%',
-          },
-        },
+            backgroundPosition: '350% 50%, 350% 50%'
+          }
+        }
       },
       animation: {
         shine: 'shine 8s ease-in-out infinite',
-        aurora: 'aurora 60s linear infinite',
-      },
-    },
+        aurora: 'aurora 60s linear infinite'
+      }
+    }
   },
-  plugins: [require('tailwindcss-animate'), addVariablesForColors],
+  plugins: [require('tailwindcss-animate'), addVariablesForColors]
 };
 export default config;
 
@@ -118,10 +118,10 @@ export default config;
 function addVariablesForColors({ addBase, theme }: any) {
   const allColors = flattenColorPalette(theme('colors'));
   const newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
 
   addBase({
-    ':root': newVars,
+    ':root': newVars
   });
 }

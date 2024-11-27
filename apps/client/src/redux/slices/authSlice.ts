@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 // Define the types for the initial state
 interface AuthState {
@@ -11,7 +12,7 @@ interface AuthState {
 const initialState: AuthState = {
   accessToken: null,
   refreshToken: null,
-  userInfo: {},
+  userInfo: {}
 };
 
 export const authSlice = createSlice({
@@ -21,7 +22,7 @@ export const authSlice = createSlice({
     // Define types for action payloads
     login: (
       state,
-      action: PayloadAction<{ accessToken: string; refreshToken: string }>,
+      action: PayloadAction<{ accessToken: string; refreshToken: string }>
     ) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
@@ -29,8 +30,8 @@ export const authSlice = createSlice({
     logout: () => initialState,
     saveUserInfo: (state, action: PayloadAction<Record<string, any>>) => {
       state.userInfo = action.payload;
-    },
-  },
+    }
+  }
 });
 
 // Export actions and reducer

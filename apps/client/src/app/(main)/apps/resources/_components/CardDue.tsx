@@ -1,5 +1,5 @@
-import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import Link from 'next/link';
 
 const CardDue = () => {

@@ -1,7 +1,6 @@
-// types/resource.ts
 export type ResourceType = 'decks' | 'quizzes';
 
-export type ENTITY_ACTION = 'create' | 'update' | 'delete';
+export type EntityAction = 'create' | 'update' | 'delete';
 
 export interface BaseResource {
   _id?: string;
@@ -13,22 +12,28 @@ export interface FlashcardElement {
   _id?: string;
   front: string;
   back: string;
+  deckId?: string;
 }
 
 export interface QuizElement {
   id?: string;
   question: string;
-  answers: {
-    id?: string;
-    text: string;
-    correct: boolean;
+  questionType: string;
+  answerOptions: {
+    option: string;
+    isCorrect: boolean;
   }[];
+  answerText: string;
+  point: number;
+  quizTestId: string;
 }
 
 export interface FlashcardElementWithAction extends FlashcardElement {
   action?: 'create' | 'update' | 'delete';
   originalAction?: 'create' | 'update';
   isDeleted?: boolean;
+  frontError: boolean;
+  backError: boolean;
 }
 
 export interface Deck extends BaseResource {
@@ -36,6 +41,8 @@ export interface Deck extends BaseResource {
 }
 
 export interface Quiz extends BaseResource {
+  numberOfQuestion: number;
+  duration: number;
   elements: QuizElement[];
 }
 

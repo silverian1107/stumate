@@ -1,37 +1,17 @@
-import { CollectionApi } from '@/endpoints/collection-api';
-import { NoteApi } from '@/endpoints/note-api';
-import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 import { FileText, FolderOpen } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+import { useCreateCollection, useDocuments } from '@/hooks/use-collection';
+import { useCreateNote } from '@/hooks/use-note';
+import type { Collection, DocumentListProps, Note } from '@/types/collection';
+
 import SidebarItem from './SidebarItem';
-
-// Define types
-interface Collection {
-  _id: string;
-  name: string;
-  type: 'Collection' | 'Note';
-  childrenDocs?: Collection[];
-}
-
-interface Note {
-  _id: string;
-  title: string;
-  type: 'Note';
-  childrenDocs?: Note[];
-}
-
-interface DocumentListProps {
-  parentDocumentId?: string;
-  level?: number;
-  type?: 'Collection' | 'Note';
-}
 
 const DocumentList = ({
   parentDocumentId,
   level = 0,
-  type = 'Collection',
+  type = 'Collection'
 }: DocumentListProps) => {
   const router = useRouter();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -40,48 +20,64 @@ const DocumentList = ({
   const {
     data: documents,
     isLoading: documentsLoading,
-    error: documentsError,
-  } = useQuery<Collection[] | Note[], AxiosError>({
-    queryKey: ['getDocuments', parentDocumentId, type],
-    queryFn: async () => {
-      if (!parentDocumentId && type === 'Collection') {
-        const response = await CollectionApi.findByOwner({
-          currentPage: 1,
-          pageSize: 10,
-          qs: '',
-        });
-
-        return response.data.data.result;
-      } else if (parentDocumentId && type === 'Collection') {
-        const response = await CollectionApi.findById(parentDocumentId);
-        return response.data.data.childrenDocs || [];
-      } else if (parentDocumentId && type === 'Note') {
-        const response = await NoteApi.findById(parentDocumentId);
-        return response.data.data.childrenDocs || [];
-      }
-      return [];
-    },
-    enabled: !!parentDocumentId || level === 0,
-  });
+    error: documentsError
+  } = useDocuments({ parentDocumentId, type, level });
+  const createCollection = useCreateCollection();
+  const createNote = useCreateNote();
 
   // Handle expand/collapse logic
   const onExpand = (documentId: string) => {
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
-      [documentId]: !prevExpanded[documentId],
+      [documentId]: !prevExpanded[documentId]
     }));
   };
 
-  // Handle navigation on click
-  const onRedirect = (documentId: string, type: 'Collection' | 'Note') => {
-    if (type === 'Note') {
-      router.push(`/apps/resources/note/create/${documentId}`);
-    } else {
-      router.push(`/apps/resources/${documentId}`);
+  const onCreateCollection = (document: Collection | Note) => {
+    createCollection.mutate({
+      name: 'New Collection',
+      parentId: document._id
+    });
+
+    if (!expanded[document._id]) {
+      setExpanded((prevExpanded) => ({
+        ...prevExpanded,
+        [document._id]: true
+      }));
     }
   };
 
-  // Loading state
+  const onCreateNote = async (document: Collection | Note) => {
+    createNote.mutate(
+      {
+        name: 'New Note',
+        parentId: document._id
+      },
+      {
+        onSuccess: (data) => {
+          router.push(`/apps/resources/notes/${data.data._id}`);
+        }
+      }
+    );
+    if (!expanded[document._id]) {
+      setExpanded((prevExpanded) => ({
+        ...prevExpanded,
+        [document._id]: true
+      }));
+    }
+  };
+
+  const onClick = (document: Collection | Note) => {
+    if (document.type === 'Note') {
+      redirect(`/apps/resources/notes/${document._id}`);
+    } else if (document.type === 'Collection') {
+      setExpanded((prevExpanded) => ({
+        ...prevExpanded,
+        [document._id]: !prevExpanded[document._id]
+      }));
+    }
+  };
+
   if (documentsLoading) {
     return (
       <p
@@ -93,7 +89,6 @@ const DocumentList = ({
     );
   }
 
-  // Error or empty state
   if (!documents || documents.length === 0 || documentsError) {
     return (
       <p
@@ -114,16 +109,13 @@ const DocumentList = ({
             // @ts-expect-error Kiểm tra đang là Collection hay Note để lấy tên
             label={document.name || document.title}
             icon={document.type === 'Collection' ? FolderOpen : FileText}
-            onClick={() => onRedirect(document._id, document.type)}
             level={level}
             type={document.type}
             onExpand={() => onExpand(document._id)}
             expanded={expanded[document._id]}
-            href={
-              document.type === 'Note'
-                ? `/apps/resources/note/create/${document._id}`
-                : ''
-            }
+            onClick={() => onClick(document)}
+            onCreateNote={() => onCreateNote(document)}
+            onCreateCollection={() => onCreateCollection(document)}
           />
           {expanded[document._id] && (
             <DocumentList

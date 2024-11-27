@@ -52,7 +52,7 @@ export class StatisticsService {
   async findOne(@User() user: IUser) {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
-    return await this.userStatisticModel.findOne({
+    await this.userStatisticModel.findOne({
       _id: user._id,
       today: startOfDay,
     });

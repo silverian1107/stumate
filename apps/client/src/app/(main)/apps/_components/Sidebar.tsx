@@ -1,7 +1,5 @@
 'use client';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAccount } from '@/hooks/use-auth';
-import { cn } from '@/lib/utils';
+
 import {
   Archive,
   ArrowRightCircle,
@@ -13,59 +11,63 @@ import {
   Search,
   Settings,
   Sparkle,
-  Tags,
+  Tags
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAccount } from '@/hooks/use-auth';
+import { useCreateCollection } from '@/hooks/use-collection';
+import { cn } from '@/lib/utils';
+
 import DocumentList from './DocumentList';
 import SidebarItem from './SidebarItem';
-import { toast } from 'sonner';
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { data, error, isLoading } = useAccount();
-
+  const createCollection = useCreateCollection();
   if (isLoading || error || !data) {
     return null;
   }
 
   const handleCreate = () => {
-    toast('Coming Soon', {
-      description: 'This feature will be available soon.',
-    });
+    createCollection.mutate({ name: 'New Collection' });
   };
 
   return (
     <>
       {isCollapsed && (
         <Menu
-          className="absolute top-1 left-2 w-6 h-6 text-primary-300 bg-primary-100 hover:text-primary-800 cursor-pointer p-1 rounded-full hover:bg-primary-200 z-10"
+          className="absolute left-2 top-1 z-10 size-6 cursor-pointer rounded-full bg-primary-100 p-1 text-primary-300 hover:bg-primary-200 hover:text-primary-800"
           onClick={() => setIsCollapsed(!isCollapsed)}
         />
       )}
       <div
         className={cn(
           'bg-primary-100 transition-all duration-700 h-full flex flex-col justify-start overflow-hidden',
-          isCollapsed ? 'w-0' : 'w-[240px]',
+          isCollapsed ? 'w-0' : 'w-[240px]'
         )}
       >
-        <div className="w-full h-[64px] flex items-center justify-between px-5 hover:bg-primary-800 group transition-all duration-300 text-base">
+        <div className="group flex h-[64px] w-full items-center justify-between px-5 text-base transition-all duration-300 hover:bg-primary-800">
           <div className="flex items-center gap-2">
-            <Avatar className="border-black border-2">
+            <Avatar className="border-2 border-black">
               <AvatarImage src="/avatar.jpg" />
               <AvatarFallback>Jo</AvatarFallback>
             </Avatar>
-            <span className="font-semibold group-hover:text-white transition-all duration-300">
+            <span className="font-semibold transition-all duration-300 group-hover:text-white">
               {data.data.user.username}
             </span>
           </div>
-          <span
+          <button
             className="cursor-pointer"
+            type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
-            <ArrowRightCircle className="w-5 h-5 group-hover:text-white transition-all duration-300" />
-          </span>
+            <ArrowRightCircle className="size-5 transition-all duration-300 group-hover:text-white" />
+          </button>
         </div>
         <div className="flex flex-col">
           <SidebarItem isButton label="Search" icon={Search} />
@@ -88,7 +90,7 @@ const Sidebar = () => {
         </div>
 
         {/* Separator */}
-        <div className="w-4/5 mx-auto my-2 h-[1px] bg-primary-300" />
+        <div className="mx-auto my-2 h-px w-4/5 bg-primary-300" />
         {/* Separator */}
 
         <SidebarItem
@@ -99,10 +101,10 @@ const Sidebar = () => {
           onClick={handleCreate}
         />
         <div className="w-full flex-1 flex flex-col overflow-auto">
-          <div className="w-full overflow-auto flex-1">
+          <div className="w-full overflow-auto flex-1 max-h-[320px]">
             <DocumentList />
           </div>
-          <div>
+          <div className="mt-auto">
             <SidebarItem isButton label="Archive" icon={Archive} />
             <SidebarItem isButton label="Tags" icon={Tags} />
             <SidebarItem isButton label="Guide" icon={CircleHelp} />

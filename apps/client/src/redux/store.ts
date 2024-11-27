@@ -1,3 +1,4 @@
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -6,22 +7,24 @@ import {
   persistStore,
   PURGE,
   REGISTER,
-  REHYDRATE,
+  REHYDRATE
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import authReducer from './slices/authSlice';
-import snackbarReducer from './slices/snackbarSlice';
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { rootApi } from '../service/rootApi'; // Assuming rootApi is defined in your services folder
+
+import { rootApi } from '../service/rootApi';
+// eslint-disable-next-line import/no-cycle
 import { logOutMiddleware } from './middlewares';
+import authReducer from './slices/authSlice';
+import QuizReducer from './slices/quizSlice';
 import DecksReducer from './slices/resourceSlice';
+import snackbarReducer from './slices/snackbarSlice';
 
 // Type for persisted configuration
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whiteList: ['auth'],
+  whiteList: ['auth']
 };
 
 // Persist the authReducer with the given configuration
@@ -31,8 +34,9 @@ const persistedReducer = persistReducer(
     auth: authReducer,
     snackbar: snackbarReducer,
     decks: DecksReducer,
-    [rootApi.reducerPath]: rootApi.reducer,
-  }),
+    quiz: QuizReducer,
+    [rootApi.reducerPath]: rootApi.reducer
+  })
 );
 
 // Configure the store with persistedReducer and middleware
@@ -41,14 +45,12 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }).concat(logOutMiddleware, rootApi.middleware),
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    }).concat(logOutMiddleware, rootApi.middleware)
 });
 
 export const persistor = persistStore(store);
-// Type for RootState based on the configured store
 export type AppStore = typeof store;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = AppStore['dispatch'];
-// Export persistor for managing persisted state

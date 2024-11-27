@@ -34,22 +34,16 @@ export class QuizTestsService {
     private readonly statisticsService: StatisticsService,
   ) {}
 
-  async findQuizTestByTitle(title: string) {
-    return await this.quizTestModel.findOne({ title });
+  async findQuizTestByTitle(title: string, userId: string) {
+    return await this.quizTestModel.findOne({ title, userId });
   }
-
-  isExistTitle = async (title: string) => {
-    const quizTest = await this.findQuizTestByTitle(title);
-    if (quizTest) return true;
-    return false;
-  };
 
   //websocket
   async create(createQuizTestDto: CreateQuizTestDto, @User() user: IUser) {
     //Check title already exists
-    if (await this.isExistTitle(createQuizTestDto.title)) {
+    if (await this.findQuizTestByTitle(createQuizTestDto.name, user._id)) {
       throw new BadRequestException(
-        `Title '${createQuizTestDto.title}' already exists`,
+        `Title '${createQuizTestDto.name}' already exists`,
       );
     }
     //Create a new quiz test

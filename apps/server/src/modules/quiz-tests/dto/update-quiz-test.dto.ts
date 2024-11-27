@@ -4,7 +4,7 @@ import { IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateQuizTestDto {
   @IsOptional()
   @IsString()
-  title: string;
+  name: string;
 
   @IsOptional()
   @IsString()

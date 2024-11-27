@@ -1,7 +1,9 @@
-import React from 'react';
-import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import './style/heatmap.css';
+
+import React from 'react';
+import CalendarHeatmap from 'react-calendar-heatmap';
+
 import Introduction from './Introduction';
 
 const HeatMap = () => {
@@ -9,7 +11,7 @@ const HeatMap = () => {
   const values = [
     { date: '2024-11-01', count: 1 },
     { date: '2024-11-02', count: 2 },
-    { date: '2024-11-03', count: 3 },
+    { date: '2024-11-03', count: 3 }
     // Add more data points here
   ];
 

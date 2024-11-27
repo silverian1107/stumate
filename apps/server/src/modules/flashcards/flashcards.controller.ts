@@ -47,6 +47,7 @@ export class FlashcardsController {
       createFlashcardDto,
       user,
     );
+
     return {
       _id: newFlashcard?._id,
       createdAt: newFlashcard?.createdAt,
@@ -178,6 +179,16 @@ export class FlashcardsController {
       user,
     );
     return updateFlashcard;
+  }
+
+  @Delete('all')
+  @ResponseMessage('Delete a flashcard')
+  removeAll(
+    @Param('deckId') deckId: string,
+    @Param('id') id: string,
+    @User() user: IUser,
+  ): Promise<any> {
+    return this.flashcardsService.removeAll(deckId, id, user);
   }
 
   @Delete(':id')

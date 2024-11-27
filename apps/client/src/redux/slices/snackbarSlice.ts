@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 const initialState = {
   open: false,
   message: null,
-  type: 'success',
+  type: 'success'
 };
 export const snackbarSlice = createSlice({
   name: 'snackbar',
@@ -18,8 +19,8 @@ export const snackbarSlice = createSlice({
       // state = initialState;
       // de ghi de lai chu phia tren la gan dia chi moi
       return initialState;
-    },
-  },
+    }
+  }
 });
 
 export const { openSnackbar, closeSnackbar } = snackbarSlice.actions;

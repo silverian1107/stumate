@@ -1,14 +1,19 @@
 'use client';
 
+import type { OutputData } from '@editorjs/editorjs';
+import type EditorJS from '@editorjs/editorjs';
+import { throttle } from 'lodash';
+import Image from 'next/image';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
+
 import {
   useDeleteFileMutation,
   useGetNoteByIdQuery,
   useUpdateNoteMutation,
-  useUploadFilesMutation,
+  useUploadFilesMutation
 } from '@/service/rootApi';
-import EditorJS, { OutputData } from '@editorjs/editorjs';
-import { useEffect, useRef, useState } from 'react';
-import { throttle } from 'lodash';
+
 import Editor from './Editor';
 
 const NoteEditor = ({ noteId }: { noteId: string }) => {
@@ -16,9 +21,7 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   const [deleteFile] = useDeleteFileMutation();
   const [updateNote] = useUpdateNoteMutation();
 
-  const response = useGetNoteByIdQuery(noteId);
-  // console.log("response: ", response);
-  // console.log('Data: ', data);
+  const { data, isLoading } = useGetNoteByIdQuery(noteId);
 
   const editorRef = useRef<EditorJS | null>(null);
 
@@ -32,49 +35,52 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
   }, [uploadedFiles]);
 
   useEffect(() => {
-    if (response?.data?.data?.body) {
+    if (data?.data?.body) {
+      // Set the editor's initial value to the data.body
       setEditorValue({
-        time: response.data.data.body.time,
-        blocks: response.data.data.body.blocks,
+        time: data.data.body.time,
+        blocks: data.data.body.blocks
       });
     } else {
+      // Initialize with an empty structure if no data is available
       setEditorValue({
         time: Date.now(),
-        blocks: [],
+        blocks: []
       });
     }
-  }, [response.data?.data]);
-  // console.log('response: ', response.data?.data);
+  }, [data]);
+
   const throttledUpdateNote = throttle(async (editorContent: OutputData) => {
     try {
       const fileNames = uploadedFilesRef.current.map((file) => file.name);
       await updateNote({
-        name: response?.data?.data?.name || 'New Note',
+        name: data?.data.name || 'New Note',
         noteId,
         body: {
           time: editorContent.time as number,
-          blocks: editorContent.blocks,
+          blocks: editorContent.blocks
         },
-        attachment: fileNames,
+        attachment: fileNames
       }).unwrap();
-      console.log('Note updated successfully!');
-    } catch (error) {
-      console.error('Failed to update note:', error);
+    } catch {
+      toast.error('Failed to update note', {
+        description: 'Please try again.'
+      });
     }
   }, 1000);
 
-  const handleEditorChange = async () => {
+  const handleEditorChange = useCallback(async () => {
     if (editorRef.current) {
       const savedData = await editorRef.current.save();
       throttledUpdateNote(savedData);
       setEditorValue(savedData);
     }
-  };
+  }, [editorRef, throttledUpdateNote, setEditorValue]);
 
   const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = event.target.files;
+    const { files } = event.target;
     if (files && files.length > 0) {
       setUploadedFiles([...uploadedFiles, ...Array.from(files)]);
 
@@ -85,13 +91,14 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
 
       try {
         await uploadFiles(formData).unwrap();
-        console.log('Files uploaded successfully!');
         if (editorRef.current) {
           const savedData = await editorRef.current.save();
           throttledUpdateNote(savedData);
         }
-      } catch (error) {
-        console.error('Failed to upload files:', error);
+      } catch {
+        toast.error('Failed to upload files', {
+          description: 'Please try again.'
+        });
       }
     }
   };
@@ -106,29 +113,29 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
         const savedData = await editorRef.current.save();
         throttledUpdateNote(savedData);
       }
-      console.log('File removed successfully!');
-    } catch (error) {
-      console.error('Failed to delete file:', error);
+      toast('File removed successfully!');
+    } catch {
+      toast.error('Failed to remove file', {
+        description: 'Please try again.'
+      });
     }
   };
 
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.isReady.then(() => {
-        editorRef.current?.on('change', handleEditorChange);
+        // @ts-expect-error Property 'onChange' does not exist
+        editorRef.current?.onChange?.(handleEditorChange);
       });
     }
-    return () => {
-      editorRef.current?.off('change', handleEditorChange); // Clean up the listener on unmount
-    };
-  }, []);
+  }, [handleEditorChange]);
 
-  if (response.isLoading || !editorValue) {
+  if (isLoading || !editorValue) {
     return <p>Loading...</p>;
   }
   return (
     <div className="h-full w-2/3 flex flex-col gap-5">
-      <h3 className="font-bold">{response?.data?.data?.name}</h3>
+      <h3 className="font-bold">{data?.data.name}</h3>
       <div className="w-full h-[450px] p-5 rounded-sm bg-white box-border">
         <Editor
           ref={editorRef}
@@ -142,8 +149,12 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
         </p>
         <div className="flex flex-wrap gap-4">
           {/* Add new file button */}
-          <label className="flex items-center justify-center w-24 h-24 bg-gray-100 border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
+          <label
+            htmlFor="file-upload"
+            className="flex items-center justify-center size-24 bg-gray-100 border-2 border-dashed border-gray-300 rounded-md cursor-pointer"
+          >
             <input
+              id="file-upload"
               type="file"
               multiple
               className="hidden"
@@ -155,15 +166,15 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
           {/* Display uploaded files */}
           {uploadedFiles.map((file, index) => (
             <div
-              key={index}
-              className="relative flex flex-col items-center w-24 h-24 bg-gray-100 rounded-md shadow-md overflow-hidden"
+              key={file.name}
+              className="relative flex flex-col items-center size-24 bg-gray-100 rounded-md shadow-md overflow-hidden"
             >
               <div className="w-full h-16 flex justify-center items-center bg-white">
                 {file.type.startsWith('image/') ? (
-                  <img
+                  <Image
                     src={URL.createObjectURL(file)}
                     alt={file.name}
-                    className="object-cover w-full h-full"
+                    className="object-cover size-full"
                   />
                 ) : (
                   <div className="text-2xl text-gray-400">📄</div>
@@ -176,8 +187,9 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => handleRemoveFile(index)}
-                className="absolute top-0 right-0 mt-1 mr-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full"
+                className="absolute top-0 right-0 mt-1 mr-1 bg-red-500 text-white text-xs size-4 flex items-center justify-center rounded-full"
               >
                 ×
               </button>

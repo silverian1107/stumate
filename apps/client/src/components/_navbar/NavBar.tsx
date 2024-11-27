@@ -1,37 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
-
+import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import React, { useState } from 'react';
 
 import { SIDENAV_ITEMS } from './constants';
-import { SideNavItem } from './types';
-import { Icon } from '@iconify/react';
-
-const SideNav = () => {
-  return (
-    <div className="md:w-60 bg-white h-screen flex-1 fixed border-r border-zinc-200 hidden md:flex">
-      <div className="flex flex-col space-y-6 w-full">
-        <Link
-          href="/"
-          className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6 border-b border-zinc-200 h-12 w-full"
-        >
-          <span className="h-7 w-7 bg-zinc-300 rounded-lg" />
-          <span className="font-bold text-xl hidden md:flex">Logo</span>
-        </Link>
-
-        <div className="flex flex-col space-y-2  md:px-6 ">
-          {SIDENAV_ITEMS.map((item, idx) => {
-            return <MenuItem key={idx} item={item} />;
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default SideNav;
+import type { SideNavItem } from './types';
 
 const MenuItem = ({ item }: { item: SideNavItem }) => {
   const pathname = usePathname();
@@ -46,13 +21,14 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
         <>
           <button
             onClick={toggleSubMenu}
-            className={`flex flex-row items-center p-2 rounded-lg hover-bg-zinc-100 w-full justify-between hover:bg-zinc-100 ${
+            type="button"
+            className={`flex w-full flex-row items-center justify-between rounded-lg p-2 hover:bg-zinc-100 ${
               pathname.includes(item.path) ? 'bg-zinc-100' : ''
             }`}
           >
-            <div className="flex flex-row space-x-4 items-center">
+            <div className="flex flex-row items-center space-x-4">
               {item.icon}
-              <span className="font-semibold text-xl  flex">{item.title}</span>
+              <span className="flex text-xl  font-semibold">{item.title}</span>
             </div>
 
             <div className={`${subMenuOpen ? 'rotate-180' : ''} flex`}>
@@ -65,6 +41,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
               {item.subMenuItems?.map((subItem, idx) => {
                 return (
                   <Link
+                    // eslint-disable-next-line react/no-array-index-key
                     key={idx}
                     href={subItem.path}
                     className={`${
@@ -81,14 +58,39 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
       ) : (
         <Link
           href={item.path}
-          className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-zinc-100 ${
+          className={`flex flex-row items-center space-x-4 rounded-lg p-2 hover:bg-zinc-100 ${
             item.path === pathname ? 'bg-zinc-100' : ''
           }`}
         >
           {item.icon}
-          <span className="font-semibold text-xl flex">{item.title}</span>
+          <span className="flex text-xl font-semibold">{item.title}</span>
         </Link>
       )}
     </div>
   );
 };
+
+const SideNav = () => {
+  return (
+    <div className="fixed hidden h-screen flex-1 border-r border-zinc-200 bg-white md:flex md:w-60">
+      <div className="flex w-full flex-col space-y-6">
+        <Link
+          href="/"
+          className="flex h-12 w-full flex-row items-center justify-center space-x-3 border-b border-zinc-200 md:justify-start md:px-6"
+        >
+          <span className="size-7 rounded-lg bg-zinc-300" />
+          <span className="hidden text-xl font-bold md:flex">Logo</span>
+        </Link>
+
+        <div className="flex flex-col space-y-2  md:px-6 ">
+          {SIDENAV_ITEMS.map((item, idx) => {
+            // eslint-disable-next-line react/no-array-index-key
+            return <MenuItem key={idx} item={item} />;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SideNav;
