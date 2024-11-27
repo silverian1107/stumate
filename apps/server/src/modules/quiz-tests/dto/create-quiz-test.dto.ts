@@ -10,7 +10,7 @@ import {
 export class CreateQuizTestDto {
   @IsNotEmpty()
   @IsString()
-  title: string;
+  name: string;
 
   @IsOptional()
   @IsString()

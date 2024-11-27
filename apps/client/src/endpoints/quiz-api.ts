@@ -1,8 +1,10 @@
 import { QuizClient } from './AxiosClient';
 
-interface DeckCreateDTO {
+export interface QuizCreateDto {
   name: string;
   description?: string;
+  numberOfQuestion: number;
+  duration: number;
 }
 
 export const QuizApi = {
@@ -14,7 +16,7 @@ export const QuizApi = {
     return QuizClient.get(`/${id}`);
   },
 
-  async create(data: DeckCreateDTO) {
+  async create(data: QuizCreateDto) {
     return (await QuizClient.post('', data)).data;
   },
 

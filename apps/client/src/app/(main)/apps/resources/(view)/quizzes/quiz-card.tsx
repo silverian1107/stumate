@@ -15,6 +15,7 @@ const QuizCard = ({ id, name, description }: ResourceCardProps) => {
   const { data, isLoading, error } = useQuizById(id);
 
   if (isLoading || error || !data) return null;
+  console.log('Quiz name: ', data);
 
   return (
     <div className="flex w-full flex-col justify-between gap-3 rounded-sm bg-white px-4 py-3 text-base">

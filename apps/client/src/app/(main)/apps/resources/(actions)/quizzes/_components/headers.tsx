@@ -2,19 +2,25 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, SaveIcon } from 'lucide-react';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { AutosizeTextarea } from '@/components/ui/auto-size-textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import NumberInputField from '@/components/ui/number-input';
+import InputWithEndInline from '@/components/ui/number-input';
 import { cn } from '@/lib/utils';
 import type { Quiz } from '@/types/deck';
 
+interface QuizHeaderProps {
+  initialData?: Quiz;
+  isEditing?: boolean;
+  onSubmit: (data: ResourceFormData) => void;
+  isSubmitting?: boolean;
+}
+
 const QuizSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
+  name: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   numberOfQuestion: z.number().min(1, 'Number of question is required'),
   duration: z.number().min(1, 'Duration is required')
@@ -22,40 +28,35 @@ const QuizSchema = z.object({
 
 type ResourceFormData = z.infer<typeof QuizSchema>;
 
-export function ResourceHeader({
+export function QuizHeader({
   initialData = {} as Quiz,
   isEditing,
   onSubmit,
   isSubmitting
-}: {
-  initialData?: Quiz;
-  isEditing: boolean;
-  onSubmit: (data: ResourceFormData) => Promise<void>;
-  isSubmitting: boolean;
-}) {
+}: QuizHeaderProps) {
   const {
     register,
     handleSubmit,
-    reset,
+    // reset,
     formState: { errors }
   } = useForm<ResourceFormData>({
     resolver: zodResolver(QuizSchema),
     defaultValues: {
-      title: initialData.name || '',
+      name: initialData.name || '',
       description: initialData.description || '',
       numberOfQuestion: initialData.numberOfQuestion || 0,
       duration: initialData.duration || 0
     }
   });
 
-  useEffect(() => {
-    reset({
-      title: initialData.name,
-      duration: initialData.duration,
-      description: initialData.description,
-      numberOfQuestion: initialData.numberOfQuestion
-    });
-  }, [initialData, reset]);
+  // useEffect(() => {
+  //   reset({
+  //     title: initialData.name,
+  //     duration: initialData.duration,
+  //     description: initialData.description,
+  //     numberOfQuestion: initialData.numberOfQuestion
+  //   });
+  // }, [initialData, reset]);
 
   return (
     <form
@@ -84,22 +85,40 @@ export function ResourceHeader({
             type="text"
             placeholder="Quizz Title"
             className={cn(
-              'w-full p-2 border rounded',
-              errors.title &&
+              ' p-2 border basis-3/4 ',
+              errors.name &&
                 'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500'
             )}
-            {...register('title')}
+            {...register('name')}
           />
           <div className="flex gap-2 w-full flex-col md:flex-row">
-            <NumberInputField
-              className="flex-1"
-              placeholder="Number of question"
-              {...register('numberOfQuestion')}
+            <InputWithEndInline
+              type="number"
+              className={cn(
+                'flex-1',
+                errors.numberOfQuestion &&
+                  'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500'
+              )}
+              {...register('numberOfQuestion', {
+                setValueAs: (value) => Number(value)
+              })}
+              min={1}
+              max={180}
+              inlineText="Questions"
             />
-            <NumberInputField
-              className="flex-1"
-              placeholder="Duration"
-              {...register('duration')}
+            <InputWithEndInline
+              type="number"
+              className={cn(
+                'flex-1',
+                errors.duration &&
+                  'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500'
+              )}
+              {...register('duration', {
+                setValueAs: (value) => Number(value)
+              })}
+              inlineText="Minutes"
+              min={1}
+              max={180}
             />
           </div>
         </div>
@@ -110,11 +129,11 @@ export function ResourceHeader({
           className="w-full resize-none rounded border p-2"
         />
       </div>
-      {Object.entries(errors).map(([key, error]) => (
-        <p key={key} className="text-red-500">
-          *{error.message}
+      {Object.entries(errors).length > 0 && (
+        <p className="text-red-500 text-sm">
+          *{Object.values(errors)[0].message}
         </p>
-      ))}
+      )}
     </form>
   );
 }

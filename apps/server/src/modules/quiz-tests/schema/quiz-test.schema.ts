@@ -15,7 +15,7 @@ enum Status {
 @Schema({ timestamps: true })
 export class QuizTest {
   @Prop({ required: true })
-  title: string;
+  name: string;
 
   @Prop({ default: 'Description' })
   description: string;

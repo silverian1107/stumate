@@ -1,46 +1,44 @@
-'use client';
+import type { InputHTMLAttributes } from 'react';
 
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Button, Group, Input, NumberField } from 'react-aria-components';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
-interface NumberInputFieldProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  isButton?: boolean;
+interface InputWithEndInlineProps
+  extends InputHTMLAttributes<HTMLInputElement> {
+  inlineText: string;
+  className?: string;
 }
 
-const NumberInputField = ({
-  isButton,
+export default function InputWithEndInline({
+  inlineText,
+  type,
   className,
+  min,
+  max,
   ...props
-}: NumberInputFieldProps) => {
-  return (
-    <NumberField className={className}>
-      <div className="space-y-2">
-        <Group className="relative inline-flex h-9 w-full items-center overflow-hidden whitespace-nowrap rounded-sm border border-input text-sm shadow-sm shadow-black/5 transition-shadow data-[focus-within]:border-ring data-[disabled]:opacity-50 data-[focus-within]:outline-none data-[focus-within]:ring data-[focus-within]:ring-primary-600/40">
-          <Input
-            className="flex-1 bg-background px-3 py-2 tabular-nums text-foreground focus:outline-none"
-            {...props}
-          />
-          {isButton && (
-            <div className="flex h-[calc(100%+2px)] flex-col">
-              <Button
-                slot="increment"
-                className="-me-px flex h-1/2 w-6 flex-1 items-center justify-center border border-input bg-background text-sm text-muted-foreground/80 transition-shadow hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <ChevronUp size={12} strokeWidth={2} aria-hidden="true" />
-              </Button>
-              <Button
-                slot="decrement"
-                className="-me-px -mt-px flex h-1/2 w-6 flex-1 items-center justify-center border border-input bg-background text-sm text-muted-foreground/80 transition-shadow hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <ChevronDown size={12} strokeWidth={2} aria-hidden="true" />
-              </Button>
-            </div>
-          )}
-        </Group>
-      </div>
-    </NumberField>
-  );
-};
+}: InputWithEndInlineProps) {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
 
-export default NumberInputField;
+    if (max !== undefined && value > (max as number)) {
+      event.target.value = String(max);
+    }
+  };
+  return (
+    <div className={cn('space-y-2', className)}>
+      <div className="relative">
+        <Input
+          className="pe-12 text-right pr-16"
+          type={type}
+          min={min}
+          max={max}
+          onInput={handleInputChange}
+          {...props}
+        />
+        <span className="pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 text-[10px] text-muted-foreground peer-disabled:opacity-50 text-end">
+          {inlineText}
+        </span>
+      </div>
+    </div>
+  );
+}
