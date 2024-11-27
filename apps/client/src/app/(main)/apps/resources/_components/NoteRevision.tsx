@@ -1,7 +1,8 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Link from 'next/link';
-import IconDashboard from '../../_components/IconDashboard';
 import { BookText } from 'lucide-react';
+import Link from 'next/link';
+
+import IconDashboard from '../../_components/IconDashboard';
 
 const NoteRevision = ({
   notesRevisedTodayCount = 0
