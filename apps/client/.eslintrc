@@ -85,7 +85,8 @@
         "tailwindcss/classnames-order": "off",
         "@typescript-eslint/lines-between-class-members": "off",
         "@typescript-eslint/no-throw-literal": "off",
-        "no-useless-return": "off"
+        "no-useless-return": "off",
+        "consistent-return": "off"
       }
     },
     // Configuration for testing
