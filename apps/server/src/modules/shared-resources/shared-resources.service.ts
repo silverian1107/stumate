@@ -25,6 +25,10 @@ import {
   Flashcard,
   FlashcardDocument,
 } from '../flashcards/schema/flashcard.schema';
+import {
+  FlashcardReview,
+  FlashcardReviewDocument,
+} from '../flashcards/schema/flashcard-review.schema';
 
 @Injectable()
 export class SharedResourcesService {
@@ -37,6 +41,8 @@ export class SharedResourcesService {
     private readonly deckModel: SoftDeleteModel<DeckDocument>,
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
+    @InjectModel(FlashcardReview.name)
+    private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
     @InjectModel(QuizTest.name)
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
     @InjectModel(QuizQuestion.name)
@@ -178,7 +184,167 @@ export class SharedResourcesService {
     }
   }
 
-  async findAll(
+  async handleCloneResource(
+    resourceType: string,
+    resourceId: string,
+    user: IUser,
+  ) {
+    let originalResource: any, newResource: any, originalResourceObject: any;
+    switch (resourceType) {
+      case 'note':
+        originalResource = await this.noteModel.findOne({
+          _id: resourceId,
+          sharedWithUsers: { $in: [user._id] },
+        });
+        if (!originalResource) {
+          throw new NotFoundException('Not found note');
+        }
+        originalResourceObject = originalResource.toObject();
+        delete originalResourceObject._id;
+        newResource = await this.noteModel.create({
+          ...originalResourceObject,
+          ownerId: user._id,
+          isCloned: true,
+          sharedWithUsers: [],
+          createdBy: {
+            _id: user._id,
+            username: user.username,
+          },
+        });
+
+        const originalSummary = await this.summaryModel.findOne({
+          noteId: resourceId,
+          sharedWithUsers: { $in: [user._id] },
+        });
+        const summaryObject = originalResource.toObject();
+        delete summaryObject._id;
+        if (originalSummary) {
+          await this.summaryModel.create({
+            ...summaryObject,
+            userId: user._id,
+            noteId: newResource._id,
+            isCloned: true,
+            sharedWithUsers: [],
+            createdBy: {
+              _id: user._id,
+              username: user.username,
+            },
+          });
+        }
+        break;
+
+      case 'deck':
+        originalResource = await this.deckModel.findOne({
+          _id: resourceId,
+          sharedWithUsers: { $in: [user._id] },
+        });
+        if (!originalResource) {
+          throw new NotFoundException('Not found deck');
+        }
+        originalResourceObject = originalResource.toObject();
+        delete originalResourceObject._id;
+        newResource = await this.deckModel.create({
+          ...originalResourceObject,
+          userId: user._id,
+          isCloned: true,
+          sharedWithUsers: [],
+          createdBy: {
+            _id: user._id,
+            username: user.username,
+          },
+        });
+
+        const originalFlashcards = await this.flashcardModel.find({
+          deckId: resourceId,
+          sharedWithUsers: { $in: [user._id] },
+        });
+        if (originalFlashcards) {
+          const newFlashcards = originalFlashcards.map((card) => {
+            const cardObject = card.toObject();
+            delete cardObject._id;
+            return {
+              ...cardObject,
+              userId: user._id,
+              deckId: newResource._id,
+              isCloned: true,
+              sharedWithUsers: [],
+              createdBy: {
+                _id: user._id,
+                username: user.username,
+              },
+            };
+          });
+          const cloneFlashcards =
+            await this.flashcardModel.insertMany(newFlashcards);
+
+          const flashcardReviews = cloneFlashcards.map((flashcard) => ({
+            flashcardId: flashcard._id,
+            userId: user._id,
+            isCloned: true,
+            createdBy: {
+              _id: user._id,
+              username: user.username,
+            },
+          }));
+          await this.flashcardReviewModel.insertMany(flashcardReviews);
+        }
+        break;
+
+      case 'quiz':
+        originalResource = await this.quizTestModel.findOne({
+          _id: resourceId,
+          sharedWithUsers: { $in: [user._id] },
+        });
+        if (!originalResource) {
+          throw new NotFoundException('Not found quiz');
+        }
+        originalResourceObject = originalResource.toObject();
+        delete originalResourceObject._id;
+        newResource = await this.quizTestModel.create({
+          ...originalResourceObject,
+          userId: user._id,
+          isCloned: true,
+          sharedWithUsers: [],
+          createdBy: {
+            _id: user._id,
+            username: user.username,
+          },
+        });
+
+        const originalQuestions = await this.quizQuestionModel.find({
+          quizTestId: resourceId,
+          sharedWithUsers: { $in: [user._id] },
+        });
+        if (originalQuestions) {
+          const newQuestions = originalQuestions.map((question) => {
+            const questionObject = question.toObject();
+            delete questionObject._id;
+            return {
+              ...questionObject,
+              userId: user._id,
+              quizTestId: newResource._id,
+              isCloned: true,
+              sharedWithUsers: [],
+              createdBy: {
+                _id: user._id,
+                username: user.username,
+              },
+            };
+          });
+          await this.quizQuestionModel.insertMany(newQuestions);
+        }
+        break;
+
+      default:
+        throw new BadRequestException('Invalid resource type');
+    }
+    return {
+      message: `${resourceType} was cloned successfully`,
+      newResource,
+    };
+  }
+
+  async findAllSharedResources(
     user: IUser,
     resourceType: string,
     currentPage: number,
@@ -253,7 +419,87 @@ export class SharedResourcesService {
     };
   }
 
-  async findOne(resourceType: string, resourceId: string, user: IUser) {
+  async findAllClonedResources(
+    user: IUser,
+    resourceType: string,
+    currentPage: number,
+    pageSize: number,
+    qs: string,
+  ) {
+    const { filter, sort, population, projection } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    filter.isCloned = true;
+    filter.userId = user._id;
+
+    currentPage = currentPage ? currentPage : 1;
+    const limit = pageSize ? pageSize : 10;
+    const offset = (currentPage - 1) * limit;
+
+    let model: any;
+    let relatedModel: any;
+    let relatedField: string;
+
+    switch (resourceType) {
+      case 'note':
+        model = this.noteModel;
+        relatedModel = this.summaryModel;
+        relatedField = 'noteId';
+        break;
+      case 'deck':
+        model = this.deckModel;
+        relatedModel = this.flashcardModel;
+        relatedField = 'deckId';
+        break;
+      case 'quiz':
+        model = this.quizTestModel;
+        relatedModel = this.quizQuestionModel;
+        relatedField = 'quizTestId';
+        break;
+      default:
+        throw new BadRequestException('Invalid resource type');
+    }
+
+    const totalItems = (await model.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const result = await model
+      .find(filter)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort as any)
+      .select('-userId')
+      .populate(population)
+      .select(projection as any)
+      .exec();
+
+    const parentIds = result.map((item) => item._id);
+    const relatedData = await relatedModel.find({
+      [relatedField]: { $in: parentIds },
+    });
+    result.forEach((item) => {
+      item.related = relatedData.filter(
+        (related) => related[relatedField].toString() === item._id.toString(),
+      );
+    });
+
+    return {
+      meta: {
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        total: totalItems,
+      },
+      result,
+    };
+  }
+
+  async findSharedResource(
+    resourceType: string,
+    resourceId: string,
+    user: IUser,
+  ) {
     if (!mongoose.isValidObjectId(resourceId)) {
       throw new BadRequestException('Invalid Resource ID');
     }
@@ -284,6 +530,54 @@ export class SharedResourcesService {
     const resource = await model.findOne({
       _id: resourceId,
       sharedWithUsers: { $in: [user._id] },
+    });
+    if (!resource) {
+      throw new NotFoundException(`Not found ${resourceType}`);
+    }
+    const relatedData = await relatedModel.find({ [relatedField]: resourceId });
+    const resourceWithDetails = {
+      ...resource.toObject(),
+      related: relatedData,
+    };
+    return resourceWithDetails;
+  }
+
+  async findClonedResource(
+    resourceType: string,
+    resourceId: string,
+    user: IUser,
+  ) {
+    if (!mongoose.isValidObjectId(resourceId)) {
+      throw new BadRequestException('Invalid Resource ID');
+    }
+    let model: any;
+    let relatedModel: any;
+    let relatedField: string;
+
+    switch (resourceType) {
+      case 'note':
+        model = this.noteModel;
+        relatedModel = this.summaryModel;
+        relatedField = 'noteId';
+        break;
+      case 'deck':
+        model = this.deckModel;
+        relatedModel = this.flashcardModel;
+        relatedField = 'deckId';
+        break;
+      case 'quiz':
+        model = this.quizTestModel;
+        relatedModel = this.quizQuestionModel;
+        relatedField = 'quizTestId';
+        break;
+      default:
+        throw new BadRequestException('Invalid resource type');
+    }
+
+    const resource = await model.findOne({
+      _id: resourceId,
+      isCloned: true,
+      userId: user._id,
     });
     if (!resource) {
       throw new NotFoundException(`Not found ${resourceType}`);

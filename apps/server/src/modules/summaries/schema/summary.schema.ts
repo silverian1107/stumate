@@ -12,6 +12,12 @@ export class Summary {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Note', required: true })
   noteId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ default: false })
+  isCloned: boolean;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
+
   @Prop()
   content: string;
 
@@ -20,9 +26,6 @@ export class Summary {
 
   @Prop()
   updatedAt: Date;
-
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  sharedWithUsers: mongoose.Schema.Types.ObjectId[];
 
   @Prop({ type: Object })
   createdBy: {

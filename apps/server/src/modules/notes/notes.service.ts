@@ -219,7 +219,10 @@ export class NotesService {
   //websocket
   async deleteById(noteId: string) {
     validateObjectId(noteId, 'Note');
-    const deletedNote = await this.noteModel.findOne({ _id: noteId });
+    const deletedNote = await this.noteModel.findOne({
+      _id: noteId,
+      isArchived: true,
+    });
     if (!deletedNote) {
       throw new NotFoundException(`Note with ID ${noteId} not found`);
     }
@@ -231,7 +234,10 @@ export class NotesService {
 
     while (stack.length > 0) {
       const currentNoteId = stack.pop();
-      const currentNote = await this.noteModel.findOne({ _id: currentNoteId });
+      const currentNote = await this.noteModel.findOne({
+        _id: currentNoteId,
+        isArchived: true,
+      });
 
       if (currentNote) {
         notesToDelete.push(currentNote._id);

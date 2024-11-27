@@ -32,14 +32,14 @@ export class DecksService {
     private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
   ) {}
 
-  async findDeckByName(name: string, @User() user: IUser) {
-    return await this.deckModel.findOne({ name, userId: user._id });
+  async findDeckByName(name: string, userId: string) {
+    return await this.deckModel.findOne({ name, userId });
   }
 
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
     const { name, description } = createDeckDto;
     // Check name already exists
-    if (await this.findDeckByName(name, user)) {
+    if (await this.findDeckByName(name, user._id)) {
       throw new BadRequestException(`Name '${name}' already exists`);
     }
     //Create a new deck
@@ -121,17 +121,23 @@ export class DecksService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Deck ID');
     }
-    const deck = await this.deckModel.findOne({ _id: id });
+    const deck = await this.deckModel.findOne({
+      _id: id,
+      isArchived: true,
+    });
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
     //soft delete for all flashcard review
-    const flashcards = await this.flashcardModel.find({ deckId: id });
+    const flashcards = await this.flashcardModel.find({
+      deckId: id,
+      isArchived: true,
+    });
     await Promise.all(
       flashcards.map((flashcard: any) =>
-        this.flashcardReviewModel.delete(
+        this.flashcardReviewModel.updateOne(
           { flashcardId: flashcard._id },
-          user._id,
+          { nextReview: null },
         ),
       ),
     );

@@ -72,8 +72,8 @@ export class TagsController {
   @Get('name/:name')
   @CheckPolicies((ability) => ability.can(Action.READ, Tag))
   @ResponseMessage('Fetch tag by name')
-  async findByName(@Param('name') name: string) {
-    const foundTag = await this.tagsService.findByName(name);
+  async findByName(@Param('name') name: string, @User() user: IUser) {
+    const foundTag = await this.tagsService.findByName(name, user);
     return foundTag;
   }
 

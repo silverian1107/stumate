@@ -9,7 +9,6 @@ import { DeckDocument } from '../decks/schema/deck.schema';
 import { FlashcardDocument } from '../flashcards/schema/flashcard.schema';
 import { QuizTestDocument } from '../quiz-tests/schema/quiz-test.schema';
 import { QuizQuestionDocument } from '../quiz-questions/schema/quiz-question.schema';
-import { QuizAttemptDocument } from '../quiz-attempts/schema/quiz-attempt.schema';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { IUser } from '../users/users.interface';
@@ -37,8 +36,6 @@ export class ArchiveService {
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
     @InjectModel('QuizQuestion')
     private readonly quizQuestionModel: SoftDeleteModel<QuizQuestionDocument>,
-    @InjectModel('QuizAttempt')
-    private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
   ) {}
 
   async handleArchiveResource(resourceType: string, resourceId: string) {
@@ -119,7 +116,7 @@ export class ArchiveService {
           flashcards.map((flashcard: any) =>
             this.flashcardReviewModel.updateOne(
               { flashcardId: flashcard._id },
-              { isArchived: true, archivedAt: new Date() },
+              { nextReview: null },
             ),
           ),
         );
@@ -134,10 +131,6 @@ export class ArchiveService {
         return 'Deck was archived successfully';
       case 'quiz':
         await this.quizQuestionModel.updateMany(
-          { quizTestId: resourceId },
-          { isArchived: true, archivedAt: new Date() },
-        );
-        await this.quizAttemptModel.updateMany(
           { quizTestId: resourceId },
           { isArchived: true, archivedAt: new Date() },
         );
@@ -227,12 +220,13 @@ export class ArchiveService {
       case 'deck':
         const flashcards = await this.flashcardModel.find({
           deckId: resourceId,
+          isArchived: true,
         });
         await Promise.all(
           flashcards.map((flashcard: any) =>
             this.flashcardReviewModel.updateOne(
               { flashcardId: flashcard._id },
-              { isArchived: false, archivedAt: null },
+              { nextReview: Date.now() },
             ),
           ),
         );
@@ -247,10 +241,6 @@ export class ArchiveService {
         return 'Deck was restored successfully';
       case 'quiz':
         await this.quizQuestionModel.updateMany(
-          { quizTestId: resourceId, isArchived: true },
-          { isArchived: false, archivedAt: null },
-        );
-        await this.quizAttemptModel.updateMany(
           { quizTestId: resourceId, isArchived: true },
           { isArchived: false, archivedAt: null },
         );

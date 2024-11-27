@@ -17,6 +17,6 @@ export const User = createParamDecorator(
 );
 
 export const CHECK_POLICIES_KEY = 'checkPolicies';
-export type PolicyHandler = (ability: AppAbility) => boolean;
+export type PolicyHandler = (ability: AppAbility, object?: any) => boolean;
 export const CheckPolicies = (...handlers: PolicyHandler[]) =>
   SetMetadata(CHECK_POLICIES_KEY, handlers);

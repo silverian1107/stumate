@@ -39,15 +39,9 @@ export class QuizAttemptsService {
     }
     //Update status for quiz test
     if (quizTest.status === 'NOT_STARTED') {
-      await quizTest.updateOne(
-        { _id: quizTestId, userId: quizTest.userId },
-        { status: 'IN_PROGRESS' },
-      );
+      await quizTest.updateOne({ _id: quizTestId }, { status: 'IN_PROGRESS' });
     } else {
-      await quizTest.updateOne(
-        { _id: quizTestId, userId: quizTest.userId },
-        { status: 'REVIEWING' },
-      );
+      await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWING' });
     }
     //Create a new quiz attempt
     const newQuizAttempt = await this.quizAttemptModel.create({
@@ -178,15 +172,9 @@ export class QuizAttemptsService {
     }
     //Update quiz test status
     if (quizTest.status === 'IN_PROGRESS') {
-      await quizTest.updateOne(
-        { _id: quizTestId, userId: quizTest.userId },
-        { status: 'COMPLETED' },
-      );
+      await quizTest.updateOne({ _id: quizTestId }, { status: 'COMPLETED' });
     } else {
-      await quizTest.updateOne(
-        { _id: quizTestId, userId: quizTest.userId },
-        { status: 'REVIEWED' },
-      );
+      await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWED' });
     }
     //Update quiz attempt
     const updateQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
@@ -269,20 +257,20 @@ export class QuizAttemptsService {
   }
 
   //websocket
-  async remove(quizTestId: string, id: string, @User() user: IUser) {
-    if (!(await this.quizTests.findOne(quizTestId))) {
-      throw new NotFoundException('Not found quiz test');
-    }
-    const quizAttempt = await this.quizAttemptModel.findOne({
-      _id: id,
-      quizTestId,
-    });
-    if (!quizAttempt) {
-      throw new NotFoundException('Not found quiz attempt');
-    }
-    const userId = quizAttempt.userId.toString();
-    await this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
-    await this.statisticsService.createOrUpdateUserStatistics(userId);
-    return 'Quiz attempt was deleted successfully';
-  }
+  // async remove(quizTestId: string, id: string, @User() user: IUser) {
+  //   if (!(await this.quizTests.findOne(quizTestId))) {
+  //     throw new NotFoundException('Not found quiz test');
+  //   }
+  //   const quizAttempt = await this.quizAttemptModel.findOne({
+  //     _id: id,
+  //     quizTestId,
+  //   });
+  //   if (!quizAttempt) {
+  //     throw new NotFoundException('Not found quiz attempt');
+  //   }
+  //   const userId = quizAttempt.userId.toString();
+  //   await this.quizAttemptModel.delete({ _id: id, quizTestId }, user._id);
+  //   await this.statisticsService.createOrUpdateUserStatistics(userId);
+  //   return 'Quiz attempt was deleted successfully';
+  // }
 }

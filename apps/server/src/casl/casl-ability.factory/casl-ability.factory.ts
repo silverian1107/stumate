@@ -16,7 +16,6 @@ import { QuizTest } from 'src/modules/quiz-tests/schema/quiz-test.schema';
 import { IUser } from 'src/modules/users/users.interface';
 import { QuizAttempt } from 'src/modules/quiz-attempts/schema/quiz-attempt.schema';
 import { QuizQuestion } from 'src/modules/quiz-questions/schema/quiz-question.schema';
-import { UserStatistic } from 'src/modules/statistics/schema/user-statistic.schema';
 import { Summary } from 'src/modules/summaries/schema/summary.schema';
 import { Tag } from 'src/modules/tags/schema/tag.schema';
 import { Todo } from 'src/modules/todo/schema/todo.schema';
@@ -49,7 +48,6 @@ export type Subjects =
       | typeof QuizQuestion
       | typeof QuizAttempt
       | typeof Todo
-      | typeof UserStatistic
     >
   | 'all';
 
@@ -82,7 +80,6 @@ export class CaslAbilityFactory {
           QuizQuestion,
           QuizAttempt,
           Todo,
-          UserStatistic,
         ],
       );
 
@@ -99,44 +96,16 @@ export class CaslAbilityFactory {
           QuizQuestion,
           QuizAttempt,
           Todo,
-          UserStatistic,
         ],
       );
-    }
+    } else {
+      can([Action.READ, Action.UPDATE], User, {
+        _id: user._id,
+      } as MongoQuery<User>);
 
-    can([Action.READ, Action.UPDATE], User, {
-      _id: user._id,
-    } as MongoQuery<User>);
+      cannot([Action.CREATE, Action.DELETE], User);
 
-    cannot([Action.CREATE, Action.DELETE], User);
-
-    can(Action.CREATE, [
-      Tag,
-      Collection,
-      Note,
-      Summary,
-      Deck,
-      Flashcard,
-      FlashcardReview,
-      QuizTest,
-      QuizQuestion,
-      QuizAttempt,
-      Todo,
-    ]);
-
-    cannot(Action.CREATE, Notification);
-
-    can(
-      [
-        Action.READ,
-        Action.UPDATE,
-        Action.ARCHIVE,
-        Action.DELETE,
-        Action.STUDY,
-        Action.SHARE,
-      ],
-      [
-        Notification,
+      can(Action.CREATE, [
         Tag,
         Collection,
         Note,
@@ -148,31 +117,54 @@ export class CaslAbilityFactory {
         QuizQuestion,
         QuizAttempt,
         Todo,
-      ],
-      {
-        userId: user._id,
-      },
-    );
+      ]);
 
-    can(Action.READ, UserStatistic, {
-      userId: user._id,
-    });
+      cannot(Action.CREATE, Notification);
 
-    can(
-      [Action.READ, Action.STUDY],
-      [Note, Summary, Deck, Flashcard, QuizTest, QuizQuestion],
-      {
-        sharedWithUsers: { $in: [user._id] },
-      },
-    );
+      can(
+        [
+          Action.READ,
+          Action.UPDATE,
+          Action.ARCHIVE,
+          Action.DELETE,
+          Action.STUDY,
+          Action.SHARE,
+        ],
+        [
+          Notification,
+          Tag,
+          Collection,
+          Note,
+          Summary,
+          Deck,
+          Flashcard,
+          FlashcardReview,
+          QuizTest,
+          QuizQuestion,
+          QuizAttempt,
+          Todo,
+        ],
+        {
+          userId: user._id,
+        },
+      );
 
-    cannot(
-      [Action.UPDATE, Action.ARCHIVE, Action.DELETE, Action.SHARE],
-      [Note, Summary, Deck, Flashcard, QuizTest, QuizQuestion],
-      {
-        sharedWithUsers: { $in: [user._id] },
-      },
-    );
+      can(
+        [Action.READ, Action.STUDY],
+        [Note, Summary, Deck, Flashcard, QuizTest, QuizQuestion],
+        {
+          sharedWithUsers: { $in: [user._id] },
+        },
+      );
+
+      cannot(
+        [Action.UPDATE, Action.ARCHIVE, Action.DELETE, Action.SHARE],
+        [Note, Summary, Deck, Flashcard, QuizTest, QuizQuestion],
+        {
+          sharedWithUsers: { $in: [user._id] },
+        },
+      );
+    }
 
     return build({
       detectSubjectType: (item) =>
