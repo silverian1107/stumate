@@ -1,18 +1,25 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ArticleIcon from '@mui/icons-material/Article';
 import Link from 'next/link';
+import IconDashboard from '../../_components/IconDashboard';
+import { BookText } from 'lucide-react';
 
-const NoteRevision = () => {
+const NoteRevision = ({
+  notesRevisedTodayCount = 0
+}: {
+  notesRevisedTodayCount: number;
+}) => {
   return (
     <div className="element-dashboard element">
-      <div className="flex ">
+      <div className="flex items-center ">
         <p className="font-bold text-lg text-primary-950 mr-4">
-          Note Revision{' '}
+          Share Resource{' '}
         </p>
-        <ArticleIcon fontSize="small" sx={{ color: 'lightgray' }} />
+        <IconDashboard icon={BookText} />
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <p className="font-bold text-4xl  text-primary-500">2</p>
+        <p className="font-bold text-4xl  text-primary-500">
+          {notesRevisedTodayCount}
+        </p>
         <Link href="" className=" text-xs text-gray-400">
           Let&apos;s Revision{' '}
           <ArrowForwardIcon fontSize="small" sx={{ color: 'lightgray' }} />{' '}

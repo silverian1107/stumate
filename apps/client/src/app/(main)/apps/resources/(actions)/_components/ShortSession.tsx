@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 const ShortSession = () => {
   return (
     <div className="element-dashboard element">
-      <div className="flex text-xs">
+      <div className="flex text-xs items-center">
         <p className="font-bold text-primary-950 mr-1">Short session </p>
         <p className="text-gray-500 mr-7">Long Break</p>
         <MoreHorizIcon fontSize="small" />

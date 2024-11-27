@@ -1,17 +1,18 @@
-import type { SvgIconProps } from '@mui/material';
+import IconWrapper from '@/app/(main)/apps/_components/IconWrapper';
+import type { LucideIcon } from 'lucide-react';
 
 const StatisticItem = ({
   icon: Icon,
   label,
   value
 }: {
-  icon: React.ComponentType<SvgIconProps>;
+  icon: LucideIcon; // Sửa kiểu icon để tương thích với LucideProps
   label: string;
   value: string | number;
 }) => {
   return (
     <div className="element-total">
-      <Icon color="primary" />
+      <IconWrapper icon={Icon} />
       <p className="text-primary-950 text-xs">{label}</p>
       <p className="text-gray-500 text-xs">{value}</p>
     </div>

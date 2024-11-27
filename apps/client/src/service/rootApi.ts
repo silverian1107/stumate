@@ -148,6 +148,38 @@ interface SingleNodeRespone {
   statusCode: number;
 }
 
+export interface IUserStatistic {
+  statusCode: number;
+  message: string;
+  data: {
+    _id: string;
+    userId: string;
+    date: string; // ISO date string
+    dailyStudyDuration: number;
+    studyStreakDays: number;
+    totalNotesCount: number;
+    totalFlashcardsCount: number;
+    notesRevisedTodayCount: number;
+    flashcardsDueTodayCount: number;
+    totalQuizzesCount: number;
+    quizzesCompletedToday: number;
+    flashcardsCompletedToday: number;
+    flashcardMasteryProgressToday: number;
+    accuracyRate: number;
+    accuracyRateToday: number;
+    lowAccuracyCount: number;
+    studiedFlashcardsCount: number;
+    dailyTaskList: any[]; // Adjust the type if the structure of tasks is known
+    completedTasksCount: number;
+    sessionsThisWeek: number;
+    monthlyStudyHeatmap: any[]; // Adjust the type if the heatmap structure is known
+    deleted: boolean;
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+    __v: number;
+  };
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -166,7 +198,7 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 401 && result?.error) {
+  if (result?.error?.status === 401) {
     const { refreshToken } = (api.getState() as RootState).auth;
     if (refreshToken) {
       const refreshResult = await baseQuery(
@@ -301,7 +333,7 @@ export const rootApi = createApi({
         method: 'PATCH'
       })
     }),
-    statistics: builder.query({
+    statistics: builder.query<IUserStatistic, void>({
       query: () => {
         return '/statistics';
       }

@@ -1,14 +1,31 @@
-import ArticleIcon from '@mui/icons-material/Article';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import FlagCircleIcon from '@mui/icons-material/FlagCircle';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import { Avatar } from '@mui/material';
-
+import {
+  Flame,
+  BookText,
+  Layers3,
+  Target,
+  PencilLine,
+  ClipboardList
+} from 'lucide-react';
 import StatisticItem from './total/StatisticItem';
 
-const Total = ({ username }: { username: string }) => {
+const Total = ({
+  username,
+  totalNotesCount = 0,
+  totalFlashcardsCount = 0,
+  totalQuizzesCount = 0,
+  dailyStudyDuration = 0,
+  studyStreakDays = 0,
+  accuracyRate = 0
+}: {
+  username: string;
+  totalNotesCount: number;
+  totalFlashcardsCount: number;
+  totalQuizzesCount: number;
+  dailyStudyDuration: number;
+  studyStreakDays: number;
+  accuracyRate: number;
+}) => {
   return (
     <div className="flex flex-col bg-white rounded-lg h-fit">
       <div className="flex flex-col justify-center items-center w-full py-3 ">
@@ -19,27 +36,43 @@ const Total = ({ username }: { username: string }) => {
       </div>
       <div className="grid grid-cols-2 w-full">
         <StatisticItem
-          icon={LocalFireDepartmentIcon}
+          icon={Flame}
           label="Best Streak"
-          value="64 days"
+          value={
+            studyStreakDays > 1
+              ? `${studyStreakDays} days`
+              : `${studyStreakDays} day`
+          }
         />
-        <StatisticItem icon={ArticleIcon} label="Total Notes" value="212" />
         <StatisticItem
-          icon={AutoAwesomeMotionIcon}
+          icon={BookText}
+          label="Total Notes"
+          value={totalNotesCount}
+        />
+        <StatisticItem
+          icon={Layers3}
           label="Total Flashcards"
-          value="200"
+          value={totalFlashcardsCount}
         />
         <StatisticItem
-          icon={AssignmentIcon}
+          icon={ClipboardList}
           label="Total Quizzes"
-          value="100"
+          value={totalQuizzesCount}
         />
         <StatisticItem
-          icon={BorderColorIcon}
+          icon={PencilLine}
           label="Daily Study Time"
-          value="64 days"
+          value={
+            dailyStudyDuration > 1
+              ? `${dailyStudyDuration} hours`
+              : `${dailyStudyDuration} hour`
+          }
         />
-        <StatisticItem icon={FlagCircleIcon} label="Accurracy" value="65%" />
+        <StatisticItem
+          icon={Target}
+          label="Accurracy"
+          value={`${accuracyRate}%`}
+        />
       </div>
     </div>
   );
