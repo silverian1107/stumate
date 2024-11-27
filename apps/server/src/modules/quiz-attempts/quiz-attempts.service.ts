@@ -90,7 +90,7 @@ export class QuizAttemptsService {
     await this.notificationsService.sendInfoNotification(
       user,
       `Quiz Submission Reminder`,
-      `Your quiz '${quizTest.title}' is in progress and has not been submitted. Don't forget to submit it when you're done!`,
+      `Your quiz '${quizTest.name}' is in progress and has not been submitted. Don't forget to submit it when you're done!`,
     );
     return updatedQuizAttempt;
   }
@@ -211,7 +211,7 @@ export class QuizAttemptsService {
       this.message(
         updateQuizAttempt.correctAnswers,
         updateQuizAttempt.totalQuestions,
-        quizTest.title,
+        quizTest.name,
       ),
     );
     return updateQuizAttempt;

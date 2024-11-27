@@ -1,6 +1,6 @@
 {
   "name": "stumate",
-  "version": "0.0.6",
+  "version": "0.1.5",
   "description": "",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
     "format:write": "pnpm format --write",
     "tsc": "pnpm --parallel -r run tsc --noEmit",
     "lint": "pnpm --parallel -r run lint --fix",
+    "dev": "pnpm --parallel -r run dev",
     "build": "pnpm --parallel -r run build",
     "validate": "pnpm format:write && pnpm tsc && pnpm lint",
     "prepare": "husky install"

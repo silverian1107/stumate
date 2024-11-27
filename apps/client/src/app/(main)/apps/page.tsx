@@ -1,21 +1,74 @@
 'use client';
 
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import Cookies from 'js-cookie';
-import { CloudSun, LayoutGrid, LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-import { Button } from '@/components/ui/button';
 import { useAccount } from '@/hooks/use-auth';
 
-import IconWrapper from './_components/IconWrapper';
+import CardDue from './resources/_components/CardDue';
+// import { io } from 'socket.io-client';
+import Header from './resources/_components/Header';
+import LowAccQuiz from './resources/_components/LowAccQuiz';
+import NoteRevision from './resources/_components/NoteRevision';
+import Achieve from './resources/(actions)/_components/Achieve';
+import CalendarDashboard from './resources/(actions)/_components/CalendarDashboard';
+import Maxim from './resources/(actions)/_components/Maxim';
+import Performance from './resources/(actions)/_components/Performance';
+import ShortSession from './resources/(actions)/_components/ShortSession';
+import Total from './resources/(actions)/_components/Total';
+// import { useStatisticsQuery } from '@/service/rootApi';
 
 const Main = () => {
   const router = useRouter();
   const { data, error, isLoading } = useAccount();
+  // const [socket, setSocket] = useState<any>(null);
+  // const [statistics, setStatistics] = useState({});
+
+  // const response = useStatisticsQuery(data?.data.user);
+
+  // useEffect(() => {
+  //   if (data?.data?.user) {
+  //     if (response.isSuccess) {
+  //       console.log('response: ', response.data);
+  //       setStatistics(response.data);
+  //     }
+  //     // Khởi tạo kết nối Socket.IO với token trong header
+  //     const newSocket = io('http://localhost:3000', {
+  //       auth: {
+  //         token: Cookies.get('access_token'), // Token lưu trong cookie
+  //       },
+  //       transports: ['websocket'], // Chỉ dùng WebSocket
+  //       reconnection: true,
+  //       reconnectionAttempts: 10,
+  //       reconnectionDelay: 3000,
+  //     });
+  //     // console.log("access", Cookies.get('access_token'))
+  //     newSocket.on('connect', () => {
+  //       console.log('Connected to server via Socket.IO');
+  //       // setStatistics(statistic);
+  //       // console.log("successfull!")
+  //     });
+
+  //     newSocket.on('update-user-statistic', (updatedStatistics: any) => {
+  //       console.log('Received updated statistics:', updatedStatistics);
+  //       setStatistics(updatedStatistics);
+  //     });
+
+  //     newSocket.on('disconnect', () => {
+  //       console.log('Disconnected from server.');
+  //     });
+
+  //     setSocket(newSocket);
+
+  //     return () => {
+  //       newSocket.disconnect();
+  //     };
+  //   }
+  // }, [data, response.isSuccess]);
+  // console.log('statistic: ', statistics);
 
   useEffect(() => {
     if (error) {
@@ -40,63 +93,25 @@ const Main = () => {
 
   return (
     <div className="flex-1 flex h-screen bg-primary-50 flex-col box-border">
-      <div className="h-[72px] w-full bg-primary-50 flex justify-between  py-2 px-10 items-center">
-        <div className="text-primary-950/40 bg-primary-50 border border-primary-950/40 hover:bg-primary-100 hover:border-primary-800 hover:text-primary-800 flex items-center gap-1 px-2 py-1 rounded-sm cursor-pointer">
-          Customized
-          <span>
-            <LayoutGrid className="size-4" />
-          </span>
-        </div>
-        <div className="flex flex-col items-end">
-          <div className="flex items-center gap-2">
-            <span>
-              {new Date().toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </span>
-            <IconWrapper icon={CloudSun} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">
-              Morning, {data.data.user.username}
-            </h1>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-1 gap-4 w-full   px-10 pb-7">
-        <div className=" w-3/4 h-full  grid grid-cols-3 grid-rows-5 gap-4 box-border ">
-          <div className="element-dashboard">
-            <div className="flex text-xs">
-              <p className="font-bold text-primary-950 mr-1">Short session </p>
-              <p className="text-gray-500 mr-7">Long Break</p>
-              <MoreHorizIcon fontSize="small" />
-            </div>
-            <div className="flex flex-col gap-1 items-center">
-              <div className="relative">
-                <p className="font-bold text-4xl text-primary-500">25:00</p>
-                <RefreshIcon
-                  fontSize="small"
-                  color="primary"
-                  className="absolute top-[10px] right-[-25px]"
-                />
-              </div>
-              <Button>Start</Button>
-            </div>
-          </div>
-          <div className="element-dashboard">2</div>
-          <div className=" element-dashboard">3</div>
+      <Header username={data.data.user.username} />
+      <div className="flex flex-1 gap-4 w-full  px-10 pb-7">
+        <div className=" w-3/4 max-h-full  grid grid-cols-3 grid-rows-5 gap-4 box-border ">
+          <ShortSession />
+          <CardDue />
+          <NoteRevision />
           <div className="element-dashboard row-span-2 ">4</div>
-          <div className="element-dashboard">5</div>
-          <div className=" element-dashboard">6</div>
-          <div className=" element-dashboard col-span-2 ">7</div>
-          <div className=" element-dashboard row-span-2 col-span-3 ">8</div>
+          <LowAccQuiz />
+          <Achieve />
+          <Maxim />
+          <Performance />
         </div>
-        <div className=" w-1/4 h-full grid grid-cols-1 gap-4  box-border">
-          <div className="element-dashboard" />
-          <div className="element-dashboard" />
+        <div className=" w-1/4 h-full flex flex-col gap-4  box-border">
+          <Total username={data.data.user.username} />
+          <CalendarDashboard />
         </div>
       </div>
+
+      {/* <div className="grid lg:grid-cols-4 gap-4 w-full h-[calc(100%-72px)] px-4 md:grid-cols-2 grid-cols-1 [&>*]:h-[172px] overflow-auto"></div> */}
     </div>
   );
 };

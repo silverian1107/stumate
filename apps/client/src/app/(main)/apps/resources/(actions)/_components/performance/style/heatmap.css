@@ -1,0 +1,39 @@
+/* Adjust grid spacing */
+.react-calendar-heatmap .react-calendar-heatmap__day {
+  margin: 1px; /* Adjusted to make spacing 2px total */
+}
+.react-calendar-heatmap {
+  height: 100%;
+}
+.react-calendar-heatmap .color-empty {
+  fill: #f3f4f6; /* Màu nền nhạt cho ô trống */
+}
+
+.react-calendar-heatmap-week rect {
+  width: 12px;
+  height: 10px;
+}
+
+.react-calendar-heatmap text {
+  font-size: 10px;
+}
+
+/* Empty square */
+.color-empty {
+  fill: hsl(229, 100%, 96.7%);
+}
+
+/* Color scales */
+.color-scale-1 {
+  fill: hsl(232, 93%, 88.8%);
+}
+.color-scale-2 {
+  fill: hsl(242, 81.4%, 68.4%);
+}
+.color-scale-3 {
+  fill: hsl(247, 73.5%, 58.6%);
+}
+.color-scale-4 {
+  fill: hsl(247, 53.6%, 41.4%);
+}
+

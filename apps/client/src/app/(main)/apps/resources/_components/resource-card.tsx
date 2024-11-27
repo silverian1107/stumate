@@ -22,7 +22,6 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
   });
 
   if (isLoading || error || !data) return null;
-  console.log(data);
 
   return (
     <div className="flex w-full flex-col justify-between gap-3 rounded-sm bg-white px-4 py-3 text-base">
@@ -34,14 +33,14 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
           Algorithm
         </div>
       </div>
-      <div>
+      <div className="text-sm">
         <h1 className="-mb-1 text-xl font-bold">
           {name}{' '}
           <span className="text-lg font-semibold text-primary-600 ">
             {/* ({data.length} cards) */}
           </span>
         </h1>
-        <h2 className="line-clamp-1 font-semibold text-primary-950/50">
+        <h2 className="line-clamp-1 text-sm font-medium text-primary-950/50">
           {description}
         </h2>
       </div>

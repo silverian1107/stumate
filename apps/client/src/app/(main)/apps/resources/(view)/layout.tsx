@@ -20,7 +20,7 @@ export default function Layout({
         <SlidingTabBar />
         <div className="relative h-full">
           <input
-            className="h-full rounded-sm border border-primary-950/40 bg-inherit px-4 text-primary-950 focus:border-2 focus:border-primary-600 focus:outline-none sm:w-[240px] md:w-[360px]"
+            className="h-full rounded-sm border border-primary-600/40 bg-inherit px-4 text-primary-950 focus:border-2 focus:border-primary-600 focus:outline-none sm:w-[240px] md:w-[360px]"
             placeholder="Search..."
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}

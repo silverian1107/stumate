@@ -15,7 +15,7 @@ export class CreateQuizTestDto {
     description: 'Quiz name',
     example: 'My Quiz',
   })
-  title: string;
+  name: string;
 
   @IsOptional()
   @IsString()

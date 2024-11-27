@@ -13,6 +13,11 @@ import type {
   Note
 } from '@/types/collection';
 
+type ChildDocSortField = {
+  type: 'Collection' | 'Note';
+  position: number;
+};
+
 export const useCollection = (collectionById: string) => {
   return useQuery({
     queryKey: ['getNoteById', collectionById],
@@ -23,15 +28,6 @@ export const useCollection = (collectionById: string) => {
     }
   });
 };
-
-// export const useUpdateNote = () => {
-//   return useMutation({
-//     mutationFn: async ({ _id, name, body, attachment }: NoteUpdateDto) => {
-//       return NoteApi.updateById(_id, { name, body, attachment });
-//     },
-//     onError: (error) => console.log(error),
-//   });
-// };
 
 export const useCreateCollection = () => {
   const queryClient = useQueryClient();
@@ -44,8 +40,9 @@ export const useCreateCollection = () => {
       toast('Collection Created', {
         description: 'success'
       });
+
       queryClient.invalidateQueries({
-        queryKey: ['getDocuments', data.data.parentId, 'Collection']
+        queryKey: ['getDocuments', data.data.parentId]
       });
     },
     onError: (error) => {
@@ -71,15 +68,25 @@ export const useDocuments = ({
           qs: ''
         });
 
-        return response.data.data.result;
+        return response.data.result;
       }
+
       if (parentDocumentId && type === 'Collection') {
         const response = await CollectionApi.findById(parentDocumentId);
-        return response.data.data.childrenDocs || [];
+        const childrenDocs: ChildDocSortField[] =
+          response.data.childrenDocs || [];
+
+        childrenDocs.sort((a, b) => {
+          if (a.type === 'Collection' && b.type !== 'Collection') return -1;
+          if (a.type !== 'Collection' && b.type === 'Collection') return 1;
+          return a.position - b.position;
+        });
+
+        return childrenDocs;
       }
       if (parentDocumentId && type === 'Note') {
         const response = await NoteApi.findById(parentDocumentId);
-        return response.data.data.childrenDocs || [];
+        return response.data.childrenDocs || [];
       }
       return [];
     },

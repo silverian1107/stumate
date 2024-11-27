@@ -184,7 +184,7 @@ export function useDeckManager() {
       });
 
       return savedDeck.id;
-    } catch (error) {
+    } catch {
       toast.error('Failed to save deck', {
         description: 'Please try again.'
       });

@@ -50,3 +50,6 @@ export const CollectionClient = createCustomClient(
 );
 export const NoteClient = createCustomClient('http://localhost:3000/api/notes');
 export const DeckClient = createCustomClient('http://localhost:3000/api/decks');
+export const QuizClient = createCustomClient(
+  'http://localhost:3000/api/quiz-tests'
+);

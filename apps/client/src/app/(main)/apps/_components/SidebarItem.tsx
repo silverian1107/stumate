@@ -7,7 +7,6 @@ import {
   Trash
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -18,10 +17,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import {
-  useArchiveNoteByIdMutation,
-  useCreateNoteMutation
-} from '@/service/rootApi';
+import { useArchiveNoteByIdMutation } from '@/service/rootApi';
 
 interface SidebarItemProps {
   label: string;
@@ -35,6 +31,8 @@ interface SidebarItemProps {
   expanded?: boolean;
   isButton?: boolean;
   onClick?: () => void;
+  onCreateNote?: () => void;
+  onCreateCollection?: () => void;
   onExpand?: () => void;
 }
 
@@ -51,13 +49,12 @@ const SidebarItem = ({
   // eslint-disable-next-line unused-imports/no-unused-vars
   isCreate,
   onClick,
+  onCreateNote,
+  onCreateCollection,
   onExpand
 }: SidebarItemProps) => {
   const CheveronIcon = expanded ? ChevronDown : ChevronRight;
-  const [createNote] = useCreateNoteMutation();
-  const [showInput, setShowInput] = useState(false); // State for showing input
-  const [noteName, setNoteName] = useState('');
-  const [archiveNoteById] = useArchiveNoteByIdMutation(); // State for storing the note name
+  const [archiveNoteById] = useArchiveNoteByIdMutation();
 
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -66,34 +63,20 @@ const SidebarItem = ({
     onExpand?.();
   };
 
-  const handleCreateNoteClick = () => {
-    setShowInput(true); // Show input field for creating note
+  const handleCreateNote = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    onCreateNote?.();
   };
 
-  const handleNoteNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNoteName(event.target.value); // Update note name as the user types
+  const handleCreateCollection = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    onCreateCollection?.();
   };
 
-  const handleNoteNameSubmit = async (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    // If Enter key is pressed and note name is not empty
-    if (event.key === 'Enter' && noteName.trim()) {
-      try {
-        await createNote({ parentId: id, name: noteName });
-        setShowInput(false); // Hide input field after successful creation
-        setNoteName(''); // Clear the input field
-      } catch (error) {
-        toast.error('Failed to delete note', {
-          description: 'Please try again.'
-        });
-      }
-    }
-  };
   const handleDeleteNote = async () => {
     try {
       await archiveNoteById(id);
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete note', {
         description: 'Please try again.'
       });
@@ -104,12 +87,7 @@ const SidebarItem = ({
     <div>
       <Link
         href={href || '#'}
-        onClick={() => {
-          if (type === 'Collection') {
-            return;
-          }
-          onClick?.();
-        }}
+        onClick={onClick}
         role="button"
         className={cn(
           'flex font-medium pr-2 transition-all text-sm gap-2 items-center group',
@@ -182,11 +160,11 @@ const SidebarItem = ({
                   align="start"
                   side="bottom"
                 >
-                  <DropdownMenuItem onClick={() => {}}>
+                  <DropdownMenuItem onClick={handleCreateCollection}>
                     <Plus className="size-4 mr-2" />
                     Create Collection
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleCreateNoteClick}>
+                  <DropdownMenuItem onClick={handleCreateNote}>
                     <Plus className="size-4 mr-2" />
                     Create Note
                   </DropdownMenuItem>
@@ -195,7 +173,7 @@ const SidebarItem = ({
             ) : (
               <div
                 role="button"
-                onClick={() => {}}
+                onClick={handleCreateNote}
                 className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary-100"
                 tabIndex={0}
               >
@@ -205,19 +183,6 @@ const SidebarItem = ({
           </div>
         )}
       </Link>
-      {/* Input field for note name, positioned below the item */}
-      {showInput && (
-        <div className="w-full mt-3 pl-6 flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Enter note name"
-            value={noteName}
-            onChange={handleNoteNameChange}
-            onKeyDown={handleNoteNameSubmit} // Listen for the Enter key
-            className="p-2 border border-gray-300 rounded-md w-full"
-          />
-        </div>
-      )}
     </div>
   );
 };
