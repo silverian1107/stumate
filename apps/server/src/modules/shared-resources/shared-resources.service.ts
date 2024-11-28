@@ -29,6 +29,7 @@ import {
   FlashcardReview,
   FlashcardReviewDocument,
 } from '../flashcards/schema/flashcard-review.schema';
+import { handleDuplicateName } from 'src/helpers/utils';
 
 @Injectable()
 export class SharedResourcesService {
@@ -243,7 +244,16 @@ export class SharedResourcesService {
         }
         originalResourceObject = originalResource.toObject();
         delete originalResourceObject._id;
+        let newDeckName = originalResourceObject.name;
+        delete originalResourceObject.name;
+
+        //Check duplicate deck name
+        const existingDecks = await this.deckModel.find({ userId: user._id });
+        const existingDeckNames = existingDecks.map((deck) => deck.name);
+        newDeckName = handleDuplicateName(newDeckName, existingDeckNames);
+
         newResource = await this.deckModel.create({
+          name: newDeckName,
           ...originalResourceObject,
           userId: user._id,
           isCloned: true,
@@ -300,7 +310,18 @@ export class SharedResourcesService {
         }
         originalResourceObject = originalResource.toObject();
         delete originalResourceObject._id;
+        let newQuizName = originalResourceObject.name;
+        delete originalResourceObject.name;
+
+        //Check duplicate quiz name
+        const existingQuizzes = await this.quizTestModel.find({
+          userId: user._id,
+        });
+        const existingQuizNames = existingQuizzes.map((quiz) => quiz.name);
+        newQuizName = handleDuplicateName(newQuizName, existingQuizNames);
+
         newResource = await this.quizTestModel.create({
+          name: newQuizName,
           ...originalResourceObject,
           userId: user._id,
           isCloned: true,

@@ -31,7 +31,9 @@ export class QuizTestsService {
 
   //websocket
   async create(createQuizTestDto: CreateQuizTestDto, @User() user: IUser) {
-    let name = createQuizTestDto.name;
+    const name = createQuizTestDto.name;
+    const restDto = { ...createQuizTestDto };
+    delete restDto.name;
     //Check title already exists
     const existingQuizTests = await this.quizTestModel.find({
       userId: user._id,
@@ -39,12 +41,11 @@ export class QuizTestsService {
     const existingQuizTestNames = existingQuizTests.map(
       (quizTest) => quizTest.name,
     );
-    if (existingQuizTestNames.includes(name)) {
-      name = handleDuplicateName(name, existingQuizTestNames);
-    }
+    const newQuizName = handleDuplicateName(name, existingQuizTestNames);
     //Create a new quiz test
     const newQuizTest = await this.quizTestModel.create({
-      ...createQuizTestDto,
+      name: newQuizName,
+      ...restDto,
       userId: user._id,
       createdBy: {
         _id: user._id,

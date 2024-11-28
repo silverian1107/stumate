@@ -34,16 +34,16 @@ export class DecksService {
   ) {}
 
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
-    let name = createDeckDto.name;
     // Check name already exists
     const existingDecks = await this.deckModel.find({ userId: user._id });
     const existingDeckNames = existingDecks.map((deck) => deck.name);
-    if (existingDeckNames.includes(name)) {
-      name = handleDuplicateName(name, existingDeckNames);
-    }
+    const newDeckName = handleDuplicateName(
+      createDeckDto.name,
+      existingDeckNames,
+    );
     //Create a new deck
     const newDeck = await this.deckModel.create({
-      name,
+      name: newDeckName,
       description: createDeckDto.description,
       userId: user._id,
       createdBy: {
