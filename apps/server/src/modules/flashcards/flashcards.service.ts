@@ -364,10 +364,12 @@ export class FlashcardsService {
     }
     const userId = flashcard.userId.toString();
     //soft delete for all flashcard review
-    await this.flashcardReviewModel.updateOne({
-      flashcardId: id,
-      nextReview: null,
-    });
+    await this.flashcardReviewModel.updateOne(
+      {
+        flashcardId: id,
+      },
+      { $set: { nextReview: null } },
+    );
     //soft delete for all flashcard
     await this.flashcardModel.delete({ _id: id, deckId }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
@@ -395,9 +397,8 @@ export class FlashcardsService {
     await this.flashcardReviewModel.updateMany(
       {
         flashcardId: { $in: objectIdFlashcardIds },
-        nextReview: null,
       },
-      { $set: { updated: true } },
+      { $set: { nextReview: null } },
     );
 
     await this.flashcardModel.delete(
@@ -416,10 +417,10 @@ export class FlashcardsService {
   }
 
   //websocket
-  async removeAll(deckId: string, id: string, @User() user: IUser) {
+  async removeAll(deckId: string, @User() user: IUser) {
     const deck = await this.decks.findOne(deckId);
     if (!deck) {
-      throw new NotFoundException('Deck not found');
+      throw new NotFoundException('Not found deck');
     }
 
     const flashcards = await this.handleGetAllFlashcards(deckId, user);
@@ -427,19 +428,23 @@ export class FlashcardsService {
       throw new NotFoundException('No flashcards found in this deck');
     }
 
-    const flashcard = flashcards.find((card) => card._id.toString() === id);
-    if (!flashcard) {
-      throw new NotFoundException('Flashcard not found');
-    }
+    const flashcardIds = flashcards.map((card) => card._id);
 
-    await this.flashcardModel.deleteOne({ _id: id, deckId });
+    await this.flashcardReviewModel.updateMany(
+      {
+        flashcardId: { $in: flashcardIds },
+      },
+      { $set: { nextReview: null } },
+    );
 
-    const userId = user._id.toString();
+    await this.flashcardModel.delete(
+      { _id: { $in: flashcardIds }, deckId },
+      user._id,
+    );
+
+    const userId = user._id;
     await this.statisticsService.createOrUpdateUserStatistics(userId);
 
-    return {
-      message: 'Flashcard deleted successfully',
-      flashcard: flashcard,
-    };
+    return { message: 'Flashcard deleted successfully' };
   }
 }

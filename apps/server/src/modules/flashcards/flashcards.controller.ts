@@ -185,10 +185,9 @@ export class FlashcardsController {
   @ResponseMessage('Delete a flashcard')
   removeAll(
     @Param('deckId') deckId: string,
-    @Param('id') id: string,
     @User() user: IUser,
   ): Promise<any> {
-    return this.flashcardsService.removeAll(deckId, id, user);
+    return this.flashcardsService.removeAll(deckId, user);
   }
 
   @Delete(':id')

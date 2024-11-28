@@ -17,6 +17,7 @@ import {
   QuizQuestionDocument,
 } from '../quiz-questions/schema/quiz-question.schema';
 import { StatisticsService } from '../statistics/statistics.service';
+import { handleDuplicateName } from 'src/helpers/utils';
 
 @Injectable()
 export class QuizTestsService {
@@ -28,18 +29,19 @@ export class QuizTestsService {
     private readonly statisticsService: StatisticsService,
   ) {}
 
-  async findQuizTestByTitle(name: string, userId: string) {
-    return await this.quizTestModel.findOne({ name, userId });
-  }
-
   //websocket
   async create(createQuizTestDto: CreateQuizTestDto, @User() user: IUser) {
+    let name = createQuizTestDto.name;
     //Check title already exists
-    // if (await this.findQuizTestByTitle(createQuizTestDto.name, user._id)) {
-    //   throw new BadRequestException(
-    //     `Title '${createQuizTestDto.name}' already exists`,
-    //   );
-    // }
+    const existingQuizTests = await this.quizTestModel.find({
+      userId: user._id,
+    });
+    const existingQuizTestNames = existingQuizTests.map(
+      (quizTest) => quizTest.name,
+    );
+    if (existingQuizTestNames.includes(name)) {
+      name = handleDuplicateName(name, existingQuizTestNames);
+    }
     //Create a new quiz test
     const newQuizTest = await this.quizTestModel.create({
       ...createQuizTestDto,

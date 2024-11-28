@@ -95,3 +95,16 @@ export function validateObjectId(
     }
   }
 }
+
+export const handleDuplicateName = (name: string, existingNames: string[]) => {
+  if (!existingNames.includes(name)) {
+    return name;
+  }
+  let count = 1;
+  let newName = `${name} (${count})`;
+  while (existingNames.includes(newName)) {
+    count++;
+    newName = `${name} (${count})`;
+  }
+  return newName;
+};

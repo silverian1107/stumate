@@ -20,6 +20,7 @@ import {
   FlashcardReview,
   FlashcardReviewDocument,
 } from '../flashcards/schema/flashcard-review.schema';
+import { handleDuplicateName } from 'src/helpers/utils';
 
 @Injectable()
 export class DecksService {
@@ -32,20 +33,18 @@ export class DecksService {
     private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
   ) {}
 
-  async findDeckByName(name: string, userId: string) {
-    return await this.deckModel.findOne({ name, userId });
-  }
-
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
-    const { name, description } = createDeckDto;
+    let name = createDeckDto.name;
     // Check name already exists
-    // if (await this.findDeckByName(name, user)) {
-    //   throw new BadRequestException(`Name '${name}' already exists`);
-    // }
+    const existingDecks = await this.deckModel.find({ userId: user._id });
+    const existingDeckNames = existingDecks.map((deck) => deck.name);
+    if (existingDeckNames.includes(name)) {
+      name = handleDuplicateName(name, existingDeckNames);
+    }
     //Create a new deck
     const newDeck = await this.deckModel.create({
       name,
-      description,
+      description: createDeckDto.description,
       userId: user._id,
       createdBy: {
         _id: user._id,
