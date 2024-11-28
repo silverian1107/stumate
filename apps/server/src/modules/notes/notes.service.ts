@@ -209,7 +209,7 @@ export class NotesService {
   async updateById(noteId: string, updateData: UpdateNoteDto) {
     validateObjectId(noteId, 'Collection');
     const updatedCollection = await this.noteModel
-      .findOneAndUpdate({ _id: noteId }, { updateData }, { new: true })
+      .findOneAndUpdate({ _id: noteId }, updateData, { new: true })
       .exec();
     if (!updatedCollection) {
       throw new NotFoundException(`Collection with ID ${noteId} not found`);

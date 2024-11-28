@@ -22,6 +22,7 @@ export interface AccountResponse {
 export const useAccount = () => {
   const hasToken = !!Cookies.get('access_token');
   const router = useRouter();
+
   const { data, isLoading, error } = useQuery<
     AccountResponse,
     AxiosError | null
@@ -35,9 +36,10 @@ export const useAccount = () => {
     retry: false
   });
 
+  console.log(data);
   useEffect(() => {
     if (!hasToken) {
-      router.push('/login');
+      router.replace('/');
     }
   }, [hasToken, router]);
 
