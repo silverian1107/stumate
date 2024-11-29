@@ -6,8 +6,8 @@ import { toast } from 'sonner';
 import type { QuizCreateDto } from '@/endpoints/quiz-api';
 import { useQuizCreate } from '@/hooks/use-quiz';
 
-import { ResourceElements } from '../../_components/creator';
 import { QuizHeader } from '../_components/headers';
+import QuizCreateElement from '../_components/quiz-create-element';
 
 export default function ResourcePage() {
   const { id } = useParams();
@@ -31,7 +31,9 @@ export default function ResourcePage() {
         onSubmit={handleSubmit}
         // isSubmitting={isSubmitting}
       />
-      <ResourceElements />
+      <div className="flex-1 overflow-hidden">
+        <QuizCreateElement />
+      </div>
     </>
   );
 }

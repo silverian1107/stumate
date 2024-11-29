@@ -61,7 +61,7 @@ export function QuizHeader({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="relative w-full space-y-2 rounded-md bg-white p-4 pb-10"
+      className="relative w-full md:w-3/4 mx-auto space-y-2 rounded-md bg-white p-4 pb-10"
     >
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-primary-600">

@@ -36,7 +36,6 @@ export const useAccount = () => {
     retry: false
   });
 
-  console.log(data);
   useEffect(() => {
     if (!hasToken) {
       router.replace('/');
