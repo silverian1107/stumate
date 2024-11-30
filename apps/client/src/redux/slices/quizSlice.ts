@@ -1,72 +1,57 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { Quiz } from '@/types/deck';
+export interface Answer {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface Question {
+  id: string;
+  text: string;
+  type: 'single' | 'multiple';
+  answers: Answer[];
+}
 
 interface QuizState {
-  quizzes: Quiz[];
-  activeQuiz?: Quiz;
-  isLoading: boolean;
-  error?: string;
+  questions: Question[];
 }
 
 const initialState: QuizState = {
-  quizzes: [],
-  activeQuiz: undefined,
-  isLoading: false,
-  error: undefined
+  questions: []
 };
 
-// Create the slice
 const quizSlice = createSlice({
   name: 'quiz',
   initialState,
   reducers: {
-    setQuizzes(state, action: PayloadAction<Quiz[]>) {
-      state.quizzes = action.payload;
+    addQuestion: (state, action: PayloadAction<Question>) => {
+      state.questions.push(action.payload);
     },
-
-    setActiveQuiz(state, action: PayloadAction<Quiz>) {
-      state.activeQuiz = action.payload;
-    },
-
-    addQuiz(state, action: PayloadAction<Quiz>) {
-      state.quizzes.push(action.payload);
-    },
-
-    updateQuiz(state, action: PayloadAction<Quiz>) {
-      const index = state.quizzes.findIndex(
-        (quiz) => quiz._id === action.payload._id
+    updateQuestion: (state, action: PayloadAction<Question>) => {
+      const index = state.questions.findIndex(
+        (q) => q.id === action.payload.id
       );
       if (index !== -1) {
-        state.quizzes[index] = action.payload;
+        state.questions[index] = action.payload;
       }
     },
-
-    deleteQuiz(state, action: PayloadAction<string>) {
-      state.quizzes = state.quizzes.filter(
-        (quiz) => quiz._id !== action.payload
-      );
+    removeQuestion: (state, action: PayloadAction<string>) => {
+      state.questions = state.questions.filter((q) => q.id !== action.payload);
     },
-
-    setLoading(state, action: PayloadAction<boolean>) {
-      state.isLoading = action.payload;
-    },
-
-    setError(state, action: PayloadAction<string | undefined>) {
-      state.error = action.payload;
+    removeAllQuestions: (state) => {
+      state.questions = [];
     }
   }
 });
 
 export const {
-  setQuizzes,
-  setActiveQuiz,
-  addQuiz,
-  updateQuiz,
-  deleteQuiz,
-  setLoading,
-  setError
+  addQuestion,
+  updateQuestion,
+  removeQuestion,
+  removeAllQuestions
 } = quizSlice.actions;
-
 export default quizSlice.reducer;
+
+// export { addQuestion, updateQuestion, removeQuestion };

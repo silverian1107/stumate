@@ -1,6 +1,7 @@
 'use client';
 
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
@@ -16,6 +17,7 @@ import { DeckActionHeader } from '../../_components/header';
 export default function ResourcePage() {
   const dispatch = useDispatch();
   const resource = useSelector((state: RootState) => state.decks);
+  const router = useRouter();
 
   const createDeck = useDeckCreateMutatation();
   const bulkCreateFlashcards = useCardBulkCreate();
@@ -40,6 +42,9 @@ export default function ResourcePage() {
         deckId: newDeck._id,
         cards: resource.flashcards
       });
+
+      toast.success('Resource created successfully');
+      router.replace('/apps/resources/decks/');
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error('Error submitting resource', {
