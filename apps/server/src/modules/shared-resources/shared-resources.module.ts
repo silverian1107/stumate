@@ -10,7 +10,6 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { SummarySchema } from '../summaries/schema/summary.schema';
 import { FlashcardSchema } from '../flashcards/schema/flashcard.schema';
 import { QuizQuestionSchema } from '../quiz-questions/schema/quiz-question.schema';
-import { CaslModule } from 'src/casl/casl.module';
 import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
 
 @Module({
@@ -36,7 +35,6 @@ import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.sch
       },
     ]),
     NotificationsModule,
-    CaslModule,
   ],
   controllers: [SharedResourcesController],
   providers: [SharedResourcesService],

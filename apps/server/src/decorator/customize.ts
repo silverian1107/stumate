@@ -1,6 +1,6 @@
 import { SetMetadata } from '@nestjs/common';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Role } from 'src/modules/users/schema/user.schema';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
@@ -16,7 +16,5 @@ export const User = createParamDecorator(
   },
 );
 
-export const CHECK_POLICIES_KEY = 'checkPolicies';
-export type PolicyHandler = (ability: AppAbility, object?: any) => boolean;
-export const CheckPolicies = (...handlers: PolicyHandler[]) =>
-  SetMetadata(CHECK_POLICIES_KEY, handlers);
+export const ROLES_KEY = 'roles';
+export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);

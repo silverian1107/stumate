@@ -7,24 +7,21 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { QuizQuestionsService } from './quiz-questions.service';
 import { CreateQuizQuestionDto } from './dto/create-quiz-question.dto';
 import { UpdateQuizQuestionDto } from './dto/update-quiz-question.dto';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { QuizQuestion } from './schema/quiz-question.schema';
+import { Role } from '../users/schema/user.schema';
 
 @Controller('quiz-tests/:quizTestId/quiz-questions')
-@UseGuards(AbilityGuard)
 export class QuizQuestionsController {
   constructor(private readonly quizQuestionsService: QuizQuestionsService) {}
 
   @Post()
-  @CheckPolicies((ability) => ability.can(Action.CREATE, QuizQuestion))
+  @Roles(Role.USER)
   @ResponseMessage('Create a new quiz question')
   async create(
     @Param('quizTestId') quizTestId: string,
@@ -43,7 +40,7 @@ export class QuizQuestionsController {
   }
 
   @Post('bulk')
-  @CheckPolicies((ability) => ability.can(Action.CREATE, QuizQuestion))
+  @Roles(Role.USER)
   @ResponseMessage('Create multiple quiz questions')
   async createMultiple(
     @Param('quizTestId') quizTestId: string,
@@ -62,14 +59,15 @@ export class QuizQuestionsController {
   }
 
   @Post('all')
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizQuestion))
   @ResponseMessage('Get quiz question by quiz test')
-  getByQuizTestId(@Param('quizTestId') quizTestId: string) {
-    return this.quizQuestionsService.findByQuizTestId(quizTestId);
+  getByQuizTestId(
+    @Param('quizTestId') quizTestId: string,
+    @User() user: IUser,
+  ) {
+    return this.quizQuestionsService.findByQuizTestId(quizTestId, user);
   }
 
   @Get()
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizQuestion))
   @ResponseMessage('Fetch list quiz question with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -80,21 +78,28 @@ export class QuizQuestionsController {
   }
 
   @Get(':id')
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizQuestion))
   @ResponseMessage('Fetch quiz question by id')
   async findOne(
     @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
+    @User() user: IUser,
   ) {
-    const foundQuizTest = await this.quizQuestionsService.findOne(
+    const foundQuizQuestion = await this.quizQuestionsService.findOne(
       quizTestId,
       id,
     );
-    return foundQuizTest;
+    if (user.role === 'USER') {
+      if (foundQuizQuestion.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
+    return foundQuizQuestion;
   }
 
   @Patch(':id')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, QuizQuestion))
+  @Roles(Role.USER)
   @ResponseMessage('Update a quiz question')
   async update(
     @Param('quizTestId') quizTestId: string,
@@ -102,17 +107,24 @@ export class QuizQuestionsController {
     @Body() updateQuizQuestionDto: UpdateQuizQuestionDto,
     @User() user: IUser,
   ) {
-    const updateQuizQuestion = await this.quizQuestionsService.update(
+    const foundQuizQuestion = await this.quizQuestionsService.findOne(
+      quizTestId,
+      id,
+    );
+    if (foundQuizQuestion.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+    return await this.quizQuestionsService.update(
       quizTestId,
       id,
       updateQuizQuestionDto,
       user,
     );
-    return updateQuizQuestion;
   }
 
   @Delete(':id')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, QuizQuestion))
   @ResponseMessage('Delete a quiz question')
   remove(
     @Param('quizTestId') quizTestId: string,

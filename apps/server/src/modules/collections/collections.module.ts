@@ -5,7 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CollectionSchema } from './schema/collection.schema';
 import { NoteSchema } from '../notes/schema/note.schema';
 import { SummarySchema } from '../summaries/schema/summary.schema';
-import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -14,7 +13,6 @@ import { CaslModule } from 'src/casl/casl.module';
     ]),
     MongooseModule.forFeature([{ name: 'Note', schema: NoteSchema }]),
     MongooseModule.forFeature([{ name: 'Summary', schema: SummarySchema }]),
-    CaslModule,
   ],
   controllers: [CollectionsController],
   providers: [CollectionsService],

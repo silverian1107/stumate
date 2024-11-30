@@ -11,7 +11,6 @@ import { CollectionSchema } from '../collections/schema/collection.schema';
 import { NoteSchema } from '../notes/schema/note.schema';
 import { SummarySchema } from '../summaries/schema/summary.schema';
 import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
-import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -43,7 +42,6 @@ import { CaslModule } from 'src/casl/casl.module';
         schema: QuizAttemptSchema,
       },
     ]),
-    CaslModule,
   ],
   controllers: [ArchiveController],
   providers: [ArchiveService],

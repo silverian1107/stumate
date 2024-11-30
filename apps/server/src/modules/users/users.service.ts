@@ -372,15 +372,17 @@ export class UsersService {
       throw new NotFoundException('Not found user');
     }
     //soft delete for all tag
-    const tags = await this.tagsService.findAll(user);
+    const { userTags } = await this.tagsService.findAll(user);
     await Promise.all(
-      tags.map((tag: any) => this.tagsService.remove(tag._id.toString(), user)),
+      userTags.map((tag: any) =>
+        this.tagsService.remove(tag._id.toString(), user),
+      ),
     );
     //soft delete for all collection
     const collections = await this.collectionsService.findByUser(user);
     await Promise.all(
       collections.map((collection: any) =>
-        this.collectionsService.deleteById(collection._id.toString(), user._id),
+        this.collectionsService.deleteById(collection._id.toString()),
       ),
     );
     //soft delete for all deck, flashcard and flashcard review

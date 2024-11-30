@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
@@ -34,8 +35,10 @@ export class QuizQuestionsService {
     @User() user: IUser,
   ) {
     const quizTest = await this.quizTestService.findOne(quizTestId);
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
+    if (quizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
     const currentNumberOfQuestion = await this.quizQuestionModel.countDocuments(
       { quizTestId },
@@ -64,8 +67,10 @@ export class QuizQuestionsService {
     user: IUser,
   ) {
     const quizTest = await this.quizTestService.findOne(quizTestId);
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
+    if (quizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
     const currentNumberOfQuestion = await this.quizQuestionModel.countDocuments(
       { quizTestId },
@@ -96,7 +101,15 @@ export class QuizQuestionsService {
     return newQuizQuestions;
   }
 
-  async findByQuizTestId(quizTestId: string) {
+  async findByQuizTestId(quizTestId: string, user: IUser) {
+    const quizTest = await this.quizTestService.findOne(quizTestId);
+    if (user.role === 'USER') {
+      if (quizTest.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return await this.quizQuestionModel.find({ quizTestId });
   }
 
@@ -170,8 +183,13 @@ export class QuizQuestionsService {
   }
 
   async remove(quizTestId: string, id: string, @User() user: IUser) {
-    if (!(await this.quizTestService.findOne(quizTestId))) {
-      throw new NotFoundException('Not found quiz test');
+    const quizTest = await this.quizTestService.findOne(quizTestId);
+    if (user.role === 'USER') {
+      if (quizTest.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
     }
     const quizQuestion = await this.quizQuestionModel.findOne({
       _id: id,

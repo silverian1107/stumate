@@ -221,7 +221,6 @@ export class CollectionsService {
           ownerId,
           level: 0,
           isArchived: true,
-          isDeleted: false,
         })
         .sort(sort as any)
         .skip(skip)
@@ -234,7 +233,6 @@ export class CollectionsService {
         ownerId,
         level: 0,
         isArchived: true,
-        isDeleted: false,
       });
 
       const totalPages = Math.ceil(totalItems / limit);
@@ -255,14 +253,12 @@ export class CollectionsService {
     }
   }
 
-  async findById(collectionId: string, userId: string): Promise<Collection> {
+  async findById(collectionId: string): Promise<Collection> {
     if (!mongoose.isValidObjectId(collectionId))
       throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
 
     const collection = await this.collectionModel
-      .findOne({ _id: collectionId, ownerId: userId })
+      .findOne({ _id: collectionId })
       .populate('childrenDocs')
       .exec();
     if (!collection) {
@@ -273,21 +269,11 @@ export class CollectionsService {
     return collection;
   }
 
-  async updateById(
-    collectionId: string,
-    userId: string,
-    updateData: UpdateCollectionDto,
-  ) {
-    if (!mongoose.isValidObjectId(collectionId))
-      throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
-
+  async updateById(collectionId: string, updateData: UpdateCollectionDto) {
     const updatedCollection = await this.collectionModel
       .findOneAndUpdate(
         {
           _id: collectionId,
-          ownerId: userId,
         },
         updateData,
         {
@@ -295,31 +281,16 @@ export class CollectionsService {
         },
       )
       .exec();
-    if (!updatedCollection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
     return updatedCollection;
   }
 
-  async deleteById(collectionId: string, userId: string) {
-    if (!mongoose.isValidObjectId(collectionId))
-      throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
-
+  async deleteById(collectionId: string) {
     const deletedCollection = await this.collectionModel
       .findOne({
         _id: collectionId,
-        ownerId: userId,
         isArchived: true,
       })
       .exec();
-
-    if (!deletedCollection) {
-      throw new NotFoundException(`Collection not found`);
-    }
 
     const ownerId = deletedCollection.ownerId;
 

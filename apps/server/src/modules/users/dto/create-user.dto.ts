@@ -7,11 +7,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
-
-export enum Role {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-}
+import { Role } from '../schema/user.schema';
 
 export class CreateUserDto {
   @IsNotEmpty()

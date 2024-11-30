@@ -314,7 +314,11 @@ export class ArchiveService {
     };
   }
 
-  async findOne(resourceType: string, resourceId: string) {
+  async findOne(
+    resourceType: string,
+    resourceId: string,
+    isArchived: boolean = false,
+  ) {
     if (!mongoose.isValidObjectId(resourceId)) {
       throw new BadRequestException('Invalid Resource ID');
     }
@@ -335,7 +339,7 @@ export class ArchiveService {
       default:
         throw new BadRequestException('Invalid resource type');
     }
-    const resource = await model.findOne({ _id: resourceId, isArchived: true });
+    const resource = await model.findOne({ _id: resourceId, isArchived });
     if (!resource) {
       throw new NotFoundException(`Not found ${resourceType}`);
     }

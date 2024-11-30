@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
@@ -10,7 +11,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';
@@ -34,8 +34,10 @@ export class QuizAttemptsService {
   //websocket
   async handleStartQuizAttempt(quizTestId: string, @User() user: IUser) {
     const quizTest = await this.quizTests.findOne(quizTestId);
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
+    if (quizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
     //Update status for quiz test
     if (quizTest.status === 'NOT_STARTED') {
@@ -66,8 +68,10 @@ export class QuizAttemptsService {
     @User() user: IUser,
   ) {
     const quizTest = await this.quizTests.findOne(quizTestId);
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
+    if (quizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
     const updatedQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
       { _id: id, quizTestId, userId: user._id },
@@ -133,13 +137,12 @@ export class QuizAttemptsService {
     @User() user: IUser,
   ) {
     const quizTest = await this.quizTests.findOne(quizTestId);
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
+    if (quizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
-    const quizAttempt = await this.findOne(quizTestId, id);
-    if (!quizAttempt) {
-      throw new NotFoundException('Not found quiz attempt');
-    }
+    await this.findOne(quizTestId, id);
     //compute user score
     let score: number = 0;
     let correctAnswers: number = 0;
@@ -205,41 +208,16 @@ export class QuizAttemptsService {
     return updateQuizAttempt;
   }
 
-  async findByUserAndQuizTestId(quizTestId: string, @User() user: IUser) {
-    return await this.quizAttemptModel.find({ userId: user._id, quizTestId });
-  }
-
-  async findAll(currentPage: number, pageSize: number, qs: string) {
-    const { filter, sort, population, projection } = aqp(qs);
-    delete filter.current;
-    delete filter.pageSize;
-
-    currentPage = currentPage ? currentPage : 1;
-    const limit = pageSize ? pageSize : 10;
-    const offset = (currentPage - 1) * limit;
-
-    const totalItems = (await this.quizAttemptModel.find(filter)).length;
-    const totalPages = Math.ceil(totalItems / limit);
-
-    const result = await this.quizAttemptModel
-      .find(filter)
-      .skip(offset)
-      .limit(limit)
-      .sort(sort as any)
-      .select('-userId')
-      .populate(population)
-      .select(projection as any)
-      .exec();
-
-    return {
-      meta: {
-        current: currentPage,
-        pageSize: limit,
-        pages: totalPages,
-        total: totalItems,
-      },
-      result,
-    };
+  async findByQuizTestId(quizTestId: string, @User() user: IUser) {
+    const quizTest = await this.quizTests.findOne(quizTestId);
+    if (user.role === 'USER') {
+      if (quizTest.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
+    return await this.quizAttemptModel.find({ quizTestId });
   }
 
   async findOne(quizTestId: string, id: string) {

@@ -91,6 +91,46 @@ export class DecksService {
     };
   }
 
+  async findAllByUser(
+    currentPage: number,
+    pageSize: number,
+    qs: string,
+    user: IUser,
+  ) {
+    const { filter, sort, population, projection } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    filter.userId = user._id;
+
+    currentPage = currentPage ? currentPage : 1;
+    const limit = pageSize ? pageSize : 10;
+    const offset = (currentPage - 1) * limit;
+
+    const totalItems = (await this.deckModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const result = await this.deckModel
+      .find(filter)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort as any)
+      .select('-userId')
+      .populate(population)
+      .select(projection as any)
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        total: totalItems,
+      },
+      result,
+    };
+  }
+
   async findOne(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Deck ID');

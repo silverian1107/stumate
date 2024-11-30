@@ -7,7 +7,6 @@ import {
   QuizQuestion,
   QuizQuestionSchema,
 } from './schema/quiz-question.schema';
-import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { CaslModule } from 'src/casl/casl.module';
       },
     ]),
     forwardRef(() => QuizTestsModule),
-    CaslModule,
   ],
   controllers: [QuizQuestionsController],
   providers: [QuizQuestionsService],

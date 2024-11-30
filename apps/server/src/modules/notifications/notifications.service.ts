@@ -13,6 +13,7 @@ import {
 } from './schema/notification.schema';
 import { IUser } from '../users/users.interface';
 import mongoose from 'mongoose';
+import { CreateNotificationDto } from './dto/create-notification.dto';
 
 @Injectable()
 export class NotificationsService {
@@ -95,14 +96,31 @@ export class NotificationsService {
       { userId: user._id, isRead: false },
       { $set: { isRead: true } },
     );
-    const updatedNotifications = await this.notificationModel.find({
+    return await this.notificationModel.find({
       userId: user._id,
       isRead: true,
     });
-    return updatedNotifications;
   }
 
-  async remove(id: string) {
+  async update(id: string, updateNotificationDto: CreateNotificationDto) {
+    return await this.notificationModel.findOneAndUpdate(
+      { _id: id },
+      {
+        ...updateNotificationDto,
+      },
+      { new: true },
+    );
+  }
+
+  remove(id: string, user: IUser) {
+    return this.notificationModel.delete({ _id: id }, user._id);
+  }
+
+  async removeAll(user: IUser) {
+    return await this.notificationModel.delete({ userId: user._id }, user._id);
+  }
+
+  async findOne(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Notification ID');
     }
@@ -110,10 +128,6 @@ export class NotificationsService {
     if (!notification) {
       throw new NotFoundException('Not found notification');
     }
-    return this.notificationModel.delete({ _id: id });
-  }
-
-  async removeAll(user: IUser) {
-    return await this.notificationModel.delete({ userId: user._id });
+    return notification;
   }
 }

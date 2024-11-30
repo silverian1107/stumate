@@ -7,23 +7,23 @@ import {
   Param,
   Delete,
   InternalServerErrorException,
-  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { User as UserModel, UserDocument } from '../users/schema/user.schema';
+import {
+  User as UserModel,
+  UserDocument,
+  Role,
+} from '../users/schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from '../users/users.interface';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { StatisticsService } from '../statistics/statistics.service';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Notification } from './schema/notification.schema';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
 
 @Controller('notifications')
-@UseGuards(AbilityGuard)
 export class NotificationsController {
   constructor(
     private readonly notificationsService: NotificationsService,
@@ -33,7 +33,7 @@ export class NotificationsController {
   ) {}
 
   @Post('admin/send')
-  @CheckPolicies((ability) => ability.can(Action.CREATE, Notification))
+  @Roles(Role.ADMIN)
   @ResponseMessage('Create general notifications for users')
   async sendAdminNotification(
     @Body() createNotificationDto: CreateNotificationDto,
@@ -85,21 +85,24 @@ export class NotificationsController {
   }
 
   @Get()
-  @CheckPolicies((ability) => ability.can(Action.READ, Notification))
   @ResponseMessage('Get all notifications')
   async findAll(@User() user: IUser) {
     return await this.notificationsService.findAll(user);
   }
 
   @Patch(':id/read')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Notification))
   @ResponseMessage('Mark a notification as read')
-  async markNotificationAsRead(@Param('id') id: string) {
+  async markNotificationAsRead(@Param('id') id: string, @User() user: IUser) {
+    const foundNotification = await this.notificationsService.findOne(id);
+    if (foundNotification.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
     return await this.notificationsService.handleMarkNotificationAsRead(id);
   }
 
-  @Patch(':id/all-read')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Notification))
+  @Patch('all-read')
   @ResponseMessage('Mark all notification as read')
   async markAllNotificationAsRead(@User() user: IUser) {
     return await this.notificationsService.handleMarkAllNotificationAsRead(
@@ -107,15 +110,29 @@ export class NotificationsController {
     );
   }
 
+  @Patch(':id')
+  @Roles(Role.ADMIN)
+  @ResponseMessage('Update a notification as read')
+  async update(
+    @Param('id') id: string,
+    @Body() updateNotificationDto: CreateNotificationDto,
+  ) {
+    return await this.notificationsService.update(id, updateNotificationDto);
+  }
+
   @Delete(':id')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, Notification))
   @ResponseMessage('Delete a notification')
-  remove(@Param('id') id: string): Promise<any> {
-    return this.notificationsService.remove(id);
+  async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
+    const foundNotification = await this.notificationsService.findOne(id);
+    if (foundNotification.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+    return this.notificationsService.remove(id, user);
   }
 
   @Delete('all')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, Notification))
   @ResponseMessage('Delete a notification')
   async removeAll(@User() user: IUser): Promise<any> {
     return await this.notificationsService.removeAll(user);

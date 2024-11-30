@@ -7,24 +7,21 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { QuizTestsService } from './quiz-tests.service';
 import { CreateQuizTestDto } from './dto/create-quiz-test.dto';
 import { UpdateQuizTestDto } from './dto/update-quiz-test.dto';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { QuizTest } from './schema/quiz-test.schema';
+import { Role } from '../users/schema/user.schema';
 
 @Controller('quiz-tests')
-@UseGuards(AbilityGuard)
 export class QuizTestsController {
   constructor(private readonly quizTestsService: QuizTestsService) {}
 
   @Post()
-  @CheckPolicies((ability) => ability.can(Action.CREATE, QuizTest))
+  @Roles(Role.USER)
   @ResponseMessage('Create a new quiz test')
   async create(
     @Body() createQuizTestDto: CreateQuizTestDto,
@@ -41,7 +38,7 @@ export class QuizTestsController {
   }
 
   // @Post('multiple')
-  // @CheckPolicies((ability) => ability.can(Action.CREATE, QuizTest))
+  // @Roles(Role.USER)
   // @ResponseMessage('Create multiple quiz tests')
   // async createMultiple(
   //   @Body() createQuizTestDtos: CreateQuizTestDto[],
@@ -58,14 +55,14 @@ export class QuizTestsController {
   // }
 
   @Get()
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizTest))
+  @Roles(Role.USER)
   @ResponseMessage('Get quiz test by user')
   getByUser(@User() user: IUser) {
     return this.quizTestsService.findByUser(user);
   }
 
   @Get('all')
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizTest))
+  @Roles(Role.ADMIN)
   @ResponseMessage('Fetch list quiz test with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -76,31 +73,37 @@ export class QuizTestsController {
   }
 
   @Get(':id')
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizTest))
   @ResponseMessage('Fetch quiz test by id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @User() user: IUser) {
     const foundQuizTest = await this.quizTestsService.findOne(id);
+    if (user.role === 'USER') {
+      if (foundQuizTest.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return foundQuizTest;
   }
 
   @Patch(':id')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, QuizTest))
+  @Roles(Role.USER)
   @ResponseMessage('Update a quiz test')
   async update(
     @Param('id') id: string,
     @Body() updateQuizTestDto: UpdateQuizTestDto,
     @User() user: IUser,
   ) {
-    const updateDeck = await this.quizTestsService.update(
-      id,
-      updateQuizTestDto,
-      user,
-    );
-    return updateDeck;
+    const foundQuizTest = await this.quizTestsService.findOne(id);
+    if (foundQuizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+    return await this.quizTestsService.update(id, updateQuizTestDto, user);
   }
 
   @Delete(':id')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, QuizTest))
   @ResponseMessage('Delete a quiz test')
   remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     return this.quizTestsService.remove(id, user);

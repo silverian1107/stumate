@@ -11,31 +11,21 @@ import {
   Delete,
   NotFoundException,
   BadRequestException,
-  UseGuards,
   Res,
 } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { CheckPolicies, ResponseMessage } from 'src/decorator/customize';
+import { ResponseMessage } from 'src/decorator/customize';
 import * as path from 'path';
 import * as fs from 'fs';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { Note } from '../notes/schema/note.schema';
-import { User } from '../users/schema/user.schema';
 import { Response } from 'express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('attachments')
 @ApiTags('Attachments')
-@UseGuards(AbilityGuard)
 export class AttachmentsController {
   @Post('uploads')
   @ApiOperation({ summary: 'Upload multiple files' })
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.CREATE, Note) || ability.can(Action.UPDATE, Note),
-  )
   @ResponseMessage('Upload multiple files')
   @UseInterceptors(AnyFilesInterceptor())
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
@@ -46,7 +36,6 @@ export class AttachmentsController {
 
   @Post('upload')
   @ApiOperation({ summary: 'Upload single file' })
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, User))
   @ResponseMessage('Upload single file')
   @UseInterceptors(FileInterceptor('fileUpload'))
   uploadFile(
@@ -68,10 +57,6 @@ export class AttachmentsController {
 
   @Get('view/:folderType/:fileName')
   @ApiOperation({ summary: 'View file' })
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Note) || ability.can(Action.READ, User),
-  )
   @ResponseMessage('View file')
   async viewFile(
     @Param('folderType') folderType: string,
@@ -92,10 +77,6 @@ export class AttachmentsController {
 
   @Get('download/:folderType/:fileName')
   @ApiOperation({ summary: 'Download file' })
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Note) || ability.can(Action.READ, User),
-  )
   @ResponseMessage('Download file')
   async downloadFile(
     @Param('folderType') folderType: string,
@@ -116,7 +97,6 @@ export class AttachmentsController {
 
   @Delete(':folderType/:fileName')
   @ApiOperation({ summary: 'Delete file' })
-  @CheckPolicies((ability) => ability.can(Action.DELETE, Note))
   @ResponseMessage('Delete single file')
   async deleteFile(
     @Param('folderType') folderType: string,
