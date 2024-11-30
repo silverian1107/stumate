@@ -13,7 +13,11 @@ import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { User as UserModel, UserDocument, Role } from '../users/schema/user.schema';
+import {
+  User as UserModel,
+  UserDocument,
+  Role,
+} from '../users/schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from '../users/users.interface';
 import { Cron, CronExpression } from '@nestjs/schedule';

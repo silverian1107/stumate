@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Param, Query, ForbiddenException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Query,
+  ForbiddenException,
+} from '@nestjs/common';
 import { ArchiveService } from './archive.service';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';

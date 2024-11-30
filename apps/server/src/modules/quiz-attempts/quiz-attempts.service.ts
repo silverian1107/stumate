@@ -11,7 +11,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
 import { QuizQuestionsService } from '../quiz-questions/quiz-questions.service';

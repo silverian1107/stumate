@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Query,
   ForbiddenException,
 } from '@nestjs/common';
 import { QuizAttemptsService } from './quiz-attempts.service';

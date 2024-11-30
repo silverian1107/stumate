@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { SharedResourcesService } from './shared-resources.service';
 import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
