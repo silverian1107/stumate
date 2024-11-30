@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -155,17 +156,15 @@ export class QuizTestsService {
 
   //websocket
   async remove(id: string, @User() user: IUser) {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('Invalid Quiz Test ID');
-    }
-    const quizTest = await this.quizTestModel.findOne({
-      _id: id,
-      isArchived: true,
-    });
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
-    }
+    const quizTest = await this.findOne(id);
     const userId = quizTest.userId.toString();
+    if (user.role === 'USER') {
+      if (userId !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     //soft delete for quiz question
     await this.quizQuestionModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz test

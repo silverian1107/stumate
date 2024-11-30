@@ -1,6 +1,7 @@
 import { SummaryDocument } from './../summaries/schema/summary.schema';
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -29,8 +30,6 @@ export class NotesService {
   async create(newNoteData: CreateNoteDto, userId: string) {
     if (!mongoose.isValidObjectId(newNoteData.parentId))
       throw new BadRequestException('Invalid Collection ID');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId ID');
 
     try {
       const newNote = new this.noteModel({
@@ -41,7 +40,7 @@ export class NotesService {
 
       const [parentNote, parentCollection] = await Promise.all([
         this.noteModel.findOne({ _id: parentId }),
-        this.collectionService.findById(parentId, userId).catch(() => {
+        this.collectionService.findById(parentId).catch(() => {
           return null;
         }),
       ]);
@@ -51,6 +50,11 @@ export class NotesService {
         throw new NotFoundException(
           `Couldn't find the collection with ID: ${parentId}`,
         );
+      if (parent.owner !== userId) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
 
       newNote.parentId = parent._id as string;
       parent.children.push({
@@ -189,21 +193,19 @@ export class NotesService {
     }
   }
 
-  async findById(ownerId: string, noteId: string): Promise<Note> {
-    if (!mongoose.isValidObjectId(ownerId))
-      throw new BadRequestException('Invalid UserId');
+  async findById(noteId: string): Promise<Note> {
     if (!mongoose.isValidObjectId(noteId))
       throw new BadRequestException('Invalid NoteId');
 
-    const collection = await this.noteModel
+    const note = await this.noteModel
       .findOne({ _id: noteId })
       .populate('childrenDocs')
       .lean<Note>()
       .exec();
-    if (!collection) {
-      throw new NotFoundException(`Collection with ID ${noteId} not found`);
+    if (!note) {
+      throw new NotFoundException(`Note with ID ${noteId} not found`);
     }
-    return collection;
+    return note;
   }
 
   async updateById(noteId: string, updateData: UpdateNoteDto) {
@@ -211,9 +213,9 @@ export class NotesService {
     const updatedCollection = await this.noteModel
       .findOneAndUpdate({ _id: noteId }, { updateData }, { new: true })
       .exec();
-    if (!updatedCollection) {
-      throw new NotFoundException(`Collection with ID ${noteId} not found`);
-    }
+    // if (!updatedCollection) {
+    //   throw new NotFoundException(`Collection with ID ${noteId} not found`);
+    // }
     return updatedCollection;
   }
 
@@ -224,9 +226,9 @@ export class NotesService {
       _id: noteId,
       isArchived: true,
     });
-    if (!deletedNote) {
-      throw new NotFoundException(`Note with ID ${noteId} not found`);
-    }
+    // if (!deletedNote) {
+    //   throw new NotFoundException(`Note with ID ${noteId} not found`);
+    // }
 
     const ownerId = deletedNote.ownerId;
 

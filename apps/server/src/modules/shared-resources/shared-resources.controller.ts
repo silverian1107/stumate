@@ -1,35 +1,17 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Param, Post, Query } from '@nestjs/common';
 import { SharedResourcesService } from './shared-resources.service';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { Note } from '../notes/schema/note.schema';
-import { Deck } from '../decks/schema/deck.schema';
-import { QuizTest } from '../quiz-tests/schema/quiz-test.schema';
+import { Role } from '../users/schema/user.schema';
 
 @Controller(':resourceType')
-@UseGuards(AbilityGuard)
 export class SharedResourcesController {
   constructor(
     private readonly sharedResourcesService: SharedResourcesService,
   ) {}
 
   @Post(':resourceId/share')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.SHARE, Note) ||
-      ability.can(Action.SHARE, Deck) ||
-      ability.can(Action.SHARE, QuizTest),
-  )
+  @Roles(Role.USER)
   @ResponseMessage('Share resource with another user')
   async shareResourceWithUser(
     @Param('resourceType') resourceType: string,
@@ -45,33 +27,8 @@ export class SharedResourcesController {
     );
   }
 
-  @Post(':resourceId/clone')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Note) ||
-      ability.can(Action.READ, Deck) ||
-      ability.can(Action.READ, QuizTest),
-  )
-  @ResponseMessage('Clone resource with another user')
-  async cloneResource(
-    @Param('resourceType') resourceType: string,
-    @Param('resourceId') resourceId: string,
-    @User() user: IUser,
-  ) {
-    return await this.sharedResourcesService.handleCloneResource(
-      resourceType,
-      resourceId,
-      user,
-    );
-  }
-
   @Post(':resourceId/unshare')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.SHARE, Note) ||
-      ability.can(Action.SHARE, Deck) ||
-      ability.can(Action.SHARE, QuizTest),
-  )
+  @Roles(Role.USER)
   @ResponseMessage('Remove shared resource with another user')
   async removeSharedResourceWithUser(
     @Param('resourceType') resourceType: string,
@@ -87,13 +44,23 @@ export class SharedResourcesController {
     );
   }
 
+  @Post(':resourceId/clone')
+  @Roles(Role.USER)
+  @ResponseMessage('Clone resource with another user')
+  async cloneResource(
+    @Param('resourceType') resourceType: string,
+    @Param('resourceId') resourceId: string,
+    @User() user: IUser,
+  ) {
+    return await this.sharedResourcesService.handleCloneResource(
+      resourceType,
+      resourceId,
+      user,
+    );
+  }
+
   @Get('shared-resources')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Note) ||
-      ability.can(Action.READ, Deck) ||
-      ability.can(Action.READ, QuizTest),
-  )
+  @Roles(Role.USER)
   @ResponseMessage('Get all shared resources')
   async findAllSharedResources(
     @User() user: IUser,
@@ -112,12 +79,7 @@ export class SharedResourcesController {
   }
 
   @Get('cloned-resources')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Note) ||
-      ability.can(Action.READ, Deck) ||
-      ability.can(Action.READ, QuizTest),
-  )
+  @Roles(Role.USER)
   @ResponseMessage('Get all cloned resources')
   async findAllClonedResources(
     @User() user: IUser,
@@ -136,12 +98,7 @@ export class SharedResourcesController {
   }
 
   @Get(':resourceId/shared-resource')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Note) ||
-      ability.can(Action.READ, Deck) ||
-      ability.can(Action.READ, QuizTest),
-  )
+  @Roles(Role.USER)
   @ResponseMessage('Fetch shared resource by id')
   async findSharedResource(
     @Param('resourceType') resourceType: string,
@@ -156,12 +113,7 @@ export class SharedResourcesController {
   }
 
   @Get(':resourceId/cloned-resource')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Note) ||
-      ability.can(Action.READ, Deck) ||
-      ability.can(Action.READ, QuizTest),
-  )
+  @Roles(Role.USER)
   @ResponseMessage('Fetch cloned resource by id')
   async findClonedResource(
     @Param('resourceType') resourceType: string,

@@ -9,7 +9,6 @@ import { TagsModule } from '../tags/tags.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { UserStatisticSchema } from '../statistics/schema/user-statistic.schema';
 import { CollectionsModule } from '../collections/collections.module';
-import { CaslModule } from 'src/casl/casl.module';
 import { QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
 
 @Module({
@@ -28,7 +27,6 @@ import { QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
     TagsModule,
     NotificationsModule,
     CollectionsModule,
-    CaslModule,
   ],
   exports: [UsersService],
 })

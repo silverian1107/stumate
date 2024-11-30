@@ -6,45 +6,57 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Tag } from './schema/tag.schema';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Role } from '../users/schema/user.schema';
+import { UsersService } from '../users/users.service';
 
 @Controller('tags')
-@UseGuards(AbilityGuard)
 export class TagsController {
-  constructor(private readonly tagsService: TagsService) {}
+  constructor(
+    private readonly tagsService: TagsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('assign-tag/:resourceType/:resourceId/:id')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Tag))
+  @Roles(Role.USER)
   @ResponseMessage('Assign tag')
   async addTag(
     @Param('resourceType') resourceType: string,
     @Param('resourceId') resourceId: string,
     @Param('id') id: string,
+    @User() user: IUser,
   ) {
-    return await this.tagsService.handleAddTag(resourceType, resourceId, id);
+    return await this.tagsService.handleAddTag(
+      resourceType,
+      resourceId,
+      id,
+      user,
+    );
   }
 
   @Post('remove-tag/:resourceType/:resourceId/:id')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Tag))
+  @Roles(Role.USER)
   @ResponseMessage('Remove tag')
   async removeTag(
     @Param('resourceType') resourceType: string,
     @Param('resourceId') resourceId: string,
     @Param('id') id: string,
+    @User() user: IUser,
   ) {
-    return await this.tagsService.handleRemoveTag(resourceType, resourceId, id);
+    return await this.tagsService.handleRemoveTag(
+      resourceType,
+      resourceId,
+      id,
+      user,
+    );
   }
 
   @Post()
-  @CheckPolicies((ability) => ability.can(Action.CREATE, Tag))
   @ResponseMessage('Create a new tag')
   async create(@Body() createTagDto: CreateTagDto, @User() user: IUser) {
     const newTag = await this.tagsService.create(createTagDto, user);
@@ -55,44 +67,98 @@ export class TagsController {
   }
 
   @Get()
-  @CheckPolicies((ability) => ability.can(Action.READ, Tag))
   @ResponseMessage('Fetch list tag')
   async findAll(@User() user: IUser) {
-    return await this.tagsService.findAll(user);
+    const { userTags, allTags } = await this.tagsService.findAll(user);
+    if (user.role === 'ADMIN') {
+      return allTags;
+    }
+    const adminTags = await Promise.all(
+      allTags.map(async (tag) => {
+        const createdByUser = await this.usersService.findOne(
+          tag.userId.toString(),
+        );
+        if (createdByUser.role === 'ADMIN') {
+          return tag;
+        }
+        return null;
+      }),
+    );
+    return {
+      userTags,
+      adminTags: adminTags.filter((tag) => tag !== null),
+    };
   }
 
   @Get(':id')
-  @CheckPolicies((ability) => ability.can(Action.READ, Tag))
   @ResponseMessage('Fetch tag by id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @User() user: IUser) {
     const foundTag = await this.tagsService.findOne(id);
+    const createdByUser = await this.usersService.findOne(
+      foundTag.userId.toString(),
+    );
+    if (user.role === 'USER') {
+      if (
+        foundTag.userId.toString() !== user._id &&
+        createdByUser.role !== 'ADMIN'
+      ) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return foundTag;
   }
 
   @Get('name/:name')
-  @CheckPolicies((ability) => ability.can(Action.READ, Tag))
   @ResponseMessage('Fetch tag by name')
   async findByName(@Param('name') name: string, @User() user: IUser) {
-    const foundTag = await this.tagsService.findByName(name, user);
+    const foundTag = await this.tagsService.findByName(name);
+    const createdByUser = await this.usersService.findOne(
+      foundTag.userId.toString(),
+    );
+    if (user.role === 'USER') {
+      if (
+        foundTag.userId.toString() !== user._id &&
+        createdByUser.role !== 'ADMIN'
+      ) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return foundTag;
   }
 
   @Patch(':id')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Tag))
   @ResponseMessage('Update a tag')
   async update(
     @Param('id') id: string,
     @Body() createTagDto: CreateTagDto,
     @User() user: IUser,
   ) {
-    const updateTag = await this.tagsService.update(id, createTagDto, user);
-    return updateTag;
+    const foundTag = await this.tagsService.findOne(id);
+    if (user.role === 'USER') {
+      if (foundTag.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
+    return await this.tagsService.update(id, createTagDto, user);
   }
 
   @Delete(':id')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, Tag))
   @ResponseMessage('Delete a tag')
-  remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
+  async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
+    const foundTag = await this.tagsService.findOne(id);
+    if (user.role === 'USER') {
+      if (foundTag.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return this.tagsService.remove(id, user);
   }
 }

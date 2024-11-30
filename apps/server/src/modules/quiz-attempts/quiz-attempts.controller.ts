@@ -6,25 +6,21 @@ import {
   Patch,
   Param,
   Query,
-  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { QuizAttemptsService } from './quiz-attempts.service';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import { UserAnswersDto } from './dto/submit-quiz-attempt.dto';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { QuizAttempt } from './schema/quiz-attempt.schema';
-import { QuizTest } from '../quiz-tests/schema/quiz-test.schema';
+import { Role } from '../users/schema/user.schema';
 
 @Controller('quiz-tests/:quizTestId/quiz-attempts')
-@UseGuards(AbilityGuard)
 export class QuizAttemptsController {
   constructor(private readonly quizAttemptsService: QuizAttemptsService) {}
 
   @Post('start')
+  @Roles(Role.USER)
   @ResponseMessage('Send request to start a quiz')
-  @CheckPolicies((ability) => ability.can(Action.STUDY, QuizTest))
   async startQuiz(
     @Param('quizTestId') quizTestId: string,
     @User() user: IUser,
@@ -35,7 +31,7 @@ export class QuizAttemptsController {
   }
 
   @Post(':id/submit')
-  @CheckPolicies((ability) => ability.can(Action.STUDY, QuizTest))
+  @Roles(Role.USER)
   @ResponseMessage('Send request to submit a quiz')
   async submitQuiz(
     @Param('quizTestId') quizTestId: string,
@@ -52,42 +48,37 @@ export class QuizAttemptsController {
   }
 
   @Post('all')
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizAttempt))
   @ResponseMessage('Get quiz attempt by user')
-  getByUserAndQuizTestId(
+  getByQuizTestId(
     @Param('quizTestId') quizTestId: string,
     @User() user: IUser,
   ) {
-    return this.quizAttemptsService.findByUserAndQuizTestId(quizTestId, user);
-  }
-
-  @Get()
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizAttempt))
-  @ResponseMessage('Fetch list quiz attempt with pagination')
-  findAll(
-    @Query('current') currentPage: string,
-    @Query('pageSize') pageSize: string,
-    @Query() qs: string,
-  ) {
-    return this.quizAttemptsService.findAll(+currentPage, +pageSize, qs);
+    return this.quizAttemptsService.findByQuizTestId(quizTestId, user);
   }
 
   @Get(':id')
-  @CheckPolicies((ability) => ability.can(Action.READ, QuizAttempt))
   @ResponseMessage('Fetch quiz attempt by id')
   async findOne(
     @Param('quizTestId') quizTestId: string,
     @Param('id') id: string,
+    @User() user: IUser,
   ) {
     const foundQuizAttempt = await this.quizAttemptsService.findOne(
       quizTestId,
       id,
     );
+    if (user.role === 'USER') {
+      if (foundQuizAttempt.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return foundQuizAttempt;
   }
 
   @Patch(':id/save-progress')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, QuizAttempt))
+  @Roles(Role.USER)
   @ResponseMessage('Save the progress of a quiz')
   async saveQuizAttempt(
     @Param('quizTestId') quizTestId: string,
@@ -109,7 +100,6 @@ export class QuizAttemptsController {
   }
 
   // @Delete(':id')
-  // @CheckPolicies((ability) => ability.can(Action.DELETE, QuizAttempt))
   // @ResponseMessage('Delete a quiz question')
   // remove(
   //   @Param('quizTestId') quizTestId: string,

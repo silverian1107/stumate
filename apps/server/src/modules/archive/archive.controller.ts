@@ -1,35 +1,34 @@
-import { Controller, Get, Post, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, ForbiddenException } from '@nestjs/common';
 import { ArchiveService } from './archive.service';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { Collection } from '../collections/schema/collection.schema';
-import { Note } from '../notes/schema/note.schema';
-import { Deck } from '../decks/schema/deck.schema';
-import { QuizTest } from '../quiz-tests/schema/quiz-test.schema';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Archive')
 @Controller(':resourceType')
-@UseGuards(AbilityGuard)
 export class ArchiveController {
   constructor(private readonly archiveService: ArchiveService) {}
 
   @ApiOperation({ summary: 'Archive a resource' })
   @Post(':resourceId/archive')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.ARCHIVE, Collection) ||
-      ability.can(Action.ARCHIVE, Note) ||
-      ability.can(Action.ARCHIVE, Deck) ||
-      ability.can(Action.ARCHIVE, QuizTest),
-  )
   @ResponseMessage('Archive a resource')
   async archiveResource(
     @Param('resourceType') resourceType: string,
     @Param('resourceId') resourceId: string,
+    @User() user: IUser,
   ) {
+    const resource = await this.archiveService.findOne(
+      resourceType,
+      resourceId,
+    );
+    const ownerId = resource.ownerId || resource.userId;
+    if (user.role === 'USER') {
+      if (ownerId.toString() === user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return await this.archiveService.handleArchiveResource(
       resourceType,
       resourceId,
@@ -38,18 +37,25 @@ export class ArchiveController {
 
   @ApiOperation({ summary: 'Restore a resource' })
   @Post(':resourceId/restore')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.ARCHIVE, Collection) ||
-      ability.can(Action.ARCHIVE, Note) ||
-      ability.can(Action.ARCHIVE, Deck) ||
-      ability.can(Action.ARCHIVE, QuizTest),
-  )
   @ResponseMessage('Restore a resource')
   async restoreResource(
     @Param('resourceType') resourceType: string,
     @Param('resourceId') resourceId: string,
+    @User() user: IUser,
   ) {
+    const resource = await this.archiveService.findOne(
+      resourceType,
+      resourceId,
+      true,
+    );
+    const ownerId = resource.ownerId || resource.userId;
+    if (user.role === 'USER') {
+      if (ownerId.toString() === user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return await this.archiveService.handleRestoreResource(
       resourceType,
       resourceId,
@@ -58,13 +64,6 @@ export class ArchiveController {
 
   @ApiOperation({ summary: 'Fetch list archived resources with pagination' })
   @Get('archived-resources')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Collection) ||
-      ability.can(Action.READ, Note) ||
-      ability.can(Action.READ, Deck) ||
-      ability.can(Action.READ, QuizTest),
-  )
   @ResponseMessage('Fetch list archived resources with pagination')
   findAll(
     @User() user: IUser,
@@ -84,18 +83,25 @@ export class ArchiveController {
 
   @ApiOperation({ summary: 'Fetch archived resources by id' })
   @Get(':resourceType/archived-resource')
-  @CheckPolicies(
-    (ability) =>
-      ability.can(Action.READ, Collection) ||
-      ability.can(Action.READ, Note) ||
-      ability.can(Action.READ, Deck) ||
-      ability.can(Action.READ, QuizTest),
-  )
   @ResponseMessage('Fetch archived resources by id')
   async findOne(
     @Param('resourceType') resourceType: string,
     @Param('resourceId') resourceId: string,
+    @User() user: IUser,
   ) {
-    return await this.archiveService.findOne(resourceType, resourceId);
+    const resource = await this.archiveService.findOne(
+      resourceType,
+      resourceId,
+      true,
+    );
+    const ownerId = resource.ownerId || resource.userId;
+    if (user.role === 'USER') {
+      if (ownerId.toString() === user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
+    return resource;
   }
 }
