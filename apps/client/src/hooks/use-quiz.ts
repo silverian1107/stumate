@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
-import type { QuizCreateDto } from '@/endpoints/quiz-api';
+import type { QuizCreateDto, QuizQuestion } from '@/endpoints/quiz-api';
 import { QuizApi } from '@/endpoints/quiz-api';
 import type { Quiz } from '@/types/deck';
 
@@ -43,6 +43,25 @@ export const useQuizCreate = () => {
     mutationKey: ['quizzes'],
     mutationFn: async (data: QuizCreateDto) => {
       const response = await QuizApi.create(data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes']
+      });
+    }
+  });
+};
+
+export const useCreateQuestions = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['quizzes'],
+    mutationFn: async (data: { quizId: string; questions: QuizQuestion[] }) => {
+      const response = await QuizApi.bulkCreateQuestions(
+        data.quizId,
+        data.questions
+      );
       return response.data;
     },
     onSuccess: () => {
