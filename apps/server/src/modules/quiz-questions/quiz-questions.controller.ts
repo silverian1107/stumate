@@ -42,7 +42,7 @@ export class QuizQuestionsController {
     };
   }
 
-  @Post('multiple')
+  @Post('bulk')
   @CheckPolicies((ability) => ability.can(Action.CREATE, QuizQuestion))
   @ResponseMessage('Create multiple quiz questions')
   async createMultiple(
