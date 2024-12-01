@@ -75,17 +75,9 @@ export class ArchiveController {
   findAll(
     @User() user: IUser,
     @Param('resourceType') resourceType: string,
-    @Query('current') currentPage: string,
-    @Query('pageSize') pageSize: string,
     @Query() qs: string,
   ) {
-    return this.archiveService.findAll(
-      user,
-      resourceType,
-      +currentPage,
-      +pageSize,
-      qs,
-    );
+    return this.archiveService.findAll(user, resourceType, qs);
   }
 
   @ApiOperation({ summary: 'Fetch archived resources by id' })

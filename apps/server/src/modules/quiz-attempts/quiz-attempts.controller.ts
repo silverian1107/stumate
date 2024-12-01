@@ -47,6 +47,7 @@ export class QuizAttemptsController {
   }
 
   @Post('all')
+  @Roles(Role.USER)
   @ResponseMessage('Get quiz attempt by user')
   getByQuizTestId(
     @Param('quizTestId') quizTestId: string,

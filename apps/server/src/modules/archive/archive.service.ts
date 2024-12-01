@@ -290,23 +290,11 @@ export class ArchiveService {
     }
   }
 
-  async findAll(
-    user: IUser,
-    resourceType: string,
-    currentPage: number,
-    pageSize: number,
-    qs: string,
-  ) {
+  async findAll(user: IUser, resourceType: string, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
-    delete filter.current;
-    delete filter.pageSize;
 
     filter.isArchived = true;
-    filter.userId = user._id;
-
-    currentPage = currentPage ? currentPage : 1;
-    const limit = pageSize ? pageSize : 10;
-    const offset = (currentPage - 1) * limit;
+    filter.$or = [{ userId: user._id }, { ownerId: user._id }];
 
     let model: any;
     switch (resourceType) {
@@ -327,12 +315,9 @@ export class ArchiveService {
     }
 
     const totalItems = (await model.find(filter)).length;
-    const totalPages = Math.ceil(totalItems / limit);
 
     const result = await model
       .find(filter)
-      .skip(offset)
-      .limit(limit)
       .sort(sort as any)
       .select('-userId')
       .populate(population)
@@ -340,12 +325,7 @@ export class ArchiveService {
       .exec();
 
     return {
-      meta: {
-        current: currentPage,
-        pageSize: limit,
-        pages: totalPages,
-        total: totalItems,
-      },
+      total: totalItems,
       result,
     };
   }

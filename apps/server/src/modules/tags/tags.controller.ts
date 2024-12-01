@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ForbiddenException,
+  Query,
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
@@ -69,25 +70,7 @@ export class TagsController {
   @Get()
   @ResponseMessage('Fetch list tag')
   async findAll(@User() user: IUser) {
-    const { userTags, allTags } = await this.tagsService.findAll(user);
-    if (user.role === 'ADMIN') {
-      return allTags;
-    }
-    const adminTags = await Promise.all(
-      allTags.map(async (tag) => {
-        const createdByUser = await this.usersService.findOne(
-          tag.userId.toString(),
-        );
-        if (createdByUser.role === 'ADMIN') {
-          return tag;
-        }
-        return null;
-      }),
-    );
-    return {
-      userTags,
-      adminTags: adminTags.filter((tag) => tag !== null),
-    };
+    return await this.tagsService.findAll(user);
   }
 
   @Get(':id')
@@ -110,24 +93,10 @@ export class TagsController {
     return foundTag;
   }
 
-  @Get('name/:name')
-  @ResponseMessage('Fetch tag by name')
-  async findByName(@Param('name') name: string, @User() user: IUser) {
-    const foundTag = await this.tagsService.findByName(name);
-    const createdByUser = await this.usersService.findOne(
-      foundTag.userId.toString(),
-    );
-    if (user.role === 'USER') {
-      if (
-        foundTag.userId.toString() !== user._id &&
-        createdByUser.role !== 'ADMIN'
-      ) {
-        throw new ForbiddenException(
-          `You don't have permission to access this resource`,
-        );
-      }
-    }
-    return foundTag;
+  @Get('search')
+  @ResponseMessage('Search tag by name')
+  async searchByName(@Query('name') name: string, @User() user: IUser) {
+    return await this.tagsService.searchByName(name, user);
   }
 
   @Patch(':id')

@@ -44,19 +44,30 @@ export class FlashcardsService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  async handleGetAllFlashcards(deckId: string, user: IUser) {
+  async findByDeckAndUser(deckId: string, user: IUser, qs: string) {
     const deck = await this.decks.findOne(deckId);
-    if (user.role === 'USER') {
-      if (deck.userId.toString() !== user._id) {
-        throw new ForbiddenException(
-          `You don't have permission to access this resource`,
-        );
-      }
+    if (deck.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
-    const flashcards = await this.flashcardModel.find({
-      deckId,
-    });
-    return flashcards;
+    const { filter, sort, population, projection } = aqp(qs);
+
+    filter.userId = user._id;
+    filter.deckId = deckId;
+
+    const totalItems = (await this.flashcardModel.find(filter)).length;
+    const result = await this.flashcardModel
+      .find(filter)
+      .sort(sort as any)
+      .select('-userId')
+      .populate(population)
+      .select(projection as any)
+      .exec();
+    return {
+      total: totalItems,
+      result,
+    };
   }
 
   //websocket
@@ -461,7 +472,9 @@ export class FlashcardsService {
       }
     }
 
-    const flashcards = await this.handleGetAllFlashcards(deckId, user);
+    const flashcards = await this.flashcardModel.find({
+      deckId,
+    });
     if (!flashcards || flashcards.length === 0) {
       throw new NotFoundException('No flashcards found in this deck');
     }

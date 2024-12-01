@@ -143,10 +143,6 @@ export class CollectionsService {
     }
   }
 
-  async findByUser(user: IUser) {
-    return await this.collectionModel.find({ userId: user._id });
-  }
-
   async findByOwnerId(
     userId: string,
     currentPage = 1,

@@ -34,12 +34,12 @@ export class DecksController {
     };
   }
 
-  @Post('user')
+  @Get('all')
   @Roles(Role.USER)
   @ApiOperation({ summary: 'Create a new deck for user' })
   @ResponseMessage('Get deck by user')
-  getByUser(@User() user: IUser) {
-    return this.decksService.findByUser(user);
+  getByUser(@User() user: IUser, @Query() qs: string) {
+    return this.decksService.findByUser(user, qs);
   }
 
   @Get()
@@ -52,19 +52,6 @@ export class DecksController {
     @Query() qs: string,
   ) {
     return this.decksService.findAll(+currentPage, +pageSize, qs);
-  }
-
-  @Get()
-  @Roles(Role.USER)
-  @ApiOperation({ summary: 'Get all decks' })
-  @ResponseMessage('Fetch list deck with pagination')
-  findAllByUser(
-    @Query('current') currentPage: string,
-    @Query('pageSize') pageSize: string,
-    @Query() qs: string,
-    @User() user: IUser,
-  ) {
-    return this.decksService.findAllByUser(+currentPage, +pageSize, qs, user);
   }
 
   @Get(':id')

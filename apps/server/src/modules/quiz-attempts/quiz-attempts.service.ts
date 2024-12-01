@@ -210,12 +210,10 @@ export class QuizAttemptsService {
 
   async findByQuizTestId(quizTestId: string, @User() user: IUser) {
     const quizTest = await this.quizTests.findOne(quizTestId);
-    if (user.role === 'USER') {
-      if (quizTest.userId.toString() !== user._id) {
-        throw new ForbiddenException(
-          `You don't have permission to access this resource`,
-        );
-      }
+    if (quizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
     return await this.quizAttemptModel.find({ quizTestId });
   }

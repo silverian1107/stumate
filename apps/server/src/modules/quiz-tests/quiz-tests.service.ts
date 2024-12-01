@@ -88,8 +88,23 @@ export class QuizTestsService {
   //   return newQuizTests;
   // }
 
-  async findByUser(user: IUser) {
-    return await this.quizTestModel.find({ userId: user._id });
+  async findByUser(user: IUser, qs: string) {
+    const { filter, sort, population, projection } = aqp(qs);
+
+    filter.userId = user._id;
+
+    const totalItems = (await this.quizTestModel.find(filter)).length;
+    const result = await this.quizTestModel
+      .find(filter)
+      .sort(sort as any)
+      .select('-userId')
+      .populate(population)
+      .select(projection as any)
+      .exec();
+    return {
+      total: totalItems,
+      result,
+    };
   }
 
   async findAll(currentPage: number, pageSize: number, qs: string) {

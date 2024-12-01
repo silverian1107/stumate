@@ -103,46 +103,12 @@ export class QuizQuestionsService {
 
   async findByQuizTestId(quizTestId: string, user: IUser) {
     const quizTest = await this.quizTestService.findOne(quizTestId);
-    if (user.role === 'USER') {
-      if (quizTest.userId.toString() !== user._id) {
-        throw new ForbiddenException(
-          `You don't have permission to access this resource`,
-        );
-      }
+    if (quizTest.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
     return await this.quizQuestionModel.find({ quizTestId });
-  }
-
-  async findAll(currentPage: number, pageSize: number, qs: string) {
-    const { filter, sort, population, projection } = aqp(qs);
-    delete filter.current;
-    delete filter.pageSize;
-
-    currentPage = currentPage ? currentPage : 1;
-    const limit = pageSize ? pageSize : 10;
-    const offset = (currentPage - 1) * limit;
-
-    const totalItems = (await this.quizQuestionModel.find(filter)).length;
-    const totalPages = Math.ceil(totalItems / limit);
-
-    const result = await this.quizQuestionModel
-      .find(filter)
-      .skip(offset)
-      .limit(limit)
-      .sort(sort as any)
-      .populate(population)
-      .select(projection as any)
-      .exec();
-
-    return {
-      meta: {
-        current: currentPage,
-        pageSize: limit,
-        pages: totalPages,
-        total: totalItems,
-      },
-      result,
-    };
   }
 
   async findOne(quizTestId: string, id: string) {

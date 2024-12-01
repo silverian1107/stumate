@@ -328,6 +328,11 @@ export class UsersService {
     return newUser;
   }
 
+  async findAllAdminIds() {
+    const adminUsers = await this.userModel.find({ role: 'ADMIN' });
+    return adminUsers.map((admin) => admin._id.toString());
+  }
+
   async findAll(currentPage: number, pageSize: number, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;

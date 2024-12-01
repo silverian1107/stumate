@@ -21,6 +21,7 @@ import {
   QuizTestDocument,
 } from '../quiz-tests/schema/quiz-test.schema';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class TagsService {
@@ -35,6 +36,7 @@ export class TagsService {
     private readonly deckModel: SoftDeleteModel<DeckDocument>,
     @InjectModel(QuizTest.name)
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
+    private readonly usersService: UsersService,
   ) {}
 
   async checkOwnership(
@@ -170,14 +172,6 @@ export class TagsService {
     }
   }
 
-  async findByName(name: string) {
-    const tag = await this.tagModel.findOne({ name });
-    if (!tag) {
-      throw new NotFoundException('Not found tag');
-    }
-    return tag;
-  }
-
   async create(createTagDto: CreateTagDto, @User() user: IUser) {
     const { name } = createTagDto;
     //Check name already exists
@@ -198,11 +192,49 @@ export class TagsService {
   }
 
   async findAll(@User() user: IUser) {
-    const userTags = await this.tagModel.find({ userId: user._id });
     const allTags = await this.tagModel.find();
+
+    if (user.role === 'ADMIN') {
+      return {
+        allTags,
+      };
+    }
+
+    const userTags = allTags.filter(
+      (tag) => tag.userId.toString() === user._id,
+    );
+    const adminIds = await this.usersService.findAllAdminIds();
+    const adminTags = allTags.filter((tag) =>
+      adminIds.includes(tag.userId.toString()),
+    );
+
     return {
       userTags,
-      allTags,
+      combinedTags: [...userTags, ...adminTags],
+    };
+  }
+
+  async searchByName(name: string, user: IUser) {
+    const allTags = await this.tagModel.find({
+      name: { $regex: name, $options: 'i' },
+    });
+
+    if (user.role === 'ADMIN') {
+      return {
+        allTags,
+      };
+    }
+
+    const userTags = allTags.filter(
+      (tag) => tag.userId.toString() === user._id,
+    );
+    const adminIds = await this.usersService.findAllAdminIds();
+    const adminTags = allTags.filter((tag) =>
+      adminIds.includes(tag.userId.toString()),
+    );
+
+    return {
+      results: [...userTags, ...adminTags],
     };
   }
 

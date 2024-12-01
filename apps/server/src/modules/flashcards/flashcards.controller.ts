@@ -70,10 +70,15 @@ export class FlashcardsController {
   }
 
   @Get('all')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Get all flashcards by deckId' })
   @ResponseMessage('Get all flashcards by user and deck')
-  async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
-    return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
+  async getAllFlashcards(
+    @Param('deckId') deckId: string,
+    @User() user: IUser,
+    @Query() qs: string,
+  ) {
+    return await this.flashcardsService.findByDeckAndUser(deckId, user, qs);
   }
 
   @Post('bulk/update')

@@ -59,22 +59,13 @@ export class QuizQuestionsController {
   }
 
   @Post('all')
+  @Roles(Role.USER)
   @ResponseMessage('Get quiz question by quiz test')
   getByQuizTestId(
     @Param('quizTestId') quizTestId: string,
     @User() user: IUser,
   ) {
     return this.quizQuestionsService.findByQuizTestId(quizTestId, user);
-  }
-
-  @Get()
-  @ResponseMessage('Fetch list quiz question with pagination')
-  findAll(
-    @Query('current') currentPage: string,
-    @Query('pageSize') pageSize: string,
-    @Query() qs: string,
-  ) {
-    return this.quizQuestionsService.findAll(+currentPage, +pageSize, qs);
   }
 
   @Get(':id')

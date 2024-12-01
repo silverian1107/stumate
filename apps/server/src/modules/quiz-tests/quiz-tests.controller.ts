@@ -57,8 +57,8 @@ export class QuizTestsController {
   @Get()
   @Roles(Role.USER)
   @ResponseMessage('Get quiz test by user')
-  getByUser(@User() user: IUser) {
-    return this.quizTestsService.findByUser(user);
+  getByUser(@User() user: IUser, @Query() qs: string) {
+    return this.quizTestsService.findByUser(user, qs);
   }
 
   @Get('all')
