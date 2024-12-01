@@ -10,7 +10,6 @@ import { JwtStrategy } from './passport/jwt.strategy';
 import { UsersModule } from 'src/modules/users/users.module';
 import { GoogleStrategy } from './passport/google.strategy';
 import { FacebookStrategy } from './passport/facebook.strategy';
-import { RolesGuard } from './roles.guard';
 
 @Module({
   controllers: [AuthController],
@@ -20,7 +19,6 @@ import { RolesGuard } from './roles.guard';
     JwtStrategy,
     GoogleStrategy,
     FacebookStrategy,
-    RolesGuard,
   ],
   imports: [
     UsersModule,

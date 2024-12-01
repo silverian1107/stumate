@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DeckSchema } from './schema/deck.schema';
 import { FlashcardSchema } from '../flashcards/schema/flashcard.schema';
 import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
+import { StatisticsModule } from '../statistics/statistics.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.sch
     MongooseModule.forFeature([
       { name: 'FlashcardReview', schema: FlashcardReviewSchema },
     ]),
+    StatisticsModule,
   ],
   controllers: [DecksController],
   providers: [DecksService],

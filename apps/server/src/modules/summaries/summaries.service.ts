@@ -35,7 +35,7 @@ export class SummariesService {
     if (!note) {
       throw new NotFoundException('Not found note');
     }
-    if (note.ownerId !== user._id) {
+    if (note.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -61,7 +61,7 @@ export class SummariesService {
       throw new NotFoundException('Not found note');
     }
     if (user.role === 'USER') {
-      if (note.ownerId !== user._id) {
+      if (note.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );

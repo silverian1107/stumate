@@ -104,14 +104,6 @@ export class DecksController {
   @ApiOperation({ summary: 'Delete deck by id' })
   @ResponseMessage('Delete a deck')
   async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
-    const foundDeck = await this.decksService.findOne(id);
-    if (user.role === 'USER') {
-      if (foundDeck.userId.toString() !== user._id) {
-        throw new ForbiddenException(
-          `You don't have permission to access this resource`,
-        );
-      }
-    }
     return await this.decksService.remove(id, user);
   }
 }

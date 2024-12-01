@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -16,11 +17,8 @@ import {
   Flashcard,
   FlashcardDocument,
 } from '../flashcards/schema/flashcard.schema';
-import {
-  FlashcardReview,
-  FlashcardReviewDocument,
-} from '../flashcards/schema/flashcard-review.schema';
 import { handleDuplicateName } from 'src/helpers/utils';
+import { StatisticsService } from '../statistics/statistics.service';
 
 @Injectable()
 export class DecksService {
@@ -29,8 +27,7 @@ export class DecksService {
     private readonly deckModel: SoftDeleteModel<DeckDocument>,
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
-    @InjectModel(FlashcardReview.name)
-    private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
@@ -167,22 +164,19 @@ export class DecksService {
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
-    //soft delete for all flashcard review
-    const flashcards = await this.flashcardModel.find({
-      deckId: id,
-      isArchived: true,
-    });
-    await Promise.all(
-      flashcards.map((flashcard: any) =>
-        this.flashcardReviewModel.updateOne(
-          { flashcardId: flashcard._id },
-          { nextReview: null },
-        ),
-      ),
-    );
+    const userId = deck.userId.toString();
+    if (user.role === 'USER') {
+      if (userId !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     //soft delete for all flashcard
     await this.flashcardModel.delete({ deckId: id }, user._id);
     //soft delete for deck
-    return this.deckModel.delete({ _id: id }, user._id);
+    await this.deckModel.delete({ _id: id }, user._id);
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
+    return 'Deck was deleted successfully';
   }
 }

@@ -55,9 +55,26 @@ export class ArchiveService {
             collectionsToArchive.push(currentCollection._id);
             for (const child of currentCollection.children ?? []) {
               if (child.type === 'Collection') {
-                stackCollection.push(child._id.toString());
+                stackCollection.push(child._id);
               } else if (child.type === 'Note') {
-                notesToArchive.push(child._id.toString());
+                notesToArchive.push(child._id);
+                const stackChildNotes = [child._id];
+                while (stackChildNotes.length > 0) {
+                  const currentNoteId = stackChildNotes.pop();
+                  const currentNote = await this.noteModel.findOne({
+                    _id: currentNoteId,
+                  });
+
+                  if (currentNote) {
+                    notesToArchive.push(currentNote._id);
+                    const childNotes = await this.noteModel.find({
+                      parentId: currentNoteId,
+                    });
+                    stackChildNotes.push(
+                      ...childNotes.map((child) => child._id.toString()),
+                    );
+                  }
+                }
               }
             }
           }
@@ -91,7 +108,7 @@ export class ArchiveService {
           if (currentNote) {
             archivedNotes.push(currentNote._id);
             const childNotes = await this.noteModel.find({
-              'parentId._id': currentNoteId,
+              parentId: currentNoteId,
             });
             stackNote.push(...childNotes.map((child) => child._id.toString()));
           }
@@ -162,9 +179,28 @@ export class ArchiveService {
             collectionsToRestore.push(currentCollection._id);
             for (const child of currentCollection.children ?? []) {
               if (child.type === 'Collection') {
-                stackCollection.push(child._id.toString());
+                stackCollection.push(child._id);
               } else if (child.type === 'Note') {
-                notesToRestore.push(child._id.toString());
+                notesToRestore.push(child._id);
+                const stackChildNotes = [child._id];
+                while (stackChildNotes.length > 0) {
+                  const currentNoteId = stackChildNotes.pop();
+                  const currentNote = await this.noteModel.findOne({
+                    _id: currentNoteId,
+                    isArchived: true,
+                  });
+
+                  if (currentNote) {
+                    notesToRestore.push(currentNote._id);
+                    const childNotes = await this.noteModel.find({
+                      parentId: currentNoteId,
+                      isArchived: true,
+                    });
+                    stackChildNotes.push(
+                      ...childNotes.map((child) => child._id.toString()),
+                    );
+                  }
+                }
               }
             }
           }
@@ -199,7 +235,7 @@ export class ArchiveService {
           if (currentNote) {
             restoredNotes.push(currentNote._id);
             const childNotes = await this.noteModel.find({
-              'parentId._id': currentNoteId,
+              parentId: currentNoteId,
               isArchived: true,
             });
             stackNote.push(...childNotes.map((child) => child._id.toString()));

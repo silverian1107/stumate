@@ -124,7 +124,7 @@ export class NotesController {
   async findById(@Param('noteId') noteId: string, @User() user: IUser) {
     const foundNote = await this.notesService.findById(noteId);
     if (user.role === 'USER') {
-      if (foundNote.ownerId !== user._id) {
+      if (foundNote.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -149,7 +149,7 @@ export class NotesController {
     @User() user: IUser,
   ) {
     const foundNote = await this.notesService.findById(noteId);
-    if (foundNote.ownerId !== user._id) {
+    if (foundNote.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -166,14 +166,6 @@ export class NotesController {
   })
   @ApiResponse({ status: 404, description: 'Note not found.' })
   async deleteById(@Param('noteId') noteId: string, @User() user: IUser) {
-    const foundNote = await this.notesService.findById(noteId);
-    if (user.role === 'USER') {
-      if (foundNote.ownerId !== user._id) {
-        throw new ForbiddenException(
-          `You don't have permission to access this resource`,
-        );
-      }
-    }
-    return this.notesService.deleteById(noteId);
+    return await this.notesService.deleteById(noteId, user);
   }
 }

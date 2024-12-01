@@ -156,7 +156,16 @@ export class QuizTestsService {
 
   //websocket
   async remove(id: string, @User() user: IUser) {
-    const quizTest = await this.findOne(id);
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Quiz Test ID');
+    }
+    const quizTest = await this.quizTestModel.findOne({
+      _id: id,
+      isArchived: true,
+    });
+    if (!quizTest) {
+      throw new NotFoundException('Not found quiz test');
+    }
     const userId = quizTest.userId.toString();
     if (user.role === 'USER') {
       if (userId !== user._id) {

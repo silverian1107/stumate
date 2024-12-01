@@ -93,7 +93,7 @@ export class CollectionsController {
     const foundCollection =
       await this.collectionsService.findById(collectionId);
     if (user.role === 'USER') {
-      if (foundCollection.ownerId !== user._id) {
+      if (foundCollection.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -115,7 +115,7 @@ export class CollectionsController {
   ) {
     const foundCollection =
       await this.collectionsService.findById(collectionId);
-    if (foundCollection.ownerId !== user._id) {
+    if (foundCollection.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -154,15 +154,6 @@ export class CollectionsController {
     @Param('collectionId') collectionId: string,
     @User() user: IUser,
   ) {
-    const foundCollection =
-      await this.collectionsService.findById(collectionId);
-    if (user.role === 'USER') {
-      if (foundCollection.ownerId !== user._id) {
-        throw new ForbiddenException(
-          `You don't have permission to access this resource`,
-        );
-      }
-    }
-    return this.collectionsService.deleteById(collectionId);
+    return await this.collectionsService.deleteById(collectionId, user);
   }
 }

@@ -15,6 +15,7 @@ import { CollectionsService } from '../collections/collections.service';
 import { validateObjectId } from 'src/helpers/utils';
 import { StatisticsService } from '../statistics/statistics.service';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { IUser } from '../users/users.interface';
 
 @Injectable()
 export class NotesService {
@@ -48,9 +49,9 @@ export class NotesService {
       const parent = parentNote || parentCollection;
       if (!parent)
         throw new NotFoundException(
-          `Couldn't find the collection with ID: ${parentId}`,
+          `Couldn't find the collection or note with ID: ${parentId}`,
         );
-      if (parent.owner !== userId) {
+      if (parent.ownerId.toString() !== userId) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -220,17 +221,23 @@ export class NotesService {
   }
 
   //websocket
-  async deleteById(noteId: string) {
+  async deleteById(noteId: string, user: IUser) {
     validateObjectId(noteId, 'Note');
     const deletedNote = await this.noteModel.findOne({
       _id: noteId,
       isArchived: true,
     });
-    // if (!deletedNote) {
-    //   throw new NotFoundException(`Note with ID ${noteId} not found`);
-    // }
-
-    const ownerId = deletedNote.ownerId;
+    if (!deletedNote) {
+      throw new NotFoundException(`Note with ID ${noteId} not found`);
+    }
+    const ownerId = deletedNote.ownerId.toString();
+    if (user.role === 'USER') {
+      if (ownerId !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
 
     const notesToDelete = [];
     const stack = [noteId];
@@ -245,14 +252,20 @@ export class NotesService {
       if (currentNote) {
         notesToDelete.push(currentNote._id);
         const childNotes = await this.noteModel.find({
-          'parentId._id': currentNoteId,
+          parentId: currentNoteId,
+          isArchived: true,
         });
         stack.push(...childNotes.map((child) => child._id.toString()));
       }
     }
 
-    await this.summaryModel.delete({ noteId: { $in: notesToDelete } }, ownerId);
-    await this.noteModel.delete({ _id: { $in: notesToDelete } }, ownerId);
+    await this.summaryModel.delete(
+      {
+        noteId: { $in: notesToDelete },
+      },
+      user._id,
+    );
+    await this.noteModel.delete({ _id: { $in: notesToDelete } }, user._id);
 
     await this.statisticsService.createOrUpdateUserStatistics(ownerId);
     return 'Note was deleted successfully';

@@ -30,7 +30,7 @@ export class ArchiveController {
     );
     const ownerId = resource.ownerId || resource.userId;
     if (user.role === 'USER') {
-      if (ownerId.toString() === user._id) {
+      if (ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -57,7 +57,7 @@ export class ArchiveController {
     );
     const ownerId = resource.ownerId || resource.userId;
     if (user.role === 'USER') {
-      if (ownerId.toString() === user._id) {
+      if (ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -103,7 +103,7 @@ export class ArchiveController {
     );
     const ownerId = resource.ownerId || resource.userId;
     if (user.role === 'USER') {
-      if (ownerId.toString() === user._id) {
+      if (ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
