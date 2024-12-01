@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   ForbiddenException,
 } from '@nestjs/common';
 import { QuizQuestionsService } from './quiz-questions.service';

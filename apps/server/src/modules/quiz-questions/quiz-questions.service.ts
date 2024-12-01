@@ -16,7 +16,6 @@ import {
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
 
