@@ -39,7 +39,7 @@ export class QuizQuestionsController {
     };
   }
 
-  @Post('multiple')
+  @Post('bulk')
   @Roles(Role.USER)
   @ResponseMessage('Create multiple quiz questions')
   async createMultiple(
