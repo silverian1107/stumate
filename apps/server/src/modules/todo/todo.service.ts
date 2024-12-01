@@ -70,14 +70,7 @@ export class TodoService {
     );
   }
 
-  async remove(id: string, @User() user: IUser) {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('Invalid To-do ID');
-    }
-    const todo = await this.todoModel.findOne({ _id: id });
-    if (!todo) {
-      throw new NotFoundException('Not found to-do');
-    }
+  remove(id: string, @User() user: IUser) {
     return this.todoModel.delete({ _id: id }, user._id);
   }
 }

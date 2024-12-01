@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  InternalServerErrorException,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,10 +6,8 @@ import { SoftDeleteModel } from 'mongoose-delete';
 import { User as UserModel, UserDocument } from '../users/schema/user.schema';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { AbilityGuard } from 'src/casl/ability.guard';
 
 @Controller('statistics')
-@UseGuards(AbilityGuard)
 export class StatisticsController {
   constructor(
     private readonly statisticsService: StatisticsService,

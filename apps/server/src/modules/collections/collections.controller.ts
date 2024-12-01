@@ -1,31 +1,27 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/decorator/customize';
+import { Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { CheckPolicies } from 'src/decorator/customize';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { Collection } from './schema/collection.schema';
+import { Role } from '../users/schema/user.schema';
 
 @ApiTags('Collections')
 @Controller('collections')
-@UseGuards(AbilityGuard)
 export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
   @Post()
-  @CheckPolicies((ability) => ability.can(Action.CREATE, Collection))
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Create a new collection' })
   @ApiBody({ type: CreateCollectionDto })
   @ApiResponse({ status: 201 })
@@ -38,7 +34,7 @@ export class CollectionsController {
   }
 
   @Get('all')
-  @CheckPolicies((ability) => ability.can(Action.READ, Collection))
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get all collections' })
   @ApiResponse({ status: 200 })
   async findAll(
@@ -51,7 +47,7 @@ export class CollectionsController {
   }
 
   @Get()
-  @CheckPolicies((ability) => ability.can(Action.READ, Collection))
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Retrieve collections by user id' })
   @ApiResponse({ status: 200 })
   async findByOwnerId(
@@ -69,6 +65,7 @@ export class CollectionsController {
   }
 
   @Get('archived')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Retrieve archived collections by user id' })
   @ApiResponse({ status: 200 })
   async findArchivedByOwnerId(
@@ -86,7 +83,6 @@ export class CollectionsController {
   }
 
   @Get(':collectionId')
-  @CheckPolicies((ability) => ability.can(Action.READ, Collection))
   @ApiOperation({ summary: 'Get collection by ID' })
   @ApiResponse({ status: 200 })
   @ApiResponse({ status: 400 })
@@ -94,11 +90,20 @@ export class CollectionsController {
     @Param('collectionId') collectionId: string,
     @User() user: IUser,
   ) {
-    return this.collectionsService.findById(collectionId, user._id);
+    const foundCollection =
+      await this.collectionsService.findById(collectionId);
+    if (user.role === 'USER') {
+      if (foundCollection.ownerId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
+    return foundCollection;
   }
 
   @Patch(':collectionId')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Collection))
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Update a collection by id' })
   @ApiBody({ type: UpdateCollectionDto })
   @ApiResponse({ status: 200, description: 'The updated collection.' })
@@ -108,11 +113,14 @@ export class CollectionsController {
     @Body() updateData: UpdateCollectionDto,
     @User() user: IUser,
   ) {
-    return this.collectionsService.updateById(
-      collectionId,
-      user._id,
-      updateData,
-    );
+    const foundCollection =
+      await this.collectionsService.findById(collectionId);
+    if (foundCollection.ownerId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+    return this.collectionsService.updateById(collectionId, updateData);
   }
 
   // @Patch(':collectionId/archive')
@@ -138,7 +146,6 @@ export class CollectionsController {
   // }
 
   @Patch(':collectionId/delete')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, Collection))
   @ApiOperation({ summary: 'Delete a collection by ID' })
   @ApiResponse({ status: 200, description: 'The deleted collection.' })
   @ApiResponse({ status: 400 })
@@ -147,6 +154,6 @@ export class CollectionsController {
     @Param('collectionId') collectionId: string,
     @User() user: IUser,
   ) {
-    return this.collectionsService.deleteById(collectionId, user._id);
+    return await this.collectionsService.deleteById(collectionId, user);
   }
 }

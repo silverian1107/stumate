@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { FlashcardsService } from './flashcards.service';
 import {
@@ -19,24 +19,19 @@ import {
   UpdateMultipleFlashcardDto,
 } from './dto/update-flashcard.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { Flashcard } from './schema/flashcard.schema';
-import { Deck } from '../decks/schema/deck.schema';
-import { FlashcardReview } from './schema/flashcard-review.schema';
-import { AbilityGuard } from 'src/casl/ability.guard';
+import { Role } from '../users/schema/user.schema';
 
 @Controller('decks/:deckId/flashcards')
 @ApiTags('flashcards')
-@UseGuards(AbilityGuard)
 export class FlashcardsController {
   constructor(private readonly flashcardsService: FlashcardsService) {}
 
   @Post()
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Create a new flashcard by deckId' })
   @ResponseMessage('Create a new flashcard by deckId')
-  @CheckPolicies((ability) => ability.can(Action.CREATE, Flashcard))
   async create(
     @Param('deckId') deckId: string,
     @Body() createFlashcardDto: CreateFlashcardDto,
@@ -55,8 +50,8 @@ export class FlashcardsController {
   }
 
   @Post('bulk/create')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Create multiple flashcards by deckId' })
-  @CheckPolicies((ability) => ability.can(Action.CREATE, Flashcard))
   @ResponseMessage('Create multiple flashcards by deckId')
   async createMultiple(
     @Param('deckId') deckId: string,
@@ -75,39 +70,46 @@ export class FlashcardsController {
   }
 
   @Get('all')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Get all flashcards by deckId' })
-  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Get all flashcards by user and deck')
-  async getAllFlashcards(@Param('deckId') deckId: string, @User() user: IUser) {
-    return await this.flashcardsService.handleGetAllFlashcards(deckId, user);
+  async getAllFlashcards(
+    @Param('deckId') deckId: string,
+    @User() user: IUser,
+    @Query() qs: string,
+  ) {
+    return await this.flashcardsService.findByDeckAndUser(deckId, user, qs);
   }
 
   @Post('bulk/update')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Update multiple flashcards by deckId' })
   @ResponseMessage('Create multiple flashcards by deckId')
   async updateMultiple(
     @Param('deckId') deckId: string,
     @Body() updateFlashcardData: UpdateMultipleFlashcardDto[],
+    @User() user: IUser,
   ): Promise<any> {
     const updated = await this.flashcardsService.updateMultiple(
       deckId,
       updateFlashcardData,
+      user,
     );
 
     return updated;
   }
 
   @Post('study')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Study flashcards by deckId' })
-  @CheckPolicies((ability) => ability.can(Action.STUDY, Deck))
   @ResponseMessage('Study flashcards')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleStudyFlashcard(deckId, user);
   }
 
   @Post(':id/mark')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Mark flashcard as correct or incorrect' })
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, FlashcardReview))
   @ResponseMessage('Mark a flashcard')
   async markFlashcard(
     @Param('id') id: string,
@@ -122,16 +124,16 @@ export class FlashcardsController {
   }
 
   @Post('progress')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Get progress of flashcards by deckId' })
-  @CheckPolicies((ability) => ability.can(Action.READ, Deck))
   @ResponseMessage('Get deck progress')
   async getDeckProgress(@Param('deckId') deckId: string, @User() user: IUser) {
     return await this.flashcardsService.handleDeckProgress(deckId, user);
   }
 
   @Get()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get all flashcards by deckId' })
-  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Fetch list flashcard with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -143,28 +145,44 @@ export class FlashcardsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a flashcard by id' })
-  @CheckPolicies((ability) => ability.can(Action.READ, Flashcard))
   @ResponseMessage('Fetch flashcard by id')
-  async findOne(@Param('deckId') deckId: string, @Param('id') id: string) {
+  async findOne(
+    @Param('deckId') deckId: string,
+    @Param('id') id: string,
+    @User() user: IUser,
+  ) {
     const foundFlashcard = await this.flashcardsService.findOne(deckId, id);
+    if (user.role === 'USER') {
+      if (foundFlashcard.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return foundFlashcard;
   }
 
   @Get(':id/review')
-  @CheckPolicies((ability) => ability.can(Action.READ, FlashcardReview))
   @ResponseMessage('Fetch flashcard review by id')
   async findFlashcardReview(
-    @Param('deckId') deckId: string,
-    @Param('id') id: string,
+    @Param('flashcardId') flashcardId: string,
+    @User() user: IUser,
   ) {
     const foundFlashcardReview =
-      await this.flashcardsService.findFlashcardReview(deckId, id);
+      await this.flashcardsService.findFlashcardReview(flashcardId);
+    if (user.role === 'USER') {
+      if (foundFlashcardReview.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return foundFlashcardReview;
   }
 
   @Patch(':id')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Update a flashcard' })
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Flashcard))
   @ResponseMessage('Update a flashcard')
   async update(
     @Param('deckId') deckId: string,
@@ -172,13 +190,18 @@ export class FlashcardsController {
     @Body() updateFlashcardDto: UpdateFlashcardDto,
     @User() user: IUser,
   ) {
-    const updateFlashcard = await this.flashcardsService.update(
+    const foundFlashcard = await this.flashcardsService.findOne(deckId, id);
+    if (foundFlashcard.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+    return await this.flashcardsService.update(
       deckId,
       id,
       updateFlashcardDto,
       user,
     );
-    return updateFlashcard;
   }
 
   @Delete('all')
@@ -192,7 +215,6 @@ export class FlashcardsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a flashcard' })
-  @CheckPolicies((ability) => ability.can(Action.DELETE, Flashcard))
   @ResponseMessage('Delete a flashcard')
   remove(
     @Param('deckId') deckId: string,
@@ -208,7 +230,12 @@ export class FlashcardsController {
   async removeMultiple(
     @Param('deckId') deckId: string,
     @Body() flashcardIds: string[],
+    @User() user: IUser,
   ): Promise<any> {
-    return await this.flashcardsService.removeMultiple(deckId, flashcardIds);
+    return await this.flashcardsService.removeMultiple(
+      deckId,
+      flashcardIds,
+      user,
+    );
   }
 }

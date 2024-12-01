@@ -10,7 +10,6 @@ import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
 import { QuizAttemptSchema } from '../quiz-attempts/schema/quiz-attempt.schema';
 import { GatewayModule } from 'src/gateway/gateway.module';
 import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
-import { CaslModule } from 'src/casl/casl.module';
 import { DeckSchema } from '../decks/schema/deck.schema';
 
 @Module({
@@ -38,7 +37,6 @@ import { DeckSchema } from '../decks/schema/deck.schema';
       },
     ]),
     GatewayModule,
-    CaslModule,
   ],
   controllers: [StatisticsController],
   providers: [StatisticsService],

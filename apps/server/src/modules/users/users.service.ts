@@ -22,20 +22,21 @@ import { MailerService } from '@nestjs-modules/mailer';
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
-import { DecksService } from '../decks/decks.service';
-import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
-import { TagsService } from '../tags/tags.service';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { UserStatisticDocument } from '../statistics/schema/user-statistic.schema';
+import { QuizAttemptDocument } from '../quiz-attempts/schema/quiz-attempt.schema';
+import { CollectionDocument } from '../collections/schema/collection.schema';
+import { NoteDocument } from '../notes/schema/note.schema';
+import { SummaryDocument } from '../summaries/schema/summary.schema';
+import { DeckDocument } from '../decks/schema/deck.schema';
+import { FlashcardDocument } from '../flashcards/schema/flashcard.schema';
+import { FlashcardReviewDocument } from '../flashcards/schema/flashcard-review.schema';
+import { QuizTestDocument } from '../quiz-tests/schema/quiz-test.schema';
+import { QuizQuestionDocument } from '../quiz-questions/schema/quiz-question.schema';
+import { TagDocument } from '../tags/schema/tag.schema';
+import { NotificationDocument } from '../notifications/schema/notification.schema';
+import { TodoDocument } from '../todo/schema/todo.schema';
 import { NotificationsService } from '../notifications/notifications.service';
-import {
-  UserStatistic,
-  UserStatisticDocument,
-} from '../statistics/schema/user-statistic.schema';
-import { CollectionsService } from '../collections/collections.service';
-import {
-  QuizAttempt,
-  QuizAttemptDocument,
-} from '../quiz-attempts/schema/quiz-attempt.schema';
 
 @Injectable()
 export class UsersService {
@@ -44,14 +45,32 @@ export class UsersService {
     private readonly userModel: SoftDeleteModel<UserDocument>,
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
-    private readonly decksService: DecksService,
-    private readonly quizTestsService: QuizTestsService,
-    private readonly collectionsService: CollectionsService,
-    private readonly tagsService: TagsService,
     private readonly notificationsService: NotificationsService,
-    @InjectModel(QuizAttempt.name)
+    @InjectModel('Collection')
+    private readonly collectionModel: SoftDeleteModel<CollectionDocument>,
+    @InjectModel('Note')
+    private readonly noteModel: SoftDeleteModel<NoteDocument>,
+    @InjectModel('Summary')
+    private readonly summaryModel: SoftDeleteModel<SummaryDocument>,
+    @InjectModel('Deck')
+    private readonly deckModel: SoftDeleteModel<DeckDocument>,
+    @InjectModel('Flashcard')
+    private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
+    @InjectModel('FlashcardReview')
+    private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
+    @InjectModel('QuizTest')
+    private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
+    @InjectModel('QuizQuestion')
+    private readonly quizQuestionModel: SoftDeleteModel<QuizQuestionDocument>,
+    @InjectModel('QuizAttempt')
     private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
-    @InjectModel(UserStatistic.name)
+    @InjectModel('Tag')
+    private readonly tagModel: SoftDeleteModel<TagDocument>,
+    @InjectModel('Notification')
+    private readonly notificationModel: SoftDeleteModel<NotificationDocument>,
+    @InjectModel('Todo')
+    private readonly todoModel: SoftDeleteModel<TodoDocument>,
+    @InjectModel('UserStatistic')
     private readonly userStatisticModel: SoftDeleteModel<UserStatisticDocument>,
   ) {}
 
@@ -309,6 +328,11 @@ export class UsersService {
     return newUser;
   }
 
+  async findAllAdminIds() {
+    const adminUsers = await this.userModel.find({ role: 'ADMIN' });
+    return adminUsers.map((admin) => admin._id.toString());
+  }
+
   async findAll(currentPage: number, pageSize: number, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;
@@ -372,37 +396,27 @@ export class UsersService {
       throw new NotFoundException('Not found user');
     }
     //soft delete for all tag
-    const tags = await this.tagsService.findAll(user);
-    await Promise.all(
-      tags.map((tag: any) => this.tagsService.remove(tag._id.toString(), user)),
-    );
-    //soft delete for all collection
-    const collections = await this.collectionsService.findByUser(user);
-    await Promise.all(
-      collections.map((collection: any) =>
-        this.collectionsService.deleteById(collection._id.toString(), user._id),
-      ),
-    );
+    await this.tagModel.delete({ userId: id }, user._id);
+    //soft delete for all collection, note, summary
+    await this.summaryModel.delete({ userId: id }, user._id);
+    await this.noteModel.delete({ ownerId: id }, user._id);
+    await this.collectionModel.delete({ ownerId: id }, user._id);
     //soft delete for all deck, flashcard and flashcard review
-    const decks = await this.decksService.findByUser(user);
-    await Promise.all(
-      decks.map((deck: any) =>
-        this.decksService.remove(deck._id.toString(), user),
-      ),
-    );
+    await this.flashcardReviewModel.delete({ userId: id }, user._id);
+    await this.flashcardModel.delete({ userId: id }, user._id);
+    await this.deckModel.delete({ userId: id }, user._id);
     //soft delete for all quiz test, quiz question and quiz attempt
     await this.quizAttemptModel.delete({ userId: id }, user._id);
-    const quizTests = await this.quizTestsService.findByUser(user);
-    await Promise.all(
-      quizTests.map((quizTest: any) =>
-        this.quizTestsService.remove(quizTest._id.toString(), user),
-      ),
-    );
+    await this.quizQuestionModel.delete({ userId: id }, user._id);
+    await this.quizTestModel.delete({ userId: id }, user._id);
     //soft delete for all notification
-    await this.notificationsService.removeAll(user);
+    await this.notificationModel.delete({ userId: id }, user._id);
     //soft delete for all statistic
-    this.userStatisticModel.delete({ userId: id }, user._id);
+    await this.userStatisticModel.delete({ userId: id }, user._id);
+    //soft delete for all todo list
+    await this.todoModel.delete({ userId: id }, user._id);
     //soft delete for user
-    return this.userModel.delete({ _id: id }, user._id);
+    await this.userModel.delete({ _id: id }, user._id);
+    return 'User was deleted successfully';
   }
 }

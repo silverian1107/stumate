@@ -6,24 +6,21 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { CheckPolicies, ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import { AbilityGuard } from 'src/casl/ability.guard';
-import { Action } from 'src/casl/casl-ability.factory/casl-ability.factory';
-import { Todo } from './schema/todo.schema';
+import { Role } from '../users/schema/user.schema';
 
 @Controller('todo')
-@UseGuards(AbilityGuard)
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  @CheckPolicies((ability) => ability.can(Action.CREATE, Todo))
+  @Roles(Role.USER)
   @ResponseMessage('Create a new to-do')
   async create(@Body() createTodoDto: CreateTodoDto, @User() user: IUser) {
     const newTodo = await this.todoService.create(createTodoDto, user);
@@ -34,42 +31,67 @@ export class TodoController {
   }
 
   @Get()
-  @CheckPolicies((ability) => ability.can(Action.READ, Todo))
+  @Roles(Role.USER)
   @ResponseMessage('Get all to-do')
   async findAll(@User() user: IUser) {
     return await this.todoService.findAll(user);
   }
 
   @Get(':id')
-  @CheckPolicies((ability) => ability.can(Action.READ, Todo))
   @ResponseMessage('Fetch to-do by id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @User() user: IUser) {
     const foundTodo = await this.todoService.findOne(id);
+    if (user.role === 'USER') {
+      if (foundTodo.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return foundTodo;
   }
 
   @Patch(':id')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Todo))
+  @Roles(Role.USER)
   @ResponseMessage('Update a to-do')
   async update(
     @Param('id') id: string,
     @Body() updateTodoDto: UpdateTodoDto,
     @User() user: IUser,
   ) {
+    const foundTodo = await this.todoService.findOne(id);
+    if (foundTodo.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
     return await this.todoService.update(id, updateTodoDto, user);
   }
 
   @Patch(':id/completed')
-  @CheckPolicies((ability) => ability.can(Action.UPDATE, Todo))
+  @Roles(Role.USER)
   @ResponseMessage('Mark a to-do completed')
-  async markTodoCompleted(@Param('id') id: string) {
+  async markTodoCompleted(@Param('id') id: string, @User() user: IUser) {
+    const foundTodo = await this.todoService.findOne(id);
+    if (foundTodo.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
     return await this.todoService.handleMarkTodoCompleted(id);
   }
 
   @Delete(':id')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, Todo))
   @ResponseMessage('Delete a to-do')
-  remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
+  async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
+    const foundTodo = await this.todoService.findOne(id);
+    if (user.role === 'USER') {
+      if (foundTodo.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     return this.todoService.remove(id, user);
   }
 }

@@ -1,10 +1,10 @@
 import { SoftDeleteModel } from 'mongoose-delete';
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,6 +18,7 @@ import aqp from 'api-query-params';
 import { NoteDocument } from '../notes/schema/note.schema';
 import { SummaryDocument } from '../summaries/schema/summary.schema';
 import { IUser } from '../users/users.interface';
+import { StatisticsService } from '../statistics/statistics.service';
 
 @Injectable()
 export class CollectionsService {
@@ -28,6 +29,7 @@ export class CollectionsService {
     private readonly noteModel: SoftDeleteModel<NoteDocument>,
     @InjectModel('Summary')
     private readonly summaryModel: SoftDeleteModel<SummaryDocument>,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   async create(
@@ -51,10 +53,9 @@ export class CollectionsService {
         if (!parent) {
           throw new NotFoundException("Couldn't find the parent id");
         }
-
-        if (userId !== parent.ownerId.toString()) {
-          throw new UnauthorizedException(
-            'You are not authorized to perform this action.',
+        if (parent.ownerId.toString() !== userId) {
+          throw new ForbiddenException(
+            `You don't have permission to access this resource`,
           );
         }
 
@@ -142,10 +143,6 @@ export class CollectionsService {
     }
   }
 
-  async findByUser(user: IUser) {
-    return await this.collectionModel.find({ userId: user._id });
-  }
-
   async findByOwnerId(
     userId: string,
     currentPage = 1,
@@ -221,7 +218,6 @@ export class CollectionsService {
           ownerId,
           level: 0,
           isArchived: true,
-          isDeleted: false,
         })
         .sort(sort as any)
         .skip(skip)
@@ -234,7 +230,6 @@ export class CollectionsService {
         ownerId,
         level: 0,
         isArchived: true,
-        isDeleted: false,
       });
 
       const totalPages = Math.ceil(totalItems / limit);
@@ -255,14 +250,12 @@ export class CollectionsService {
     }
   }
 
-  async findById(collectionId: string, userId: string): Promise<Collection> {
+  async findById(collectionId: string): Promise<Collection> {
     if (!mongoose.isValidObjectId(collectionId))
       throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
 
     const collection = await this.collectionModel
-      .findOne({ _id: collectionId, ownerId: userId })
+      .findOne({ _id: collectionId })
       .populate('childrenDocs')
       .exec();
     if (!collection) {
@@ -273,21 +266,11 @@ export class CollectionsService {
     return collection;
   }
 
-  async updateById(
-    collectionId: string,
-    userId: string,
-    updateData: UpdateCollectionDto,
-  ) {
-    if (!mongoose.isValidObjectId(collectionId))
-      throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
-
+  async updateById(collectionId: string, updateData: UpdateCollectionDto) {
     const updatedCollection = await this.collectionModel
       .findOneAndUpdate(
         {
           _id: collectionId,
-          ownerId: userId,
         },
         updateData,
         {
@@ -295,33 +278,33 @@ export class CollectionsService {
         },
       )
       .exec();
-    if (!updatedCollection) {
-      throw new NotFoundException(
-        `Collection with ID ${collectionId} not found`,
-      );
-    }
     return updatedCollection;
   }
 
-  async deleteById(collectionId: string, userId: string) {
+  async deleteById(collectionId: string, user: IUser) {
     if (!mongoose.isValidObjectId(collectionId))
       throw new BadRequestException('Invalid CollectionId');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId');
 
     const deletedCollection = await this.collectionModel
       .findOne({
         _id: collectionId,
-        ownerId: userId,
         isArchived: true,
       })
       .exec();
 
     if (!deletedCollection) {
-      throw new NotFoundException(`Collection not found`);
+      throw new NotFoundException(
+        `Collection with ID ${collectionId} not found`,
+      );
     }
-
-    const ownerId = deletedCollection.ownerId;
+    const ownerId = deletedCollection.ownerId.toString();
+    if (user.role === 'USER') {
+      if (ownerId !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
 
     const collectionsToDelete = [];
     const notesToDelete = [];
@@ -338,21 +321,47 @@ export class CollectionsService {
         collectionsToDelete.push(currentCollection._id);
         for (const child of currentCollection.children) {
           if (child.type === 'Collection') {
-            stack.push(child._id.toString());
+            stack.push(child._id);
           } else if (child.type === 'Note') {
-            notesToDelete.push(child._id.toString());
+            notesToDelete.push(child._id);
+            const stackNotes = [child._id];
+            while (stackNotes.length > 0) {
+              const currentNoteId = stackNotes.pop();
+              const currentNote = await this.noteModel.findOne({
+                _id: currentNoteId,
+                isArchived: true,
+              });
+
+              if (currentNote) {
+                notesToDelete.push(currentNote._id);
+                const childNotes = await this.noteModel.find({
+                  parentId: currentNoteId,
+                  isArchived: true,
+                });
+                stackNotes.push(
+                  ...childNotes.map((child) => child._id.toString()),
+                );
+              }
+            }
           }
         }
       }
     }
 
-    await this.summaryModel.delete({ noteId: { $in: notesToDelete } }, ownerId);
-    await this.noteModel.delete({ _id: { $in: notesToDelete } }, ownerId);
+    await this.summaryModel.delete(
+      {
+        noteId: { $in: notesToDelete },
+      },
+      user._id,
+    );
+    await this.noteModel.delete({ _id: { $in: notesToDelete } }, user._id);
 
     await this.collectionModel.delete(
       { _id: { $in: collectionsToDelete } },
-      ownerId,
+      user._id,
     );
+
+    await this.statisticsService.createOrUpdateUserStatistics(ownerId);
 
     return 'Collection was deleted successfully';
   }

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -53,6 +54,32 @@ export class SharedResourcesService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
+  async checkOwnership(
+    resourceType: string,
+    resourceId: string,
+    userId: string,
+  ) {
+    let resource: any;
+    switch (resourceType) {
+      case 'note':
+        resource = await this.noteModel.findOne({ _id: resourceId });
+        break;
+      case 'deck':
+        resource = await this.deckModel.findOne({ _id: resourceId });
+        break;
+      case 'quiz':
+        resource = await this.quizTestModel.findOne({ _id: resourceId });
+        break;
+      default:
+        throw new BadRequestException('Invalid resource type');
+    }
+    if (!resource) {
+      throw new NotFoundException(`Not found ${resourceType}`);
+    }
+    const ownerId = resource.ownerId || resource.userId;
+    return ownerId.toString() === userId;
+  }
+
   async handleShareResourceWithUser(
     resourceType: string,
     resourceId: string,
@@ -65,6 +92,18 @@ export class SharedResourcesService {
     if (!sharedUser) {
       throw new NotFoundException('Not found user');
     }
+
+    const isOwner = await this.checkOwnership(
+      resourceType,
+      resourceId,
+      user._id,
+    );
+    if (!isOwner) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+
     switch (resourceType) {
       case 'note':
         await this.summaryModel.updateOne(
@@ -131,6 +170,18 @@ export class SharedResourcesService {
     if (!unsharedUser) {
       throw new NotFoundException('Not found user');
     }
+
+    const isOwner = await this.checkOwnership(
+      resourceType,
+      resourceId,
+      user._id,
+    );
+    if (!isOwner) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+
     switch (resourceType) {
       case 'note':
         await this.summaryModel.updateOne(
@@ -598,10 +649,15 @@ export class SharedResourcesService {
     const resource = await model.findOne({
       _id: resourceId,
       isCloned: true,
-      userId: user._id,
     });
     if (!resource) {
       throw new NotFoundException(`Not found ${resourceType}`);
+    }
+    const ownerId = resource.ownerId || resource.userId;
+    if (ownerId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
     }
     const relatedData = await relatedModel.find({ [relatedField]: resourceId });
     const resourceWithDetails = {
