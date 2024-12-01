@@ -21,15 +21,21 @@ export const useQuizzesByOwner = () => {
 };
 
 export const useQuizById = (quizId?: string) => {
-  const { id } = useParams();
-  const actualQuizId = quizId || (id as string);
+  const { id: routeIds } = useParams<{ id: string }>();
+
+  const actualQuizId = quizId || routeIds;
+
   const fetchQuizById = useQuery({
-    queryKey: ['quiz', quizId],
+    queryKey: ['quiz', actualQuizId],
     queryFn: async (): Promise<Quiz> => {
+      if (!actualQuizId) {
+        throw new Error('No quiz ID provided');
+      }
+
       const response = await QuizApi.findById(actualQuizId);
       return response.data.data;
     },
-    enabled: !!quizId,
+    enabled: !!actualQuizId,
     staleTime: 1000 * 60 * 5
   });
 

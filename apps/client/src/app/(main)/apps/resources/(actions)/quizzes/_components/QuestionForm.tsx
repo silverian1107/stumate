@@ -5,8 +5,9 @@ import { useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  markQuestionDeleted,
   type Question,
-  removeQuestion,
+  restoreQuestion,
   updateQuestion
 } from '@/redux/slices/quizSlice';
 
@@ -36,6 +37,27 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ question }) => {
     );
   };
 
+  const handleDelete = () => {
+    dispatch(markQuestionDeleted(question.id));
+  };
+
+  const handleRestore = () => {
+    dispatch(restoreQuestion(question.id));
+  };
+
+  if (question.isDeleted) {
+    return (
+      <div className="bg-gray-100 p-4 rounded-lg shadow mb-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-gray-500 italic">Question Deleted</h3>
+          <Button variant="secondary" onClick={handleRestore}>
+            Restore
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex justify-between mb-3">
@@ -56,10 +78,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ question }) => {
           </Button>
         </div>
         <div>
-          <Button
-            variant="ghost"
-            onClick={() => dispatch(removeQuestion(question.id))}
-          >
+          <Button variant="ghost" onClick={handleDelete}>
             <XIcon className="size-4" />
             Remove
           </Button>

@@ -12,6 +12,9 @@ export interface Question {
   text: string;
   type: 'single' | 'multiple';
   answers: Answer[];
+  action?: 'create' | 'update' | 'delete';
+  originalAction?: 'create' | 'update';
+  isDeleted?: boolean;
 }
 
 interface QuizState {
@@ -27,21 +30,51 @@ const quizSlice = createSlice({
   initialState,
   reducers: {
     addQuestion: (state, action: PayloadAction<Question>) => {
-      state.questions.push(action.payload);
+      const newQuestion = {
+        ...action.payload,
+        action: 'create' as 'delete' | 'create' | 'update',
+        originalAction: 'create' as 'create' | 'update',
+        isDeleted: false
+      };
+      state.questions.push(newQuestion);
     },
     updateQuestion: (state, action: PayloadAction<Question>) => {
       const index = state.questions.findIndex(
         (q) => q.id === action.payload.id
       );
       if (index !== -1) {
-        state.questions[index] = action.payload;
+        const existingQuestion = state.questions[index];
+        state.questions[index] = {
+          ...action.payload,
+          originalAction: existingQuestion.originalAction,
+          action:
+            existingQuestion.originalAction === 'update'
+              ? 'update'
+              : existingQuestion.action,
+          isDeleted: false
+        };
       }
     },
-    removeQuestion: (state, action: PayloadAction<string>) => {
-      state.questions = state.questions.filter((q) => q.id !== action.payload);
+    markQuestionDeleted: (state, action: PayloadAction<string>) => {
+      const index = state.questions.findIndex((q) => q.id === action.payload);
+      if (index !== -1) {
+        state.questions[index].isDeleted = true;
+        state.questions[index].action = 'delete';
+      }
+    },
+    restoreQuestion: (state, action: PayloadAction<string>) => {
+      const index = state.questions.findIndex((q) => q.id === action.payload);
+      if (index !== -1 && state.questions[index].isDeleted) {
+        state.questions[index].isDeleted = false;
+        state.questions[index].action = state.questions[index].originalAction;
+      }
     },
     removeAllQuestions: (state) => {
-      state.questions = [];
+      state.questions = state.questions.map((q) => ({
+        ...q,
+        isDeleted: true,
+        action: 'delete'
+      }));
     }
   }
 });
@@ -49,9 +82,8 @@ const quizSlice = createSlice({
 export const {
   addQuestion,
   updateQuestion,
-  removeQuestion,
+  markQuestionDeleted,
+  restoreQuestion,
   removeAllQuestions
 } = quizSlice.actions;
 export default quizSlice.reducer;
-
-// export { addQuestion, updateQuestion, removeQuestion };

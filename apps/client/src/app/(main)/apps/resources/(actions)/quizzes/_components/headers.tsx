@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, SaveIcon } from 'lucide-react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -9,6 +10,7 @@ import { AutosizeTextarea } from '@/components/ui/auto-size-textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import InputWithEndInline from '@/components/ui/number-input';
+import { useQuizById } from '@/hooks/use-quiz';
 import { cn } from '@/lib/utils';
 import type { Quiz } from '@/types/deck';
 
@@ -29,34 +31,40 @@ const QuizSchema = z.object({
 type ResourceFormData = z.infer<typeof QuizSchema>;
 
 export function QuizHeader({
-  initialData = {} as Quiz,
   isEditing,
   onSubmit,
   isSubmitting
 }: QuizHeaderProps) {
+  const { data, isLoading, error } = useQuizById();
+
   const {
     register,
     handleSubmit,
-    // reset,
+    reset,
     formState: { errors }
   } = useForm<ResourceFormData>({
-    resolver: zodResolver(QuizSchema),
-    defaultValues: {
-      name: initialData.name || '',
-      description: initialData.description || '',
-      numberOfQuestion: initialData.numberOfQuestion || 0,
-      duration: initialData.duration || 0
-    }
+    resolver: zodResolver(QuizSchema)
   });
 
-  // useEffect(() => {
-  //   reset({
-  //     title: initialData.name,
-  //     duration: initialData.duration,
-  //     description: initialData.description,
-  //     numberOfQuestion: initialData.numberOfQuestion
-  //   });
-  // }, [initialData, reset]);
+  // Use useEffect to reset form when data is available
+  useEffect(() => {
+    if (data) {
+      reset({
+        name: data.name || '',
+        description: data.description || '',
+        numberOfQuestion: data.numberOfQuestion || 0,
+        duration: data.duration || 0
+      });
+    }
+  }, [data, reset]);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   return (
     <form
