@@ -40,13 +40,6 @@ export function DeckActionHeader({
     }
   });
 
-  // useEffect(() => {
-  //   reset({
-  //     name: initialData.name,
-  //     description: initialData.description
-  //   });
-  // }, [initialData, reset]);
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

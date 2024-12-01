@@ -12,7 +12,7 @@ export const useQuizzesByOwner = () => {
     queryKey: ['quizzes'],
     queryFn: async (): Promise<Quiz[]> => {
       const response = await QuizApi.findByOwner();
-      return response.data.data;
+      return response.data.data.result;
     },
     staleTime: 1000 * 60 * 5
   });

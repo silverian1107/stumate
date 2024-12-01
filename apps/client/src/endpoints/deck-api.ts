@@ -7,7 +7,7 @@ interface DeckCreateDTO {
 
 export const DeckApi = {
   async findByOwner() {
-    return DeckClient.get('');
+    return DeckClient.get('/all');
   },
 
   async findById(id: string) {
