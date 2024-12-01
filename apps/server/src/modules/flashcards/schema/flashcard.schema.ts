@@ -21,6 +21,9 @@ export class Flashcard {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Deck', require: true })
   deckId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ default: false })
+  isCloned: boolean;
+
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   sharedWithUsers: mongoose.Schema.Types.ObjectId[];
 

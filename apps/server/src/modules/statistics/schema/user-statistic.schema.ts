@@ -24,7 +24,7 @@ export class UserStatistic {
   totalFlashcardsCount: number;
 
   @Prop({ default: 0 })
-  notesRevisedTodayCount: number;
+  sharedResourcesCount: number;
 
   @Prop({ default: 0 })
   flashcardsDueTodayCount: number;

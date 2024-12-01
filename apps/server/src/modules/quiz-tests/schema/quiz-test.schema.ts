@@ -15,7 +15,7 @@ enum Status {
 @Schema({ timestamps: true })
 export class QuizTest {
   @Prop({ required: true })
-  title: string;
+  name: string;
 
   @Prop({ default: 'Description' })
   description: string;
@@ -44,6 +44,9 @@ export class QuizTest {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
   tags: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ default: false })
+  isCloned: boolean;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   sharedWithUsers: mongoose.Schema.Types.ObjectId[];

@@ -313,6 +313,7 @@ export class CollectionsService {
       .findOne({
         _id: collectionId,
         ownerId: userId,
+        isArchived: true,
       })
       .exec();
 
@@ -330,6 +331,7 @@ export class CollectionsService {
       const currentCollectionId = stack.pop();
       const currentCollection = await this.collectionModel.findOne({
         _id: currentCollectionId,
+        isArchived: true,
       });
 
       if (currentCollection) {

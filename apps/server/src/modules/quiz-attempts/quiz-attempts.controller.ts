@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -109,14 +108,14 @@ export class QuizAttemptsController {
     };
   }
 
-  @Delete(':id')
-  @CheckPolicies((ability) => ability.can(Action.DELETE, QuizAttempt))
-  @ResponseMessage('Delete a quiz question')
-  remove(
-    @Param('quizTestId') quizTestId: string,
-    @Param('id') id: string,
-    @User() user: IUser,
-  ): Promise<any> {
-    return this.quizAttemptsService.remove(quizTestId, id, user);
-  }
+  // @Delete(':id')
+  // @CheckPolicies((ability) => ability.can(Action.DELETE, QuizAttempt))
+  // @ResponseMessage('Delete a quiz question')
+  // remove(
+  //   @Param('quizTestId') quizTestId: string,
+  //   @Param('id') id: string,
+  //   @User() user: IUser,
+  // ): Promise<any> {
+  //   return this.quizAttemptsService.remove(quizTestId, id, user);
+  // }
 }

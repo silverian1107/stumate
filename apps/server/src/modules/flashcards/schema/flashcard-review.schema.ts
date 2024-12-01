@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import archivePlugin from 'src/core/archive.plugin';
 
 export type FlashcardReviewDocument = HydratedDocument<FlashcardReview>;
 
@@ -32,7 +31,7 @@ export class FlashcardReview {
   userId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ default: Date.now() })
-  nextReview: number;
+  nextReview: number | null;
 
   @Prop({ default: 2.5 })
   easiness: number;
@@ -49,6 +48,9 @@ export class FlashcardReview {
   @Prop({ default: State.New })
   state: State;
 
+  @Prop({ default: false })
+  isCloned: boolean;
+
   @Prop()
   createdAt: Date;
 
@@ -58,5 +60,3 @@ export class FlashcardReview {
 
 export const FlashcardReviewSchema =
   SchemaFactory.createForClass(FlashcardReview);
-
-FlashcardReviewSchema.plugin(archivePlugin);

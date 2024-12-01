@@ -32,7 +32,7 @@ export class TagsController {
     return await this.tagsService.handleAddTag(resourceType, resourceId, id);
   }
 
-  @Delete('remove-tag/:resourceType/:resourceId/:id')
+  @Post('remove-tag/:resourceType/:resourceId/:id')
   @CheckPolicies((ability) => ability.can(Action.UPDATE, Tag))
   @ResponseMessage('Remove tag')
   async removeTag(
@@ -72,8 +72,8 @@ export class TagsController {
   @Get('name/:name')
   @CheckPolicies((ability) => ability.can(Action.READ, Tag))
   @ResponseMessage('Fetch tag by name')
-  async findByName(@Param('name') name: string) {
-    const foundTag = await this.tagsService.findByName(name);
+  async findByName(@Param('name') name: string, @User() user: IUser) {
+    const foundTag = await this.tagsService.findByName(name, user);
     return foundTag;
   }
 

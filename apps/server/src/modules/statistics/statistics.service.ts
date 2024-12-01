@@ -52,9 +52,9 @@ export class StatisticsService {
   async findOne(@User() user: IUser) {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
-    await this.userStatisticModel.findOne({
-      _id: user._id,
-      today: startOfDay,
+    return await this.userStatisticModel.findOne({
+      userId: user._id,
+      date: startOfDay,
     });
   }
 
@@ -161,14 +161,14 @@ export class StatisticsService {
 
   async getTotalNotesCount(userId: string) {
     const notes = await this.noteModel.countDocuments({
-      $or: [{ ownerId: userId }, { sharedWithUsers: { $in: [userId] } }],
+      ownerId: userId,
     });
     return notes;
   }
 
   async getTotalFlashcardsCount(userId: string) {
     const flashcards = await this.flashcardModel.countDocuments({
-      $or: [{ userId }, { sharedWithUsers: { $in: [userId] } }],
+      userId,
     });
     return flashcards;
   }
@@ -200,7 +200,7 @@ export class StatisticsService {
 
   async getTotalQuizzesCount(userId: string) {
     const quizzes = await this.quizTestModel.countDocuments({
-      $or: [{ userId }, { sharedWithUsers: { $in: [userId] } }],
+      userId,
     });
     return quizzes;
   }

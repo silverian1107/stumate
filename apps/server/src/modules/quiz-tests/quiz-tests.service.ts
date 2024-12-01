@@ -13,48 +13,39 @@ import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
 import {
-  QuizAttempt,
-  QuizAttemptDocument,
-} from '../quiz-attempts/schema/quiz-attempt.schema';
-import {
   QuizQuestion,
   QuizQuestionDocument,
 } from '../quiz-questions/schema/quiz-question.schema';
 import { StatisticsService } from '../statistics/statistics.service';
+import { handleDuplicateName } from 'src/helpers/utils';
 
 @Injectable()
 export class QuizTestsService {
   constructor(
     @InjectModel(QuizTest.name)
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
-    @InjectModel(QuizAttempt.name)
-    private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
     @InjectModel(QuizQuestion.name)
     private readonly quizQuestionModel: SoftDeleteModel<QuizQuestionDocument>,
     private readonly statisticsService: StatisticsService,
   ) {}
 
-  async findQuizTestByTitle(title: string) {
-    return await this.quizTestModel.findOne({ title });
-  }
-
-  isExistTitle = async (title: string) => {
-    const quizTest = await this.findQuizTestByTitle(title);
-    if (quizTest) return true;
-    return false;
-  };
-
   //websocket
   async create(createQuizTestDto: CreateQuizTestDto, @User() user: IUser) {
+    const name = createQuizTestDto.name;
+    const restDto = { ...createQuizTestDto };
+    delete restDto.name;
     //Check title already exists
-    if (await this.isExistTitle(createQuizTestDto.title)) {
-      throw new BadRequestException(
-        `Title '${createQuizTestDto.title}' already exists`,
-      );
-    }
+    const existingQuizTests = await this.quizTestModel.find({
+      userId: user._id,
+    });
+    const existingQuizTestNames = existingQuizTests.map(
+      (quizTest) => quizTest.name,
+    );
+    const newQuizName = handleDuplicateName(name, existingQuizTestNames);
     //Create a new quiz test
     const newQuizTest = await this.quizTestModel.create({
-      ...createQuizTestDto,
+      name: newQuizName,
+      ...restDto,
       userId: user._id,
       createdBy: {
         _id: user._id,
@@ -167,15 +158,16 @@ export class QuizTestsService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Quiz Test ID');
     }
-    const quizTest = await this.quizTestModel.findOne({ _id: id });
+    const quizTest = await this.quizTestModel.findOne({
+      _id: id,
+      isArchived: true,
+    });
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }
     const userId = quizTest.userId.toString();
     //soft delete for quiz question
     await this.quizQuestionModel.delete({ quizTestId: id }, user._id);
-    //soft delete for quiz attempt
-    await this.quizAttemptModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz test
     await this.quizTestModel.delete({ _id: id }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);

@@ -18,7 +18,7 @@ import { IUser } from '../users/users.interface';
 import { User } from 'src/decorator/customize';
 import { Flashcard, FlashcardDocument } from './schema/flashcard.schema';
 import aqp from 'api-query-params';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { DecksService } from '../decks/decks.service';
 import { SoftDeleteModel } from 'mongoose-delete';
 import { StatisticsService } from '../statistics/statistics.service';
@@ -74,6 +74,17 @@ export class FlashcardsService {
       },
     }));
     const newFlashcards = await this.flashcardModel.insertMany(flashcards);
+
+    const flashcardReviews = newFlashcards.map((flashcard) => ({
+      flashcardId: flashcard._id,
+      userId: user._id,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    }));
+    await this.flashcardReviewModel.insertMany(flashcardReviews);
+
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newFlashcards;
   }
@@ -115,6 +126,14 @@ export class FlashcardsService {
         username: user.username,
       },
     });
+    await this.flashcardReviewModel.create({
+      flashcardId: newFlashcard._id,
+      userId: user._id,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    });
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
     return newFlashcard;
   }
@@ -125,7 +144,7 @@ export class FlashcardsService {
       throw new NotFoundException('Not found deck');
     }
     const flashcards = await this.flashcardModel.find({
-      $or: [{ userId: user._id }, { sharedWithUsers: { $in: [user._id] } }],
+      userId: user._id,
       deckId,
     });
 
@@ -133,20 +152,12 @@ export class FlashcardsService {
 
     await Promise.all(
       flashcards.map(async (flashcard) => {
-        let flashcardReview = await this.flashcardReviewModel
+        const flashcardReview = await this.flashcardReviewModel
           .findOne({
             userId: user._id,
             flashcardId: flashcard._id,
           })
           .populate('flashcardId');
-        if (!flashcardReview) {
-          flashcardReview = await this.flashcardReviewModel.create({
-            flashcardId: flashcard._id,
-            userId: user._id,
-            state: State.New,
-          });
-          flashcardReview = await flashcardReview.populate('flashcardId');
-        }
         if (flashcardReview.state === State.New) {
           flashcardReview.state = State.Learning;
           await flashcardReview.save();
@@ -215,7 +226,7 @@ export class FlashcardsService {
       throw new NotFoundException('Not found deck');
     }
     const flashcards = await this.flashcardModel.find({
-      $or: [{ userId: user._id }, { sharedWithUsers: { $in: [user._id] } }],
+      userId: user._id,
       deckId,
     });
     const flashcardReviews = await this.flashcardReviewModel.find({
@@ -353,7 +364,12 @@ export class FlashcardsService {
     }
     const userId = flashcard.userId.toString();
     //soft delete for all flashcard review
-    await this.flashcardReviewModel.delete({ flashcardId: id }, user._id);
+    await this.flashcardReviewModel.updateOne(
+      {
+        flashcardId: id,
+      },
+      { $set: { nextReview: null } },
+    );
     //soft delete for all flashcard
     await this.flashcardModel.delete({ _id: id, deckId }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
@@ -364,25 +380,71 @@ export class FlashcardsService {
     if (!(await this.decks.findOne(deckId))) {
       throw new NotFoundException('Not found deck');
     }
+
+    const objectIdFlashcardIds = flashcardIds.map(
+      (id) => new Types.ObjectId(id),
+    );
+
     const flashcards = await this.flashcardModel.find({
-      _id: { $in: flashcardIds },
+      _id: { $in: objectIdFlashcardIds },
       deckId,
     });
+
     if (flashcards.length !== flashcardIds.length) {
       throw new NotFoundException('Not found flashcard');
     }
 
+    await this.flashcardReviewModel.updateMany(
+      {
+        flashcardId: { $in: objectIdFlashcardIds },
+      },
+      { $set: { nextReview: null } },
+    );
+
     await this.flashcardModel.delete(
       {
-        _id: { $in: flashcardIds },
+        _id: { $in: objectIdFlashcardIds },
         deckId,
       },
       flashcards[0].userId,
     );
+
     await this.statisticsService.createOrUpdateUserStatistics(
       flashcards[0].userId.toString(),
     );
 
     return flashcards;
+  }
+
+  //websocket
+  async removeAll(deckId: string, @User() user: IUser) {
+    const deck = await this.decks.findOne(deckId);
+    if (!deck) {
+      throw new NotFoundException('Not found deck');
+    }
+
+    const flashcards = await this.handleGetAllFlashcards(deckId, user);
+    if (!flashcards || flashcards.length === 0) {
+      throw new NotFoundException('No flashcards found in this deck');
+    }
+
+    const flashcardIds = flashcards.map((card) => card._id);
+
+    await this.flashcardReviewModel.updateMany(
+      {
+        flashcardId: { $in: flashcardIds },
+      },
+      { $set: { nextReview: null } },
+    );
+
+    await this.flashcardModel.delete(
+      { _id: { $in: flashcardIds }, deckId },
+      user._id,
+    );
+
+    const userId = user._id;
+    await this.statisticsService.createOrUpdateUserStatistics(userId);
+
+    return { message: 'Flashcard deleted successfully' };
   }
 }

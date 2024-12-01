@@ -20,6 +20,7 @@ import {
   FlashcardReview,
   FlashcardReviewDocument,
 } from '../flashcards/schema/flashcard-review.schema';
+import { handleDuplicateName } from 'src/helpers/utils';
 
 @Injectable()
 export class DecksService {
@@ -32,20 +33,18 @@ export class DecksService {
     private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
   ) {}
 
-  async findDeckByName(name: string, @User() user: IUser) {
-    return await this.deckModel.findOne({ name, userId: user._id });
-  }
-
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
-    const { name, description } = createDeckDto;
     // Check name already exists
-    if (await this.findDeckByName(name, user)) {
-      throw new BadRequestException(`Name '${name}' already exists`);
-    }
+    const existingDecks = await this.deckModel.find({ userId: user._id });
+    const existingDeckNames = existingDecks.map((deck) => deck.name);
+    const newDeckName = handleDuplicateName(
+      createDeckDto.name,
+      existingDeckNames,
+    );
     //Create a new deck
     const newDeck = await this.deckModel.create({
-      name,
-      description,
+      name: newDeckName,
+      description: createDeckDto.description,
       userId: user._id,
       createdBy: {
         _id: user._id,
@@ -121,17 +120,23 @@ export class DecksService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Deck ID');
     }
-    const deck = await this.deckModel.findOne({ _id: id });
+    const deck = await this.deckModel.findOne({
+      _id: id,
+      isArchived: true,
+    });
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
     //soft delete for all flashcard review
-    const flashcards = await this.flashcardModel.find({ deckId: id });
+    const flashcards = await this.flashcardModel.find({
+      deckId: id,
+      isArchived: true,
+    });
     await Promise.all(
       flashcards.map((flashcard: any) =>
-        this.flashcardReviewModel.delete(
+        this.flashcardReviewModel.updateOne(
           { flashcardId: flashcard._id },
-          user._id,
+          { nextReview: null },
         ),
       ),
     );

@@ -7,7 +7,7 @@ import { useEffect, useRef } from 'react';
 import { useUpdateNote } from '@/hooks/use-note';
 import type { Note } from '@/types/note';
 
-import { tools } from '../../../(actions)/_components/tools';
+import { tools } from '../../(actions)/_components/tools';
 
 const MyTextEditor = ({ data }: { data: Note }) => {
   let initialData;
@@ -37,12 +37,6 @@ const MyTextEditor = ({ data }: { data: Note }) => {
       });
       ref.current = editor;
     }
-
-    return () => {
-      if (ref.current && ref.current.destroy) {
-        ref.current.destroy();
-      }
-    };
   }, [data._id, initialData, updateNoteMutate]);
 
   return <div id="editor-js" className="h-fit" />;

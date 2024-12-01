@@ -15,6 +15,7 @@ import { rootApi } from '../service/rootApi';
 // eslint-disable-next-line import/no-cycle
 import { logOutMiddleware } from './middlewares';
 import authReducer from './slices/authSlice';
+import QuizReducer from './slices/quizSlice';
 import DecksReducer from './slices/resourceSlice';
 import snackbarReducer from './slices/snackbarSlice';
 
@@ -33,6 +34,7 @@ const persistedReducer = persistReducer(
     auth: authReducer,
     snackbar: snackbarReducer,
     decks: DecksReducer,
+    quiz: QuizReducer,
     [rootApi.reducerPath]: rootApi.reducer
   })
 );

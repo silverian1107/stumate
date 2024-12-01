@@ -86,7 +86,9 @@ export class AuthService {
     // Set cookie with the refresh token
     response.cookie('refresh_token', refresh_token, {
       httpOnly: true,
+      sameSite: 'none',
       maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
+      secure: false,
     });
     return {
       access_token: this.jwtService.sign(payload),
@@ -114,6 +116,7 @@ export class AuthService {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       });
       const user = await this.usersService.findUserByToken(refreshToken);
+
       if (user) {
         const { _id, username, email, role } = user;
         const payload = {
@@ -124,18 +127,21 @@ export class AuthService {
           email,
           role,
         };
+
         const refresh_token = this.createRefreshToken(payload);
         await this.usersService.updateUserToken(refresh_token, _id.toString());
         response.clearCookie('refresh_token');
         response.cookie('refresh_token', refresh_token, {
           httpOnly: true,
+          sameSite: 'none',
           maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
         });
+
+        const access_token = this.jwtService.sign(payload);
         return {
-          access_token: this.jwtService.sign(payload),
+          access_token: access_token,
           user: {
             _id,
-            name,
             username,
             email,
             role,

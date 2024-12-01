@@ -27,7 +27,10 @@ async function bootstrap() {
     }),
   );
   app.use(cookieParser());
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:3001',
+    credentials: true,
+  });
   app.setGlobalPrefix('api', { exclude: [''] });
 
   const config = new DocumentBuilder()

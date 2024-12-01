@@ -32,6 +32,10 @@ import {
   UserStatisticDocument,
 } from '../statistics/schema/user-statistic.schema';
 import { CollectionsService } from '../collections/collections.service';
+import {
+  QuizAttempt,
+  QuizAttemptDocument,
+} from '../quiz-attempts/schema/quiz-attempt.schema';
 
 @Injectable()
 export class UsersService {
@@ -45,6 +49,8 @@ export class UsersService {
     private readonly collectionsService: CollectionsService,
     private readonly tagsService: TagsService,
     private readonly notificationsService: NotificationsService,
+    @InjectModel(QuizAttempt.name)
+    private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
     @InjectModel(UserStatistic.name)
     private readonly userStatisticModel: SoftDeleteModel<UserStatisticDocument>,
   ) {}
@@ -385,6 +391,7 @@ export class UsersService {
       ),
     );
     //soft delete for all quiz test, quiz question and quiz attempt
+    await this.quizAttemptModel.delete({ userId: id }, user._id);
     const quizTests = await this.quizTestsService.findByUser(user);
     await Promise.all(
       quizTests.map((quizTest: any) =>
@@ -394,7 +401,7 @@ export class UsersService {
     //soft delete for all notification
     await this.notificationsService.removeAll(user);
     //soft delete for all statistic
-    this.userStatisticModel.delete({ userId: id });
+    this.userStatisticModel.delete({ userId: id }, user._id);
     //soft delete for user
     return this.userModel.delete({ _id: id }, user._id);
   }

@@ -5,7 +5,7 @@ import EditorJS from '@editorjs/editorjs';
 import { forwardRef, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
-import { tools } from '../../../(actions)/_components/tools'; // Đảm bảo đường dẫn đúng
+import { tools } from '../../(actions)/_components/tools'; // Đảm bảo đường dẫn đúng
 
 interface EditorProps {
   data?: OutputData;
@@ -55,7 +55,7 @@ const Editor = forwardRef<EditorJS | null, EditorProps>(function Editor(
           editorRef.current.destroy(); // Hủy editor nếu nó tồn tại
         }
       };
-    } catch (error) {
+    } catch {
       toast.error('Failed to create editor', {
         description: 'Please try again.'
       });

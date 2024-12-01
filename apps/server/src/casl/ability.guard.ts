@@ -26,16 +26,21 @@ export class AbilityGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest();
     const ability = this.caslAbilityFactory.createForUser(user);
+    const object = context.switchToHttp().getRequest().deck;
 
-    const policyHandlers = requiredPolicies.map((policy: any) =>
-      policy(ability),
-    );
-    if (policyHandlers.some((can: any) => !can)) {
+    const handlerPolicies = requiredPolicies.map((policy: any) => {
+      return policy(ability, object);
+    });
+
+    // const policyHandlers = requiredPolicies.map((policy: any) =>
+    //   policy(ability),
+    // );
+    if (handlerPolicies.some((can: any) => !can)) {
       throw new ForbiddenException(
         `You do not have permission to perform this action`,
       );
     }
-
+    console.log(`casl2 ${user.role} ${requiredPolicies}`);
     return true;
   }
 }

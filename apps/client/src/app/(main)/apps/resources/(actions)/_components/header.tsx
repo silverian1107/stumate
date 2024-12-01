@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, SaveIcon } from 'lucide-react';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -18,21 +17,20 @@ const DeckSchema = z.object({
 });
 
 type ResourceFormData = z.infer<typeof DeckSchema>;
-export function ResourceHeader({
+export function DeckActionHeader({
   initialData = {} as Deck,
   isEditing,
   onSubmit,
   isSubmitting
 }: {
   initialData?: Deck;
-  isEditing: boolean;
+  isEditing?: boolean;
   onSubmit: (data: ResourceFormData) => Promise<void>;
-  isSubmitting: boolean;
+  isSubmitting?: boolean;
 }) {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm<ResourceFormData>({
     resolver: zodResolver(DeckSchema),
@@ -42,12 +40,12 @@ export function ResourceHeader({
     }
   });
 
-  useEffect(() => {
-    reset({
-      name: initialData.name,
-      description: initialData.description
-    });
-  }, [initialData, reset]);
+  // useEffect(() => {
+  //   reset({
+  //     name: initialData.name,
+  //     description: initialData.description
+  //   });
+  // }, [initialData, reset]);
 
   return (
     <form
