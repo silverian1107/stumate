@@ -3,7 +3,6 @@ import { TodoService } from './todo.service';
 import { TodoController } from './todo.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TodoSchema } from './schema/todo.schema';
-import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
@@ -13,7 +12,6 @@ import { CaslModule } from 'src/casl/casl.module';
         schema: TodoSchema,
       },
     ]),
-    CaslModule,
   ],
   controllers: [TodoController],
   providers: [TodoService],

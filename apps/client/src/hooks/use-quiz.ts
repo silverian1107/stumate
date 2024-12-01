@@ -12,7 +12,7 @@ export const useQuizzesByOwner = () => {
     queryKey: ['quizzes'],
     queryFn: async (): Promise<Quiz[]> => {
       const response = await QuizApi.findByOwner();
-      return response.data.data;
+      return response.data.data.result;
     },
     staleTime: 1000 * 60 * 5
   });
@@ -21,15 +21,21 @@ export const useQuizzesByOwner = () => {
 };
 
 export const useQuizById = (quizId?: string) => {
-  const { id } = useParams();
-  const actualQuizId = quizId || (id as string);
+  const { id: routeIds } = useParams<{ id: string }>();
+
+  const actualQuizId = quizId || routeIds;
+
   const fetchQuizById = useQuery({
-    queryKey: ['quiz', quizId],
+    queryKey: ['quiz', actualQuizId],
     queryFn: async (): Promise<Quiz> => {
+      if (!actualQuizId) {
+        throw new Error('No quiz ID provided');
+      }
+
       const response = await QuizApi.findById(actualQuizId);
       return response.data.data;
     },
-    enabled: !!quizId,
+    enabled: !!actualQuizId,
     staleTime: 1000 * 60 * 5
   });
 

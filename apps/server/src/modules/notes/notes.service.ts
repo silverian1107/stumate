@@ -1,6 +1,7 @@
 import { SummaryDocument } from './../summaries/schema/summary.schema';
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -14,6 +15,7 @@ import { CollectionsService } from '../collections/collections.service';
 import { validateObjectId } from 'src/helpers/utils';
 import { StatisticsService } from '../statistics/statistics.service';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { IUser } from '../users/users.interface';
 
 @Injectable()
 export class NotesService {
@@ -29,8 +31,6 @@ export class NotesService {
   async create(newNoteData: CreateNoteDto, userId: string) {
     if (!mongoose.isValidObjectId(newNoteData.parentId))
       throw new BadRequestException('Invalid Collection ID');
-    if (!mongoose.isValidObjectId(userId))
-      throw new BadRequestException('Invalid UserId ID');
 
     try {
       const newNote = new this.noteModel({
@@ -41,7 +41,7 @@ export class NotesService {
 
       const [parentNote, parentCollection] = await Promise.all([
         this.noteModel.findOne({ _id: parentId }),
-        this.collectionService.findById(parentId, userId).catch(() => {
+        this.collectionService.findById(parentId).catch(() => {
           return null;
         }),
       ]);
@@ -49,8 +49,13 @@ export class NotesService {
       const parent = parentNote || parentCollection;
       if (!parent)
         throw new NotFoundException(
-          `Couldn't find the collection with ID: ${parentId}`,
+          `Couldn't find the collection or note with ID: ${parentId}`,
         );
+      if (parent.ownerId.toString() !== userId) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
 
       newNote.parentId = parent._id as string;
       parent.children.push({
@@ -189,21 +194,19 @@ export class NotesService {
     }
   }
 
-  async findById(ownerId: string, noteId: string): Promise<Note> {
-    if (!mongoose.isValidObjectId(ownerId))
-      throw new BadRequestException('Invalid UserId');
+  async findById(noteId: string): Promise<Note> {
     if (!mongoose.isValidObjectId(noteId))
       throw new BadRequestException('Invalid NoteId');
 
-    const collection = await this.noteModel
+    const note = await this.noteModel
       .findOne({ _id: noteId })
       .populate('childrenDocs')
       .lean<Note>()
       .exec();
-    if (!collection) {
-      throw new NotFoundException(`Collection with ID ${noteId} not found`);
+    if (!note) {
+      throw new NotFoundException(`Note with ID ${noteId} not found`);
     }
-    return collection;
+    return note;
   }
 
   async updateById(noteId: string, updateData: UpdateNoteDto) {
@@ -211,14 +214,14 @@ export class NotesService {
     const updatedCollection = await this.noteModel
       .findOneAndUpdate({ _id: noteId }, updateData, { new: true })
       .exec();
-    if (!updatedCollection) {
-      throw new NotFoundException(`Collection with ID ${noteId} not found`);
-    }
+    // if (!updatedCollection) {
+    //   throw new NotFoundException(`Collection with ID ${noteId} not found`);
+    // }
     return updatedCollection;
   }
 
   //websocket
-  async deleteById(noteId: string) {
+  async deleteById(noteId: string, user: IUser) {
     validateObjectId(noteId, 'Note');
     const deletedNote = await this.noteModel.findOne({
       _id: noteId,
@@ -227,8 +230,14 @@ export class NotesService {
     if (!deletedNote) {
       throw new NotFoundException(`Note with ID ${noteId} not found`);
     }
-
-    const ownerId = deletedNote.ownerId;
+    const ownerId = deletedNote.ownerId.toString();
+    if (user.role === 'USER') {
+      if (ownerId !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
 
     const notesToDelete = [];
     const stack = [noteId];
@@ -243,14 +252,20 @@ export class NotesService {
       if (currentNote) {
         notesToDelete.push(currentNote._id);
         const childNotes = await this.noteModel.find({
-          'parentId._id': currentNoteId,
+          parentId: currentNoteId,
+          isArchived: true,
         });
         stack.push(...childNotes.map((child) => child._id.toString()));
       }
     }
 
-    await this.summaryModel.delete({ noteId: { $in: notesToDelete } }, ownerId);
-    await this.noteModel.delete({ _id: { $in: notesToDelete } }, ownerId);
+    await this.summaryModel.delete(
+      {
+        noteId: { $in: notesToDelete },
+      },
+      user._id,
+    );
+    await this.noteModel.delete({ _id: { $in: notesToDelete } }, user._id);
 
     await this.statisticsService.createOrUpdateUserStatistics(ownerId);
     return 'Note was deleted successfully';

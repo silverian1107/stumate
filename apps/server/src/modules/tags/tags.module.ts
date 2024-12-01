@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { TagsController } from './tags.controller';
 import { TagSchema } from './schema/tag.schema';
@@ -7,7 +7,7 @@ import { DeckSchema } from '../decks/schema/deck.schema';
 import { QuizTestSchema } from '../quiz-tests/schema/quiz-test.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CollectionSchema } from '../collections/schema/collection.schema';
-import { CaslModule } from 'src/casl/casl.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { CaslModule } from 'src/casl/casl.module';
         schema: QuizTestSchema,
       },
     ]),
-    CaslModule,
+    forwardRef(() => UsersModule),
   ],
   controllers: [TagsController],
   providers: [TagsService],

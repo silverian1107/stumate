@@ -55,9 +55,26 @@ export class ArchiveService {
             collectionsToArchive.push(currentCollection._id);
             for (const child of currentCollection.children ?? []) {
               if (child.type === 'Collection') {
-                stackCollection.push(child._id.toString());
+                stackCollection.push(child._id);
               } else if (child.type === 'Note') {
-                notesToArchive.push(child._id.toString());
+                notesToArchive.push(child._id);
+                const stackChildNotes = [child._id];
+                while (stackChildNotes.length > 0) {
+                  const currentNoteId = stackChildNotes.pop();
+                  const currentNote = await this.noteModel.findOne({
+                    _id: currentNoteId,
+                  });
+
+                  if (currentNote) {
+                    notesToArchive.push(currentNote._id);
+                    const childNotes = await this.noteModel.find({
+                      parentId: currentNoteId,
+                    });
+                    stackChildNotes.push(
+                      ...childNotes.map((child) => child._id.toString()),
+                    );
+                  }
+                }
               }
             }
           }
@@ -91,7 +108,7 @@ export class ArchiveService {
           if (currentNote) {
             archivedNotes.push(currentNote._id);
             const childNotes = await this.noteModel.find({
-              'parentId._id': currentNoteId,
+              parentId: currentNoteId,
             });
             stackNote.push(...childNotes.map((child) => child._id.toString()));
           }
@@ -162,9 +179,28 @@ export class ArchiveService {
             collectionsToRestore.push(currentCollection._id);
             for (const child of currentCollection.children ?? []) {
               if (child.type === 'Collection') {
-                stackCollection.push(child._id.toString());
+                stackCollection.push(child._id);
               } else if (child.type === 'Note') {
-                notesToRestore.push(child._id.toString());
+                notesToRestore.push(child._id);
+                const stackChildNotes = [child._id];
+                while (stackChildNotes.length > 0) {
+                  const currentNoteId = stackChildNotes.pop();
+                  const currentNote = await this.noteModel.findOne({
+                    _id: currentNoteId,
+                    isArchived: true,
+                  });
+
+                  if (currentNote) {
+                    notesToRestore.push(currentNote._id);
+                    const childNotes = await this.noteModel.find({
+                      parentId: currentNoteId,
+                      isArchived: true,
+                    });
+                    stackChildNotes.push(
+                      ...childNotes.map((child) => child._id.toString()),
+                    );
+                  }
+                }
               }
             }
           }
@@ -199,7 +235,7 @@ export class ArchiveService {
           if (currentNote) {
             restoredNotes.push(currentNote._id);
             const childNotes = await this.noteModel.find({
-              'parentId._id': currentNoteId,
+              parentId: currentNoteId,
               isArchived: true,
             });
             stackNote.push(...childNotes.map((child) => child._id.toString()));
@@ -254,23 +290,11 @@ export class ArchiveService {
     }
   }
 
-  async findAll(
-    user: IUser,
-    resourceType: string,
-    currentPage: number,
-    pageSize: number,
-    qs: string,
-  ) {
+  async findAll(user: IUser, resourceType: string, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
-    delete filter.current;
-    delete filter.pageSize;
 
     filter.isArchived = true;
-    filter.userId = user._id;
-
-    currentPage = currentPage ? currentPage : 1;
-    const limit = pageSize ? pageSize : 10;
-    const offset = (currentPage - 1) * limit;
+    filter.$or = [{ userId: user._id }, { ownerId: user._id }];
 
     let model: any;
     switch (resourceType) {
@@ -291,12 +315,9 @@ export class ArchiveService {
     }
 
     const totalItems = (await model.find(filter)).length;
-    const totalPages = Math.ceil(totalItems / limit);
 
     const result = await model
       .find(filter)
-      .skip(offset)
-      .limit(limit)
       .sort(sort as any)
       .select('-userId')
       .populate(population)
@@ -304,17 +325,16 @@ export class ArchiveService {
       .exec();
 
     return {
-      meta: {
-        current: currentPage,
-        pageSize: limit,
-        pages: totalPages,
-        total: totalItems,
-      },
+      total: totalItems,
       result,
     };
   }
 
-  async findOne(resourceType: string, resourceId: string) {
+  async findOne(
+    resourceType: string,
+    resourceId: string,
+    isArchived: boolean = false,
+  ) {
     if (!mongoose.isValidObjectId(resourceId)) {
       throw new BadRequestException('Invalid Resource ID');
     }
@@ -335,7 +355,7 @@ export class ArchiveService {
       default:
         throw new BadRequestException('Invalid resource type');
     }
-    const resource = await model.findOne({ _id: resourceId, isArchived: true });
+    const resource = await model.findOne({ _id: resourceId, isArchived });
     if (!resource) {
       throw new NotFoundException(`Not found ${resourceType}`);
     }

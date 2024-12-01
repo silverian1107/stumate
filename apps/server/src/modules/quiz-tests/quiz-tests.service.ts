@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -87,8 +88,23 @@ export class QuizTestsService {
   //   return newQuizTests;
   // }
 
-  async findByUser(user: IUser) {
-    return await this.quizTestModel.find({ userId: user._id });
+  async findByUser(user: IUser, qs: string) {
+    const { filter, sort, population, projection } = aqp(qs);
+
+    filter.userId = user._id;
+
+    const totalItems = (await this.quizTestModel.find(filter)).length;
+    const result = await this.quizTestModel
+      .find(filter)
+      .sort(sort as any)
+      .select('-userId')
+      .populate(population)
+      .select(projection as any)
+      .exec();
+    return {
+      total: totalItems,
+      result,
+    };
   }
 
   async findAll(currentPage: number, pageSize: number, qs: string) {
@@ -166,6 +182,13 @@ export class QuizTestsService {
       throw new NotFoundException('Not found quiz test');
     }
     const userId = quizTest.userId.toString();
+    if (user.role === 'USER') {
+      if (userId !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
     //soft delete for quiz question
     await this.quizQuestionModel.delete({ quizTestId: id }, user._id);
     //soft delete for quiz test

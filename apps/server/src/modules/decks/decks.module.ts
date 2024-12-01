@@ -4,8 +4,8 @@ import { DecksController } from './decks.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DeckSchema } from './schema/deck.schema';
 import { FlashcardSchema } from '../flashcards/schema/flashcard.schema';
-import { CaslModule } from 'src/casl/casl.module';
 import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
+import { StatisticsModule } from '../statistics/statistics.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.sch
     MongooseModule.forFeature([
       { name: 'FlashcardReview', schema: FlashcardReviewSchema },
     ]),
-    CaslModule,
+    StatisticsModule,
   ],
   controllers: [DecksController],
   providers: [DecksService],

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -27,6 +28,18 @@ export class SummariesService {
     createSummaryDto: CreateSummaryDto,
     @User() user: IUser,
   ) {
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw new BadRequestException('Invalid Note ID');
+    }
+    const note = await this.noteModel.findOne({ _id: noteId });
+    if (!note) {
+      throw new NotFoundException('Not found note');
+    }
+    if (note.ownerId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
     const newSummary = await this.summaryModel.create({
       content: createSummaryDto.content,
       noteId: noteId,
@@ -39,10 +52,20 @@ export class SummariesService {
     return newSummary;
   }
 
-  async findByNoteId(noteId: string) {
+  async findByNoteId(noteId: string, user: IUser) {
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw new BadRequestException('Invalid Note ID');
+    }
     const note = await this.noteModel.findOne({ _id: noteId });
     if (!note) {
       throw new NotFoundException('Not found note');
+    }
+    if (user.role === 'USER') {
+      if (note.ownerId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
     }
     return await this.summaryModel.findOne({ noteId });
   }
@@ -52,6 +75,12 @@ export class SummariesService {
     updateSummaryDto: UpdateSummaryDto,
     @User() user: IUser,
   ) {
+    const summary = await this.findById(id);
+    if (summary.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
     return await this.summaryModel.findOneAndUpdate(
       { _id: id },
       {
@@ -65,13 +94,25 @@ export class SummariesService {
     );
   }
 
-  async remove(id: string, @User() user: IUser) {
+  async findById(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Summary ID');
     }
     const summary = await this.summaryModel.findOne({ _id: id });
     if (!summary) {
       throw new NotFoundException('Not found summary');
+    }
+    return summary;
+  }
+
+  async remove(id: string, @User() user: IUser) {
+    const summary = await this.findById(id);
+    if (user.role === 'USER') {
+      if (summary.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
     }
     return this.summaryModel.delete({ _id: id }, user._id);
   }

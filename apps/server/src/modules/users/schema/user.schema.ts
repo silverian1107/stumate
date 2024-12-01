@@ -3,6 +3,11 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
+export enum Role {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
 @Schema({ timestamps: true })
 export class User {
   @Prop()
