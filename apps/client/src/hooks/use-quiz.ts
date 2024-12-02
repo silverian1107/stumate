@@ -42,6 +42,26 @@ export const useQuizById = (quizId?: string) => {
   return fetchQuizById;
 };
 
+export const useQuizQuestions = (quizId?: string) => {
+  const { id: routeIds } = useParams<{ id: string }>();
+  const actualQuizId = quizId || routeIds;
+  const quizQuestionsQuery = useQuery({
+    queryKey: ['quiz-questions', quizId],
+    queryFn: async (): Promise<QuizQuestion[]> => {
+      if (!actualQuizId) {
+        throw new Error('No quiz ID provided');
+      }
+
+      const response = await QuizApi.findByQuizId(actualQuizId);
+      return response.data.data;
+    },
+    enabled: !!actualQuizId,
+    staleTime: 1000 * 60 * 5
+  });
+
+  return quizQuestionsQuery;
+};
+
 export const useQuizCreate = () => {
   const queryClient = useQueryClient();
 
@@ -68,7 +88,7 @@ export const useCreateQuestions = () => {
         data.quizId,
         data.questions
       );
-      return response.data;
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

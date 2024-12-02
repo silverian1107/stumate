@@ -2,13 +2,13 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface Answer {
-  id: string;
+  _id: string;
   text: string;
   isCorrect: boolean;
 }
 
 export interface Question {
-  id: string;
+  _id: string;
   text: string;
   type: 'single' | 'multiple';
   answers: Answer[];
@@ -40,7 +40,7 @@ const quizSlice = createSlice({
     },
     updateQuestion: (state, action: PayloadAction<Question>) => {
       const index = state.questions.findIndex(
-        (q) => q.id === action.payload.id
+        (q) => q._id === action.payload._id
       );
       if (index !== -1) {
         const existingQuestion = state.questions[index];
@@ -56,14 +56,14 @@ const quizSlice = createSlice({
       }
     },
     markQuestionDeleted: (state, action: PayloadAction<string>) => {
-      const index = state.questions.findIndex((q) => q.id === action.payload);
+      const index = state.questions.findIndex((q) => q._id === action.payload);
       if (index !== -1) {
         state.questions[index].isDeleted = true;
         state.questions[index].action = 'delete';
       }
     },
     restoreQuestion: (state, action: PayloadAction<string>) => {
-      const index = state.questions.findIndex((q) => q.id === action.payload);
+      const index = state.questions.findIndex((q) => q._id === action.payload);
       if (index !== -1 && state.questions[index].isDeleted) {
         state.questions[index].isDeleted = false;
         state.questions[index].action = state.questions[index].originalAction;
@@ -75,6 +75,9 @@ const quizSlice = createSlice({
         isDeleted: true,
         action: 'delete'
       }));
+    },
+    clearQuestions: (state) => {
+      state.questions = [];
     }
   }
 });
@@ -84,6 +87,7 @@ export const {
   updateQuestion,
   markQuestionDeleted,
   restoreQuestion,
-  removeAllQuestions
+  removeAllQuestions,
+  clearQuestions
 } = quizSlice.actions;
 export default quizSlice.reducer;

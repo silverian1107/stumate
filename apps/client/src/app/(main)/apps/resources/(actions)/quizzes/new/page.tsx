@@ -4,7 +4,7 @@ import { CheckIcon, XIcon } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import type { QuizCreateDto, QuizQuestion } from '@/endpoints/quiz-api';
+import type { QuizCreateDto } from '@/endpoints/quiz-api';
 import { useCreateQuestions, useQuizCreate } from '@/hooks/use-quiz';
 import type { RootState } from '@/redux/store';
 
@@ -45,7 +45,8 @@ export default function ResourcePage() {
         });
         return;
       }
-      const payload: QuizQuestion[] = questions.map((question) => ({
+
+      const payload = questions.map((question) => ({
         question: question.text,
         questionType: question.type,
         answerOptions: question.answers.map((option) => ({
@@ -54,6 +55,7 @@ export default function ResourcePage() {
         })),
         point: 1
       }));
+
       const quizId = (await createQuiz.mutateAsync(formData))._id;
       await createQuestions.mutateAsync({ quizId, questions: payload });
       toast.success('Quiz created successfully', {

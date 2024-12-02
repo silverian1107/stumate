@@ -38,11 +38,11 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ question }) => {
   };
 
   const handleDelete = () => {
-    dispatch(markQuestionDeleted(question.id));
+    dispatch(markQuestionDeleted(question._id));
   };
 
   const handleRestore = () => {
-    dispatch(restoreQuestion(question.id));
+    dispatch(restoreQuestion(question._id));
   };
 
   if (question.isDeleted) {

@@ -8,6 +8,7 @@ export interface QuizCreateDto {
 }
 
 export interface QuizAnswer {
+  _id?: string;
   option: string;
   isCorrect: boolean;
 }
@@ -28,6 +29,10 @@ export const QuizApi = {
     return QuizClient.get(`/${id}`);
   },
 
+  async findByQuizId(quizId: string) {
+    return QuizClient.get(`/${quizId}/quiz-questions/all`);
+  },
+
   async create(data: QuizCreateDto) {
     return (await QuizClient.post('', data)).data;
   },
@@ -37,7 +42,6 @@ export const QuizApi = {
   },
 
   async bulkCreateQuestions(quizId: string, questions: QuizQuestion[]) {
-    return (await QuizClient.post(`/${quizId}/quiz-questions/bulk`, questions))
-      .data;
+    return QuizClient.post(`/${quizId}/quiz-questions/bulk`, questions);
   }
 };

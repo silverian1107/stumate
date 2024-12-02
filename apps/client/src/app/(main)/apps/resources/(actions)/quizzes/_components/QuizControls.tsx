@@ -18,12 +18,12 @@ const QuizControls: React.FC = () => {
   const handleAddQuestion = () => {
     dispatch(
       addQuestion({
-        id: uuidv4(),
+        _id: uuidv4(),
         text: '',
         type: 'single',
         answers: Array(4)
           .fill(null)
-          .map(() => ({ id: uuidv4(), text: '', isCorrect: false }))
+          .map(() => ({ _id: uuidv4(), text: '', isCorrect: false }))
       })
     );
   };
@@ -35,7 +35,7 @@ const QuizControls: React.FC = () => {
   const handleRestoreDeletedQuestions = () => {
     questions
       .filter((q) => q.isDeleted)
-      .forEach((q) => dispatch(restoreQuestion(q.id)));
+      .forEach((q) => dispatch(restoreQuestion(q._id)));
   };
 
   return (
