@@ -15,6 +15,7 @@ export class QuizQuestion {
   @Prop({
     type: [
       {
+        option: { type: String, required: true },
         isCorrect: { type: Boolean, default: false },
       },
     ],

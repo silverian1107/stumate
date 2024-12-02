@@ -38,7 +38,7 @@ export function useDeckManager() {
       const deckData = (await DeckApi.findById(deckId)).data;
       const flashcardData = (await FlashcardApi.findAllInDeck(deckId)).data;
       const deck = deckData.data;
-      const flashcards = flashcardData.data;
+      const flashcards = flashcardData.data.result;
 
       // Map the FlashcardElement to FlashcardElementWithAction
       const flashcardsWithAction: FlashcardElementWithAction[] = flashcards.map(

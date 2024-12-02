@@ -57,7 +57,7 @@ export class QuizQuestionsController {
     }));
   }
 
-  @Post('all')
+  @Get('all')
   @Roles(Role.USER)
   @ResponseMessage('Get quiz question by quiz test')
   getByQuizTestId(

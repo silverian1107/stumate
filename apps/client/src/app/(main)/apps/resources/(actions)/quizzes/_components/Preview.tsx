@@ -15,7 +15,6 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
       onScroll(e.currentTarget.scrollTop);
     };
-
     return (
       <section
         ref={ref}
@@ -25,7 +24,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
         <div className="p-6 space-y-6">
           <h2 className="text-2xl font-bold mb-6">Quiz Preview</h2>
           {questions.map((question, index) => (
-            <div key={question.id} className="mb-8">
+            <div key={question._id} className="mb-8">
               <h3 className="text-lg font-semibold mb-3">
                 {index + 1}. {question.text}
               </h3>
@@ -35,16 +34,16 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
                     .filter((answer) => answer.text.trim() !== '')
                     .map((answer) => (
                       <div
-                        key={answer.id}
+                        key={answer._id}
                         className="flex items-center space-x-2 mb-2"
                       >
                         <RadioGroupItem
-                          value={answer.id}
-                          id={`preview-answer-${answer.id}`}
+                          value={answer._id}
+                          id={`preview-answer-${answer._id}`}
                           checked={answer.isCorrect}
                           disabled
                         />
-                        <Label htmlFor={`preview-answer-${answer.id}`}>
+                        <Label htmlFor={`preview-answer-${answer._id}`}>
                           {answer.text}
                         </Label>
                       </div>
@@ -55,15 +54,15 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
                   .filter((answer) => answer.text.trim() !== '')
                   .map((answer) => (
                     <div
-                      key={answer.id}
+                      key={answer._id}
                       className="flex items-center space-x-2 mb-2"
                     >
                       <Checkbox
-                        id={`preview-answer-${answer.id}`}
+                        id={`preview-answer-${answer._id}`}
                         checked={answer.isCorrect}
                         disabled
                       />
-                      <Label htmlFor={`preview-answer-${answer.id}`}>
+                      <Label htmlFor={`preview-answer-${answer._id}`}>
                         {answer.text}
                       </Label>
                     </div>

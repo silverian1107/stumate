@@ -66,15 +66,18 @@ export class QuizQuestionsService {
     user: IUser,
   ) {
     const quizTest = await this.quizTestService.findOne(quizTestId);
+
     if (quizTest.userId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
     }
+
     const currentNumberOfQuestion = await this.quizQuestionModel.countDocuments(
       { quizTestId },
     );
     const newNumberOfQuestion = createQuizQuestionDtos.length;
+
     if (
       currentNumberOfQuestion + newNumberOfQuestion >
       quizTest.numberOfQuestion
@@ -83,6 +86,7 @@ export class QuizQuestionsService {
         'Maximum number of questions has been reached',
       );
     }
+
     const questionsToCreate = createQuizQuestionDtos.map(
       (createQuizQuestionDto) => ({
         ...createQuizQuestionDto,
@@ -94,6 +98,7 @@ export class QuizQuestionsService {
         },
       }),
     );
+
     const newQuizQuestions =
       await this.quizQuestionModel.insertMany(questionsToCreate);
 

@@ -19,7 +19,7 @@ const AnswerOptions: React.FC<AnswerOptionsProps> = ({ question }) => {
   const [removedAnswers, setRemovedAnswers] = useState<Answer[]>([]);
 
   const addAnswer = () => {
-    const newAnswer: Answer = { id: uuidv4(), text: '', isCorrect: false };
+    const newAnswer: Answer = { _id: uuidv4(), text: '', isCorrect: false };
     dispatch(
       updateQuestion({
         ...question,
@@ -30,14 +30,14 @@ const AnswerOptions: React.FC<AnswerOptionsProps> = ({ question }) => {
 
   const updateAnswer = (id: string, text: string) => {
     const updatedAnswers = question.answers.map((answer) =>
-      answer.id === id ? { ...answer, text } : answer
+      answer._id === id ? { ...answer, text } : answer
     );
     dispatch(updateQuestion({ ...question, answers: updatedAnswers }));
   };
 
   const toggleCorrectAnswer = (id: string) => {
     const updatedAnswers = question.answers.map((answer) =>
-      answer.id === id
+      answer._id === id
         ? { ...answer, isCorrect: !answer.isCorrect }
         : question.type === 'single'
           ? { ...answer, isCorrect: false }
@@ -48,7 +48,7 @@ const AnswerOptions: React.FC<AnswerOptionsProps> = ({ question }) => {
 
   const removeAnswer = (id: string) => {
     const updatedAnswers = question.answers.filter(
-      (answer) => answer.id !== id
+      (answer) => answer._id !== id
     );
     dispatch(updateQuestion({ ...question, answers: updatedAnswers }));
   };
@@ -66,29 +66,29 @@ const AnswerOptions: React.FC<AnswerOptionsProps> = ({ question }) => {
   return (
     <div>
       {question.answers.map((answer) => (
-        <div key={answer.id} className="flex items-center space-x-2 mb-2">
+        <div key={answer._id} className="flex items-center space-x-2 mb-2">
           {question.type === 'single' ? (
             <RadioGroup
-              value={answer.isCorrect ? answer.id : ''}
-              onValueChange={() => toggleCorrectAnswer(answer.id)}
+              value={answer.isCorrect ? answer._id : ''}
+              onValueChange={() => toggleCorrectAnswer(answer._id)}
             >
-              <RadioGroupItem value={answer.id} id={`correct-${answer.id}`} />
+              <RadioGroupItem value={answer._id} id={`correct-${answer._id}`} />
             </RadioGroup>
           ) : (
             <Checkbox
               checked={answer.isCorrect}
-              onCheckedChange={() => toggleCorrectAnswer(answer.id)}
-              id={`correct-${answer.id}`}
+              onCheckedChange={() => toggleCorrectAnswer(answer._id)}
+              id={`correct-${answer._id}`}
             />
           )}
           <Input
             value={answer.text}
-            onChange={(e) => updateAnswer(answer.id, e.target.value)}
+            onChange={(e) => updateAnswer(answer._id, e.target.value)}
             placeholder="Enter answer text"
             className="grow"
           />
           <Button
-            onClick={() => removeAnswer(answer.id)}
+            onClick={() => removeAnswer(answer._id)}
             variant="destructive"
             size="icon"
           >
