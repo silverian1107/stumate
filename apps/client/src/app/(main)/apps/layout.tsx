@@ -22,7 +22,9 @@ export default function Layout({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="size-full relative flex text-sm">
         <Sidebar />
-        <main className="flex-1 bg-primary-50">{children}</main>
+        <main className="flex-1 bg-primary-50 flex justify-center px-6 py-8 ">
+          {children}
+        </main>
       </div>
     </LocalizationProvider>
   );
