@@ -21,9 +21,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ question }) => {
   const dispatch = useDispatch();
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(
-      updateQuestion({ ...question, text: e.target.value, action: 'update' })
-    );
+    dispatch(updateQuestion({ ...question, text: e.target.value }));
   };
 
   const handleTypeChange = (value: 'single' | 'multiple') => {
@@ -34,8 +32,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ question }) => {
         answers: question.answers.map((answer) => ({
           ...answer,
           isCorrect: false
-        })),
-        action: 'update'
+        }))
       })
     );
   };

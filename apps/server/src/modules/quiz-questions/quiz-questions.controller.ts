@@ -14,7 +14,6 @@ import { UpdateQuizQuestionDto } from './dto/update-quiz-question.dto';
 import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import { Role } from '../users/schema/user.schema';
-import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('quiz-tests/:quizTestId/quiz-questions')
 export class QuizQuestionsController {
@@ -56,43 +55,6 @@ export class QuizQuestionsController {
       _id: question?._id,
       createdAt: question?.createdAt,
     }));
-  }
-
-  @Patch('bulk/update')
-  @Roles(Role.USER)
-  @ResponseMessage('Update multiple quiz questions')
-  async updateMultiple(
-    @Param('quizTestId') quizTestId: string,
-    @Body() updateQuestionData: UpdateQuizQuestionDto[],
-    @User() user: IUser,
-  ) {
-    const updatedQuizQuestions = await this.quizQuestionsService.updateMultiple(
-      quizTestId,
-      updateQuestionData,
-      user,
-    );
-
-    return updatedQuizQuestions.map((question) => ({
-      _id: question._id,
-      question: question.question,
-      questionType: question.questionType,
-    }));
-  }
-
-  @Delete('bulk/delete')
-  @Roles(Role.USER)
-  @ApiOperation({ summary: 'Delete multiple quiz questions' })
-  @ResponseMessage('Delete multiple quiz questions')
-  async removeMultiple(
-    @Param('quizTestId') quizTestId: string,
-    @Body() questionIds: string[],
-    @User() user: IUser,
-  ): Promise<any> {
-    return await this.quizQuestionsService.removeMultiple(
-      quizTestId,
-      questionIds,
-      user,
-    );
   }
 
   @Get('all')

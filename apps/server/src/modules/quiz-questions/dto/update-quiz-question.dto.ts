@@ -20,10 +20,6 @@ class AnswerOptions {
 }
 
 export class UpdateQuizQuestionDto {
-  @IsString()
-  @IsOptional()
-  _id: string;
-
   @IsOptional()
   @IsString()
   question: string;

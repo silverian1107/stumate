@@ -9,7 +9,7 @@ export interface QuizCreateDto {
 
 export interface QuizAnswer {
   _id?: string;
-  option: string; // it mean text
+  option: string;
   isCorrect: boolean;
 }
 
@@ -43,15 +43,5 @@ export const QuizApi = {
 
   async bulkCreateQuestions(quizId: string, questions: QuizQuestion[]) {
     return QuizClient.post(`/${quizId}/quiz-questions/bulk`, questions);
-  },
-
-  async bulkUpdateQuestions(quizId: string, questions: QuizQuestion[]) {
-    return QuizClient.patch(`/${quizId}/quiz-questions/bulk/update`, questions);
-  },
-
-  async bulkDeleteQuestions(quizId: string, questionIds: string[]) {
-    return QuizClient.delete(`/${quizId}/quiz-questions/bulk/delete`, {
-      data: questionIds
-    });
   }
 };

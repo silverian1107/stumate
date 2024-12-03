@@ -1,31 +1,20 @@
 'use client';
 
 import { CheckIcon, XIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
 import type { QuizCreateDto } from '@/endpoints/quiz-api';
 import { useCreateQuestions, useQuizCreate } from '@/hooks/use-quiz';
-import { clearQuestions } from '@/redux/slices/quizSlice';
 import type { RootState } from '@/redux/store';
 
 import { QuizHeader } from '../_components/headers';
 import QuizCreateElement from '../_components/quiz-create-element';
 
 export default function ResourcePage() {
-  const dispatch = useDispatch();
-  const router = useRouter();
-
   const createQuiz = useQuizCreate();
   const createQuestions = useCreateQuestions();
   const questions = useSelector((state: RootState) => state.quiz.questions);
-
-  useEffect(() => {
-    dispatch(clearQuestions());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const validateQuiz = () => {
     for (const question of questions) {
@@ -69,8 +58,6 @@ export default function ResourcePage() {
 
       const quizId = (await createQuiz.mutateAsync(formData))._id;
       await createQuestions.mutateAsync({ quizId, questions: payload });
-
-      router.replace('/apps/resources/quizzes/');
       toast.success('Quiz created successfully', {
         className: 'text-green-500',
         icon: <CheckIcon className="text-green-500" />
