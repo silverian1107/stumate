@@ -65,9 +65,9 @@ const QuizCreator: React.FC = () => {
   useEffect(() => {
     if (!isLoading && data) {
       const formattedQuestions = mapBackendToFrontend(data);
+      dispatch(clearQuestions());
       formattedQuestions.forEach((question) => {
-        dispatch(clearQuestions());
-        dispatch(addQuestion(question));
+        dispatch(addQuestion({ ...question, originalAction: 'update' }));
       });
     }
   }, [data, isLoading, dispatch]);

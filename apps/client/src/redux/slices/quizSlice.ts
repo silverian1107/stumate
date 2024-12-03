@@ -29,11 +29,15 @@ const quizSlice = createSlice({
   name: 'quiz',
   initialState,
   reducers: {
-    addQuestion: (state, action: PayloadAction<Question>) => {
-      const newQuestion = {
-        ...action.payload,
-        action: 'create' as 'delete' | 'create' | 'update',
-        originalAction: 'create' as 'create' | 'update',
+    addQuestion: (
+      state,
+      action: PayloadAction<Question & { originalAction?: 'create' | 'update' }>
+    ) => {
+      const { originalAction = 'create', ...question } = action.payload;
+      const newQuestion: Question = {
+        ...question,
+        action: originalAction === 'create' ? 'create' : undefined,
+        originalAction,
         isDeleted: false
       };
       state.questions.push(newQuestion);
@@ -58,8 +62,13 @@ const quizSlice = createSlice({
     markQuestionDeleted: (state, action: PayloadAction<string>) => {
       const index = state.questions.findIndex((q) => q._id === action.payload);
       if (index !== -1) {
-        state.questions[index].isDeleted = true;
-        state.questions[index].action = 'delete';
+        const question = state.questions[index];
+        if (question.originalAction === 'create') {
+          state.questions.splice(index, 1);
+        } else {
+          question.isDeleted = true;
+          question.action = 'delete';
+        }
       }
     },
     restoreQuestion: (state, action: PayloadAction<string>) => {
