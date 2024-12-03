@@ -16,7 +16,7 @@ import {
 import { QuizTestsService } from '../quiz-tests/quiz-tests.service';
 import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
 
 @Injectable()
@@ -152,6 +152,48 @@ export class QuizQuestionsService {
     );
   }
 
+  async updateMultiple(
+    quizTestId: string,
+    updateQuestionData: UpdateQuizQuestionDto[],
+    user: IUser,
+  ) {
+    // First, verify the quiz test belongs to the user (optional but recommended)
+    const quizTest = await this.quizTestService.findOne(quizTestId);
+    if (!quizTest || quizTest.userId.toString() !== user._id.toString()) {
+      throw new ForbiddenException(
+        `You don't have permission to update these questions`,
+      );
+    }
+
+    // Use bulkWrite for efficient multiple updates
+    const bulkOperations = updateQuestionData.map((updateData) => ({
+      updateOne: {
+        filter: {
+          _id: updateData._id,
+          quizTestId: quizTestId,
+        },
+        update: {
+          $set: {
+            ...updateData,
+            updatedBy: {
+              _id: user._id,
+              username: user.username,
+            },
+          },
+        },
+      },
+    }));
+
+    await this.quizQuestionModel.bulkWrite(bulkOperations);
+
+    const updatedQuestions = await this.quizQuestionModel.find({
+      _id: { $in: updateQuestionData.map((q) => q._id) },
+      quizTestId: quizTestId,
+    });
+
+    return updatedQuestions;
+  }
+
   async remove(quizTestId: string, id: string, @User() user: IUser) {
     const quizTest = await this.quizTestService.findOne(quizTestId);
     if (user.role === 'USER') {
@@ -169,5 +211,37 @@ export class QuizQuestionsService {
       throw new NotFoundException('Not found quiz question');
     }
     return this.quizQuestionModel.delete({ _id: id, quizTestId }, user._id);
+  }
+
+  async removeMultiple(quizTestId: string, questionIds: string[], user: IUser) {
+    const quizTest = await this.quizTestService.findOne(quizTestId);
+    if (user.role === 'USER') {
+      if (quizTest.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
+    }
+
+    const objectIdQuestionIds = questionIds.map((id) => new Types.ObjectId(id));
+
+    const questions = await this.quizQuestionModel.find({
+      _id: { $in: objectIdQuestionIds },
+      quizTestId,
+    });
+
+    if (questions.length !== questionIds.length) {
+      throw new NotFoundException('Some questions not found');
+    }
+
+    await this.quizQuestionModel.delete(
+      {
+        _id: { $in: objectIdQuestionIds },
+        quizTestId,
+      },
+      questions[0].userId,
+    );
+
+    return questions;
   }
 }

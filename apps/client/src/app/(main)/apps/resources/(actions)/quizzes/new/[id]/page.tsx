@@ -1,19 +1,31 @@
 'use client';
 
 import { CheckIcon, XIcon } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import type { QuizCreateDto, QuizQuestion } from '@/endpoints/quiz-api';
-import { useCreateQuestions, useQuizCreate } from '@/hooks/use-quiz';
+import type { QuizCreateDto } from '@/endpoints/quiz-api';
+import {
+  useCreateQuestions,
+  useDeleteQuestions,
+  useUpdateQuestions,
+  useUpdateQuiz
+} from '@/hooks/use-quiz';
 import type { RootState } from '@/redux/store';
 
 import { QuizHeader } from '../../_components/headers';
 import QuizCreateElement from '../../_components/quiz-create-element';
 
 export default function ResourcePage() {
-  const createQuiz = useQuizCreate();
-  const createQuestions = useCreateQuestions();
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+
+  const updateQuizMutation = useUpdateQuiz();
+  const createQuestionsMutation = useCreateQuestions();
+  const updateQuestionsMutation = useUpdateQuestions();
+  const deleteQuestionsMutation = useDeleteQuestions();
+
   const questions = useSelector((state: RootState) => state.quiz.questions);
 
   const validateQuiz = () => {
@@ -21,10 +33,13 @@ export default function ResourcePage() {
       if (!question.text.trim()) {
         return 'All questions must have text';
       }
-      if (question.answers.length === 0) {
+      if (question.answers.length === 0 && !question.isDeleted) {
         return 'All questions must have at least one answer';
       }
-      if (!question.answers.some((answer) => answer.isCorrect)) {
+      if (
+        !question.answers.some((answer) => answer.isCorrect) &&
+        !question.isDeleted
+      ) {
         return 'Each question must have at least one correct answer';
       }
       for (const answer of question.answers) {
@@ -45,17 +60,56 @@ export default function ResourcePage() {
         });
         return;
       }
-      const payload: QuizQuestion[] = questions.map((question) => ({
-        question: question.text,
-        questionType: question.type,
-        answerOptions: question.answers.map((option) => ({
-          option: option.text,
-          isCorrect: option.isCorrect
-        })),
-        point: 1
-      }));
-      const quizId = (await createQuiz.mutateAsync(formData))._id;
-      await createQuestions.mutateAsync({ quizId, questions: payload });
+
+      const createArray = [];
+      const updateArray = [];
+      const deleteArray = [];
+
+      for (const question of questions) {
+        if (question.isDeleted) {
+          deleteArray.push(question._id);
+        } else if (question.originalAction === 'create') {
+          createArray.push({
+            question: question.text,
+            questionType: question.type,
+            answerOptions: question.answers.map((answer) => ({
+              option: answer.text,
+              isCorrect: answer.isCorrect
+            }))
+          });
+        } else if (question.action === 'update') {
+          updateArray.push({
+            _id: question._id,
+            question: question.text,
+            questionType: question.type,
+            answerOptions: question.answers.map((answer) => ({
+              option: answer.text,
+              isCorrect: answer.isCorrect
+            }))
+          });
+        }
+      }
+
+      await Promise.all([
+        updateQuizMutation.mutateAsync({ _id: id, data: { ...formData } }),
+        createArray.length > 0 &&
+          createQuestionsMutation.mutateAsync({
+            quizId: id,
+            questions: createArray
+          }),
+        updateArray.length > 0 &&
+          updateQuestionsMutation.mutateAsync({
+            quizId: id,
+            questions: updateArray
+          }),
+        deleteArray.length > 0 &&
+          deleteQuestionsMutation.mutateAsync({
+            quizId: id,
+            questions: deleteArray
+          })
+      ]);
+
+      router.replace('/apps/resources/quizzes/');
       toast.success('Quiz created successfully', {
         className: 'text-green-500',
         icon: <CheckIcon className="text-green-500" />
