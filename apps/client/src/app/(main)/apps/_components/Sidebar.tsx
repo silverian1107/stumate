@@ -106,7 +106,12 @@ const Sidebar = () => {
           </div>
           <div className="mt-auto">
             <SidebarItem isButton label="Archive" icon={Archive} />
-            <SidebarItem isButton label="Tags" icon={Tags} />
+            <SidebarItem
+              isButton
+              label="Tags"
+              icon={Tags}
+              href="/apps/resources/tags"
+            />
             <SidebarItem isButton label="Guide" icon={CircleHelp} />
           </div>
         </div>
