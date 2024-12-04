@@ -1,12 +1,8 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable simple-import-sort/imports */
-/* eslint-disable unused-imports/no-unused-imports */
-
 'use client';
 
-import { Tag } from '@/service/rootApi';
 import { useState } from 'react';
-import HeaderTag from './Header';
+
+import type { Tag } from '@/service/rootApi';
 
 const CombinedTags = ({ combinedTags }: { combinedTags: Tag[] }) => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
