@@ -13,7 +13,7 @@ const allTabs = [
   {
     id: 'quizz',
     name: 'Quizzes',
-    href: '/quizzes'
+    href: '/quizzes/view'
   },
   {
     id: 'summary',

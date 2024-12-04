@@ -1,3 +1,4 @@
+import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
@@ -34,6 +35,7 @@ function mapBackendToFrontend(backendQuestions: QuizQuestion[]): Question[] {
 }
 
 const QuizCreator: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useQuizQuestions();
   const dispatch = useDispatch();
   const questions = useSelector((state: RootState) => state.quiz.questions);
@@ -63,14 +65,16 @@ const QuizCreator: React.FC = () => {
   }, [scrollPosition]);
 
   useEffect(() => {
-    if (!isLoading && data) {
+    if (!id && !isLoading) {
+      dispatch(clearQuestions());
+    } else if (!isLoading && data) {
       const formattedQuestions = mapBackendToFrontend(data);
       formattedQuestions.forEach((question) => {
         dispatch(clearQuestions());
         dispatch(addQuestion(question));
       });
     }
-  }, [data, isLoading, dispatch]);
+  }, [data, isLoading, dispatch, id]);
 
   return (
     <div className="container mx-auto">

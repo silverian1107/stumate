@@ -51,7 +51,7 @@ const QuizCard = ({ id, name, description }: ResourceCardProps) => {
       </div>
       <Progress value={75} />
       <div className="flex w-full justify-end gap-2">
-        <Link href={`quizzes/new/${id}`}>
+        <Link href={`/apps/resources/quizzes/edit/${id}`}>
           <Button variant="secondary" className="px-4 hover:bg-primary-100/80">
             <PenLine /> Edit
           </Button>
