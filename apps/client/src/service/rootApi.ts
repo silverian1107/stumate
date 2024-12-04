@@ -180,6 +180,31 @@ export interface IUserStatistic {
   };
 }
 
+interface CreatedBy {
+  _id: string;
+  username: string;
+}
+
+export interface Tag {
+  _id: string;
+  name: string;
+  userId: string;
+  createdBy: CreatedBy;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface IFetchTagsResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    userTags: Tag[];
+    combinedTags: Tag[];
+  };
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -233,7 +258,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const rootApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['NOTE', 'ATTACHMENT'],
+  tagTypes: ['NOTE', 'ATTACHMENT', 'TAG'],
   endpoints: (builder) => ({
     register: builder.mutation<
       { token: string },
@@ -337,7 +362,41 @@ export const rootApi = createApi({
       query: () => {
         return '/statistics';
       }
-    })
+    }),
+    tag: builder.query<IFetchTagsResponse, void>({
+      query: () => {
+        return '/tags';
+      },
+      providesTags: [{ type: 'TAG' }]
+    }),
+    createTag: builder.mutation<
+      { message: string; status: number },
+      { name: string }
+    >({
+      query: ({ name }) => ({
+        url: '/tags',
+        method: 'POST',
+        body: { name }
+      }),
+      invalidatesTags: [{ type: 'TAG' }]
+    }),
+    deleteTag: builder.mutation({
+      query: (id) => ({
+        url: `tags/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'TAG' }]
+    }),
+    renameTag: builder.mutation<CreateNoteResponse, IUpdateNoteRequest>({
+      query: ({ name, noteId, body, attachment }) => ({
+        url: `/notes/${noteId}`,
+        body: { name, body, attachment },
+        method: 'PATCH'
+      }),
+      invalidatesTags: (result, error, { noteId }) => [
+        { type: 'NOTE', id: noteId }
+      ]
+    }),
   })
 });
 
@@ -353,5 +412,9 @@ export const {
   useUpdateNoteMutation,
   useGetNoteByIdQuery,
   useArchiveNoteByIdMutation,
-  useStatisticsQuery
+  useStatisticsQuery,
+  useTagQuery,
+  useCreateTagMutation,
+  useDeleteTagMutation,
+  useRenameTagMutation
 } = rootApi;
