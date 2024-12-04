@@ -35,7 +35,7 @@ const ActionButton = () => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="quizzes/new">Quizzes</Link>
+            <Link href="/apps/resources/quizzes/new">Quizzes</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -18,6 +18,7 @@ import authReducer from './slices/authSlice';
 import QuizReducer from './slices/quizSlice';
 import DecksReducer from './slices/resourceSlice';
 import snackbarReducer from './slices/snackbarSlice';
+import QuizStudyReducer from './slices/studyQuizSlice';
 
 // Type for persisted configuration
 const persistConfig = {
@@ -35,6 +36,7 @@ const persistedReducer = persistReducer(
     snackbar: snackbarReducer,
     decks: DecksReducer,
     quiz: QuizReducer,
+    quizStudy: QuizStudyReducer,
     [rootApi.reducerPath]: rootApi.reducer
   })
 );

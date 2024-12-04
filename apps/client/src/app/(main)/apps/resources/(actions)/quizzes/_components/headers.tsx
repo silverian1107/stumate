@@ -46,7 +46,6 @@ export function QuizHeader({
     resolver: zodResolver(QuizSchema)
   });
 
-  // Use useEffect to reset form when data is available
   useEffect(() => {
     if (data) {
       reset({
