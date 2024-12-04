@@ -98,8 +98,13 @@ const AnswerOptions: React.FC<AnswerOptionsProps> = ({ question }) => {
       ))}
       <div className="flex gap-2 mt-4">
         {question.answers.length > 0 ? (
-          <Button onClick={removeAllAnswers} variant="destructive" size="lg">
-            <Trash2 className="size-5" />
+          <Button
+            onClick={removeAllAnswers}
+            variant="destructive"
+            size="lg"
+            className="px-4"
+          >
+            Remove all answers
           </Button>
         ) : (
           <Button
@@ -108,7 +113,8 @@ const AnswerOptions: React.FC<AnswerOptionsProps> = ({ question }) => {
             size="lg"
             disabled={removedAnswers.length === 0}
           >
-            <RotateCcw className="size-5" />
+            <RotateCcw className="size-4" />
+            Restore
           </Button>
         )}
         <Button

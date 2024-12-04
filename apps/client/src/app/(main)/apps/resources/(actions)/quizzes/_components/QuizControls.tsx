@@ -21,6 +21,7 @@ const QuizControls: React.FC = () => {
         _id: uuidv4(),
         text: '',
         type: 'single',
+        originalAction: 'create',
         answers: Array(4)
           .fill(null)
           .map(() => ({ _id: uuidv4(), text: '', isCorrect: false }))
@@ -39,12 +40,16 @@ const QuizControls: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-end items-center space-x-2 pt-2">
+    <div className="flex w-full justify-center items-center space-x-2 pt-2">
+      <Button
+        onClick={handleRestoreDeletedQuestions}
+        variant="secondary"
+        className="mr-auto"
+      >
+        <RotateCcw className="size-4 mr-2" /> Restore Deleted
+      </Button>
       <Button onClick={handleRemoveAllQuestions} variant="destructive">
         <Trash2 className="size-4 mr-2" /> Remove All
-      </Button>
-      <Button onClick={handleRestoreDeletedQuestions} variant="secondary">
-        <RotateCcw className="size-4 mr-2" /> Restore Deleted
       </Button>
       <Button onClick={handleAddQuestion} variant="default">
         <Plus className="size-4 mr-2" /> Add Question

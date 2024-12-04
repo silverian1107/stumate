@@ -15,7 +15,6 @@ const TagList = () => {
   const { data, isSuccess } = useTagQuery();
   useEffect(() => {
     if (isSuccess) {
-      console.log('response: ', data);
       setUserTags(data.data.userTags);
       setCombinedTags(data.data.combinedTags);
     }

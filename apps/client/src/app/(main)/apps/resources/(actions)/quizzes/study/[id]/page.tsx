@@ -1,20 +1,10 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,7 +19,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useQuizById, useQuizQuestions } from '@/hooks/use-quiz';
 import {
   clearAnswers,
   setQuestions,
@@ -38,20 +28,37 @@ import {
 } from '@/redux/slices/studyQuizSlice';
 import type { AppDispatch, RootState } from '@/redux/store';
 
-import { mockQuestions } from './_components/mockQuestions';
+import { mapQuizBackendToFrontend } from '../../_components/QuizCreator';
+import ConfirmDialog from '../_components/confirm-dialog';
+import QuestionStatus from '../_components/question-status';
 
 export default function QuizStudyPage() {
+  const { id } = useParams<{ id: string }>();
+  const { data, isLoading } = useQuizById(id);
+  const {
+    data: quizQuestion,
+    isLoading: isLoadingQuestion,
+    error
+  } = useQuizQuestions(id);
   const dispatch = useDispatch<AppDispatch>();
   const { questions, userAnswers, showResults } = useSelector(
     (state: RootState) => state.quizStudy
   );
   const [showDialog, setShowDialog] = useState(false);
+  const [quizStarted, setQuizStarted] = useState(false);
 
   useEffect(() => {
+    if (!isLoading && quizQuestion) {
+      const mappedQuestions = mapQuizBackendToFrontend(quizQuestion);
+      dispatch(setQuestions(mappedQuestions));
+    }
+  }, [quizQuestion, isLoading, dispatch]);
+
+  const handleStartQuiz = () => {
+    setQuizStarted(true);
     dispatch(clearAnswers());
     dispatch(setShowResults(false));
-    dispatch(setQuestions(mockQuestions));
-  }, [dispatch]);
+  };
 
   const handleAnswerChange = (questionId: string, answerId: string) => {
     dispatch(setUserAnswer({ questionId, answerId }));
@@ -76,7 +83,7 @@ export default function QuizStudyPage() {
       } else {
         const isCorrect =
           userAnswerIds.length === correctAnswerIds.length &&
-          userAnswerIds.every((id) => correctAnswerIds.includes(id));
+          userAnswerIds.every((idx) => correctAnswerIds.includes(idx));
         if (isCorrect) {
           score += 1;
         }
@@ -103,6 +110,32 @@ export default function QuizStudyPage() {
 
   const answeredQuestionsCount = Object.keys(userAnswers).length;
   const progressPercentage = (answeredQuestionsCount / questions.length) * 100;
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Something went wrong: {error.message}</p>;
+
+  if (!quizStarted) {
+    return (
+      <div className="container mx-auto p-4">
+        <Card className="w-full max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle>Quiz Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h2 className="text-xl font-semibold mb-4">{data?.name}</h2>
+            <p className="mb-4">{data?.description}</p>
+            <p className="mb-4">Question: {data?.numberOfQuestion}</p>
+            <p className="mb-4">Duration: {data?.duration} minutes</p>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={handleStartQuiz} className="w-full">
+              Start Quiz
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   if (showResults) {
     const score = calculateScore();
@@ -149,6 +182,8 @@ export default function QuizStudyPage() {
       </div>
     );
   }
+
+  if (isLoadingQuestion) return <p>Loading...</p>;
 
   return (
     <div className="container mx-auto">
@@ -219,88 +254,17 @@ export default function QuizStudyPage() {
             Submit Quiz
           </Button>
         </div>
-        <div className="fixed bottom-12 right-4 lg:static lg:bottom-auto lg:right-auto">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="lg:hidden bg-primary-200 rounded-full text-primary-800"
-              >
-                <Menu className="size-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[250px] sm:w-[300px]">
-              <Card className="w-full">
-                <CardHeader>
-                  <CardTitle>Question Status</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-5 gap-2">
-                    {questions.map((question, index) => (
-                      <Badge
-                        key={question._id}
-                        variant={
-                          isQuestionAnswered(question._id)
-                            ? 'default'
-                            : 'outline'
-                        }
-                      >
-                        {index + 1}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </SheetContent>
-          </Sheet>
-          <Card className="hidden lg:block sticky top-4 w-full max-w-[250px]">
-            <CardHeader>
-              <CardTitle>Question Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-5 gap-2">
-                {questions.map((question, index) => (
-                  <Badge
-                    key={question._id}
-                    variant={
-                      isQuestionAnswered(question._id) ? 'default' : 'outline'
-                    }
-                  >
-                    {index + 1}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <QuestionStatus
+          isQuestionAnswered={isQuestionAnswered}
+          questions={questions}
+        />
       </div>
       <AnimatePresence>
         {showDialog && (
-          <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
-            <AlertDialogContent asChild>
-              <motion.div>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Unanswered Questions</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    There are still some questions you haven&apos;t answered.
-                    Are you sure you want to submit the quiz?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Go Back</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => {
-                      setShowDialog(false);
-                      dispatch(setShowResults(true));
-                    }}
-                  >
-                    Submit Anyway
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </motion.div>
-            </AlertDialogContent>
-          </AlertDialog>
+          <ConfirmDialog
+            setShowDialog={setShowDialog}
+            showDialog={showDialog}
+          />
         )}
       </AnimatePresence>
     </div>

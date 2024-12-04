@@ -1,4 +1,3 @@
-import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,7 +17,9 @@ import type { RootState } from '@/redux/store';
 import Preview from './Preview';
 import QuestionForm from './QuestionForm';
 
-function mapBackendToFrontend(backendQuestions: QuizQuestion[]): Question[] {
+export function mapQuizBackendToFrontend(
+  backendQuestions: QuizQuestion[]
+): Question[] {
   return backendQuestions.map((backendQuestion) => ({
     _id: backendQuestion._id ?? uuidv4(),
     text: backendQuestion.question,
@@ -35,7 +36,6 @@ function mapBackendToFrontend(backendQuestions: QuizQuestion[]): Question[] {
 }
 
 const QuizCreator: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useQuizQuestions();
   const dispatch = useDispatch();
   const questions = useSelector((state: RootState) => state.quiz.questions);
@@ -65,16 +65,14 @@ const QuizCreator: React.FC = () => {
   }, [scrollPosition]);
 
   useEffect(() => {
-    if (!id && !isLoading) {
+    if (!isLoading && data) {
+      const formattedQuestions = mapQuizBackendToFrontend(data);
       dispatch(clearQuestions());
-    } else if (!isLoading && data) {
-      const formattedQuestions = mapBackendToFrontend(data);
       formattedQuestions.forEach((question) => {
-        dispatch(clearQuestions());
-        dispatch(addQuestion(question));
+        dispatch(addQuestion({ ...question, originalAction: 'update' }));
       });
     }
-  }, [data, isLoading, dispatch, id]);
+  }, [data, isLoading, dispatch]);
 
   return (
     <div className="container mx-auto">
