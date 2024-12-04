@@ -396,7 +396,7 @@ export const rootApi = createApi({
       invalidatesTags: (result, error, { noteId }) => [
         { type: 'NOTE', id: noteId }
       ]
-    }),
+    })
   })
 });
 

@@ -76,11 +76,13 @@ const UserTags = ({ userTags }: { userTags: Tag[] }) => {
                 </button>
                 {selectedTag === tag._id && (
                   <ul className="absolute right-4 top-5 mt-2 bg-white border rounded-lg shadow-md text-sm z-10">
-                    <li
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleDetailTag(tag._id)}
-                    >
-                      Detail
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                      <button
+                        onClick={() => handleDetailTag(tag._id)}
+                        type="button"
+                      >
+                        Detail
+                      </button>
                     </li>
                     <li className="px-4 py-2 text-red-500 hover:bg-red-100 cursor-pointer">
                       <button
