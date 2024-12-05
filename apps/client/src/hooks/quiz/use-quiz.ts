@@ -3,8 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
-import type { QuizCreateDto, QuizQuestion } from '@/endpoints/quiz-api';
-import { QuizApi } from '@/endpoints/quiz-api';
+import { QuizApi } from '@/endpoints/quiz/quiz-api';
+import type { QuizCreateDto, QuizQuestion } from '@/endpoints/quiz/type';
 import type { Quiz } from '@/types/deck';
 
 export const useQuizzesByOwner = () => {
@@ -26,7 +26,7 @@ export const useQuizById = (quizId?: string) => {
   const actualQuizId = quizId || routeIds;
 
   const fetchQuizById = useQuery({
-    queryKey: ['quiz', actualQuizId],
+    queryKey: ['quizzes', actualQuizId],
     queryFn: async (): Promise<Quiz> => {
       if (!actualQuizId) {
         throw new Error('No quiz ID provided');
@@ -51,12 +51,10 @@ export const useQuizQuestions = (quizId?: string) => {
       if (!actualQuizId) {
         throw new Error('No quiz ID provided');
       }
-
       const response = await QuizApi.findByQuizId(actualQuizId);
       return response.data.data;
     },
-    enabled: !!actualQuizId,
-    staleTime: 1000 * 60 * 5
+    enabled: !!actualQuizId
   });
 
   return quizQuestionsQuery;
@@ -88,11 +86,13 @@ export const useCreateQuestions = () => {
         data.quizId,
         data.questions
       );
-      return response;
+      return response.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('data._id', data._id);
+
       queryClient.invalidateQueries({
-        queryKey: ['quizzes']
+        queryKey: ['quiz-questions', data._id]
       });
     }
   });

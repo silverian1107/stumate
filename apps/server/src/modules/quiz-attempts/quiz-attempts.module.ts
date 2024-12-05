@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { QuizQuestionsModule } from '../quiz-questions/quiz-questions.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { QuizAttemptsWithoutQuizIdController } from './quiz-attempts-without-quizId.controller';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     StatisticsModule,
     NotificationsModule,
   ],
-  controllers: [QuizAttemptsController],
+  controllers: [QuizAttemptsController, QuizAttemptsWithoutQuizIdController],
   providers: [QuizAttemptsService],
   exports: [QuizAttemptsService],
 })

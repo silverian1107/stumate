@@ -1,17 +1,17 @@
 'use client';
 
 import { CheckIcon, XIcon } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import type { QuizCreateDto } from '@/endpoints/quiz-api';
+import type { QuizCreateDto } from '@/endpoints/quiz/type';
 import {
   useCreateQuestions,
   useDeleteQuestions,
   useUpdateQuestions,
   useUpdateQuiz
-} from '@/hooks/use-quiz';
+} from '@/hooks/quiz/use-quiz';
 import type { RootState } from '@/redux/store';
 
 import { QuizHeader } from '../../_components/headers';
@@ -19,7 +19,7 @@ import QuizCreateElement from '../../_components/quiz-create-element';
 
 export default function ResourcePage() {
   const { id } = useParams<{ id: string }>();
-  // const router = useRouter();
+  const router = useRouter();
 
   const updateQuizMutation = useUpdateQuiz();
   const createQuestionsMutation = useCreateQuestions();
@@ -64,7 +64,7 @@ export default function ResourcePage() {
       const createArray = [];
       const updateArray = [];
       const deleteArray = [];
-      console.log('questions', questions);
+
       for (const question of questions) {
         if (question.isDeleted) {
           deleteArray.push(question._id);
@@ -109,11 +109,7 @@ export default function ResourcePage() {
           })
       ]);
 
-      console.log('createArray', createArray);
-      console.log('updateArray', updateArray);
-      console.log('deleteArray', deleteArray);
-
-      // router.replace('/apps/resources/quizzes/view');
+      router.replace('/apps/resources/quizzes/view');
       toast.success('Quiz created successfully', {
         className: 'text-green-500',
         icon: <CheckIcon className="text-green-500" />
@@ -125,7 +121,7 @@ export default function ResourcePage() {
 
   return (
     <>
-      <QuizHeader onSubmit={handleSubmit} />
+      <QuizHeader onSubmit={handleSubmit} isEditing />
       <div className="flex-1 overflow-hidden">
         <QuizCreateElement />
       </div>

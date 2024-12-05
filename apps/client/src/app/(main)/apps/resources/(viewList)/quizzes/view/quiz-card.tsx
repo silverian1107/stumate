@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { useQuizById } from '@/hooks/use-quiz';
+import { useQuizById, useQuizQuestions } from '@/hooks/quiz/use-quiz';
 
 interface ResourceCardProps {
   id?: string;
@@ -13,8 +13,10 @@ interface ResourceCardProps {
 
 const QuizCard = ({ id, name, description }: ResourceCardProps) => {
   const { data, isLoading, error } = useQuizById(id);
+  const { data: questions, isLoading: isLoadingQuestions } =
+    useQuizQuestions(id);
 
-  if (isLoading || error || !data) return null;
+  if (isLoading || isLoadingQuestions || error || !data) return null;
 
   return (
     <div className="flex w-full flex-col justify-between gap-3 rounded-sm bg-white px-4 py-3 text-base">
@@ -56,9 +58,15 @@ const QuizCard = ({ id, name, description }: ResourceCardProps) => {
             <PenLine /> Edit
           </Button>
         </Link>
-        <Button variant="default" className="px-6">
-          <PlayIcon /> Study
-        </Button>
+        <Link href={`/apps/resources/quizzes/prepare/${id}`}>
+          <Button
+            variant="default"
+            className="px-6"
+            disabled={questions?.length === 0}
+          >
+            <PlayIcon /> {questions?.length === 0 ? 'No questions' : 'Study'}
+          </Button>
+        </Link>
       </div>
     </div>
   );

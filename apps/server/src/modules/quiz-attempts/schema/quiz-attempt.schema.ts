@@ -22,6 +22,8 @@ export class QuizAttempt {
           ref: 'QuizQuestion',
           require: true,
         },
+        answer: { type: [String], default: [] },
+        isCorrect: { type: Boolean, default: false },
       },
     ],
     default: [],
@@ -48,6 +50,9 @@ export class QuizAttempt {
     require: true,
   })
   quizTestId: mongoose.Schema.Types.ObjectId;
+
+  @Prop({ required: true, default: 'NOT_STARTED' })
+  status: 'NOT_STARTED' | 'IN_PROGRESS' | 'REVIEWING' | 'COMPLETED';
 
   @Prop()
   createdAt: Date;

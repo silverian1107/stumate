@@ -1,11 +1,12 @@
 'use client';
 
 import { CheckIcon, XIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import type { QuizCreateDto } from '@/endpoints/quiz-api';
-import { useCreateQuestions, useQuizCreate } from '@/hooks/use-quiz';
+import type { QuizCreateDto } from '@/endpoints/quiz/type';
+import { useCreateQuestions, useQuizCreate } from '@/hooks/quiz/use-quiz';
 import type { RootState } from '@/redux/store';
 
 import { QuizHeader } from '../_components/headers';
@@ -15,6 +16,7 @@ export default function ResourcePage() {
   const createQuiz = useQuizCreate();
   const createQuestions = useCreateQuestions();
   const questions = useSelector((state: RootState) => state.quiz.questions);
+  const router = useRouter();
 
   const validateQuiz = () => {
     for (const question of questions) {
@@ -62,6 +64,7 @@ export default function ResourcePage() {
         className: 'text-green-500',
         icon: <CheckIcon className="text-green-500" />
       });
+      router.push('/apps/resources/quizzes/view');
     } catch {
       toast.error('Failed to create resource');
     }

@@ -1,7 +1,6 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,7 +18,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useQuizById, useQuizQuestions } from '@/hooks/use-quiz';
+import { useQuizAttemptData } from '@/hooks/quiz/use-quiz-attempt';
 import {
   clearAnswers,
   setQuestions,
@@ -28,37 +27,30 @@ import {
 } from '@/redux/slices/studyQuizSlice';
 import type { AppDispatch, RootState } from '@/redux/store';
 
-import { mapQuizBackendToFrontend } from '../../_components/QuizCreator';
-import ConfirmDialog from '../_components/confirm-dialog';
-import QuestionStatus from '../_components/question-status';
+import { mapQuizBackendToFrontend } from '../../../_components/QuizCreator';
+import ConfirmDialog from '../../prepare/_components/confirm-dialog';
+import QuestionStatus from '../../prepare/_components/question-status';
 
 export default function QuizStudyPage() {
-  const { id } = useParams<{ id: string }>();
-  const { data, isLoading } = useQuizById(id);
-  const {
-    data: quizQuestion,
-    isLoading: isLoadingQuestion,
-    error
-  } = useQuizQuestions(id);
+  // const { id } = useParams<{ id: string }>();
+
+  const { data, isLoading, error } = useQuizAttemptData();
+  // const submitQuizAttempt = useSubmitQuizAttempt();
+
   const dispatch = useDispatch<AppDispatch>();
   const { questions, userAnswers, showResults } = useSelector(
     (state: RootState) => state.quizStudy
   );
+
   const [showDialog, setShowDialog] = useState(false);
-  const [quizStarted, setQuizStarted] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && quizQuestion) {
-      const mappedQuestions = mapQuizBackendToFrontend(quizQuestion);
-      dispatch(setQuestions(mappedQuestions));
+    if (data) {
+      const formattedQuestions = mapQuizBackendToFrontend(data.questions);
+      dispatch(setShowResults(false));
+      dispatch(setQuestions(formattedQuestions));
     }
-  }, [quizQuestion, isLoading, dispatch]);
-
-  const handleStartQuiz = () => {
-    setQuizStarted(true);
-    dispatch(clearAnswers());
-    dispatch(setShowResults(false));
-  };
+  }, [data, dispatch]);
 
   const handleAnswerChange = (questionId: string, answerId: string) => {
     dispatch(setUserAnswer({ questionId, answerId }));
@@ -99,10 +91,15 @@ export default function QuizStudyPage() {
     if (unansweredQuestions.length > 0) {
       setShowDialog(true);
     } else {
+      // submitQuizAttempt.mutate({
+      //   quizTestId: data.quizTest._id,
+      //   answers: userAnswers
+      // });
+      // console.log(userAnswers);
+
       dispatch(setShowResults(true));
     }
   };
-
   const handleRetry = () => {
     dispatch(clearAnswers());
     dispatch(setShowResults(false));
@@ -113,29 +110,6 @@ export default function QuizStudyPage() {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong: {error.message}</p>;
-
-  if (!quizStarted) {
-    return (
-      <div className="container mx-auto p-4">
-        <Card className="w-full max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Quiz Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <h2 className="text-xl font-semibold mb-4">{data?.name}</h2>
-            <p className="mb-4">{data?.description}</p>
-            <p className="mb-4">Question: {data?.numberOfQuestion}</p>
-            <p className="mb-4">Duration: {data?.duration} minutes</p>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={handleStartQuiz} className="w-full">
-              Start Quiz
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
 
   if (showResults) {
     const score = calculateScore();
@@ -183,72 +157,75 @@ export default function QuizStudyPage() {
     );
   }
 
-  if (isLoadingQuestion) return <p>Loading...</p>;
-
   return (
     <div className="container mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <div className="lg:col-span-3">
           <Progress value={progressPercentage} className="w-full mb-4" />
           <ScrollArea className="h-[calc(100vh-8rem)]">
-            {questions.map((question, index) => (
-              <Card key={question._id} className="w-full mb-6">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Question {index + 1}</CardTitle>
-                  <Badge className="hover:bg-primary-main cursor-default">
-                    1 point
-                  </Badge>
-                </CardHeader>
-                <CardContent>
-                  <h2 className="text-xl font-semibold mb-4">
-                    {question.text}
-                  </h2>
-                  {question.type === 'single' ? (
-                    <RadioGroup
-                      value={userAnswers[question._id]?.[0] || ''}
-                      onValueChange={(value) =>
-                        handleAnswerChange(question._id, value)
-                      }
-                    >
-                      {question.answers.map((answer) => (
+            {questions.map((question, index) => {
+              // console.log('questions', questions);
+              // console.log('question', question);
+
+              return (
+                <Card key={question._id} className="w-full mb-6">
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>Question {index + 1}</CardTitle>
+                    <Badge className="hover:bg-primary-main cursor-default">
+                      1 point
+                    </Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <h2 className="text-xl font-semibold mb-4">
+                      {question.text}
+                    </h2>
+                    {question.type === 'single' ? (
+                      <RadioGroup
+                        value={userAnswers[question._id]?.[0] || ''}
+                        onValueChange={(value) =>
+                          handleAnswerChange(question._id, value)
+                        }
+                      >
+                        {question.answers.map((answer) => (
+                          <div
+                            key={answer._id}
+                            className="flex items-center space-x-2 mb-2"
+                          >
+                            <RadioGroupItem
+                              value={answer._id}
+                              id={`${question._id}-${answer._id}`}
+                            />
+                            <Label htmlFor={`${question._id}-${answer._id}`}>
+                              {answer.text}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    ) : (
+                      question.answers.map((answer) => (
                         <div
                           key={answer._id}
                           className="flex items-center space-x-2 mb-2"
                         >
-                          <RadioGroupItem
-                            value={answer._id}
+                          <Checkbox
                             id={`${question._id}-${answer._id}`}
+                            checked={userAnswers[question._id]?.includes(
+                              answer._id
+                            )}
+                            onCheckedChange={() =>
+                              handleAnswerChange(question._id, answer._id)
+                            }
                           />
                           <Label htmlFor={`${question._id}-${answer._id}`}>
                             {answer.text}
                           </Label>
                         </div>
-                      ))}
-                    </RadioGroup>
-                  ) : (
-                    question.answers.map((answer) => (
-                      <div
-                        key={answer._id}
-                        className="flex items-center space-x-2 mb-2"
-                      >
-                        <Checkbox
-                          id={`${question._id}-${answer._id}`}
-                          checked={userAnswers[question._id]?.includes(
-                            answer._id
-                          )}
-                          onCheckedChange={() =>
-                            handleAnswerChange(question._id, answer._id)
-                          }
-                        />
-                        <Label htmlFor={`${question._id}-${answer._id}`}>
-                          {answer.text}
-                        </Label>
-                      </div>
-                    ))
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+                      ))
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </ScrollArea>
           <Button onClick={handleSubmit} className="w-full mt-6">
             Submit Quiz
