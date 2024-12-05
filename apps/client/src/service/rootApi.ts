@@ -15,7 +15,13 @@ interface AuthResponse {
   // userInfo?: Record<string, any>;
 }
 interface RefreshResponse {
-  accessToken: string;
+  access_token: string;
+  user: {
+    _id: string;
+    username: string;
+    email: string;
+    role: string;
+  };
 }
 
 interface UploadResponse {
@@ -224,32 +230,27 @@ const baseQueryWithReauth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401) {
-    const { refreshToken } = (api.getState() as RootState).auth;
-    if (refreshToken) {
-      const refreshResult = await baseQuery(
-        {
-          url: '/auth/refresh',
-          body: { refreshToken },
-          method: 'POST'
-        },
-        api,
-        extraOptions
-      );
+    const refreshResult = await baseQuery(
+      {
+        url: '/auth/refresh',
+        method: 'GET'
+      },
+      api,
+      extraOptions
+    );
 
-      const { accessToken: newAccessToken } =
-        refreshResult?.data as RefreshResponse;
-      if (newAccessToken) {
-        api.dispatch(
-          login({
-            accessToken: newAccessToken,
-            refreshToken
-          })
-        );
-        result = await baseQuery(args, api, extraOptions);
-      } else {
-        api.dispatch(logout());
-        window.location.href = '/login';
-      }
+    const { access_token: newAccessToken } =
+      refreshResult?.data as RefreshResponse;
+    if (newAccessToken) {
+      api.dispatch(
+        login({
+          accessToken: newAccessToken
+        })
+      );
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      api.dispatch(logout());
+      window.location.href = '/login';
     }
   }
   return result;
