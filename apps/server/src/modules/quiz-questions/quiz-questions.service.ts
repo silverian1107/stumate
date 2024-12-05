@@ -102,7 +102,7 @@ export class QuizQuestionsService {
     const newQuizQuestions =
       await this.quizQuestionModel.insertMany(questionsToCreate);
 
-    return newQuizQuestions;
+    return { data: newQuizQuestions, _id: quizTestId };
   }
 
   async findByQuizTestId(quizTestId: string, user: IUser) {

@@ -10,7 +10,7 @@ import { AutosizeTextarea } from '@/components/ui/auto-size-textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import InputWithEndInline from '@/components/ui/number-input';
-import { useQuizById } from '@/hooks/use-quiz';
+import { useQuizById } from '@/hooks/quiz/use-quiz';
 import { cn } from '@/lib/utils';
 import type { Quiz } from '@/types/deck';
 

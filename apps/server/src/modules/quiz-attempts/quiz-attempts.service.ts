@@ -31,34 +31,51 @@ export class QuizAttemptsService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  //websocket
   async handleStartQuizAttempt(quizTestId: string, @User() user: IUser) {
     const quizTest = await this.quizTests.findOne(quizTestId);
-    if (quizTest.userId.toString() !== user._id) {
+    if (quizTest.userId.toString() !== user._id.toString()) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
     }
-    //Update status for quiz test
-    if (quizTest.status === 'NOT_STARTED') {
-      await quizTest.updateOne({ _id: quizTestId }, { status: 'IN_PROGRESS' });
-    } else {
-      await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWING' });
-    }
-    //Create a new quiz attempt
-    const newQuizAttempt = await this.quizAttemptModel.create({
+
+    const quizAttempt = await this.quizAttemptModel.create({
       totalQuestions: quizTest.numberOfQuestion,
       answers: [],
       duration: quizTest.duration,
       userId: user._id,
       quizTestId,
+      status: 'IN_PROGRESS',
       createdBy: {
         _id: user._id,
         username: user.username,
       },
     });
+
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
-    return { newQuizAttempt, quizTest, user };
+    return { quizAttempt, quizTest, user };
+  }
+
+  public async getAttemptData(attemptId: string, @User() user: IUser) {
+    const quizAttempt = await this.quizAttemptModel
+      .findById(attemptId)
+      .populate('quizTestId');
+
+    if (!quizAttempt) {
+      throw new NotFoundException('Not found quiz attempt');
+    }
+
+    if (quizAttempt.userId.toString() !== user._id.toString()) {
+      throw new ForbiddenException(
+        'You do not have permission to view this attempt',
+      );
+    }
+    const questions = await this.quizQuestions.findByQuizTestId(
+      (quizAttempt.quizTestId as any)._id.toString(),
+      user,
+    );
+
+    return { quizAttempt, quizTest: quizAttempt.quizTestId, questions };
   }
 
   async handleSaveQuizAttempt(

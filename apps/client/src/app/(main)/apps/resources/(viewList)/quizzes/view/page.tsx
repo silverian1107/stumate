@@ -2,7 +2,7 @@
 
 import { LoaderCircle } from 'lucide-react';
 
-import { useQuizzesByOwner } from '@/hooks/use-quiz';
+import { useQuizzesByOwner } from '@/hooks/quiz/use-quiz';
 import type { Quiz } from '@/types/deck';
 
 import QuizCard from './quiz-card';

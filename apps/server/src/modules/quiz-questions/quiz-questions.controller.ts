@@ -52,10 +52,7 @@ export class QuizQuestionsController {
       createQuizQuestionDtos,
       user,
     );
-    return newQuizQuestions.map((question) => ({
-      _id: question?._id,
-      createdAt: question?.createdAt,
-    }));
+    return newQuizQuestions;
   }
 
   @Patch('bulk/update')
