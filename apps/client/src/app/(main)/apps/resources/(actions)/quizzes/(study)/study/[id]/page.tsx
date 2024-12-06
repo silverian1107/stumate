@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
@@ -21,6 +22,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   useQuizAttemptData,
+  useStartQuizAttempt,
   useSubmitQuizAttempt
 } from '@/hooks/quiz/use-quiz-attempt';
 import {
@@ -36,8 +38,11 @@ import ConfirmDialog from '../../prepare/_components/confirm-dialog';
 import QuestionStatus from '../../prepare/_components/question-status';
 
 export default function QuizStudyPage() {
+  const router = useRouter();
+
   const { data, isLoading, error } = useQuizAttemptData();
   const submitQuizAttempt = useSubmitQuizAttempt();
+  const startQuiz = useStartQuizAttempt();
 
   const dispatch = useDispatch<AppDispatch>();
   const { questions, userAnswers, showResults } = useSelector(
@@ -47,7 +52,9 @@ export default function QuizStudyPage() {
   const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
-    if (data) {
+    if (data && data.quizAttempt?.status === 'COMPLETED') {
+      dispatch(setShowResults(true));
+    } else if (data) {
       const formattedQuestions = mapQuizBackendToFrontend(data.questions);
       dispatch(setShowResults(false));
       dispatch(setQuestions(formattedQuestions));
@@ -117,14 +124,28 @@ export default function QuizStudyPage() {
         quizTestId: data.quizTest._id,
         answers: answersForBackend
       });
+
+      dispatch(setShowResults(true));
     } catch (e) {
       toast.error('Failed to submit answers');
     }
   };
 
-  const handleRetry = () => {
+  const handleRetry = async () => {
     dispatch(clearAnswers());
     dispatch(setShowResults(false));
+
+    try {
+      const testAttempt = await startQuiz.mutateAsync(data.quizTest._id);
+
+      if (testAttempt) {
+        router.push(
+          `/apps/resources/quizzes/study/${testAttempt.quizAttempt._id}`
+        );
+      }
+    } catch (e) {
+      toast.error('Failed to retry the quiz');
+    }
   };
 
   const answeredQuestionsCount = Object.keys(userAnswers).length;
@@ -170,7 +191,7 @@ export default function QuizStudyPage() {
                 />
               </motion.div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-end">
               <Button onClick={handleRetry}>Try Again</Button>
             </CardFooter>
           </Card>

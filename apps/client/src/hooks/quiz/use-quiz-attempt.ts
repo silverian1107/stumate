@@ -16,8 +16,9 @@ export const useQuizAttemptData = () => {
   return queryResult;
 };
 
-export const useStartQuizAttempt = () => {
-  const { id: quizTestId } = useParams<{ id: string }>();
+export const useStartQuizAttempt = (id?: string) => {
+  const { id: quizTestIdFromParams } = useParams<{ id: string }>();
+  const quizTestId = id || quizTestIdFromParams;
 
   return useMutation({
     mutationFn: async () => {
