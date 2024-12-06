@@ -215,6 +215,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.accessToken;
+    console.log('token: ', token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -229,6 +230,7 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
+  console.log('args: ', args);
   if (result?.error?.status === 401) {
     const refreshResult = await baseQuery(
       {
@@ -388,15 +390,16 @@ export const rootApi = createApi({
       }),
       invalidatesTags: [{ type: 'TAG' }]
     }),
-    renameTag: builder.mutation<CreateNoteResponse, IUpdateNoteRequest>({
-      query: ({ name, noteId, body, attachment }) => ({
-        url: `/notes/${noteId}`,
-        body: { name, body, attachment },
+    renameTag: builder.mutation<
+      { status: number; message: string; data: Tag },
+      { name: string; id: string }
+    >({
+      query: ({ name, id }) => ({
+        url: `/tags/${id}`,
+        body: { name },
         method: 'PATCH'
       }),
-      invalidatesTags: (result, error, { noteId }) => [
-        { type: 'NOTE', id: noteId }
-      ]
+      invalidatesTags: [{ type: 'TAG' }]
     })
   })
 });

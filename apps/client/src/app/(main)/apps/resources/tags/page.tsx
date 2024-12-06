@@ -1,7 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable simple-import-sort/imports */
-
 import TagList from './_components/TagList';
 
 const page = () => {
