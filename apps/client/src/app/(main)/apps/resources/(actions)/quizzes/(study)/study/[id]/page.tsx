@@ -57,30 +57,40 @@ export default function QuizStudyPage() {
   };
 
   const isQuestionAnswered = (questionId: string) => {
-    return userAnswers[questionId] && userAnswers[questionId].length > 0;
+    const answered = userAnswers.find((ua) => ua.quizQuestionId === questionId);
+    return Boolean(answered && answered.answer.length > 0);
   };
 
   const calculateScore = () => {
     let score = 0;
     questions.forEach((question) => {
-      const userAnswerIds = userAnswers[question._id] || [];
+      const userAnswer = userAnswers.find(
+        (ua) => ua.quizQuestionId === question._id
+      );
+
+      const userAnswerIds = userAnswer?.answer.map((a) => a._id) || [];
       const correctAnswerIds = question.answers
         .filter((a) => a.isCorrect)
         .map((a) => a._id);
 
       if (question.type === 'single') {
-        if (userAnswerIds[0] === correctAnswerIds[0]) {
+        if (
+          userAnswerIds.length === 1 &&
+          userAnswerIds[0] === correctAnswerIds[0]
+        ) {
           score += 1;
         }
-      } else {
+      } else if (question.type === 'multiple') {
         const isCorrect =
           userAnswerIds.length === correctAnswerIds.length &&
-          userAnswerIds.every((idx) => correctAnswerIds.includes(idx));
+          userAnswerIds.every((id) => correctAnswerIds.includes(id));
+
         if (isCorrect) {
           score += 1;
         }
       }
     });
+
     return score;
   };
 
@@ -181,7 +191,11 @@ export default function QuizStudyPage() {
                     </h2>
                     {question.type === 'single' ? (
                       <RadioGroup
-                        value={userAnswers[question._id]?.[0] || ''}
+                        value={
+                          userAnswers.find(
+                            (ua) => ua.quizQuestionId === question._id
+                          )?.answer[0]?._id || ''
+                        }
                         onValueChange={(value) =>
                           handleAnswerChange(question._id, value)
                         }
@@ -209,9 +223,14 @@ export default function QuizStudyPage() {
                         >
                           <Checkbox
                             id={`${question._id}-${answer._id}`}
-                            checked={userAnswers[question._id]?.includes(
-                              answer._id
-                            )}
+                            checked={
+                              userAnswers
+                                .find(
+                                  (ua) => ua.quizQuestionId === question._id
+                                )
+                                ?.answer.some((a) => a._id === answer._id) ||
+                              false
+                            }
                             onCheckedChange={() =>
                               handleAnswerChange(question._id, answer._id)
                             }

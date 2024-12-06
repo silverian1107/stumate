@@ -3,15 +3,23 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { Question } from './quizSlice';
 
+interface UserAnswer {
+  quizQuestionId: string;
+  answer: {
+    _id: string;
+    answer: string;
+  }[];
+}
+
 export interface QuizState {
   questions: Question[];
-  userAnswers: { [questionId: string]: string[] };
+  userAnswers: UserAnswer[];
   showResults: boolean;
 }
 
 const initialState: QuizState = {
   questions: [],
-  userAnswers: {},
+  userAnswers: [],
   showResults: false
 };
 
@@ -28,25 +36,46 @@ const quizStudySlice = createSlice({
     ) => {
       const { questionId, answerId } = action.payload;
       const question = state.questions.find((q) => q._id === questionId);
-      if (question) {
-        if (question.type === 'single') {
-          state.userAnswers[questionId] = [answerId];
+      const answer = question?.answers.find((a) => a._id === answerId);
+      if (!question || !answer) return;
+
+      const userAnswer = state.userAnswers.find(
+        (ua) => ua.quizQuestionId === questionId
+      );
+
+      if (question.type === 'single') {
+        if (userAnswer) {
+          userAnswer.answer = [{ _id: answer._id, answer: answer.text }];
         } else {
-          state.userAnswers[questionId] = state.userAnswers[questionId] || [];
-          const index = state.userAnswers[questionId].indexOf(answerId);
-          if (index > -1) {
-            state.userAnswers[questionId].splice(index, 1);
+          state.userAnswers.push({
+            quizQuestionId: questionId,
+            answer: [{ _id: answer._id, answer: answer.text }]
+          });
+        }
+      } else if (question.type === 'multiple') {
+        if (userAnswer) {
+          const existingAnswerIndex = userAnswer.answer.findIndex(
+            (a) => a._id === answerId
+          );
+          if (existingAnswerIndex > -1) {
+            userAnswer.answer.splice(existingAnswerIndex, 1);
           } else {
-            state.userAnswers[questionId].push(answerId);
+            userAnswer.answer.push({ _id: answer._id, answer: answer.text });
           }
+        } else {
+          state.userAnswers.push({
+            quizQuestionId: questionId,
+            answer: [{ _id: answer._id, answer: answer.text }]
+          });
         }
       }
     },
+
     setShowResults: (state, action: PayloadAction<boolean>) => {
       state.showResults = action.payload;
     },
     clearAnswers: (state) => {
-      state.userAnswers = {};
+      state.userAnswers = [];
     }
   }
 });
