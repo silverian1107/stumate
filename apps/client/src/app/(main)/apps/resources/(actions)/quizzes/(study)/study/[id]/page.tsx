@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,10 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useQuizAttemptData } from '@/hooks/quiz/use-quiz-attempt';
+import {
+  useQuizAttemptData,
+  useSubmitQuizAttempt
+} from '@/hooks/quiz/use-quiz-attempt';
 import {
   clearAnswers,
   setQuestions,
@@ -32,10 +36,8 @@ import ConfirmDialog from '../../prepare/_components/confirm-dialog';
 import QuestionStatus from '../../prepare/_components/question-status';
 
 export default function QuizStudyPage() {
-  // const { id } = useParams<{ id: string }>();
-
   const { data, isLoading, error } = useQuizAttemptData();
-  // const submitQuizAttempt = useSubmitQuizAttempt();
+  const submitQuizAttempt = useSubmitQuizAttempt();
 
   const dispatch = useDispatch<AppDispatch>();
   const { questions, userAnswers, showResults } = useSelector(
@@ -63,6 +65,7 @@ export default function QuizStudyPage() {
 
   const calculateScore = () => {
     let score = 0;
+
     questions.forEach((question) => {
       const userAnswer = userAnswers.find(
         (ua) => ua.quizQuestionId === question._id
@@ -94,22 +97,31 @@ export default function QuizStudyPage() {
     return score;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const unansweredQuestions = questions.filter(
       (q) => !isQuestionAnswered(q._id)
     );
+
     if (unansweredQuestions.length > 0) {
       setShowDialog(true);
-    } else {
-      // submitQuizAttempt.mutate({
-      //   quizTestId: data.quizTest._id,
-      //   answers: userAnswers
-      // });
-      // console.log(userAnswers);
+      return;
+    }
 
-      dispatch(setShowResults(true));
+    const answersForBackend = userAnswers.map((ua) => ({
+      quizQuestionId: ua.quizQuestionId,
+      answer: ua.answer.map((a) => a.answer)
+    }));
+
+    try {
+      await submitQuizAttempt.mutateAsync({
+        quizTestId: data.quizTest._id,
+        answers: answersForBackend
+      });
+    } catch (e) {
+      toast.error('Failed to submit answers');
     }
   };
+
   const handleRetry = () => {
     dispatch(clearAnswers());
     dispatch(setShowResults(false));
@@ -173,78 +185,71 @@ export default function QuizStudyPage() {
         <div className="lg:col-span-3">
           <Progress value={progressPercentage} className="w-full mb-4" />
           <ScrollArea className="h-[calc(100vh-8rem)]">
-            {questions.map((question, index) => {
-              // console.log('questions', questions);
-              // console.log('question', question);
-
-              return (
-                <Card key={question._id} className="w-full mb-6">
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Question {index + 1}</CardTitle>
-                    <Badge className="hover:bg-primary-main cursor-default">
-                      1 point
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <h2 className="text-xl font-semibold mb-4">
-                      {question.text}
-                    </h2>
-                    {question.type === 'single' ? (
-                      <RadioGroup
-                        value={
-                          userAnswers.find(
-                            (ua) => ua.quizQuestionId === question._id
-                          )?.answer[0]?._id || ''
-                        }
-                        onValueChange={(value) =>
-                          handleAnswerChange(question._id, value)
-                        }
-                      >
-                        {question.answers.map((answer) => (
-                          <div
-                            key={answer._id}
-                            className="flex items-center space-x-2 mb-2"
-                          >
-                            <RadioGroupItem
-                              value={answer._id}
-                              id={`${question._id}-${answer._id}`}
-                            />
-                            <Label htmlFor={`${question._id}-${answer._id}`}>
-                              {answer.text}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    ) : (
-                      question.answers.map((answer) => (
+            {questions.map((question, index) => (
+              <Card key={question._id} className="w-full mb-6">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>Question {index + 1}</CardTitle>
+                  <Badge className="hover:bg-primary-main cursor-default">
+                    1 point
+                  </Badge>
+                </CardHeader>
+                <CardContent>
+                  <h2 className="text-xl font-semibold mb-4">
+                    {question.text}
+                  </h2>
+                  {question.type === 'single' ? (
+                    <RadioGroup
+                      value={
+                        userAnswers.find(
+                          (ua) => ua.quizQuestionId === question._id
+                        )?.answer[0]?._id || ''
+                      }
+                      onValueChange={(value) =>
+                        handleAnswerChange(question._id, value)
+                      }
+                    >
+                      {question.answers.map((answer) => (
                         <div
                           key={answer._id}
                           className="flex items-center space-x-2 mb-2"
                         >
-                          <Checkbox
+                          <RadioGroupItem
+                            value={answer._id}
                             id={`${question._id}-${answer._id}`}
-                            checked={
-                              userAnswers
-                                .find(
-                                  (ua) => ua.quizQuestionId === question._id
-                                )
-                                ?.answer.some((a) => a._id === answer._id) ||
-                              false
-                            }
-                            onCheckedChange={() =>
-                              handleAnswerChange(question._id, answer._id)
-                            }
                           />
                           <Label htmlFor={`${question._id}-${answer._id}`}>
                             {answer.text}
                           </Label>
                         </div>
-                      ))
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
+                      ))}
+                    </RadioGroup>
+                  ) : (
+                    question.answers.map((answer) => (
+                      <div
+                        key={answer._id}
+                        className="flex items-center space-x-2 mb-2"
+                      >
+                        <Checkbox
+                          id={`${question._id}-${answer._id}`}
+                          checked={
+                            userAnswers
+                              .find((ua) => ua.quizQuestionId === question._id)
+                              ?.answer.some((a) => a._id === answer._id) ||
+                            false
+                          }
+                          onCheckedChange={() =>
+                            handleAnswerChange(question._id, answer._id)
+                          }
+                        />
+                        <Label htmlFor={`${question._id}-${answer._id}`}>
+                          {answer.text}
+                        </Label>
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            ))}
           </ScrollArea>
           <Button onClick={handleSubmit} className="w-full mt-6">
             Submit Quiz
