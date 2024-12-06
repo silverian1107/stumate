@@ -196,6 +196,8 @@ export class QuizAttemptsService {
     } else {
       await quizTest.updateOne({ _id: quizTestId }, { status: 'REVIEWED' });
     }
+
+    await this.quizAttemptModel.updateOne({ _id: id }, { status: 'COMPLETED' });
     //Update quiz attempt
     const updateQuizAttempt = await this.quizAttemptModel.findOneAndUpdate(
       { _id: id, quizTestId },
