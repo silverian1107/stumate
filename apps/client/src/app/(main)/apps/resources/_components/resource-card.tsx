@@ -18,7 +18,8 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
     queryFn: async () => {
       const response = (await FlashcardApi.findAllInDeck(id)).data;
       return response.data;
-    }
+    },
+    staleTime: 1000 * 60 * 5
   });
 
   if (isLoading || error || !data) return null;
@@ -65,9 +66,11 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
             <PenLine /> Edit
           </Button>
         </Link>
-        <Button variant="default" className="px-6">
-          <PlayIcon /> Study
-        </Button>
+        <Link href={`/apps/resources/decks/study/${id}`} prefetch>
+          <Button variant="default" className="px-6">
+            <PlayIcon /> Study
+          </Button>
+        </Link>
       </div>
     </div>
   );

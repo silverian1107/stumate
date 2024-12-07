@@ -68,6 +68,8 @@ export function useDeckManager() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['decks', data.data.id] });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+
       return data.data.id;
     }
   });
@@ -81,7 +83,11 @@ export function useDeckManager() {
       toast('Deck Updated', {
         description: 'Deck has been updated successfully.'
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
       queryClient.invalidateQueries({ queryKey: ['decks', data.data.id] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
       return data.data.id;
     }
   });
@@ -93,6 +99,10 @@ export function useDeckManager() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
+      });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
       });
       return data.data.id;
     }
@@ -106,6 +116,11 @@ export function useDeckManager() {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
+
       return data.data.id;
     }
   });
@@ -118,6 +133,11 @@ export function useDeckManager() {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
+
       return data.data.id;
     }
   });
@@ -217,6 +237,7 @@ export const useDeckCreateMutatation = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
     }
   });
 };
@@ -236,6 +257,11 @@ export const useCardBulkCreate = () => {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
+
       return data.data.id;
     },
     onError: (error) => {

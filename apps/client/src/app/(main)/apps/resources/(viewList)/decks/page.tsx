@@ -15,11 +15,12 @@ interface Deck {
 
 const Flashcards = () => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['resourcesByOwner'],
+    queryKey: ['decks'],
     queryFn: async () => {
       const response = await DeckApi.findByOwner();
       return response.data;
     },
+    staleTime: 1000 * 60 * 5,
     retry: false
   });
 
@@ -49,7 +50,7 @@ const Flashcards = () => {
 
   const { result } = data.data;
   return (
-    <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 lg:grid-cols-4 ">
+    <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 ">
       {result.map((deck: Deck) => (
         <ResourceCard
           key={deck._id}
