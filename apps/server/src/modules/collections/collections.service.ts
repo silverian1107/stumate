@@ -184,65 +184,21 @@ export class CollectionsService {
     }
   }
 
-  async findArchivedByOwnerId(
-    ownerId: string,
-    currentPage = 1,
-    pageSize = 10,
-    qs?: string,
-  ): Promise<{
-    meta: {
-      current: number;
-      pageSize: number;
-      pages: number;
-      total: number;
-    };
-    result: Collection[];
-  }> {
+  async findAllArchivedByOwnerId(ownerId: string): Promise<Collection[]> {
     if (!mongoose.isValidObjectId(ownerId)) {
       throw new BadRequestException('Invalid UserId');
     }
-    if (!Number.isInteger(currentPage) || currentPage <= 0) {
-      throw new BadRequestException('Current page must be a positive integer');
-    }
-    if (!Number.isInteger(pageSize) || pageSize <= 0) {
-      throw new BadRequestException('Page size must be a positive integer');
-    }
-
-    const { sort } = qs ? aqp(qs) : { sort: { position: -1 } };
-    const limit = pageSize || 10;
-    const skip = (currentPage - 1) * limit;
 
     try {
-      const result = await this.collectionModel
+      return await this.collectionModel
         .find({
           ownerId,
           level: 0,
           isArchived: true,
         })
-        .sort(sort as any)
-        .skip(skip)
-        .limit(limit)
         .populate('childrenDocs')
         .lean<Collection[]>()
         .exec();
-
-      const totalItems = await this.collectionModel.countDocuments({
-        ownerId,
-        level: 0,
-        isArchived: true,
-      });
-
-      const totalPages = Math.ceil(totalItems / limit);
-
-      return {
-        meta: {
-          current: currentPage,
-          pageSize: limit,
-          pages: totalPages,
-          total: totalItems,
-        },
-        result,
-      };
     } catch (error) {
       throw new InternalServerErrorException(
         `Failed to fetch archived collections by owner ID: ${error.message}`,

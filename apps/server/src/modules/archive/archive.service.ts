@@ -40,7 +40,7 @@ export class ArchiveService {
 
   async handleArchiveResource(resourceType: string, resourceId: string) {
     switch (resourceType) {
-      case 'collection':
+      case 'collections':
         const collectionsToArchive = [];
         const notesToArchive = [];
         const stackCollection = [resourceId];
@@ -95,7 +95,7 @@ export class ArchiveService {
           ),
         ]);
         return 'Collection was archived successfully';
-      case 'note':
+      case 'notes':
         const archivedNotes = [];
         const stackNote = [resourceId];
 
@@ -146,7 +146,7 @@ export class ArchiveService {
           { isArchived: true, archivedAt: new Date() },
         );
         return 'Deck was archived successfully';
-      case 'quiz':
+      case 'quizzes':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId },
           { isArchived: true, archivedAt: new Date() },
@@ -163,11 +163,26 @@ export class ArchiveService {
 
   async handleRestoreResource(resourceType: string, resourceId: string) {
     switch (resourceType) {
-      case 'collection':
+      case 'collections':
         const collectionsToRestore = [];
         const notesToRestore = [];
-        const stackCollection = [resourceId];
 
+        let currentCollectionId = resourceId;
+        while (currentCollectionId) {
+          const currentCollection = await this.collectionModel.findOne({
+            _id: currentCollectionId,
+            isArchived: true,
+          });
+
+          if (currentCollection) {
+            collectionsToRestore.push(currentCollection._id);
+            currentCollectionId = currentCollection.parentId ?? null;
+          } else {
+            break;
+          }
+        }
+
+        const stackCollection = [resourceId];
         while (stackCollection.length > 0) {
           const currentCollectionId = stackCollection.pop();
           const currentCollection = await this.collectionModel.findOne({
@@ -176,7 +191,6 @@ export class ArchiveService {
           });
 
           if (currentCollection) {
-            collectionsToRestore.push(currentCollection._id);
             for (const child of currentCollection.children ?? []) {
               if (child.type === 'Collection') {
                 stackCollection.push(child._id);
@@ -221,10 +235,25 @@ export class ArchiveService {
           ),
         ]);
         return 'Collection was restored successfully';
-      case 'note':
+      case 'notes':
         const restoredNotes = [];
-        const stackNote = [resourceId];
 
+        let currentNoteId = resourceId;
+        while (currentNoteId) {
+          const currentNote = await this.noteModel.findOne({
+            _id: currentNoteId,
+            isArchived: true,
+          });
+
+          if (currentNote) {
+            restoredNotes.push(currentNote._id);
+            currentNoteId = currentNote.parentId ?? null;
+          } else {
+            break;
+          }
+        }
+
+        const stackNote = [resourceId];
         while (stackNote.length > 0) {
           const currentNoteId = stackNote.pop();
           const currentNote = await this.noteModel.findOne({
@@ -275,7 +304,7 @@ export class ArchiveService {
           { isArchived: false, archivedAt: null },
         );
         return 'Deck was restored successfully';
-      case 'quiz':
+      case 'quizzes':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId, isArchived: true },
           { isArchived: false, archivedAt: null },
@@ -298,16 +327,16 @@ export class ArchiveService {
 
     let model: any;
     switch (resourceType) {
-      case 'collection':
+      case 'collections':
         model = this.collectionModel;
         break;
-      case 'note':
+      case 'notes':
         model = this.noteModel;
         break;
       case 'deck':
         model = this.deckModel;
         break;
-      case 'quiz':
+      case 'quizzes':
         model = this.quizTestModel;
         break;
       default:
@@ -340,16 +369,16 @@ export class ArchiveService {
     }
     let model: any;
     switch (resourceType) {
-      case 'collection':
+      case 'collections':
         model = this.collectionModel;
         break;
-      case 'note':
+      case 'notes':
         model = this.noteModel;
         break;
       case 'deck':
         model = this.deckModel;
         break;
-      case 'quiz':
+      case 'quizzes':
         model = this.quizTestModel;
         break;
       default:

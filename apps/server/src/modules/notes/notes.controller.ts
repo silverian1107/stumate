@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
@@ -157,7 +158,7 @@ export class NotesController {
     return this.notesService.updateById(noteId, updateData);
   }
 
-  @Patch(':noteId/delete')
+  @Delete(':noteId/delete')
   @ApiOperation({ summary: 'Delete a note by ID' })
   @ApiParam({ name: 'noteId', required: true })
   @ApiResponse({

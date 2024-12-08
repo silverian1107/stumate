@@ -16,7 +16,16 @@ import {
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
+import ArchivedList from '@/components/sidebar/archivedList';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet';
 import { useAccount } from '@/hooks/use-auth';
 import { useCreateCollection } from '@/hooks/use-collection';
 import { cn } from '@/lib/utils';
@@ -26,9 +35,13 @@ import SidebarItem from './SidebarItem';
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+
   const { data, error, isLoading } = useAccount();
   const createCollection = useCreateCollection();
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
   if (isLoading || error || !data) {
     return null;
   }
@@ -96,7 +109,6 @@ const Sidebar = () => {
         <SidebarItem
           label="New Collections"
           icon={PlusCircle}
-          isCreate
           isButton={false}
           onClick={handleCreate}
         />
@@ -105,7 +117,29 @@ const Sidebar = () => {
             <DocumentList />
           </div>
           <div className="mt-auto">
-            <SidebarItem isButton label="Archive" icon={Archive} />
+            {/* Archive button with Sheet trigger */}
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <div>
+                  <SidebarItem
+                    isButton
+                    label="Archive"
+                    icon={Archive}
+                    onClick={() => setIsSheetOpen(true)}
+                  />
+                </div>
+              </SheetTrigger>
+              <SheetContent side="left" className="overflow-auto">
+                <SheetHeader>
+                  <SheetTitle>Archive</SheetTitle>
+                </SheetHeader>
+                <SheetDescription className="text-center">
+                  See your archived resources
+                </SheetDescription>
+                <ArchivedList />
+              </SheetContent>
+            </Sheet>
+
             <SidebarItem
               isButton
               label="Tags"
