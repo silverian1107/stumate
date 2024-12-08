@@ -153,3 +153,33 @@ export const useGetArchivedResources = () => {
     staleTime: 5 * 60 * 1000
   });
 };
+
+export const useRestoreCollection = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (noteId: string) => {
+      const response = await CollectionApi.restore(noteId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedResources']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedCollection']
+      });
+
+      toast.success('Note Restored', {
+        description: 'The note has been successfully restored'
+      });
+    },
+    onError: () => {
+      toast.error('Failed to restore the note');
+    }
+  });
+};

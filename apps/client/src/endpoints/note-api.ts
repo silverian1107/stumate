@@ -44,8 +44,11 @@ export const NoteApi = {
       attachment
     });
   },
-
   async archive(resourceId: string) {
     return NoteClient.post(`${resourceId}/archive`);
+  },
+
+  async restore(resourceId: string) {
+    return NoteClient.post(`${resourceId}/restore`);
   }
 };

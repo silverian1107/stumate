@@ -166,8 +166,23 @@ export class ArchiveService {
       case 'collections':
         const collectionsToRestore = [];
         const notesToRestore = [];
-        const stackCollection = [resourceId];
 
+        let currentCollectionId = resourceId;
+        while (currentCollectionId) {
+          const currentCollection = await this.collectionModel.findOne({
+            _id: currentCollectionId,
+            isArchived: true,
+          });
+
+          if (currentCollection) {
+            collectionsToRestore.push(currentCollection._id);
+            currentCollectionId = currentCollection.parentId ?? null;
+          } else {
+            break;
+          }
+        }
+
+        const stackCollection = [resourceId];
         while (stackCollection.length > 0) {
           const currentCollectionId = stackCollection.pop();
           const currentCollection = await this.collectionModel.findOne({
@@ -176,7 +191,6 @@ export class ArchiveService {
           });
 
           if (currentCollection) {
-            collectionsToRestore.push(currentCollection._id);
             for (const child of currentCollection.children ?? []) {
               if (child.type === 'Collection') {
                 stackCollection.push(child._id);
@@ -223,8 +237,23 @@ export class ArchiveService {
         return 'Collection was restored successfully';
       case 'notes':
         const restoredNotes = [];
-        const stackNote = [resourceId];
 
+        let currentNoteId = resourceId;
+        while (currentNoteId) {
+          const currentNote = await this.noteModel.findOne({
+            _id: currentNoteId,
+            isArchived: true,
+          });
+
+          if (currentNote) {
+            restoredNotes.push(currentNote._id);
+            currentNoteId = currentNote.parentId ?? null;
+          } else {
+            break;
+          }
+        }
+
+        const stackNote = [resourceId];
         while (stackNote.length > 0) {
           const currentNoteId = stackNote.pop();
           const currentNote = await this.noteModel.findOne({

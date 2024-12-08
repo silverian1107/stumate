@@ -58,5 +58,9 @@ export const CollectionApi = {
     return {
       data: mergedResources
     };
+  },
+
+  async restore(resourceId: string) {
+    return CollectionClient.post(`${resourceId}/restore`);
   }
 };

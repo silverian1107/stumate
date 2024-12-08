@@ -108,13 +108,10 @@ export const useArchiveNote = () => {
         exact: false
       });
       queryClient.invalidateQueries({
-        queryKey: ['getNotes']
+        queryKey: ['getArchivedResources']
       });
       queryClient.invalidateQueries({
         queryKey: ['getNoteById', noteId]
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['getArchivedNote']
       });
 
       toast.success('Note Archived', {
@@ -125,6 +122,39 @@ export const useArchiveNote = () => {
       toast.error('Failed to archive the note', {
         description: 'From useArchiveNote'
       });
+    }
+  });
+};
+
+export const useRestoreNote = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (noteId: string) => {
+      const response = await NoteApi.restore(noteId);
+      return response.data.data;
+    },
+    onSuccess: (_, noteId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedResources']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getNoteById', noteId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedNote']
+      });
+
+      toast.success('Note Restored', {
+        description: 'The note has been successfully restored'
+      });
+    },
+    onError: () => {
+      toast.error('Failed to restore the note');
     }
   });
 };

@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger
@@ -128,10 +129,13 @@ const Sidebar = () => {
                   />
                 </div>
               </SheetTrigger>
-              <SheetContent side="left">
+              <SheetContent side="left" className="overflow-auto">
                 <SheetHeader>
                   <SheetTitle>Archive</SheetTitle>
                 </SheetHeader>
+                <SheetDescription className="text-center">
+                  See your archived resources
+                </SheetDescription>
                 <ArchivedList />
               </SheetContent>
             </Sheet>
