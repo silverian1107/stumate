@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 
 import { DeckApi } from '@/endpoints/deck-api';
-import { FlashcardApi } from '@/endpoints/flashcard-api';
+import { FlashcardsApi } from '@/endpoints/flashcard-api';
 import { setFlashcards } from '@/redux/slices/resourceSlice';
 
 import type {
@@ -36,7 +36,7 @@ export function useDeckManager() {
       }
 
       const deckData = (await DeckApi.findById(deckId)).data;
-      const flashcardData = (await FlashcardApi.findAllInDeck(deckId)).data;
+      const flashcardData = (await FlashcardsApi.findAllInDeck(deckId)).data;
       const deck = deckData.data;
       const flashcards = flashcardData.data.result;
 
@@ -68,6 +68,8 @@ export function useDeckManager() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['decks', data.data.id] });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+
       return data.data.id;
     }
   });
@@ -81,18 +83,26 @@ export function useDeckManager() {
       toast('Deck Updated', {
         description: 'Deck has been updated successfully.'
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
       queryClient.invalidateQueries({ queryKey: ['decks', data.data.id] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
       return data.data.id;
     }
   });
 
   const cardBulkCreate = useMutation({
     mutationFn: async (data: { deckId: string; cards: FlashcardElement[] }) => {
-      return FlashcardApi.bulkCreate(data.deckId, data.cards);
+      return FlashcardsApi.bulkCreate(data.deckId, data.cards);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
+      });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
       });
       return data.data.id;
     }
@@ -100,24 +110,34 @@ export function useDeckManager() {
 
   const cardBulkUpdate = useMutation({
     mutationFn: async (data: { deckId: string; cards: FlashcardElement[] }) => {
-      return FlashcardApi.bulkUpdate(data.deckId, data.cards);
+      return FlashcardsApi.bulkUpdate(data.deckId, data.cards);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
+
       return data.data.id;
     }
   });
 
   const cardBulkDelete = useMutation({
     mutationFn: async (data: { deckId: string; cards: string[] }) => {
-      return FlashcardApi.bulkDelete(data.deckId, data.cards);
+      return FlashcardsApi.bulkDelete(data.deckId, data.cards);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
+
       return data.data.id;
     }
   });
@@ -217,6 +237,7 @@ export const useDeckCreateMutatation = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
     }
   });
 };
@@ -228,7 +249,7 @@ export const useCardBulkCreate = () => {
       const { deckId, cards } = data;
 
       const filteredCards = cards.map(({ front, back }) => ({ front, back }));
-      const response = await FlashcardApi.bulkCreate(deckId, filteredCards);
+      const response = await FlashcardsApi.bulkCreate(deckId, filteredCards);
 
       return response;
     },
@@ -236,6 +257,11 @@ export const useCardBulkCreate = () => {
       queryClient.invalidateQueries({
         queryKey: ['decks', data.data.id]
       });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.data.id]
+      });
+
       return data.data.id;
     },
     onError: (error) => {

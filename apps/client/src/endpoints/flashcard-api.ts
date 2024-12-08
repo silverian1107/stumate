@@ -2,7 +2,7 @@ import type { FlashcardElement } from '@/types/deck';
 
 import { AxiosClient, DeckClient } from './AxiosClient';
 
-export const FlashcardApi = {
+export const FlashcardsApi = {
   async findByOwner() {
     return AxiosClient.get('/flashcards');
   },
@@ -31,5 +31,18 @@ export const FlashcardApi = {
 
   async remove(deckId: string, id: string) {
     return DeckClient.delete(`/${deckId}/flashcards/${id}`);
+  },
+
+  async fetchStudyFlashcards(deckId: string) {
+    if (!deckId) throw new Error('No deck ID provided');
+    const response = await DeckClient.get(`/${deckId}/flashcards/study`);
+    return response.data;
+  },
+
+  async markFlashcard(id: string, rating: number) {
+    const response = await DeckClient.post(`/api/flashcards/${id}/mark`, {
+      rating
+    });
+    return response.data;
   }
 };

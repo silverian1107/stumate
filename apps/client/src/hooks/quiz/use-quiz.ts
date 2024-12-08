@@ -89,8 +89,6 @@ export const useCreateQuestions = () => {
       return response.data.data;
     },
     onSuccess: (data) => {
-      console.log('data._id', data._id);
-
       queryClient.invalidateQueries({
         queryKey: ['quiz-questions', data._id]
       });
