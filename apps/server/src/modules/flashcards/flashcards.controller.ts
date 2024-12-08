@@ -99,7 +99,7 @@ export class FlashcardsController {
     return updated;
   }
 
-  @Post('study')
+  @Get('study')
   @Roles(Role.USER)
   @ApiOperation({ summary: 'Study flashcards by deckId' })
   @ResponseMessage('Study flashcards')

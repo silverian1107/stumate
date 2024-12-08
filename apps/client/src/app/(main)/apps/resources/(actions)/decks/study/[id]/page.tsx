@@ -12,34 +12,62 @@ import {
   FlipCardFront
 } from '@/components/ui/flip-card';
 import { Progress } from '@/components/ui/progress';
+import { useMarkFlashcard, useStudyFlashcards } from '@/hooks/use-flashcard';
 
-const flashcards = [
-  { question: 'Question 1', answer: 'Answer 1' },
-  { question: 'Question 2', answer: 'Answer 2' },
-  { question: 'Question 3', answer: 'Answer 3' }
-];
+// eslint-disable-next-line import/no-absolute-path
 
 const FlashcardStudyPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const totalFlashcards = flashcards.length;
-  const progress = ((currentIndex + 1) / totalFlashcards) * 100;
+  const { data: flashcards, isLoading, isError, error } = useStudyFlashcards();
+  const markFlashcard = useMarkFlashcard();
 
   const handleNext = (rating: number) => {
-    // eslint-disable-next-line no-console
-    console.log('Selected rating:', rating);
+    const currentFlashcard = flashcards[currentIndex];
 
-    if (currentIndex + 1 < flashcards.length) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-      setIsFlipped(false);
-    } else {
-      setIsCompleted(true);
-    }
+    markFlashcard.mutate(
+      { id: currentFlashcard.flashcardId._id, rating },
+      {
+        onSuccess: () => {
+          if (currentIndex + 1 < flashcards.length) {
+            setCurrentIndex((prevIndex) => prevIndex + 1);
+            setIsFlipped(false);
+          } else {
+            setIsCompleted(true);
+          }
+        }
+      }
+    );
   };
 
-  const currentFlashcard = flashcards[currentIndex];
+  if (isLoading) return <div>Loading flashcards...</div>;
+  if (isError)
+    return <div>Error loading flashcards: {(error as Error).message}</div>;
+
+  if (!flashcards || flashcards.length === 0) {
+    return (
+      <div className="size-full flex flex-col items-center justify-center gap-6 mx-auto text-center">
+        <h1 className="text-4xl font-bold text-primary-600">
+          Congratulations! 🎉
+        </h1>
+        <p className="text-lg text-gray-600">
+          There are no flashcards to review at the moment.
+        </p>
+        <Link
+          href="/apps/resources/decks"
+          className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-500"
+        >
+          Go back to decks
+        </Link>
+      </div>
+    );
+  }
+
+  const currentFlashcard = flashcards[currentIndex].flashcardId;
+  const totalFlashcards = flashcards.length;
+  const progress = ((currentIndex + 1) / totalFlashcards) * 100;
 
   if (isCompleted) {
     return (
@@ -78,13 +106,13 @@ const FlashcardStudyPage = () => {
       </div>
 
       <FlipCard
-        className="w-full h-[480px] md:w-4/5 md:h-[480px] lg:w-3/5 rounded-lg"
+        className="w-4/5 h-[480px] md:h-[480px] rounded-lg"
         isFlipped={isFlipped}
         setIsFlipped={setIsFlipped}
       >
-        <FlipCardFront>{currentFlashcard.question}</FlipCardFront>
+        <FlipCardFront>{currentFlashcard.front}</FlipCardFront>
         <FlipCardBack className="rounded-2xl">
-          {currentFlashcard.answer}
+          {currentFlashcard.back}
         </FlipCardBack>
       </FlipCard>
 

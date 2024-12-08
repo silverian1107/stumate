@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { FlashcardApi } from '@/endpoints/flashcard-api';
+import { FlashcardsApi } from '@/endpoints/flashcard-api';
 
 interface ResourceCardProps {
   id: string;
@@ -16,7 +16,7 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['flashcardsByDeckId', id],
     queryFn: async () => {
-      const response = (await FlashcardApi.findAllInDeck(id)).data;
+      const response = (await FlashcardsApi.findAllInDeck(id)).data;
       return response.data;
     },
     staleTime: 1000 * 60 * 5

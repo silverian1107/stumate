@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 
 import { DeckApi } from '@/endpoints/deck-api';
-import { FlashcardApi } from '@/endpoints/flashcard-api';
+import { FlashcardsApi } from '@/endpoints/flashcard-api';
 import { setFlashcards } from '@/redux/slices/resourceSlice';
 
 import type {
@@ -36,7 +36,7 @@ export function useDeckManager() {
       }
 
       const deckData = (await DeckApi.findById(deckId)).data;
-      const flashcardData = (await FlashcardApi.findAllInDeck(deckId)).data;
+      const flashcardData = (await FlashcardsApi.findAllInDeck(deckId)).data;
       const deck = deckData.data;
       const flashcards = flashcardData.data.result;
 
@@ -94,7 +94,7 @@ export function useDeckManager() {
 
   const cardBulkCreate = useMutation({
     mutationFn: async (data: { deckId: string; cards: FlashcardElement[] }) => {
-      return FlashcardApi.bulkCreate(data.deckId, data.cards);
+      return FlashcardsApi.bulkCreate(data.deckId, data.cards);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
@@ -110,7 +110,7 @@ export function useDeckManager() {
 
   const cardBulkUpdate = useMutation({
     mutationFn: async (data: { deckId: string; cards: FlashcardElement[] }) => {
-      return FlashcardApi.bulkUpdate(data.deckId, data.cards);
+      return FlashcardsApi.bulkUpdate(data.deckId, data.cards);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
@@ -127,7 +127,7 @@ export function useDeckManager() {
 
   const cardBulkDelete = useMutation({
     mutationFn: async (data: { deckId: string; cards: string[] }) => {
-      return FlashcardApi.bulkDelete(data.deckId, data.cards);
+      return FlashcardsApi.bulkDelete(data.deckId, data.cards);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
@@ -249,7 +249,7 @@ export const useCardBulkCreate = () => {
       const { deckId, cards } = data;
 
       const filteredCards = cards.map(({ front, back }) => ({ front, back }));
-      const response = await FlashcardApi.bulkCreate(deckId, filteredCards);
+      const response = await FlashcardsApi.bulkCreate(deckId, filteredCards);
 
       return response;
     },
