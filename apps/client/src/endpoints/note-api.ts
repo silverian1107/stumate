@@ -43,5 +43,9 @@ export const NoteApi = {
       body,
       attachment
     });
+  },
+
+  async archive(resourceId: string) {
+    return NoteClient.post(`${resourceId}/archive`);
   }
 };

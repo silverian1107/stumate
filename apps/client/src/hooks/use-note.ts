@@ -18,12 +18,21 @@ export const useCreateNote = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      toast('Collection Created', {
+      toast('Note Created', {
         description: 'success'
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['getDocuments', data.data.parentId]
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      if (data.data.parentId) {
+        queryClient.invalidateQueries({
+          queryKey: ['getDocuments', data.data.parentId]
+        });
+      }
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments', null]
       });
     },
     onError: (error) => {
@@ -61,12 +70,60 @@ export const useUpdateNote = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
         queryKey: ['getNoteById', data._id]
+      });
+      if (data.parentId) {
+        queryClient.invalidateQueries({
+          queryKey: ['getDocuments', data.parentId]
+        });
+      }
+
+      toast.success('Note Updated', {
+        description: 'Note has been successfully updated'
       });
     },
     onError: () => {
       toast.error('Failed to update note', {
         description: 'From useUpdateNote'
+      });
+    }
+  });
+};
+
+export const useArchiveNote = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (noteId: string) => {
+      const response = await NoteApi.archive(noteId);
+      return response.data.data;
+    },
+    onSuccess: (_, noteId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getNotes']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getNoteById', noteId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedNote']
+      });
+
+      toast.success('Note Archived', {
+        description: 'The note has been successfully archived'
+      });
+    },
+    onError: () => {
+      toast.error('Failed to archive the note', {
+        description: 'From useArchiveNote'
       });
     }
   });

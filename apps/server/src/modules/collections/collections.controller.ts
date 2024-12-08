@@ -66,20 +66,10 @@ export class CollectionsController {
 
   @Get('archived')
   @Roles(Role.USER)
-  @ApiOperation({ summary: 'Retrieve archived collections by user id' })
+  @ApiOperation({ summary: 'Retrieve all archived collections by user id' })
   @ApiResponse({ status: 200 })
-  async findArchivedByOwnerId(
-    @User() user: IUser,
-    @Query('currentPage') currentPage = 1,
-    @Query('pageSize') pageSize = 10,
-    @Query() qs: string,
-  ) {
-    return this.collectionsService.findArchivedByOwnerId(
-      user._id,
-      +currentPage,
-      +pageSize,
-      qs,
-    );
+  async findAllArchivedByOwnerId(@User() user: IUser) {
+    return this.collectionsService.findAllArchivedByOwnerId(user._id);
   }
 
   @Get(':collectionId')

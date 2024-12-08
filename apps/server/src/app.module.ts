@@ -32,7 +32,6 @@ import { SummariesModule } from './modules/summaries/summaries.module';
     UsersModule,
     AuthModule,
     CollectionsModule,
-    NotesModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -94,6 +93,7 @@ import { SummariesModule } from './modules/summaries/summaries.module';
     NotificationsModule,
     TodoModule,
     SummariesModule,
+    NotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

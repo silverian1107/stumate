@@ -42,7 +42,16 @@ export const useCreateCollection = () => {
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['getDocuments', data.data.parentId]
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      if (data.data.parentId) {
+        queryClient.invalidateQueries({
+          queryKey: ['getDocuments', data.data.parentId]
+        });
+      }
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments', null]
       });
     },
     onError: (error) => {
@@ -52,14 +61,13 @@ export const useCreateCollection = () => {
     }
   });
 };
-
 export const useDocuments = ({
   parentDocumentId,
   level = 0,
   type = 'Collection'
 }: DocumentListProps) => {
   return useQuery<Collection[] | Note[], AxiosError>({
-    queryKey: ['getDocuments', parentDocumentId, type],
+    queryKey: ['getDocuments', parentDocumentId],
     queryFn: async () => {
       if (!parentDocumentId && type === 'Collection') {
         const response = await CollectionApi.findByOwner({
@@ -91,5 +99,57 @@ export const useDocuments = ({
       return [];
     },
     enabled: !!parentDocumentId || level === 0
+  });
+};
+
+export const useGetArchivedCollection = () => {
+  return useQuery({
+    queryKey: ['getArchivedCollection'],
+    queryFn: async () => {
+      return CollectionApi.getArchivedByOwner();
+    }
+  });
+};
+
+export const useArchiveCollection = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (collectionId: string) => {
+      const response = await CollectionApi.archive(collectionId);
+      return response.data.data;
+    },
+    onSuccess: (_, collectionId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getNotes']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedCollection']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedResources']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments', collectionId]
+      });
+    },
+    onError: () => {
+      toast.error('Failed to archive the collection');
+    }
+  });
+};
+
+export const useGetArchivedResources = () => {
+  return useQuery({
+    queryKey: ['getArchivedResources'],
+    queryFn: async () => {
+      const response = await CollectionApi.getArchivedResources();
+      return response;
+    },
+    staleTime: 5 * 60 * 1000
   });
 };

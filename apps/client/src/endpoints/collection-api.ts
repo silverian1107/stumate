@@ -1,4 +1,4 @@
-import { CollectionClient } from './AxiosClient';
+import { CollectionClient, NoteClient } from './AxiosClient';
 
 export type CreateCollectionDto = {
   parentId?: string;
@@ -30,5 +30,33 @@ export const CollectionApi = {
   async findById(collectionId: string) {
     const response = await CollectionClient.get(`/${collectionId}`);
     return response.data;
+  },
+
+  async getArchivedByOwner() {
+    const response = await CollectionClient.get('/archived');
+    return response.data;
+  },
+
+  async archive(resourceId: string) {
+    return CollectionClient.post(`${resourceId}/archive`);
+  },
+
+  async getArchivedResources() {
+    const [noteResponse, collectionResponse] = await Promise.all([
+      NoteClient.get('/archived-resources/all'),
+      CollectionClient.get('/archived-resources/all')
+    ]);
+
+    const notes = noteResponse.data?.data?.result || [];
+    const collections = collectionResponse.data?.data?.result || [];
+
+    const mergedResources = [...notes, ...collections].sort(
+      (a, b) =>
+        new Date(b.archivedAt).getTime() - new Date(a.archivedAt).getTime()
+    );
+
+    return {
+      data: mergedResources
+    };
   }
 };

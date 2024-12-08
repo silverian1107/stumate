@@ -1,13 +1,12 @@
 import type { LucideIcon } from 'lucide-react';
 import {
+  Archive,
   ChevronDown,
   ChevronRight,
   MoreHorizontal,
-  Plus,
-  Trash
+  Plus
 } from 'lucide-react';
 import Link from 'next/link';
-import { toast } from 'sonner';
 
 import {
   DropdownMenu,
@@ -16,8 +15,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useArchiveCollection } from '@/hooks/use-collection';
+import { useArchiveNote } from '@/hooks/use-note';
 import { cn } from '@/lib/utils';
-import { useArchiveNoteByIdMutation } from '@/service/rootApi';
 
 interface SidebarItemProps {
   label: string;
@@ -27,7 +27,6 @@ interface SidebarItemProps {
   href?: string;
   id?: string;
   type?: 'Collection' | 'Note';
-  isCreate?: boolean;
   expanded?: boolean;
   isButton?: boolean;
   onClick?: () => void;
@@ -46,15 +45,14 @@ const SidebarItem = ({
   active,
   type,
   isButton,
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  isCreate,
   onClick,
   onCreateNote,
   onCreateCollection,
   onExpand
 }: SidebarItemProps) => {
   const CheveronIcon = expanded ? ChevronDown : ChevronRight;
-  const [archiveNoteById] = useArchiveNoteByIdMutation();
+  const archiveNote = useArchiveNote();
+  const archiveCollection = useArchiveCollection();
 
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -74,12 +72,10 @@ const SidebarItem = ({
   };
 
   const handleDeleteNote = async () => {
-    try {
-      await archiveNoteById(id);
-    } catch {
-      toast.error('Failed to delete note', {
-        description: 'Please try again.'
-      });
+    if (type === 'Note') {
+      archiveNote.mutate(id);
+    } else {
+      archiveCollection.mutate(id);
     }
   };
 
@@ -135,8 +131,8 @@ const SidebarItem = ({
                 forceMount
               >
                 <DropdownMenuItem onClick={() => handleDeleteNote()}>
-                  <Trash className="size-4 mr-2 z-50" />
-                  Delete
+                  <Archive className="size-4 mr-2 z-50" />
+                  Archive
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <div className="text-sm text-muted-foreground">

@@ -70,7 +70,7 @@ export class ArchiveController {
   }
 
   @ApiOperation({ summary: 'Fetch list archived resources with pagination' })
-  @Get('archived-resources')
+  @Get('archived-resources/all')
   @ResponseMessage('Fetch list archived resources with pagination')
   findAll(
     @User() user: IUser,
