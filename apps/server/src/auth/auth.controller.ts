@@ -141,6 +141,12 @@ export class AuthController {
     @User() user: IUser,
     @Res({ passthrough: true }) response: Response,
   ) {
-    return await this.authService.handleSocialAuthRedirect(user, response);
+    const result = await this.authService.handleSocialAuthRedirect(
+      user,
+      response,
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const frontendRedirectUrl = `http://localhost:3001/api/auth/callback?access_token=${result.access_token}&provider=facebook`;
+    response.redirect(frontendRedirectUrl);
   }
 }
