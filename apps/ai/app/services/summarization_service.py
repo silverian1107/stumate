@@ -1,12 +1,10 @@
 from transformers import AutoTokenizer
-from app.models.ai_models import get_hf_pipeline
-from utils.text_splitter import handle_text_splitter
-
-SUMMARY_MODEL_ID = "facebook/bart-large-cnn"
+from app.models.ai_models import get_hf_pipeline, SUMMARY_MODEL_ID
+from utils.text_splitter import handle_text_splitter_with_huggingface
 
 tokenizer = AutoTokenizer.from_pretrained(SUMMARY_MODEL_ID)
 
-text_splitter = handle_text_splitter(tokenizer)
+text_splitter = handle_text_splitter_with_huggingface(tokenizer)
 
 hf = get_hf_pipeline(SUMMARY_MODEL_ID, "summarization")
 
