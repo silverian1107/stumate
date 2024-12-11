@@ -63,13 +63,21 @@ export default function LoginForm() {
         Cookies.set('access_token', data.data.access_token, {
           expires: 30 * 1000 * 60
         });
-        redirect('/apps');
+        Cookies.set('role', data.data.user.role, {
+          expires: 30 * 1000 * 60
+        });
+        if (data.data.user.role.toLowerCase() === 'user') {
+          redirect('/apps');
+        } else {
+          redirect('/admin');
+        }
       } else {
         const email = getValues('username');
         router.push(`/verify?email=${encodeURIComponent(email)}`);
       }
     }
   }, [data, isSuccess, dispatch, getValues, router, isError, error]);
+  console.log('data user: ', data);
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <FormField<LoginValues>
