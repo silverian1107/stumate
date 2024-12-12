@@ -7,4 +7,4 @@ router = APIRouter()
 @router.post("/generate-flashcards")
 async def generate_flashcards(note_content: NoteContent):
     flashcards = handle_generate_flashcards(note_content.note_content)
-    return {"flashcards": flashcards}
+    return {"Flashcards": flashcards}
