@@ -7,6 +7,8 @@ import {
   QuizQuestion,
   QuizQuestionSchema,
 } from './schema/quiz-question.schema';
+import { HttpModule } from '@nestjs/axios';
+import { Note, NoteSchema } from '../notes/schema/note.schema';
 
 @Module({
   imports: [
@@ -17,6 +19,13 @@ import {
       },
     ]),
     forwardRef(() => QuizTestsModule),
+    MongooseModule.forFeature([
+      {
+        name: Note.name,
+        schema: NoteSchema,
+      },
+    ]),
+    HttpModule,
   ],
   controllers: [QuizQuestionsController],
   providers: [QuizQuestionsService],

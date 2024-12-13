@@ -4,6 +4,7 @@ import { SummariesController } from './summaries.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SummarySchema } from './schema/summary.schema';
 import { NoteSchema } from '../notes/schema/note.schema';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { NoteSchema } from '../notes/schema/note.schema';
         schema: NoteSchema,
       },
     ]),
+    HttpModule,
   ],
   controllers: [SummariesController],
   providers: [SummariesService],

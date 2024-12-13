@@ -30,6 +30,9 @@ import {
   State,
 } from './schema/flashcard-review.schema';
 import { reviewFlashcard } from './../../helpers/utils';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { Note, NoteDocument } from '../notes/schema/note.schema';
 
 @Injectable()
 export class FlashcardsService {
@@ -38,11 +41,75 @@ export class FlashcardsService {
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
     @InjectModel(FlashcardReview.name)
     private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
+    @InjectModel(Note.name)
+    private readonly noteModel: SoftDeleteModel<NoteDocument>,
     @Inject(forwardRef(() => DecksService))
     private readonly decks: DecksService,
     private readonly statisticsService: StatisticsService,
     private readonly notificationsService: NotificationsService,
+    private readonly httpService: HttpService,
   ) {}
+
+  //websocket
+  async handleCreateMultipleByAI(deckId: string, noteId: string, user: IUser) {
+    const deck = await this.decks.findOne(deckId);
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw new BadRequestException('Invalid Note ID');
+    }
+    const note = await this.noteModel.findOne({ _id: noteId });
+    if (!note) {
+      throw new NotFoundException('Not found note');
+    }
+    if (
+      note.ownerId.toString() !== user._id ||
+      deck.userId.toString() !== user._id
+    ) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+    const noteContent = note.body?.blocks
+      ?.filter((block) => block.data?.text)
+      .map((block) => block.data.text)
+      .join(' ');
+    if (!noteContent) {
+      return 'Note content is empty';
+    }
+    const { data } = await firstValueFrom(
+      this.httpService.post<{ Flashcards: { front: string; back: string }[] }>(
+        'http://localhost:8000/generate-flashcards',
+        { note_content: noteContent },
+      ),
+    );
+    const flashcards = data.Flashcards.map((card) => ({
+      front: card.front,
+      back: card.back,
+      deckId,
+      userId: user._id,
+      noteId,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    }));
+    const newFlashcards = await this.flashcardModel.insertMany(flashcards);
+
+    const flashcardReviews = newFlashcards.map((flashcard) => ({
+      flashcardId: flashcard._id,
+      userId: user._id,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    }));
+    await this.flashcardReviewModel.insertMany(flashcardReviews);
+
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
+    return newFlashcards.map((flashcard: any) => ({
+      _id: flashcard._id,
+      createdAt: flashcard.createdAt,
+    }));
+  }
 
   async findByDeckAndUser(deckId: string, user: IUser, qs: string) {
     const deck = await this.decks.findOne(deckId);
@@ -82,9 +149,9 @@ export class FlashcardsService {
         `You don't have permission to access this resource`,
       );
     }
-    const flashcards = createFlashcardData.map((cards) => ({
-      ...cards,
-      deckId: deckId,
+    const flashcards = createFlashcardData.map((card) => ({
+      ...card,
+      deckId,
       userId: user._id,
       createdBy: {
         _id: user._id,

@@ -11,6 +11,8 @@ import {
   FlashcardReview,
   FlashcardReviewSchema,
 } from './schema/flashcard-review.schema';
+import { HttpModule } from '@nestjs/axios';
+import { Note, NoteSchema } from '../notes/schema/note.schema';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import {
     GatewayModule,
     StatisticsModule,
     NotificationsModule,
+    HttpModule,
+    MongooseModule.forFeature([{ name: Note.name, schema: NoteSchema }]),
   ],
   controllers: [FlashcardsController],
   providers: [FlashcardsService],

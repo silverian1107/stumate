@@ -22,7 +22,7 @@ export class SummariesController {
   @Roles(Role.USER)
   @ResponseMessage('Create a new summary for a note')
   async create(
-    @Param() noteId: string,
+    @Param('noteId') noteId: string,
     @Body() createSummaryDto: CreateSummaryDto,
     @User() user: IUser,
   ) {
@@ -37,9 +37,16 @@ export class SummariesController {
     };
   }
 
+  @Post('/ai')
+  @Roles(Role.USER)
+  @ResponseMessage('Create a new summary for a note by AI')
+  async summarizeByAI(@Param('noteId') noteId: string, @User() user: IUser) {
+    return await this.summariesService.handleSummarizeByAI(noteId, user);
+  }
+
   @Get()
   @ResponseMessage('Get summary by noteId')
-  async findByNoteId(@Param() noteId: string, @User() user: IUser) {
+  async findByNoteId(@Param('nodeId') noteId: string, @User() user: IUser) {
     return await this.summariesService.findByNoteId(noteId, user);
   }
 
