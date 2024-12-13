@@ -69,6 +69,22 @@ export class FlashcardsController {
     }));
   }
 
+  @Post(':noteId/bulk/ai')
+  @Roles(Role.USER)
+  @ApiOperation({ summary: 'Create multiple flashcards by deckId' })
+  @ResponseMessage('Create multiple flashcards by ai')
+  async createMultipleByAI(
+    @Param('deckId') deckId: string,
+    @Param('noteId') noteId: string,
+    @User() user: IUser,
+  ) {
+    return await this.flashcardsService.handleCreateMultipleByAI(
+      deckId,
+      noteId,
+      user,
+    );
+  }
+
   @Get('all')
   @Roles(Role.USER)
   @ApiOperation({ summary: 'Get all flashcards by deckId' })

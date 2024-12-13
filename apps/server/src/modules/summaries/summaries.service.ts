@@ -13,6 +13,8 @@ import { User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 import mongoose from 'mongoose';
 import { Note, NoteDocument } from '../notes/schema/note.schema';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class SummariesService {
@@ -21,6 +23,7 @@ export class SummariesService {
     private readonly summaryModel: SoftDeleteModel<SummaryDocument>,
     @InjectModel(Note.name)
     private readonly noteModel: SoftDeleteModel<NoteDocument>,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(
@@ -42,7 +45,7 @@ export class SummariesService {
     }
     const newSummary = await this.summaryModel.create({
       content: createSummaryDto.content,
-      noteId: noteId,
+      noteId,
       userId: user._id,
       createdBy: {
         _id: user._id,
@@ -50,6 +53,47 @@ export class SummariesService {
       },
     });
     return newSummary;
+  }
+
+  async handleSummarizeByAI(noteId: string, @User() user: IUser) {
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw new BadRequestException('Invalid Note ID');
+    }
+    const note = await this.noteModel.findOne({ _id: noteId });
+    if (!note) {
+      throw new NotFoundException('Not found note');
+    }
+    if (note.ownerId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+    const noteContent = note.body?.blocks
+      ?.filter((block) => block.data?.text)
+      .map((block) => block.data.text)
+      .join(' ');
+    if (!noteContent) {
+      return 'Note content is empty';
+    }
+    const { data } = await firstValueFrom(
+      this.httpService.post<{ Summary: string }>(
+        'http://localhost:8000/summarize',
+        { note_content: noteContent },
+      ),
+    );
+    const newSummary = await this.summaryModel.create({
+      content: data.Summary,
+      noteId,
+      userId: user._id,
+      createdBy: {
+        _id: user._id,
+        username: user.username,
+      },
+    });
+    return {
+      _id: newSummary?._id,
+      createdAt: newSummary?.createdAt,
+    };
   }
 
   async findByNoteId(noteId: string, user: IUser) {

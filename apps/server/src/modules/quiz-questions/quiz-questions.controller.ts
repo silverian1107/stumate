@@ -55,6 +55,21 @@ export class QuizQuestionsController {
     return newQuizQuestions;
   }
 
+  @Post(':noteId/bulk/ai')
+  @Roles(Role.USER)
+  @ResponseMessage('Create multiple quiz questions by ai')
+  async createMultipleByAI(
+    @Param('quizTestId') quizTestId: string,
+    @Param('noteId') noteId: string,
+    @User() user: IUser,
+  ) {
+    return await this.quizQuestionsService.handleCreateMultipleByAI(
+      quizTestId,
+      noteId,
+      user,
+    );
+  }
+
   @Patch('bulk/update')
   @Roles(Role.USER)
   @ResponseMessage('Update multiple quiz questions')
