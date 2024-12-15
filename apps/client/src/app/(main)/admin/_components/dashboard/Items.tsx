@@ -1,29 +1,16 @@
-import {
-  ClipboardList,
-  FileClock,
-  Layers,
-  NotepadText,
-  UsersRound
-} from 'lucide-react';
+import { ClipboardList, Layers, NotepadText, UsersRound } from 'lucide-react';
 
 import ItemDashboard from './ItemDashboard';
 
 const Items = () => {
   return (
-    <div className="grid grid-cols-5 gap-5">
+    <div className="grid grid-cols-4 gap-5">
       <ItemDashboard
         title="Accounts"
         value={12}
         unit={12 > 0 ? 'users' : 'user'}
         Icon={UsersRound}
         path="/admin/accounts"
-      />
-      <ItemDashboard
-        title="Logs"
-        value={13}
-        unit="logs"
-        Icon={FileClock}
-        path="/admin/logs"
       />
       <ItemDashboard
         title="Notes"

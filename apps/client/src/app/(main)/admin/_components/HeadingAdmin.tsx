@@ -4,7 +4,15 @@ import {
   Menu as MenuProfile,
   MenuItem
 } from '@mui/material';
-import { ChevronDown, ChevronUp, Menu } from 'lucide-react';
+import {
+  Cake,
+  ChevronDown,
+  ChevronUp,
+  LogOut,
+  Mail,
+  Menu,
+  Shield
+} from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import type { MouseEventHandler } from 'react';
@@ -59,12 +67,31 @@ const HeadingAdmin = ({
         horizontal: 'right'
       }}
     >
-      <MenuItem>Profile</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      <div className="w-full flex flex-col text-slate-500 px-4  space-y-2">
+        <div className="flex flex-col items-center ">
+          <AvatarUser className="!bg-primary-main">
+            {'Anh'[0].toUpperCase()}
+          </AvatarUser>
+          <p>@anhpro</p>
+        </div>
+        <p className="flex items-center text-xs ">
+          <Mail className="mr-3 size-4" /> nguyenvantrananh@gmail.com{' '}
+        </p>
+        <p className="flex items-center text-xs">
+          <Cake className="mr-3 size-4" /> 23/05/2003{' '}
+        </p>
+        <p className="flex items-center text-xs">
+          <Shield className="mr-3 size-4" /> Male{' '}
+        </p>
+      </div>
+      <MenuItem onClick={handleLogout}>
+        <p className="flex gap-1 items-center text-slate-500 underline">
+          <LogOut className="size-5" />
+          Log out
+        </p>
+      </MenuItem>
     </MenuProfile>
   );
-  console.log('ach:', anchorEl);
-
   return (
     <header className="bg-primary-200 shadow-md flex justify-between items-center px-6">
       <div className="container flex justify-between items-center text-[#212F3F] border-b border-b-[#E9EAEC] h-[64px] ">

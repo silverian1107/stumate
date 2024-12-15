@@ -13,78 +13,117 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Edit } from 'lucide-react';
 import React, { useState } from 'react';
 
 const LogPage = () => {
-  // Dữ liệu mặc định
-  const defaultData = Array.from({ length: 1 }, (_, index) => ({
+  const defaultData = Array.from({ length: 10 }, (_, index) => ({
     id: index + 1,
-    title: 'Nguyen Van Tran Anh',
-    company: 'AnhNoob',
-    field:
-      index % 3 === 0
-        ? 'marketing'
-        : index % 3 === 1
-          ? 'finance'
-          : 'engineering',
-    quantity: Math.floor(Math.random() * 20) + 1,
-    postDate: '09/12/2024',
-    deadline: '10/12/2024',
-    status: 'Đang mở'
+    category: 'user',
+    event: 'User logs in',
+    name: 'anhpro',
+    date: '09/12/2024'
   }));
 
-  // State
   const [data, setData] = useState(defaultData);
   const [page, setPage] = useState(1);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
-  // Pagination logic
-  const rowsPerPage = 6;
-  const paginatedData = data.slice(
+  const filteredData = data.filter((row) => {
+    const matchesCategory = categoryFilter
+      ? row.category === categoryFilter
+      : true;
+    const matchesDate = dateFilter ? row.date === dateFilter : true;
+    return matchesCategory && matchesDate;
+  });
+
+  const rowsPerPage = 8;
+  const paginatedData = filteredData.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
 
-  // Xử lý xóa bài viết
   const handleDelete = (id: number) => {
     setData(data.filter((row) => row.id !== id));
   };
 
   return (
-    <div className="p-6 rounded-lg bg-white w-full h-[80vh] relative ">
-      <Typography variant="h5" gutterBottom>
-        Manage Log
+    <div className="p-6 rounded-lg bg-white w-full h-[80vh] relative">
+      <Typography
+        variant="h5"
+        gutterBottom
+        className="flex gap-40 items-center"
+      >
+        Manage Logs
+        <div className="flex gap-10  text-sm mt-1 items-center ">
+          {/* Category Filter */}
+          <div className="flex gap-3 border px-1 rounded-lg border-primary-200">
+            <p>Category:</p>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div className="flex gap-3 px-1 rounded-lg border border-primary-200 items-center">
+            <p>Date:</p>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+            />
+          </div>
+        </div>
       </Typography>
-      <TableContainer component={Paper} sx={{ marginTop: '20px' }}>
+      <TableContainer
+        component={Paper}
+        sx={{ marginTop: '20px', minHeight: '60vh' }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell align="center">SST</TableCell>
-              <TableCell align="center">Category</TableCell>
-              <TableCell align="center">Name</TableCell>
-              <TableCell align="center">Birth day</TableCell>
-              <TableCell align="center">Gender</TableCell>
-              <TableCell align="center">Avatar</TableCell>
-              <TableCell align="center">Action</TableCell>
+              <TableCell align="center" size="small">
+                SST
+              </TableCell>
+              <TableCell align="center" size="small">
+                Category
+              </TableCell>
+              <TableCell align="center" size="small">
+                Event
+              </TableCell>
+              <TableCell align="center" size="small">
+                Name
+              </TableCell>
+              <TableCell align="center" size="small">
+                Date
+              </TableCell>
+              <TableCell align="center" size="small">
+                Action
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paginatedData.map((row, index) => (
               <TableRow key={row.id}>
-                <TableCell align="center">{index + 1}</TableCell>
-                <TableCell align="center">{row.title}</TableCell>
-                <TableCell align="center">{row.company}</TableCell>
-                <TableCell align="center">{row.field}</TableCell>
-                <TableCell align="center">{row.quantity}</TableCell>
-                <TableCell align="center">{row.postDate}</TableCell>
-                <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    size="small"
-                    onClick={() => handleDelete(row.id)}
-                  >
-                    <Edit />
-                  </IconButton>
+                <TableCell align="center" size="small">
+                  {index + 1}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.category}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.event}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.name}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.date}
+                </TableCell>
+                <TableCell align="center" size="small">
                   <IconButton
                     color="error"
                     size="small"
@@ -99,17 +138,13 @@ const LogPage = () => {
         </Table>
       </TableContainer>
       <Pagination
-        count={Math.ceil(data.length / rowsPerPage)}
+        count={Math.ceil(filteredData.length / rowsPerPage)}
         page={page}
         onChange={(e, value) => setPage(value)}
         style={{
           marginTop: '20px',
           display: 'flex',
-          justifyContent: 'center',
-          position: 'absolute',
-          bottom: 20,
-          left: 0,
-          right: 0
+          justifyContent: 'center'
         }}
       />
     </div>
