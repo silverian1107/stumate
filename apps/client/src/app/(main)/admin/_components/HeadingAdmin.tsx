@@ -6,10 +6,13 @@ import {
 } from '@mui/material';
 import { ChevronDown, ChevronUp, Menu } from 'lucide-react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import type { MouseEventHandler } from 'react';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { logout } from '@/redux/slices/authSlice';
 
 const HeadingAdmin = ({
   handleToggleNavbar
@@ -28,6 +31,19 @@ const HeadingAdmin = ({
   const handleUserProfileClick = (e: any) => {
     setAnchorEl(e.currentTarget);
   };
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    document.cookie.split(';').forEach((cookie) => {
+      const eqPos = cookie.indexOf('=');
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    });
+    localStorage.clear();
+    sessionStorage.clear();
+    dispatch(logout());
+    redirect('/');
+  };
 
   const renderMenu = (
     <MenuProfile
@@ -44,7 +60,7 @@ const HeadingAdmin = ({
       }}
     >
       <MenuItem>Profile</MenuItem>
-      <MenuItem>Logout</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </MenuProfile>
   );
   console.log('ach:', anchorEl);

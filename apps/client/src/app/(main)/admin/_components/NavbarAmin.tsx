@@ -1,10 +1,12 @@
 import {
+  Bell,
   CircleUserRound,
   ClipboardList,
   FileClock,
   House,
   Layers,
-  NotepadText
+  NotepadText,
+  Tag
 } from 'lucide-react';
 import React from 'react';
 
@@ -43,6 +45,18 @@ const NavbarAdmin = ({ isOpen }: { isOpen: boolean }) => {
           label="Manage Quizzes"
           Icon={ClipboardList}
           path="/admin/quizzes"
+          isOpen={isOpen}
+        />
+        <ItemNavbar
+          label="Manage Tags"
+          Icon={Tag}
+          path="/admin/tags"
+          isOpen={isOpen}
+        />
+        <ItemNavbar
+          label="Manage Notifications"
+          Icon={Bell}
+          path="/admin/notifications"
           isOpen={isOpen}
         />
       </div>
