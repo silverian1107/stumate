@@ -280,6 +280,7 @@ export const useDeckByNoteId = (noteId: string) => {
       }
       return DeckApi.findByNoteId(noteId);
     },
-    enabled: !!noteId
+    enabled: !!noteId,
+    retry: false
   });
 };

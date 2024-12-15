@@ -1,4 +1,5 @@
 export interface QuizCreateDto {
+  noteId?: string;
   name: string;
   description?: string;
   numberOfQuestion: number;

@@ -50,10 +50,6 @@ export function SummaryTabContent() {
     toggleSummaryEdit();
   };
 
-  const generateAISummary = () => {
-    // Implement AI summary generation logic here
-  };
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -68,10 +64,7 @@ export function SummaryTabContent() {
         {data === null || data === undefined ? (
           <div className="flex flex-col space-y-2">
             <Button variant="outline" size="sm" onClick={handleCreateSummary}>
-              <Edit className="size-4 mr-2" /> Create Summary
-            </Button>
-            <Button variant="outline" size="sm" onClick={generateAISummary}>
-              <Sparkles className="size-4 mr-2" /> Generate by AI
+              <Sparkles className="size-4 mr-2" /> Generate
             </Button>
           </div>
         ) : (

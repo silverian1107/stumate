@@ -98,7 +98,7 @@ const Sidebar = () => {
             label="Resources"
             icon={Sparkle}
             active={pathname.includes('resources')}
-            href="/apps/resources/decks"
+            href="/apps/resources/decks/view"
           />
         </div>
 
@@ -117,7 +117,6 @@ const Sidebar = () => {
             <DocumentList />
           </div>
           <div className="mt-auto">
-            {/* Archive button with Sheet trigger */}
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <div>

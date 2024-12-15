@@ -31,7 +31,9 @@ const QuizCard = ({ id, name, description }: ResourceCardProps) => {
       <div className="text-sm">
         <h1 className="-mb-1 text-xl font-bold">
           {name}{' '}
-          <span className="text-lg font-semibold text-primary-600 ">Alo</span>
+          <span className="text-lg font-semibold text-primary-600 ">
+            {data.duration} min
+          </span>
         </h1>
         <h2 className="line-clamp-1 text-sm font-medium text-primary-950/50">
           {description}
@@ -39,13 +41,13 @@ const QuizCard = ({ id, name, description }: ResourceCardProps) => {
       </div>
       <div className="text-sm">
         <div className="flex items-center justify-between">
-          <p className="font-semibold text-primary-950/50">Last studied: </p>
-          <h1>2 days ago</h1>
+          <p className="font-semibold text-primary-950/50">Total questions: </p>
+          <h1>{data.numberOfQuestion}</h1>
         </div>
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <p className="font-semibold text-primary-950/50">Due today: </p>
           <h1>25</h1>
-        </div>
+        </div> */}
         <div className="flex items-center justify-between">
           <p className="font-semibold text-primary-950/50">Progress: </p>
           <h1>75%</h1>

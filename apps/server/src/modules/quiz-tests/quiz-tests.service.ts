@@ -151,6 +151,18 @@ export class QuizTestsService {
     return quizTest;
   }
 
+  async findByNoteId(noteId: string, @User() user: IUser) {
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw new BadRequestException('Invalid Note ID');
+    }
+    const quizTest = await this.quizTestModel.findOne({
+      noteId,
+      userId: user._id,
+    });
+
+    return quizTest;
+  }
+
   async update(
     id: string,
     updateQuizTestDto: UpdateQuizTestDto,

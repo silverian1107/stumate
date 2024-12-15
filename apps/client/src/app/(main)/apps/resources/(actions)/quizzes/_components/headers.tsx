@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, SaveIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { AutosizeTextarea } from '@/components/ui/auto-size-textarea';
@@ -12,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import InputWithEndInline from '@/components/ui/number-input';
 import { useQuizById } from '@/hooks/quiz/use-quiz';
 import { cn } from '@/lib/utils';
+import type { RootState } from '@/redux/store';
 import type { Quiz } from '@/types/deck';
 
 interface QuizHeaderProps {
@@ -36,11 +38,13 @@ export function QuizHeader({
   isSubmitting
 }: QuizHeaderProps) {
   const { data, isLoading, error } = useQuizById();
+  const questions = useSelector((state: RootState) => state.quiz.questions);
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors }
   } = useForm<ResourceFormData>({
     resolver: zodResolver(QuizSchema)
@@ -56,6 +60,10 @@ export function QuizHeader({
       });
     }
   }, [data, reset]);
+
+  useEffect(() => {
+    setValue('numberOfQuestion', questions.length);
+  }, [questions.length, setValue]);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -103,20 +111,6 @@ export function QuizHeader({
               type="number"
               className={cn(
                 'flex-1',
-                errors.numberOfQuestion &&
-                  'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500'
-              )}
-              {...register('numberOfQuestion', {
-                setValueAs: (value) => Number(value)
-              })}
-              min={1}
-              max={180}
-              inlineText="Questions"
-            />
-            <InputWithEndInline
-              type="number"
-              className={cn(
-                'flex-1',
                 errors.duration &&
                   'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500'
               )}
@@ -126,6 +120,21 @@ export function QuizHeader({
               inlineText="Minutes"
               min={1}
               max={180}
+            />
+            <InputWithEndInline
+              type="number"
+              className={cn(
+                'flex-1',
+                errors.numberOfQuestion &&
+                  'border-red-500 focus-visible:ring-red-500 focus-visible:border-red-500'
+              )}
+              {...register('numberOfQuestion', {
+                setValueAs: () => Number(questions.length)
+              })}
+              disabled
+              min={1}
+              max={180}
+              inlineText="Questions"
             />
           </div>
         </div>

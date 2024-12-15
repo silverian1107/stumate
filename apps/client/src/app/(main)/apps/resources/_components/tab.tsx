@@ -8,17 +8,12 @@ const allTabs = [
   {
     id: 'flashcard',
     name: 'Flashcards',
-    href: '/decks'
+    href: '/decks/view'
   },
   {
     id: 'quizz',
     name: 'Quizzes',
     href: '/quizzes/view'
-  },
-  {
-    id: 'summary',
-    name: 'Sumarry',
-    href: '/summaries'
   }
 ];
 

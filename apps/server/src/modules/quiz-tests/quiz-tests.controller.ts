@@ -33,6 +33,7 @@ export class QuizTestsController {
     );
     return {
       _id: newQuizTest?._id,
+      name: newQuizTest.name,
       createdAt: newQuizTest?.createdAt,
     };
   }
@@ -59,6 +60,13 @@ export class QuizTestsController {
   @ResponseMessage('Get quiz test by user')
   getByUser(@User() user: IUser, @Query() qs: string) {
     return this.quizTestsService.findByUser(user, qs);
+  }
+
+  @Get('by-note/:noteId')
+  @Roles(Role.USER)
+  @ResponseMessage('Get quiz test by user')
+  getByNoteId(@User() user: IUser, @Param('noteId') noteId: string) {
+    return this.quizTestsService.findByNoteId(noteId, user);
   }
 
   @Get('all')
@@ -94,6 +102,7 @@ export class QuizTestsController {
     @Body() updateQuizTestDto: UpdateQuizTestDto,
     @User() user: IUser,
   ) {
+    console.log(6);
     const foundQuizTest = await this.quizTestsService.findOne(id);
     if (foundQuizTest.userId.toString() !== user._id) {
       throw new ForbiddenException(
@@ -106,6 +115,7 @@ export class QuizTestsController {
   @Delete(':id')
   @ResponseMessage('Delete a quiz test')
   async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
+    console.log(7);
     return await this.quizTestsService.remove(id, user);
   }
 }

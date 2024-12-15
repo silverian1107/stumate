@@ -77,7 +77,7 @@ export class SummariesService {
     }
     const { data } = await firstValueFrom(
       this.httpService.post<{ Summary: string }>(
-        'http://localhost:8000/summarize',
+        'http://127.0.0.1:8000/summarize',
         { note_content: noteContent },
       ),
     );
@@ -94,6 +94,14 @@ export class SummariesService {
       _id: newSummary?._id,
       createdAt: newSummary?.createdAt,
     };
+  }
+
+  async findAllByUser(user: IUser) {
+    const summaries = await this.noteModel.find({
+      userId: user._id,
+    });
+
+    return summaries;
   }
 
   async findByNoteId(noteId: string, user: IUser) {

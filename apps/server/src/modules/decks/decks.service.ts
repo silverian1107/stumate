@@ -134,6 +134,7 @@ export class DecksService {
     }
 
     const deck = await this.deckModel.findOne({ noteId, userId }).exec();
+
     if (!deck) {
       throw new NotFoundException('No deck found with the given noteId.');
     }

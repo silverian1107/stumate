@@ -1,18 +1,8 @@
 'use client';
 
 import { formatDistanceToNow } from 'date-fns';
-import {
-  BarChart2,
-  BrainCircuit,
-  Calendar,
-  Clock,
-  Plus,
-  Sparkles,
-  Tag
-} from 'lucide-react';
-import { useState } from 'react';
+import { BarChart2, Calendar, Clock, Tag } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -20,19 +10,25 @@ import { useNoteById } from '@/hooks/use-note';
 import { useSummaryByNoteId } from '@/hooks/use-summary';
 
 import { DeckTabContent } from './deck-tab-content';
+import QuizTabContent from './quiz-tab-content';
 import { SummaryTabContent } from './summary-tab-content';
 
 export function LearnerSidebar() {
   const { data, isLoading } = useSummaryByNoteId();
   const { data: note, isLoading: isLoadingNote } = useNoteById();
 
-  const [hasQuiz] = useState(false);
+  if (isLoading || isLoadingNote) return <div>Loading...</div>;
 
-  const createQuiz = () => {
-    // Implement quiz creation logic
+  const countWords = (text: string) => {
+    return text.trim().split(/\s+/).filter(Boolean).length;
   };
 
-  if (isLoading || isLoadingNote) return <div>Loading...</div>;
+  const totalWordCount = note.body.blocks.reduce(
+    (total: number, block: any) => {
+      return total + countWords(block.data.text);
+    },
+    0
+  );
 
   return (
     <div className="h-full flex flex-col p-4 space-y-4 bg-background border-l">
@@ -54,7 +50,7 @@ export function LearnerSidebar() {
           </div>
           <div>
             <span className="text-sm font-medium">
-              Word count: {data?.wordCount || 0}
+              Word count: {totalWordCount}
             </span>
           </div>
         </CardContent>
@@ -76,38 +72,7 @@ export function LearnerSidebar() {
         </TabsContent>
 
         <TabsContent value="quizzes" className="grow overflow-auto">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base flex items-center gap-2">
-                <BrainCircuit className="size-4" />
-                Related Quizzes
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {hasQuiz ? (
-                <>
-                  <div>
-                    <h4 className="font-medium">Biology Fundamentals</h4>
-                    <p className="text-sm text-muted-foreground">
-                      15 questions
-                    </p>
-                  </div>
-                  <Button className="w-full">Take Quiz</Button>
-                </>
-              ) : (
-                <div className="flex flex-col space-y-2">
-                  <Button variant="outline" size="sm" onClick={createQuiz}>
-                    <Plus className="size-4 mr-2" />
-                    Create Quiz
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => {}}>
-                    <Sparkles className="size-4 mr-2" />
-                    Generate by AI
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <QuizTabContent />
         </TabsContent>
       </Tabs>
 

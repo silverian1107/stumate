@@ -1,5 +1,5 @@
 import { StackIcon } from '@radix-ui/react-icons';
-import { PlusIcon, Settings } from 'lucide-react';
+import { ClipboardListIcon, PlusIcon, Settings } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -28,15 +28,18 @@ const ActionButton = () => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent>
-          <DropdownMenuItem>
-            <Link href="decks/new">
+          <Link href="/apps/resources/decks/new">
+            <DropdownMenuItem className="cursor-pointer">
               <StackIcon className="inline-block mr-2" />
               Flashcard
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="/apps/resources/quizzes/new">Quizzes</Link>
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+          </Link>
+          <Link href="/apps/resources/quizzes/new">
+            <DropdownMenuItem className="cursor-pointer">
+              <ClipboardListIcon className="inline-block mr-2" />
+              Quizzes
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

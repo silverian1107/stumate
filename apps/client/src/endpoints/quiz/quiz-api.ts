@@ -14,6 +14,10 @@ export const QuizApi = {
     return QuizClient.get(`/${quizId}/quiz-questions/all`);
   },
 
+  async findByNoteId(noteId: string) {
+    return QuizClient.get(`/by-note/${noteId}`);
+  },
+
   async create(data: QuizCreateDto) {
     return (await QuizClient.post('', data)).data;
   },
@@ -24,6 +28,10 @@ export const QuizApi = {
 
   async bulkCreateQuestions(quizId: string, questions: QuizQuestion[]) {
     return QuizClient.post(`/${quizId}/quiz-questions/bulk`, questions);
+  },
+
+  async bulkCreateQuestionsByAi(noteId: string, quizId: string) {
+    return QuizClient.post(`/${quizId}/quiz-questions/${noteId}/bulk/ai`);
   },
 
   async bulkUpdateQuestions(quizId: string, questions: QuizQuestion[]) {

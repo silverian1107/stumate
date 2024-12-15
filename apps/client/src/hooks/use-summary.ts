@@ -9,7 +9,7 @@ export const useSummaryByNoteId = () => {
   return useQuery({
     queryKey: ['getSummary', noteId],
     queryFn: async () => {
-      return NoteApi.getSummary(noteId)
+      return NoteApi.getSummaryByNoteId(noteId)
         .then((res) => res.data.data)
         .catch();
     }

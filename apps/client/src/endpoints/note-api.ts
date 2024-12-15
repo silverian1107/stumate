@@ -52,7 +52,7 @@ export const NoteApi = {
     return NoteClient.post(`${resourceId}/restore`);
   },
 
-  async getSummary(noteId: string) {
+  async getSummaryByNoteId(noteId: string) {
     return NoteClient.get(`${noteId}/summaries`);
   },
 

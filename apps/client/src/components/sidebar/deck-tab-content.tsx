@@ -1,17 +1,18 @@
+import { BookOpen, Plus, Sparkles } from 'lucide-react';
+
 import { useCreateDeck, useDeckByNoteId } from '@/hooks/use-deck';
-import { Plus, Sparkles, BookOpen } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useNoteById } from '@/hooks/use-note';
-import { Progress } from '../ui/progress';
+
 import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Progress } from '../ui/progress';
 
 export const DeckTabContent = () => {
   const { data: note, isLoading: isLoadingNote } = useNoteById();
-  const { data, isLoading, error } = useDeckByNoteId(note._id);
+  const { data, isLoading } = useDeckByNoteId(note._id);
 
   const createDeckMutation = useCreateDeck();
 
-  // Handlers
   const handleCreateDeck = () => {
     createDeckMutation.mutate({
       noteId: note._id,
@@ -20,19 +21,10 @@ export const DeckTabContent = () => {
     });
   };
 
-  // UI State
   if (isLoading || isLoadingNote) {
     return (
       <Card>
         <CardContent>Loading...</CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card>
-        <CardContent>Error fetching deck: {error.message}</CardContent>
       </Card>
     );
   }
@@ -69,7 +61,7 @@ export const DeckTabContent = () => {
             </p>
             <Button
               className="w-full hover:bg-primary-50/80 bg-primary-50 text-primary-600"
-              variant={'secondary'}
+              variant="secondary"
             >
               Edit
             </Button>

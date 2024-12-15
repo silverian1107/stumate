@@ -73,7 +73,7 @@ export class QuizQuestionsService {
           choices?: string[];
           correct_answer: string | string[];
         }[];
-      }>('http://localhost:8000/generate-quizzes', {
+      }>('http://127.0.0.1:8000/generate-quizzes', {
         note_content: noteContent,
         num_quizzes: quizTest.numberOfQuestion,
       }),

@@ -2,10 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
+import Link from 'next/link';
 
 import { DeckApi } from '@/endpoints/deck-api';
 
-import ResourceCard from '../../_components/resource-card';
+import ResourceCard from '../../../_components/resource-card';
 
 interface Deck {
   _id: string;
@@ -42,8 +43,17 @@ const Flashcards = () => {
 
   if (data.data.result.length === 0) {
     return (
-      <div className="flex size-full items-center justify-center bg-primary-100">
-        <p>No data found</p>
+      <div className="flex text-lg size-full items-center justify-center flex-col font-medium">
+        <p>No deck found</p>
+        <p>
+          Let&apos;s get started by{' '}
+          <Link
+            href="new"
+            className="text-primary-600 cursor-pointer font-bold hover:underline"
+          >
+            create a new deck
+          </Link>
+        </p>
       </div>
     );
   }

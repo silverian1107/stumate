@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { QuizApi } from '@/endpoints/quiz/quiz-api';
 import type { QuizCreateDto, QuizQuestion } from '@/endpoints/quiz/type';
@@ -42,6 +43,21 @@ export const useQuizById = (quizId?: string) => {
   return fetchQuizById;
 };
 
+export const useQuizByNoteId = () => {
+  const { id: noteId } = useParams<{ id: string }>();
+
+  return useQuery({
+    queryKey: ['quizzes', noteId],
+    queryFn: async (): Promise<Quiz> => {
+      if (!noteId) {
+        throw new Error('No note ID provided');
+      }
+      const response = await QuizApi.findByNoteId(noteId);
+      return response.data.data;
+    }
+  });
+};
+
 export const useQuizQuestions = (quizId?: string) => {
   const { id: routeIds } = useParams<{ id: string }>();
   const actualQuizId = quizId || routeIds;
@@ -60,6 +76,25 @@ export const useQuizQuestions = (quizId?: string) => {
   return quizQuestionsQuery;
 };
 
+export const useQuizQuestionsByAi = () => {
+  const { id: noteId } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ['quizzes'],
+    mutationFn: async (quizId: string) => {
+      const response = await QuizApi.bulkCreateQuestionsByAi(noteId, quizId);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes']
+      });
+      toast.success('Quiz created successfully');
+    }
+  });
+};
+
 export const useQuizCreate = () => {
   const queryClient = useQueryClient();
 
@@ -73,6 +108,7 @@ export const useQuizCreate = () => {
       queryClient.invalidateQueries({
         queryKey: ['quizzes']
       });
+      toast.success('Quiz created successfully');
     }
   });
 };

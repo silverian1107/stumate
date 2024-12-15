@@ -3,11 +3,11 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { LearnerSidebar } from '@/components/sidebar/sidebar';
 import { cn } from '@/lib/utils';
 
 import MyEditor from '../_components/my-editor';
 import MyMenuBar from '../_components/my-menu-bar';
-import { LearnerSidebar } from '@/components/sidebar/sidebar';
 
 export default function CreateNote() {
   const [isCollapsed, setIsCollapsed] = useState(false);
