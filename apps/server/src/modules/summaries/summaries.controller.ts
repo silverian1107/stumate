@@ -46,7 +46,7 @@ export class SummariesController {
 
   @Get()
   @ResponseMessage('Get summary by noteId')
-  async findByNoteId(@Param('nodeId') noteId: string, @User() user: IUser) {
+  async findByNoteId(@Param('noteId') noteId: string, @User() user: IUser) {
     return await this.summariesService.findByNoteId(noteId, user);
   }
 

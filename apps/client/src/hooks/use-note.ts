@@ -81,10 +81,6 @@ export const useUpdateNote = () => {
           queryKey: ['getDocuments', data.parentId]
         });
       }
-
-      toast.success('Note Updated', {
-        description: 'Note has been successfully updated'
-      });
     },
     onError: () => {
       toast.error('Failed to update note', {

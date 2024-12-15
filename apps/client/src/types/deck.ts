@@ -4,6 +4,7 @@ export type EntityAction = 'create' | 'update' | 'delete';
 
 export type DeckCreateDto = {
   name: string;
+  noteId?: string;
   description?: string;
 };
 export interface BaseResource {

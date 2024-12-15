@@ -228,7 +228,7 @@ interface NewDeckResponse {
   createdAt: string;
 }
 
-export const useDeckCreateMutatation = () => {
+export const useCreateDeck = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (deck: DeckCreateDto): Promise<NewDeckResponse> => {
@@ -268,5 +268,18 @@ export const useCardBulkCreate = () => {
       // eslint-disable-next-line no-console
       console.log(error);
     }
+  });
+};
+
+export const useDeckByNoteId = (noteId: string) => {
+  return useQuery({
+    queryKey: ['deck', { noteId }],
+    queryFn: async () => {
+      if (!noteId) {
+        throw new Error('noteId is required to fetch the deck.');
+      }
+      return DeckApi.findByNoteId(noteId);
+    },
+    enabled: !!noteId
   });
 };

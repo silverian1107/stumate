@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import { useCardBulkCreate, useDeckCreateMutatation } from '@/hooks/use-deck';
+import { useCardBulkCreate, useCreateDeck } from '@/hooks/use-deck';
 import { setFlashcards } from '@/redux/slices/resourceSlice';
 import type { RootState } from '@/redux/store';
 import type { DeckCreateDto } from '@/types/deck';
@@ -19,7 +19,7 @@ export default function ResourcePage() {
   const resource = useSelector((state: RootState) => state.decks);
   const router = useRouter();
 
-  const createDeck = useDeckCreateMutatation();
+  const createDeck = useCreateDeck();
   const bulkCreateFlashcards = useCardBulkCreate();
 
   useEffect(() => {

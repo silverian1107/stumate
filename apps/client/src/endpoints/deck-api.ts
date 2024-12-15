@@ -14,6 +14,11 @@ export const DeckApi = {
     return DeckClient.get(`/${id}`);
   },
 
+  async findByNoteId(noteId: string) {
+    const response = await DeckClient.get(`/by-note/${noteId}`);
+    return response.data.data;
+  },
+
   async create(data: DeckCreateDTO) {
     return (await DeckClient.post('', data)).data;
   },

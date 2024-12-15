@@ -50,5 +50,19 @@ export const NoteApi = {
 
   async restore(resourceId: string) {
     return NoteClient.post(`${resourceId}/restore`);
+  },
+
+  async getSummary(noteId: string) {
+    return NoteClient.get(`${noteId}/summaries`);
+  },
+
+  async createSummary(noteId: string) {
+    return NoteClient.post(`${noteId}/summaries/ai`);
+  },
+
+  async updateSummary(noteId: string, summaryId: string, content?: string) {
+    return NoteClient.patch(`${noteId}/summaries/${summaryId}`, {
+      content: content || ''
+    });
   }
 };

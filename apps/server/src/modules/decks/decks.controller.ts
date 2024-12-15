@@ -28,9 +28,11 @@ export class DecksController {
   @ResponseMessage('Create a new deck')
   async create(@Body() createDeckDto: CreateDeckDto, @User() user: IUser) {
     const newDeck = await this.decksService.create(createDeckDto, user);
+
     return {
       _id: newDeck?._id,
       createdAt: newDeck?.createdAt,
+      noteId: newDeck?.noteId,
     };
   }
 
@@ -92,5 +94,14 @@ export class DecksController {
   @ResponseMessage('Delete a deck')
   async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     return await this.decksService.remove(id, user);
+  }
+
+  @Get('by-note/:noteId')
+  @Roles(Role.USER)
+  @ApiOperation({ summary: 'Find a deck by noteId' })
+  @ResponseMessage('Find deck by noteId')
+  async findDeckByNoteId(@Param('noteId') noteId: string, @User() user: IUser) {
+    const deck = await this.decksService.findDeckByNoteId(noteId, user._id);
+    return deck;
   }
 }

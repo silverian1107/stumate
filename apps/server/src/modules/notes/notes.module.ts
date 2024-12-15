@@ -16,5 +16,6 @@ import { SummarySchema } from '../summaries/schema/summary.schema';
   ],
   controllers: [NotesController],
   providers: [NotesService],
+  exports: [NotesService],
 })
 export class NotesModule {}

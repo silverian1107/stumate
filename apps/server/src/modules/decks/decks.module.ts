@@ -6,6 +6,7 @@ import { DeckSchema } from './schema/deck.schema';
 import { FlashcardSchema } from '../flashcards/schema/flashcard.schema';
 import { FlashcardReviewSchema } from '../flashcards/schema/flashcard-review.schema';
 import { StatisticsModule } from '../statistics/statistics.module';
+import { NotesModule } from '../notes/notes.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
       { name: 'FlashcardReview', schema: FlashcardReviewSchema },
     ]),
     StatisticsModule,
+    NotesModule,
   ],
   controllers: [DecksController],
   providers: [DecksService],

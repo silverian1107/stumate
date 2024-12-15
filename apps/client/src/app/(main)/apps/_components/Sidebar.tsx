@@ -3,9 +3,9 @@
 import {
   Archive,
   ArrowRightCircle,
-  CircleHelp,
   Home,
   Inbox,
+  LogOutIcon,
   Menu,
   PlusCircle,
   Search,
@@ -16,7 +16,7 @@ import {
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-import ArchivedList from '@/components/sidebar/archivedList';
+import ArchivedList from '@/components/archivedList';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Sheet,
@@ -146,7 +146,7 @@ const Sidebar = () => {
               icon={Tags}
               href="/apps/resources/tags"
             />
-            <SidebarItem isButton label="Guide" icon={CircleHelp} />
+            <SidebarItem isButton label="Logout" icon={LogOutIcon} />
           </div>
         </div>
       </div>

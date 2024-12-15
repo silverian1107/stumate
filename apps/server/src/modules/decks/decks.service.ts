@@ -4,21 +4,27 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateDeckDto } from './dto/create-deck.dto';
-import { UpdateDeckDto } from './dto/update-deck.dto';
-import { Deck, DeckDocument } from './schema/deck.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { IUser } from '../users/users.interface';
-import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
+import { User } from 'src/decorator/customize';
+import { handleDuplicateName } from 'src/helpers/utils';
 import {
   Flashcard,
   FlashcardDocument,
 } from '../flashcards/schema/flashcard.schema';
-import { handleDuplicateName } from 'src/helpers/utils';
+import { NotesService } from '../notes/notes.service';
 import { StatisticsService } from '../statistics/statistics.service';
+import { IUser } from '../users/users.interface';
+import { CreateDeckDto } from './dto/create-deck.dto';
+import { UpdateDeckDto } from './dto/update-deck.dto';
+import { Deck, DeckDocument } from './schema/deck.schema';
+import {
+  FlashcardReview,
+  FlashcardReviewDocument,
+  State,
+} from '../flashcards/schema/flashcard-review.schema';
 
 @Injectable()
 export class DecksService {
@@ -27,12 +33,19 @@ export class DecksService {
     private readonly deckModel: SoftDeleteModel<DeckDocument>,
     @InjectModel(Flashcard.name)
     private readonly flashcardModel: SoftDeleteModel<FlashcardDocument>,
+    @InjectModel(FlashcardReview.name)
+    private readonly flashcardReviewModel: SoftDeleteModel<FlashcardReviewDocument>,
+    private readonly noteService: NotesService,
     private readonly statisticsService: StatisticsService,
   ) {}
 
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
-    // Check name already exists
-    const existingDecks = await this.deckModel.find({ userId: user._id });
+    const { noteId, description } = createDeckDto;
+
+    const [, existingDecks] = await Promise.all([
+      this.noteService.findById(noteId),
+      this.deckModel.find({ userId: user._id }),
+    ]);
     const existingDeckNames = existingDecks.map((deck) => deck.name);
     const newDeckName = handleDuplicateName(
       createDeckDto.name,
@@ -41,7 +54,8 @@ export class DecksService {
     //Create a new deck
     const newDeck = await this.deckModel.create({
       name: newDeckName,
-      description: createDeckDto.description,
+      description,
+      noteId: noteId || null,
       userId: user._id,
       createdBy: {
         _id: user._id,
@@ -114,6 +128,35 @@ export class DecksService {
     return deck;
   }
 
+  async findDeckByNoteId(noteId: string, userId: string) {
+    if (!noteId) {
+      throw new BadRequestException('NoteId is required.');
+    }
+
+    const deck = await this.deckModel.findOne({ noteId, userId }).exec();
+    if (!deck) {
+      throw new NotFoundException('No deck found with the given noteId.');
+    }
+
+    // Get flashcards ready for study using the service
+    const flashcards = await this.handleStudyFlashcard(
+      deck._id.toString(),
+      userId,
+    );
+
+    return {
+      deck: {
+        _id: deck._id,
+        name: deck.name,
+        description: deck.description,
+        createdAt: deck.createdAt,
+        updatedAt: deck.updatedAt,
+        noteId: deck.noteId,
+      },
+      flashcards: flashcards,
+    };
+  }
+
   async update(id: string, updateDeckDto: UpdateDeckDto, @User() user: IUser) {
     return await this.deckModel.findOneAndUpdate(
       { _id: id },
@@ -153,5 +196,44 @@ export class DecksService {
     await this.deckModel.delete({ _id: id }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
     return 'Deck was deleted successfully';
+  }
+
+  async handleStudyFlashcard(deckId: string, userId: string) {
+    const flashcards = await this.flashcardModel.find({ deckId });
+    const dueFlashcardReviews = [];
+
+    for (const flashcard of flashcards) {
+      let flashcardReview = await this.flashcardReviewModel
+        .findOne({ flashcardId: flashcard._id, userId })
+        .populate('flashcardId');
+
+      // Create flashcard review if it doesn't exist
+      if (!flashcardReview) {
+        flashcardReview = await this.flashcardReviewModel.create({
+          flashcardId: flashcard._id,
+          userId,
+          state: State.New,
+          nextReview: Date.now(),
+        });
+      }
+
+      if (flashcardReview.state === State.New) {
+        flashcardReview.state = State.Learning;
+        await flashcardReview.save();
+      }
+
+      if (flashcardReview.nextReview <= Date.now()) {
+        dueFlashcardReviews.push(flashcardReview);
+      }
+    }
+
+    const sortedFlashcards = dueFlashcardReviews.sort((a, b) => {
+      if (a.nextReview !== b.nextReview) {
+        return a.nextReview - b.nextReview;
+      }
+      return a.rating - b.rating;
+    });
+
+    return sortedFlashcards;
   }
 }

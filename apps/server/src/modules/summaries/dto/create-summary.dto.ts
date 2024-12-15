@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateSummaryDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @ApiProperty({
     description: 'The content of the summary',
