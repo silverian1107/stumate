@@ -151,6 +151,20 @@ export class QuizTestsService {
     return quizTest;
   }
 
+  async findById(id: string) {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Quiz Test ID');
+    }
+    const quizTest = await this.quizTestModel.findOne({
+      _id: id,
+      isArchived: { $in: [true, false] },
+    });
+    if (!quizTest) {
+      throw new NotFoundException('Not found quiz test');
+    }
+    return quizTest;
+  }
+
   async findByNoteId(noteId: string, @User() user: IUser) {
     if (!mongoose.isValidObjectId(noteId)) {
       throw new BadRequestException('Invalid Note ID');

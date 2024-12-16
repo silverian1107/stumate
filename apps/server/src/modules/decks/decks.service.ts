@@ -128,6 +128,20 @@ export class DecksService {
     return deck;
   }
 
+  async findById(id: string) {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Deck ID');
+    }
+    const deck = await this.deckModel.findOne({
+      _id: id,
+      isArchived: { $in: [true, false] },
+    });
+    if (!deck) {
+      throw new NotFoundException('Not found deck');
+    }
+    return deck;
+  }
+
   async findDeckByNoteId(noteId: string, userId: string) {
     if (!noteId) {
       throw new BadRequestException('NoteId is required.');

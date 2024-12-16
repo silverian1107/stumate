@@ -83,7 +83,7 @@ export class QuizTestsController {
   @Get(':id')
   @ResponseMessage('Fetch quiz test by id')
   async findOne(@Param('id') id: string, @User() user: IUser) {
-    const foundQuizTest = await this.quizTestsService.findOne(id);
+    const foundQuizTest = await this.quizTestsService.findById(id);
     if (user.role === 'USER') {
       if (foundQuizTest.userId.toString() !== user._id) {
         throw new ForbiddenException(

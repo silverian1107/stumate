@@ -60,7 +60,7 @@ export class DecksController {
   @ApiOperation({ summary: 'Get deck by id' })
   @ResponseMessage('Fetch deck by id')
   async findOne(@Param('id') id: string, @User() user: IUser) {
-    const foundDeck = await this.decksService.findOne(id);
+    const foundDeck = await this.decksService.findById(id);
     if (user.role === 'USER') {
       if (foundDeck.userId.toString() !== user._id) {
         throw new ForbiddenException(
