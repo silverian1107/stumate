@@ -61,13 +61,13 @@ export class SharedResourcesService {
   ) {
     let resource: any;
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         resource = await this.noteModel.findOne({ _id: resourceId });
         break;
-      case 'deck':
+      case 'decks':
         resource = await this.deckModel.findOne({ _id: resourceId });
         break;
-      case 'quiz':
+      case 'quizzes':
         resource = await this.quizTestModel.findOne({ _id: resourceId });
         break;
       default:
@@ -105,7 +105,7 @@ export class SharedResourcesService {
     }
 
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         await this.summaryModel.updateOne(
           { noteId: resourceId },
           { $addToSet: { sharedWithUsers: sharedUser._id } },
@@ -121,7 +121,7 @@ export class SharedResourcesService {
           `${user.username} has shared a note with you. Check it out now!`,
         );
         return 'Note was shared successfully';
-      case 'deck':
+      case 'decks':
         await this.flashcardModel.updateMany(
           { deckId: resourceId },
           { $addToSet: { sharedWithUsers: sharedUser._id } },
@@ -137,7 +137,7 @@ export class SharedResourcesService {
           `${user.username} has shared a deck with you. Check it out now!`,
         );
         return 'Deck was shared successfully';
-      case 'quiz':
+      case 'quizzes':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId },
           { $addToSet: { sharedWithUsers: sharedUser._id } },
@@ -183,7 +183,7 @@ export class SharedResourcesService {
     }
 
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         await this.summaryModel.updateOne(
           { noteId: resourceId },
           { $pull: { sharedWithUsers: unsharedUser._id } },
@@ -199,7 +199,7 @@ export class SharedResourcesService {
           `${user.username} has unshared a note with you.`,
         );
         return 'Note was unshared successfully';
-      case 'deck':
+      case 'decks':
         await this.flashcardModel.updateMany(
           { deckId: resourceId },
           { $pull: { sharedWithUsers: unsharedUser._id } },
@@ -215,7 +215,7 @@ export class SharedResourcesService {
           `${user.username} has unshared a deck with you.`,
         );
         return 'Deck was unshared successfully';
-      case 'quiz':
+      case 'quizzes':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId },
           { $pull: { sharedWithUsers: unsharedUser._id } },
@@ -243,7 +243,7 @@ export class SharedResourcesService {
   ) {
     let originalResource: any, newResource: any, originalResourceObject: any;
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         originalResource = await this.noteModel.findOne({
           _id: resourceId,
           sharedWithUsers: { $in: [user._id] },
@@ -285,7 +285,7 @@ export class SharedResourcesService {
         }
         break;
 
-      case 'deck':
+      case 'decks':
         originalResource = await this.deckModel.findOne({
           _id: resourceId,
           sharedWithUsers: { $in: [user._id] },
@@ -351,7 +351,7 @@ export class SharedResourcesService {
         }
         break;
 
-      case 'quiz':
+      case 'quizzes':
         originalResource = await this.quizTestModel.findOne({
           _id: resourceId,
           sharedWithUsers: { $in: [user._id] },
@@ -438,17 +438,17 @@ export class SharedResourcesService {
     let relatedField: string;
 
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         model = this.noteModel;
         relatedModel = this.summaryModel;
         relatedField = 'noteId';
         break;
-      case 'deck':
+      case 'decks':
         model = this.deckModel;
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quiz':
+      case 'quizzes':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';
@@ -514,17 +514,17 @@ export class SharedResourcesService {
     let relatedField: string;
 
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         model = this.noteModel;
         relatedModel = this.summaryModel;
         relatedField = 'noteId';
         break;
-      case 'deck':
+      case 'decks':
         model = this.deckModel;
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quiz':
+      case 'quizzes':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';
@@ -580,17 +580,17 @@ export class SharedResourcesService {
     let relatedField: string;
 
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         model = this.noteModel;
         relatedModel = this.summaryModel;
         relatedField = 'noteId';
         break;
-      case 'deck':
+      case 'decks':
         model = this.deckModel;
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quiz':
+      case 'quizzes':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';
@@ -627,17 +627,17 @@ export class SharedResourcesService {
     let relatedField: string;
 
     switch (resourceType) {
-      case 'note':
+      case 'notes':
         model = this.noteModel;
         relatedModel = this.summaryModel;
         relatedField = 'noteId';
         break;
-      case 'deck':
+      case 'decks':
         model = this.deckModel;
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quiz':
+      case 'quizzes':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';

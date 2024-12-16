@@ -27,3 +27,12 @@ export type CreateNoteProps = {
   parentId: string;
   name: string;
 };
+
+export type UpdateCollectionParams = {
+  _id: string;
+  name: string;
+};
+
+export type UpdateCollectionBody = {
+  name: string;
+};

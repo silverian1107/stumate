@@ -10,7 +10,8 @@ import type {
   Collection,
   CreateCollectionProps,
   DocumentListProps,
-  Note
+  Note,
+  UpdateCollectionParams
 } from '@/types/collection';
 
 type ChildDocSortField = {
@@ -139,6 +140,33 @@ export const useArchiveCollection = () => {
     },
     onError: () => {
       toast.error('Failed to archive the collection');
+    }
+  });
+};
+
+export const useUpdateCollection = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ _id, name }: UpdateCollectionParams) => {
+      const response = await CollectionApi.updateById(_id, {
+        name
+      });
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getCollectionById', data._id]
+      });
+      if (data.parentId) {
+        queryClient.invalidateQueries({
+          queryKey: ['getDocuments', data.parentId]
+        });
+      }
     }
   });
 };

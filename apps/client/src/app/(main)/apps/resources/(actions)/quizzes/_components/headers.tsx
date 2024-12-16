@@ -62,8 +62,11 @@ export function QuizHeader({
   }, [data, reset]);
 
   useEffect(() => {
-    setValue('numberOfQuestion', questions.length);
-  }, [questions.length, setValue]);
+    const filteredQuestions = questions.filter(
+      (question) => question.action !== 'delete'
+    );
+    setValue('numberOfQuestion', filteredQuestions.length);
+  }, [questions, setValue]);
 
   if (isLoading) {
     return <p>Loading...</p>;

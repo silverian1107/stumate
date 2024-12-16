@@ -64,5 +64,15 @@ export const NoteApi = {
     return NoteClient.patch(`${noteId}/summaries/${summaryId}`, {
       content: content || ''
     });
+  },
+
+  shareResource(resourceId: string, usernameOrEmail: string) {
+    return NoteClient.post(`${resourceId}/share`, { usernameOrEmail });
+  },
+  unshareResource(resourceId: string, usernameOrEmail: string) {
+    return NoteClient.post(`${resourceId}/unshare`, { usernameOrEmail });
+  },
+  getSharedUsers(resourceId: string) {
+    return NoteClient.get(`${resourceId}/shared-users`);
   }
 };

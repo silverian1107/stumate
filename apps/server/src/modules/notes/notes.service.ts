@@ -201,8 +201,10 @@ export class NotesService {
     const note = await this.noteModel
       .findOne({ _id: noteId })
       .populate('childrenDocs')
+      .populate('sharedWithUsers', 'email username') // Specify the fields you want
       .lean<Note>()
       .exec();
+
     if (!note) {
       throw new NotFoundException(`Note with ID ${noteId} not found`);
     }
