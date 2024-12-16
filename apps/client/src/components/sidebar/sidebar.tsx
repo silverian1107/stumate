@@ -23,12 +23,14 @@ export function LearnerSidebar() {
     return text.trim().split(/\s+/).filter(Boolean).length;
   };
 
-  const totalWordCount = note.body.blocks.reduce(
-    (total: number, block: any) => {
-      return total + countWords(block.data.text);
-    },
-    0
-  );
+  const totalWordCount = () => {
+    if (note?.body?.blocks) {
+      return note.body.blocks.reduce((total: number, block: any) => {
+        return total + countWords(block.data.text);
+      }, 0);
+    }
+    return 0;
+  };
 
   return (
     <div className="h-full flex flex-col p-4 space-y-4 bg-background border-l">
@@ -50,7 +52,7 @@ export function LearnerSidebar() {
           </div>
           <div>
             <span className="text-sm font-medium">
-              Word count: {totalWordCount}
+              Word count: {totalWordCount()}
             </span>
           </div>
         </CardContent>
