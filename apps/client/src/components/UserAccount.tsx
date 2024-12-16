@@ -40,7 +40,10 @@ const LoginStatus = () => {
   }
 
   return (
-    <Link href="/apps" className="group">
+    <Link
+      href={data.data.user.role.toLowerCase() === 'user' ? '/apps' : '/admin'}
+      className="group"
+    >
       <Button
         variant="ringHover"
         className="bg-primary-700 px-6 py-2 uppercase hover:bg-primary-600 "
