@@ -1,21 +1,23 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable simple-import-sort/imports */
-
 'use client';
 
-import { Tag, useDeleteTagMutation } from '@/service/rootApi';
 import { useState } from 'react';
-import HeaderTag from './Header';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+
+import type { Tag } from '@/service/rootApi';
+import { useDeleteTagMutation, useRenameTagMutation } from '@/service/rootApi';
+
+import HeaderTag from './Header';
 
 const UserTags = ({ userTags }: { userTags: Tag[] }) => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [tagDetails, setTagDetails] = useState<Tag | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTagName, setEditedTagName] = useState('');
 
-  const router = useRouter();
-
-  const [deleteTag, { isSuccess }] = useDeleteTagMutation();
+  const [deleteTag, { isSuccess: isDeleteSuccess }] = useDeleteTagMutation();
+  const [renameTag, { isSuccess: isUpdateSuccess, isError }] =
+    useRenameTagMutation();
 
   const toggleDropdown = (tagId: string) => {
     setSelectedTag(selectedTag === tagId ? null : tagId);
@@ -29,22 +31,56 @@ const UserTags = ({ userTags }: { userTags: Tag[] }) => {
   const handleDeleteTag = async (id: string) => {
     try {
       await deleteTag(id);
-      if (isSuccess) {
+      if (isDeleteSuccess) {
         toast.success('Tag removed successfully!');
       }
     } catch (error) {
-      toast.error('Failed to remove file', {
+      toast.error(`${error}`, {
         description: 'Please try again.'
       });
     }
   };
 
-  const handleDetailTag = (id: string) => {
-    router.push(`/apps/resources/tags/${id}`);
+  const handleDetailClick = (tag: Tag) => {
+    setTagDetails(tag);
+    setEditedTagName(tag.name);
+    setSelectedTag(null);
+  };
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleSaveEdit = async () => {
+    if (tagDetails) {
+      try {
+        await renameTag({ id: tagDetails._id, name: editedTagName });
+        if (isUpdateSuccess) {
+          console.log('succes');
+          toast.success('Tag updated successfully!');
+          setTagDetails((prev) =>
+            prev ? { ...prev, name: editedTagName } : null
+          );
+          setIsEditing(false);
+        }
+        if (isError) {
+          toast.error('name must be longer than or equal to 1 characters');
+        }
+      } catch (err) {
+        toast.error(`${err}`, {
+          description: 'Failed to update tag. Please try again.'
+        });
+      }
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedTagName(tagDetails?.name || '');
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 ">
       <HeaderTag headerText="Private Tags" />
 
       <div className="relative">
@@ -78,8 +114,8 @@ const UserTags = ({ userTags }: { userTags: Tag[] }) => {
                   <ul className="absolute right-4 top-5 mt-2 bg-white border rounded-lg shadow-md text-sm z-10">
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                       <button
-                        onClick={() => handleDetailTag(tag._id)}
                         type="button"
+                        onClick={() => handleDetailClick(tag)}
                       >
                         Detail
                       </button>
@@ -100,6 +136,87 @@ const UserTags = ({ userTags }: { userTags: Tag[] }) => {
           <p className="text-center text-gray-500">No tags found.</p>
         )}
       </div>
+
+      {tagDetails && (
+        <div className="fixed inset-0 bg-black/60  flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4 text-primary-500">
+              Tag Details
+            </h2>
+            <div className="space-y-4 border p-2 border-primary-100">
+              <div className="flex gap-1">
+                <label className="font-medium text-md text-primary-950">
+                  Tag Name:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedTagName}
+                    onChange={(e) => setEditedTagName(e.target.value)}
+                    className="w-full p-2 border rounded-md"
+                  />
+                ) : (
+                  <p>{tagDetails.name}</p>
+                )}
+              </div>
+              <p>
+                <span className="font-medium text-primary-950">Creator:</span>{' '}
+                {tagDetails.createdBy.username}
+              </p>
+              <p>
+                <span className="font-medium text-primary-950">
+                  Created At:
+                </span>{' '}
+                {new Date(tagDetails.createdAt).toLocaleString()}
+              </p>
+              <p>
+                <span className="font-medium text-primary-950">
+                  Updated At:
+                </span>{' '}
+                {new Date(tagDetails.updatedAt).toLocaleString()}
+              </p>
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSaveEdit}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                    type="button"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleEditToggle}
+                  className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
+                  type="button"
+                >
+                  Edit
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  setTagDetails(null);
+                  setIsEditing(false);
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

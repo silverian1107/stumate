@@ -1,11 +1,9 @@
-/* eslint-disable simple-import-sort/imports */
-/* eslint-disable no-alert */
-
 'use client';
 
-import { useCreateTagMutation } from '@/service/rootApi';
-import { useState } from 'react';
 import { Tag } from 'lucide-react';
+import { useState } from 'react';
+
+import { useCreateTagMutation } from '@/service/rootApi';
 
 const HeaderTag = ({ headerText }: { headerText: string }) => {
   const [isShowCreate, setIsShowCreate] = useState(false);

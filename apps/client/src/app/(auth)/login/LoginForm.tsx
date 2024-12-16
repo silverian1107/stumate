@@ -56,8 +56,7 @@ export default function LoginForm() {
       if (data.statusCode === 201) {
         dispatch(
           loginState({
-            accessToken: data.data.access_token,
-            refreshToken: data.refresh_token
+            accessToken: data.data.access_token
           })
         );
         dispatch(openSnackbar({ message: data?.message }));

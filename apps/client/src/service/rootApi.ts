@@ -15,7 +15,13 @@ interface AuthResponse {
   // userInfo?: Record<string, any>;
 }
 interface RefreshResponse {
-  accessToken: string;
+  access_token: string;
+  user: {
+    _id: string;
+    username: string;
+    email: string;
+    role: string;
+  };
 }
 
 interface UploadResponse {
@@ -209,6 +215,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.accessToken;
+    console.log('token: ', token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -223,33 +230,29 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
+  console.log('args: ', args);
   if (result?.error?.status === 401) {
-    const { refreshToken } = (api.getState() as RootState).auth;
-    if (refreshToken) {
-      const refreshResult = await baseQuery(
-        {
-          url: '/auth/refresh',
-          body: { refreshToken },
-          method: 'POST'
-        },
-        api,
-        extraOptions
-      );
+    const refreshResult = await baseQuery(
+      {
+        url: '/auth/refresh',
+        method: 'GET'
+      },
+      api,
+      extraOptions
+    );
 
-      const { accessToken: newAccessToken } =
-        refreshResult?.data as RefreshResponse;
-      if (newAccessToken) {
-        api.dispatch(
-          login({
-            accessToken: newAccessToken,
-            refreshToken
-          })
-        );
-        result = await baseQuery(args, api, extraOptions);
-      } else {
-        api.dispatch(logout());
-        window.location.href = '/login';
-      }
+    const { access_token: newAccessToken } =
+      refreshResult?.data as RefreshResponse;
+    if (newAccessToken) {
+      api.dispatch(
+        login({
+          accessToken: newAccessToken
+        })
+      );
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      api.dispatch(logout());
+      window.location.href = '/login';
     }
   }
   return result;
@@ -387,15 +390,16 @@ export const rootApi = createApi({
       }),
       invalidatesTags: [{ type: 'TAG' }]
     }),
-    renameTag: builder.mutation<CreateNoteResponse, IUpdateNoteRequest>({
-      query: ({ name, noteId, body, attachment }) => ({
-        url: `/notes/${noteId}`,
-        body: { name, body, attachment },
+    renameTag: builder.mutation<
+      { status: number; message: string; data: Tag },
+      { name: string; id: string }
+    >({
+      query: ({ name, id }) => ({
+        url: `/tags/${id}`,
+        body: { name },
         method: 'PATCH'
       }),
-      invalidatesTags: (result, error, { noteId }) => [
-        { type: 'NOTE', id: noteId }
-      ]
+      invalidatesTags: [{ type: 'TAG' }]
     })
   })
 });
