@@ -3,13 +3,13 @@
 import {
   Avatar,
   Box,
-  Divider,
-  Typography,
+  Button,
   Dialog,
   DialogContent,
+  Divider,
+  MenuItem,
   TextField,
-  Button,
-  MenuItem
+  Typography
 } from '@mui/material';
 import { Cake, IdCard, Mail, PenLine, Shield } from 'lucide-react';
 import React, { useState } from 'react';
@@ -37,8 +37,7 @@ const UserDetail = () => {
     setEditDialogOpen(true);
   };
 
-
-  const handleInputChange = (field : any, value: any) => {
+  const handleInputChange = (field: any, value: any) => {
     setEditData((prev) => ({
       ...prev,
       [field]: value
@@ -147,10 +146,10 @@ const UserDetail = () => {
       {/* Dialog for editing user details */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         {/* <DialogTitle >Edit User Details</DialogTitle> */}
-        <p className='text-center font-bold text-xl mt-3'>Edit User Details</p>
-        <DialogContent className=' w-[40vw]'>
+        <p className="text-center font-bold text-xl mt-3">Edit User Details</p>
+        <DialogContent className=" w-[40vw]">
           <Box display="flex" flexDirection="column" gap={2}>
-          <TextField
+            <TextField
               label="Avatar"
               value={editData.avatar}
               onChange={(e) => handleInputChange('avatar', e.target.value)}

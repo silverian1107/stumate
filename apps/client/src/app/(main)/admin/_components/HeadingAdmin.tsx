@@ -8,13 +8,14 @@ import {
   Cake,
   ChevronDown,
   ChevronUp,
+  Ellipsis,
   LogOut,
   Mail,
   Menu,
   Shield
 } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import type { MouseEventHandler } from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -41,6 +42,7 @@ const HeadingAdmin = ({
   };
   const dispatch = useDispatch();
 
+
   const handleLogout = () => {
     document.cookie.split(';').forEach((cookie) => {
       const eqPos = cookie.indexOf('=');
@@ -53,6 +55,10 @@ const HeadingAdmin = ({
     redirect('/');
   };
 
+  const handleRedirectProfile = () => {
+    setAnchorEl(null);
+    redirect(`/admin/profile`);
+  };
   const renderMenu = (
     <MenuProfile
       open={!!anchorEl}
@@ -84,6 +90,12 @@ const HeadingAdmin = ({
           <Shield className="mr-3 size-4" /> Male{' '}
         </p>
       </div>
+      <MenuItem onClick={handleRedirectProfile}>
+        <p className="flex gap-3 items-center text-slate-500 underline text-sm">
+          <Ellipsis className="size-4" />
+          Show detail profile
+        </p>
+      </MenuItem>
       <MenuItem onClick={handleLogout}>
         <p className="flex gap-1 items-center text-slate-500 underline">
           <LogOut className="size-5" />
