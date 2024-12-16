@@ -34,9 +34,10 @@ const NoteTitle = ({ isMenuBar }: { isMenuBar?: boolean }) => {
           role="button"
           tabIndex={0}
           className={cn(
+            'text-base line-clamp-1 w-1/3 sticky px-2 py-1',
             isMenuBar
-              ? 'text-sm line-clamp-1 w-1/3 sticky'
-              : 'w-full lg:w-4/5 mx-auto text-xl line-clamp-1'
+              ? 'h-8'
+              : 'w-full lg:w-4/5 mx-auto text-xl line-clamp-1 h-10'
           )}
           onClick={() => setIsEditing(true)}
         >
@@ -48,9 +49,10 @@ const NoteTitle = ({ isMenuBar }: { isMenuBar?: boolean }) => {
           value={noteTitle}
           onChange={(e) => setNoteTitle(e.target.value)}
           className={cn(
+            'text-base line-clamp-1 w-1/3 sticky px-2 py-1',
             isMenuBar
-              ? 'text-sm line-clamp-1 w-1/3 sticky'
-              : 'w-full lg:w-4/5 mx-auto text-xl line-clamp-1'
+              ? 'h-8'
+              : 'w-full lg:w-4/5 mx-auto text-xl line-clamp-1 h-10'
           )}
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus

@@ -1,3 +1,5 @@
+import type { UpdateCollectionBody } from '@/types/collection';
+
 import { CollectionClient, NoteClient } from './AxiosClient';
 
 export type CreateCollectionDto = {
@@ -39,6 +41,11 @@ export const CollectionApi = {
 
   async archive(resourceId: string) {
     return CollectionClient.post(`${resourceId}/archive`);
+  },
+
+  async updateById(collectionId: string, data: UpdateCollectionBody) {
+    const response = await CollectionClient.patch(`/${collectionId}`, data);
+    return response.data;
   },
 
   async getArchivedResources() {

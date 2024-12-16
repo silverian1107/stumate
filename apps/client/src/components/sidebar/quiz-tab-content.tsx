@@ -81,7 +81,7 @@ const QuizTabContent = () => {
             </Button>
             <Button variant="outline" size="sm" onClick={handleCreateQuizByAI}>
               <Plus className="size-4 mr-2" />
-              Create Quiz
+              Generate By AI
             </Button>
           </div>
         )}

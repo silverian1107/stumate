@@ -4,9 +4,11 @@ import {
   ChevronDown,
   ChevronRight,
   MoreHorizontal,
+  Pencil,
   Plus
 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import {
   DropdownMenu,
@@ -15,8 +17,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useArchiveCollection } from '@/hooks/use-collection';
-import { useArchiveNote } from '@/hooks/use-note';
+import {
+  useArchiveCollection,
+  useUpdateCollection
+} from '@/hooks/use-collection';
+import { useArchiveNote, useUpdateNote } from '@/hooks/use-note';
 import { cn } from '@/lib/utils';
 
 interface SidebarItemProps {
@@ -33,6 +38,7 @@ interface SidebarItemProps {
   onCreateNote?: () => void;
   onCreateCollection?: () => void;
   onExpand?: () => void;
+  onRename?: (newLabel: string) => void;
 }
 
 const SidebarItem = ({
@@ -48,11 +54,18 @@ const SidebarItem = ({
   onClick,
   onCreateNote,
   onCreateCollection,
-  onExpand
+  onExpand,
+  onRename
 }: SidebarItemProps) => {
   const CheveronIcon = expanded ? ChevronDown : ChevronRight;
+
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [newLabel, setNewLabel] = useState(label);
+
   const archiveNote = useArchiveNote();
   const archiveCollection = useArchiveCollection();
+  const updateNote = useUpdateNote();
+  const updateCollecion = useUpdateCollection();
 
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -71,11 +84,29 @@ const SidebarItem = ({
     onCreateCollection?.();
   };
 
-  const handleDeleteNote = async () => {
+  const handleArchive = async () => {
     if (type === 'Note') {
       archiveNote.mutate(id);
     } else {
       archiveCollection.mutate(id);
+    }
+  };
+
+  const handleRename = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    setIsRenaming(true);
+  };
+
+  const handleRenameSubmit = () => {
+    setIsRenaming(false);
+    if (newLabel !== label) {
+      onRename?.(newLabel);
+    }
+
+    if (type === 'Note') {
+      updateNote.mutate({ _id: id, name: newLabel });
+    } else {
+      updateCollecion.mutate({ _id: id, name: newLabel });
     }
   };
 
@@ -111,9 +142,25 @@ const SidebarItem = ({
         ) : (
           <Icon className="size-4 shrink-0" />
         )}
-        <span className="truncate">{label}</span>
+        {isRenaming ? (
+          <input
+            type="text"
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
+            onBlur={handleRenameSubmit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleRenameSubmit();
+              if (e.key === 'Escape') setIsRenaming(false);
+            }}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+            className="truncate bg-transparent border-b border-gray-300 focus:outline-none"
+          />
+        ) : (
+          <span className="truncate">{label}</span>
+        )}
 
-        {!!id && (
+        {!!id && !isRenaming && (
           <div className="ml-auto flex items-center gap-x-1">
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -130,12 +177,16 @@ const SidebarItem = ({
                 side="bottom"
                 forceMount
               >
-                <DropdownMenuItem onClick={() => handleDeleteNote()}>
+                <DropdownMenuItem onClick={handleRename}>
+                  <Pencil className="size-4 mr-2 z-50" />
+                  Rename
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleArchive()}>
                   <Archive className="size-4 mr-2 z-50" />
                   Archive
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground p-2">
                   Last edited: {new Date().toDateString()}
                 </div>
               </DropdownMenuContent>
