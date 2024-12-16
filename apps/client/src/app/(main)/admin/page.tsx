@@ -42,7 +42,7 @@ const DashboardPage = () => {
   // };
 
   return (
-    <div className="flex flex-col gap-5 p-5 flex-1 h-full">
+    <div className="flex flex-col gap-5 p-5 flex-1 size-full">
       <Items />
       <RevenueChart />
     </div>

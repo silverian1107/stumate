@@ -1,6 +1,5 @@
 'use client';
 
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Button,
   Dialog,
@@ -19,7 +18,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 
 const TagList = () => {
@@ -186,7 +185,7 @@ const TagList = () => {
                     size="small"
                     onClick={() => handleDelete(row.id)}
                   >
-                    <DeleteIcon />
+                    <Trash2 />
                   </IconButton>
                 </TableCell>
               </TableRow>

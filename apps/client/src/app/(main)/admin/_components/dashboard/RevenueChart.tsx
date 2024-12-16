@@ -130,8 +130,8 @@ const RevenueChart = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-5 flex-1 ">
-      <div className="flex flex-col gap-5 rounded-lg  ">
+    <div className="bg-white rounded-lg p-5 flex-1 w-full">
+      <div className="flex flex-col gap-5 rounded-lg w-full ">
         <Line className="w-full max-h-[55vh]  " options={options} data={data} />
       </div>
       <div className="flex items-center gap-2 mt-5">

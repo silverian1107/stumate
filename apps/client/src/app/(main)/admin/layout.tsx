@@ -19,7 +19,7 @@ export default function Layout({
       <div className="flex bg-primary-50 flex-1 h-[calc(100vh-64px)]">
         <div
           className={`transition-all duration-300 ease-in-out ${
-            isOpen ? 'w-1/6' : 'w-[6%]'
+            isOpen ? 'w-1/5' : 'w-[6%]'
           }`}
         >
           <NavbarAdmin isOpen={isOpen} />
@@ -29,7 +29,7 @@ export default function Layout({
             isOpen ? 'w-4/5' : 'w-[94%]'
           }`}
         >
-          <main className="flex-1 bg-primary-50 h-full flex justify-center items-center p-6">
+          <main className="flex-1 bg-primary-50 size-full flex justify-center items-center p-6">
             {children}
           </main>
         </div>

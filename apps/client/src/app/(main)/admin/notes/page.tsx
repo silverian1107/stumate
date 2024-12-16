@@ -12,29 +12,29 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Trash2 } from 'lucide-react';
+import { EllipsisVertical, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 
-const LogPage = () => {
+import DetailNoteDialog from '../_components/dialog/DetailNoteDialog';
+
+const NotePage = () => {
   const defaultData = Array.from({ length: 10 }, (_, index) => ({
     id: index + 1,
-    category: 'user',
-    event: 'User logs in',
-    name: 'anhpro',
-    date: '09/12/2024'
+    noteName: 'hehe',
+    userName: 'Anhpro',
+    createDate: '12/09/2024',
+    updateDate: '09/12/2024'
   }));
 
   const [data, setData] = useState(defaultData);
   const [page, setPage] = useState(1);
-  const [categoryFilter, setCategoryFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [selectedNote, setSelectedNote] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const filteredData = data.filter((row) => {
-    const matchesCategory = categoryFilter
-      ? row.category === categoryFilter
-      : true;
-    const matchesDate = dateFilter ? row.date === dateFilter : true;
-    return matchesCategory && matchesDate;
+    const matchesDate = dateFilter ? row.createDate === dateFilter : true;
+    return matchesDate;
   });
 
   const rowsPerPage = 8;
@@ -47,6 +47,15 @@ const LogPage = () => {
     setData(data.filter((row) => row.id !== id));
   };
 
+  const handleDetail = (note: any) => {
+    setSelectedNote(note);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   return (
     <div className="p-6 rounded-lg bg-white w-full h-[80vh] relative">
       <Typography
@@ -54,22 +63,11 @@ const LogPage = () => {
         gutterBottom
         className="flex gap-40 items-center"
       >
-        Manage Logs
+        Manage Notes
         <div className="flex gap-10  text-sm mt-1 items-center ">
           {/* Category Filter */}
-          <div className="flex gap-3 border px-1 rounded-lg border-primary-200">
-            <p>Category:</p>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
           <div className="flex gap-3 px-1 rounded-lg border border-primary-200 items-center">
-            <p>Date:</p>
+            <p>Date create:</p>
             <input
               type="date"
               value={dateFilter}
@@ -89,16 +87,16 @@ const LogPage = () => {
                 SST
               </TableCell>
               <TableCell align="center" size="small">
-                Category
+                Note name
               </TableCell>
               <TableCell align="center" size="small">
-                Event
+                Username
               </TableCell>
               <TableCell align="center" size="small">
-                Name
+                Create date
               </TableCell>
               <TableCell align="center" size="small">
-                Date
+                Update date
               </TableCell>
               <TableCell align="center" size="small">
                 Action
@@ -112,18 +110,25 @@ const LogPage = () => {
                   {index + 1}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.category}
+                  {row.noteName}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.event}
+                  {row.userName}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.name}
+                  {row.createDate}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.date}
+                  {row.updateDate}
                 </TableCell>
                 <TableCell align="center" size="small">
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    onClick={() => handleDetail(row)}
+                  >
+                    <EllipsisVertical />
+                  </IconButton>
                   <IconButton
                     color="error"
                     size="small"
@@ -147,8 +152,13 @@ const LogPage = () => {
           justifyContent: 'center'
         }}
       />
+      <DetailNoteDialog
+        isDialogOpen={isDialogOpen}
+        handleCloseDialog={handleCloseDialog}
+        selectedNote={selectedNote}
+      />
     </div>
   );
 };
 
-export default LogPage;
+export default NotePage;

@@ -1,6 +1,5 @@
 'use client';
 
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   IconButton,
   Pagination,
@@ -13,7 +12,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Edit } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
@@ -68,10 +67,10 @@ const AccountList = () => {
                 Name
               </TableCell>
               <TableCell align="center" size="small">
-                User name
+                Username
               </TableCell>
               <TableCell align="center" size="small">
-                Birth day
+                Birthday
               </TableCell>
               <TableCell align="center" size="small">
                 Gender
@@ -118,7 +117,7 @@ const AccountList = () => {
                       size="small"
                       onClick={() => handleDelete(row.id)}
                     >
-                      <DeleteIcon />
+                      <Trash2 />
                     </IconButton>
                   </div>
                 </TableCell>

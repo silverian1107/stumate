@@ -95,7 +95,7 @@ const HeadingAdmin = ({
   return (
     <header className="bg-primary-200 shadow-md flex justify-between items-center px-6">
       <div className="container flex justify-between items-center text-[#212F3F] border-b border-b-[#E9EAEC] h-[64px] ">
-        <div className="flex items-center w-1/6 justify-between px-6">
+        <div className="flex items-center w-1/5 justify-between px-6">
           <Link href="/">
             <Avatar className="border-2 ">
               <AvatarImage src="/avatar.jpg" />

@@ -1,5 +1,6 @@
 'use client';
 
+import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import type { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -17,69 +18,38 @@ const ItemNavbar = ({
   Icon: LucideIcon;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const pathname = usePathname(); // Lấy đường dẫn hiện tại
-  const isActive = pathname === path;
+  const pathname = usePathname();
 
   return (
-    <div
-      className="flex w-full gap-5 items-center  hover:bg-primary-700 hover:text-white"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <Link
-        href={path}
-        className={isActive ? 'w-full p-3 bg-primary-300' : 'w-full p-3'}
+    <Link href={path}>
+      <ListItemButton
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={
+          pathname === path
+            ? '!bg-primary-300 !text-white !font-bold'
+            : 'hover:!bg-primary-700 hover:!text-white'
+        }
+        sx={{ py: '8px' }}
       >
-        <div>
-          <div
-            className={
-              isOpen
-                ? isActive
-                  ? 'flex gap-2 size-full items-center font-semibold text-primary'
-                  : 'flex gap-2 size-full items-center'
-                : isActive
-                  ? 'flex gap-2 size-full items-center justify-center font-semibold text-primary'
-                  : 'flex gap-2 size-full items-center justify-center'
+        <ListItemIcon
+          sx={{
+            minWidth: '32px',
+            marginRight: '4px'
+          }}
+        >
+          <Icon
+            className="size-5"
+            color={
+              pathname === path || isHovered
+                ? '#fff'
+                : 'hsl(247 45.1% 20% / var(--tw-bg-opacity))'
             }
-          >
-            {isOpen ? (
-              <>
-                <Icon
-                  className="size-6"
-                  color={
-                    isActive || isHovered
-                      ? '#fff'
-                      : 'hsl(247 45.1% 20% / var(--tw-bg-opacity))'
-                  }
-                />
-                <span
-                  className={`${
-                    isOpen
-                      ? isActive || isHovered
-                        ? 'font-bold text-white block'
-                        : 'font-semibold text-md text-primary-950'
-                      : isActive || isHovered
-                        ? 'font-bold text-white hidden'
-                        : 'font-bold text-primary-950'
-                  }`}
-                >
-                  {label}
-                </span>
-              </>
-            ) : (
-              <Icon
-                className="size-6"
-                color={
-                  isActive || isHovered
-                    ? '#fff'
-                    : 'hsl(247 45.1% 20% / var(--tw-bg-opacity))'
-                }
-              />
-            )}
-          </div>
-        </div>
-      </Link>
-    </div>
+          />
+        </ListItemIcon>
+        {isOpen && <ListItemText primary={label} />}
+      </ListItemButton>
+    </Link>
   );
 };
 export default ItemNavbar;

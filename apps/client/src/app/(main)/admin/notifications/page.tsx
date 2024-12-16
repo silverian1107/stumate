@@ -1,6 +1,5 @@
 'use client';
 
-import DeleteIcon from '@mui/icons-material/Delete';
 import type { SelectChangeEvent } from '@mui/material';
 import {
   Button,
@@ -22,7 +21,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { Edit, Plus } from 'lucide-react';
+import { Edit, Plus, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 
 const NotificationList = () => {
@@ -231,7 +230,7 @@ const NotificationList = () => {
                     size="small"
                     onClick={() => handleDelete(row.id)}
                   >
-                    <DeleteIcon />
+                    <Trash2 />
                   </IconButton>
                 </TableCell>
               </TableRow>
