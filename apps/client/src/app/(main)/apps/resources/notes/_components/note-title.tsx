@@ -25,6 +25,11 @@ const NoteTitle = ({ isMenuBar }: { isMenuBar?: boolean }) => {
     });
   };
 
+  const handleIsEditing = () => {
+    if (data.isArchived) return;
+    setIsEditing(true);
+  };
+
   if (isLoading) return null;
 
   return (
@@ -37,9 +42,10 @@ const NoteTitle = ({ isMenuBar }: { isMenuBar?: boolean }) => {
             'text-base line-clamp-1 w-1/3 sticky px-2 py-1',
             isMenuBar
               ? 'h-8'
-              : 'w-full lg:w-4/5 mx-auto text-xl line-clamp-1 h-10'
+              : 'w-full lg:w-4/5 mx-auto text-xl line-clamp-1 h-10',
+            data.isArchived && 'cursor-default'
           )}
-          onClick={() => setIsEditing(true)}
+          onClick={handleIsEditing}
         >
           {noteTitle}
         </div>

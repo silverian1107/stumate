@@ -121,7 +121,10 @@ export class DecksService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Deck ID');
     }
-    const deck = await this.deckModel.findOne({ _id: id });
+    const deck = await this.deckModel.findOne({
+      _id: id,
+      isArchived: { $in: [true, false] },
+    });
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
