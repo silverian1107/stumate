@@ -7,6 +7,7 @@ import {
   ListItemText
 } from '@mui/material';
 import {
+  Archive,
   ArchiveX,
   Bell,
   CircleUserRound,
@@ -65,7 +66,7 @@ const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
               marginRight: '4px'
             }}
           >
-            <ArchiveX
+            <Archive
               className="size-5"
               color="hsl(247 45.1% 20% / var(--tw-bg-opacity))"
             />
@@ -119,6 +120,12 @@ const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
           isOpen={isOpen}
           label="Manage Notifications"
           path="/admin/notifications"
+        />
+        <ItemNavbar
+          Icon={ArchiveX}
+          isOpen={isOpen}
+          label="Archive"
+          path="/admin/archive"
         />
       </List>
     </div>

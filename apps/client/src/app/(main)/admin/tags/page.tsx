@@ -1,11 +1,6 @@
 'use client';
 
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Pagination,
   Paper,
@@ -15,11 +10,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography
 } from '@mui/material';
-import { Plus, Trash2 } from 'lucide-react';
+import { Edit, Plus, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+
+import CreateTagDialog from '../_components/dialog/CreateTagDialog';
+import UpdateTagDialog from '../_components/dialog/UpdateTagDialog';
 
 const TagList = () => {
   const defaultData = Array.from({ length: 71 }, (_, index) => ({
@@ -30,10 +27,11 @@ const TagList = () => {
     role: index % 2 === 0 ? 'admin' : 'user'
   }));
 
-  // State
   const [data, setData] = useState(defaultData);
   const [page, setPage] = useState(1);
-  const [open, setOpen] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [tagUpdate, setTagUpdate] = useState(null);
   const [filterRole, setFilterRole] = useState('');
   const [newTag, setNewTag] = useState({
     tagName: ''
@@ -60,13 +58,21 @@ const TagList = () => {
     setData(data.filter((row) => row.id !== id));
   };
 
-  const handleOpen = () => setOpen(true);
+  const handleOpenCreate = () => setOpenCreate(true);
   const handleClose = () => {
-    setOpen(false);
+    setOpenCreate(false);
     setNewTag({
       tagName: ''
     });
     setErrors({ tagName: '' });
+  };
+
+  const handleOpenUpdate = (row: any) => {
+    setTagUpdate(row);
+    setOpenUpdate(true);
+  };
+  const handleCloseUpdate = () => {
+    setOpenUpdate(false);
   };
 
   const handleChange = (
@@ -128,7 +134,7 @@ const TagList = () => {
         </div>
         <button
           type="button"
-          onClick={handleOpen}
+          onClick={handleOpenCreate}
           className="!text-xs flex gap-1 items-center mr-2 border px-1 bg-primary-700 text-white rounded-lg hover:bg-primary-200"
         >
           <Plus className="size-3" /> Create
@@ -181,6 +187,13 @@ const TagList = () => {
                 </TableCell>
                 <TableCell align="center" size="small">
                   <IconButton
+                    color="primary"
+                    size="small"
+                    onClick={() => handleOpenUpdate(row)}
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton
                     color="error"
                     size="small"
                     onClick={() => handleDelete(row.id)}
@@ -207,32 +220,22 @@ const TagList = () => {
           right: 0
         }}
       />
-
-      {/* Popup Form */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create Tag</DialogTitle>
-        <DialogContent>
-          <TextField
-            margin="dense"
-            label="Name Tag"
-            name="tagName"
-            fullWidth
-            variant="outlined"
-            value={newTag.tagName}
-            onChange={handleChange}
-            error={!!errors.tagName}
-            helperText={errors.tagName}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color="primary" variant="contained">
-            Create
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CreateTagDialog
+        open={openCreate}
+        errors={errors}
+        handleChange={handleChange}
+        handleClose={handleClose}
+        handleSubmit={handleSubmit}
+        newTag={newTag}
+      />
+      <UpdateTagDialog
+        open={openUpdate}
+        errors={errors}
+        handleChange={handleChange}
+        handleClose={handleCloseUpdate}
+        handleSubmit={handleSubmit}
+        tag={tagUpdate}
+      />
     </div>
   );
 };
