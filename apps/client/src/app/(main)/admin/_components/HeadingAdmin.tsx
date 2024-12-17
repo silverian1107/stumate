@@ -15,7 +15,7 @@ import {
   Shield
 } from 'lucide-react';
 import Link from 'next/link';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import type { MouseEventHandler } from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -41,7 +41,6 @@ const HeadingAdmin = ({
     setAnchorEl(e.currentTarget);
   };
   const dispatch = useDispatch();
-
 
   const handleLogout = () => {
     document.cookie.split(';').forEach((cookie) => {

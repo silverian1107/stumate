@@ -401,14 +401,14 @@ export const rootApi = createApi({
       }),
       invalidatesTags: [{ type: 'TAG' }]
     }),
-    getInfoUser: builder.query<any, {id : string}>({
-      query: ({id}) => ({
+    getInfoUser: builder.query<any, { id: string }>({
+      query: ({ id }) => ({
         url: 'users',
-        params: {id},
+        params: { id },
         method: 'GET'
       }),
       providesTags: [{ type: 'USER' }]
-    }),
+    })
   })
 });
 

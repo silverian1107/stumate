@@ -2,6 +2,7 @@ import { getCodeId } from './../../helpers/utils';
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -37,6 +38,7 @@ import { TagDocument } from '../tags/schema/tag.schema';
 import { NotificationDocument } from '../notifications/schema/notification.schema';
 import { TodoDocument } from '../todo/schema/todo.schema';
 import { NotificationsService } from '../notifications/notifications.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -73,6 +75,33 @@ export class UsersService {
     @InjectModel('UserStatistic')
     private readonly userStatisticModel: SoftDeleteModel<UserStatisticDocument>,
   ) {}
+
+  async onModuleInit() {
+    await this.createAdminIfNotExists();
+  }
+
+  // Function to create an admin account if it does not exist
+  async createAdminIfNotExists() {
+    const adminExists = await this.userModel.findOne({ username: 'admin' });
+
+    if (!adminExists) {
+      const hashedPassword = await bcrypt.hash('admin', 10); // Hash the password
+      const adminUser = new this.userModel({
+        name: 'Administrator',
+        username: 'admin',
+        email: 'admin@example.com',
+        password: hashedPassword,
+        role: 'ADMIN',
+        isActive: true,
+        accountType: 'LOCAL',
+      });
+
+      await adminUser.save();
+      Logger.debug('Admin user created successfully');
+    } else {
+      Logger.debug('Admin user already exists');
+    }
+  }
 
   async updateUserSocialAccount(userId: string, user: IUser) {
     return await this.userModel.findOneAndUpdate(

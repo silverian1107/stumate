@@ -5,12 +5,13 @@
 import { Avatar } from '@mui/material';
 import { Pen } from 'lucide-react';
 import React from 'react';
+
 import InputField from './_components/InputField';
 
 const Profile = () => {
-//   const data = useAccount();
-//   const id = data.data?.data.user._id;
-//   const response = useGetInfoUserQuery({ id } as { id: string });
+  //   const data = useAccount();
+  //   const id = data.data?.data.user._id;
+  //   const response = useGetInfoUserQuery({ id } as { id: string });
 
   return (
     <div className="px-8 py-5 rounded-lg bg-white w-2/3 h-[75vh] flex flex-col gap-5 ">
