@@ -40,16 +40,16 @@ export class TagsController {
     );
   }
 
-  @Post('remove-tag/:resourceType/:resourceId/:id')
+  @Post('unassign/:resourceType/:resourceId/:id')
   @Roles(Role.USER)
   @ResponseMessage('Remove tag')
-  async removeTag(
+  async unassignTag(
     @Param('resourceType') resourceType: string,
     @Param('resourceId') resourceId: string,
     @Param('id') id: string,
     @User() user: IUser,
   ) {
-    return await this.tagsService.handleRemoveTag(
+    return await this.tagsService.handleUnassignTag(
       resourceType,
       resourceId,
       id,

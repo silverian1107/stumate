@@ -31,7 +31,7 @@ AxiosClient.interceptors.request.use(
 export const createCustomClient = (customBaseURL: string) => {
   const customClient = axios.create({
     ...AxiosClient.defaults,
-    baseURL: customBaseURL // Override baseURL
+    baseURL: customBaseURL
   });
 
   // @ts-expect-error ts(2349)
@@ -45,11 +45,12 @@ export const createCustomClient = (customBaseURL: string) => {
   return customClient;
 };
 
-export const CollectionClient = createCustomClient(
+const CollectionClient = createCustomClient(
   'http://localhost:3000/api/collections'
 );
-export const NoteClient = createCustomClient('http://localhost:3000/api/notes');
-export const DeckClient = createCustomClient('http://localhost:3000/api/decks');
-export const QuizClient = createCustomClient(
-  'http://localhost:3000/api/quiz-tests'
-);
+const NoteClient = createCustomClient('http://localhost:3000/api/notes');
+const DeckClient = createCustomClient('http://localhost:3000/api/decks');
+const QuizClient = createCustomClient('http://localhost:3000/api/quiz-tests');
+const TagClient = createCustomClient('http://localhost:3000/api/tags');
+
+export { CollectionClient, DeckClient, NoteClient, QuizClient, TagClient };

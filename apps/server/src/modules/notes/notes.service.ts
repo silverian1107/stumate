@@ -205,6 +205,7 @@ export class NotesService {
       })
       .populate('childrenDocs')
       .populate('sharedWithUsers', 'email username')
+      .populate('tags', 'name _id')
       .lean<Note>()
       .exec();
 
