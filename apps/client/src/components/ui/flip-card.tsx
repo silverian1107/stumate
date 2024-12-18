@@ -79,7 +79,7 @@ const FlipCardSide = React.forwardRef<HTMLDivElement, FlipCardSideProps>(
         className={cn(
           'flip-card-side relative bg-white border border-primary-200 shadow-sm',
           isFront
-            ? 'flip-card-front text-primary-950 text-2xl font-semibold rounded-2xl'
+            ? 'flip-card-front text-primary-950 text-2xl font-semibold rounded-2xl '
             : 'flip-card-back text-primary-950 text-2xl font-semibold rounded-2xl cursor-default',
           className
         )}
@@ -91,7 +91,7 @@ const FlipCardSide = React.forwardRef<HTMLDivElement, FlipCardSideProps>(
             <UndoIcon className="size-6  cursor-pointer text-primary-600" />
           </div>
         )}
-        {children}
+        <div className="w-full h-4/5 p-4 md:px-8 overflow-auto">{children}</div>
       </div>
     );
   }

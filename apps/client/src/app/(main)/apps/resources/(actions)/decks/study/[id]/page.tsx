@@ -56,7 +56,7 @@ const FlashcardStudyPage = () => {
           There are no flashcards to review at the moment.
         </p>
         <Link
-          href="/apps/resources/decks"
+          href="/apps/resources/decks/view"
           className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-500"
         >
           Go back to decks
@@ -79,7 +79,7 @@ const FlashcardStudyPage = () => {
           You have completed all the flashcards.
         </p>
         <Link
-          href="/apps/resources/decks"
+          href="/apps/resources/decks/view"
           className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-500"
         >
           Go back to decks
