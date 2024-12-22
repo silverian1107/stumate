@@ -465,7 +465,6 @@ export class SharedResourcesService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -541,7 +540,6 @@ export class SharedResourcesService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();

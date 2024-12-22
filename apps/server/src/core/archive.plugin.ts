@@ -15,12 +15,21 @@ const archivePlugin = (schema: Schema) => {
   });
 
   const archiveMiddleware: PreMiddlewareFunction = function (next) {
-    const currentQuery = this.getQuery();
-    if ('isArchived' in currentQuery) {
-      return next();
+    if (this.getQuery) {
+      const query = this.getQuery();
+      if (!query.isArchived) {
+        this.where({ isArchived: false });
+      }
+    } else {
+      const pipeline = this.pipeline();
+      const hasArchiveMatch = pipeline.some(
+        (stage) => stage.$match && 'isArchived' in stage.$match,
+      );
+      if (!hasArchiveMatch) {
+        pipeline.unshift({ $match: { isArchived: false } });
+      }
     }
 
-    this.where({ isArchived: false });
     next();
   };
 

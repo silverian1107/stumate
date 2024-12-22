@@ -81,7 +81,6 @@ export class DecksService {
     const result = await this.deckModel
       .find(filter)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -108,7 +107,6 @@ export class DecksService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -220,6 +218,7 @@ export class DecksService {
     //soft delete for deck
     await this.deckModel.delete({ _id: id }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
+    await this.statisticsService.getAdminStatistics();
     return 'Deck was deleted successfully';
   }
 

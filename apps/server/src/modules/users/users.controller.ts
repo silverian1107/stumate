@@ -43,11 +43,11 @@ export class UsersController {
   }
 
   @Get(':id')
-  @ResponseMessage('Fetch user by id')
+  @ResponseMessage('Get user profile')
   async findOne(@Param('id') id: string, @User() user: IUser) {
-    const foundUser = await this.usersService.findOne(id);
+    const foundUser = await this.usersService.getProfile(id);
     if (user.role === 'USER') {
-      if (foundUser._id.toString() !== user._id) {
+      if (foundUser.user._id.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );

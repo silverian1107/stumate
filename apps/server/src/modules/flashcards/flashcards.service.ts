@@ -105,6 +105,7 @@ export class FlashcardsService {
     await this.flashcardReviewModel.insertMany(flashcardReviews);
 
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
+    await this.statisticsService.getAdminStatistics();
     return newFlashcards.map((flashcard: any) => ({
       _id: flashcard._id,
       createdAt: flashcard.createdAt,
@@ -127,7 +128,6 @@ export class FlashcardsService {
     const result = await this.flashcardModel
       .find(filter)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -171,6 +171,7 @@ export class FlashcardsService {
     await this.flashcardReviewModel.insertMany(flashcardReviews);
 
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
+    await this.statisticsService.getAdminStatistics();
     return newFlashcards;
   }
 
@@ -231,6 +232,7 @@ export class FlashcardsService {
       },
     });
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
+    await this.statisticsService.getAdminStatistics();
     return newFlashcard;
   }
 
@@ -396,7 +398,6 @@ export class FlashcardsService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -480,6 +481,7 @@ export class FlashcardsService {
     //soft delete for all flashcard
     await this.flashcardModel.delete({ _id: id, deckId }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
+    await this.statisticsService.getAdminStatistics();
     return 'Flashcard was deleted successfully';
   }
 
@@ -524,6 +526,7 @@ export class FlashcardsService {
     await this.statisticsService.createOrUpdateUserStatistics(
       flashcards[0].userId.toString(),
     );
+    await this.statisticsService.getAdminStatistics();
 
     return flashcards;
   }
@@ -562,6 +565,7 @@ export class FlashcardsService {
 
     const userId = user._id;
     await this.statisticsService.createOrUpdateUserStatistics(userId);
+    await this.statisticsService.getAdminStatistics();
 
     return { message: 'Flashcard deleted successfully' };
   }

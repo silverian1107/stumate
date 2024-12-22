@@ -69,6 +69,7 @@ export class NotesService {
       await parent.save();
       await newNote.save();
       await this.statisticsService.createOrUpdateUserStatistics(userId);
+      await this.statisticsService.getAdminStatistics();
       return newNote;
     } catch (error) {
       throw new InternalServerErrorException(
@@ -274,6 +275,7 @@ export class NotesService {
     await this.noteModel.delete({ _id: { $in: notesToDelete } }, user._id);
 
     await this.statisticsService.createOrUpdateUserStatistics(ownerId);
+    await this.statisticsService.getAdminStatistics();
     return 'Note was deleted successfully';
   }
 }

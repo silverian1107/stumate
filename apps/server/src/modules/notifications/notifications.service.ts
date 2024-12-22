@@ -13,7 +13,8 @@ import {
 } from './schema/notification.schema';
 import { IUser } from '../users/users.interface';
 import mongoose from 'mongoose';
-import { CreateNotificationDto } from './dto/create-notification.dto';
+import { UpdateNotificationDto } from './dto/update-notification.dto';
+import aqp from 'api-query-params';
 
 @Injectable()
 export class NotificationsService {
@@ -77,10 +78,42 @@ export class NotificationsService {
     return null;
   }
 
-  async findAll(user: IUser) {
+  async findAllByUser(user: IUser) {
     return await this.notificationModel
       .find({ userId: user._id })
       .sort({ createdAt: -1 });
+  }
+
+  async findAll(currentPage: number, pageSize: number, qs: string) {
+    const { filter, sort, population, projection } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    currentPage = currentPage ? currentPage : 1;
+    const limit = pageSize ? pageSize : 10;
+    const offset = (currentPage - 1) * limit;
+
+    const totalItems = (await this.notificationModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const result = await this.notificationModel
+      .find(filter)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort as any)
+      .populate(population)
+      .select(projection as any)
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        total: totalItems,
+      },
+      result,
+    };
   }
 
   async handleMarkNotificationAsRead(id: string) {
@@ -102,7 +135,7 @@ export class NotificationsService {
     });
   }
 
-  async update(id: string, updateNotificationDto: CreateNotificationDto) {
+  async update(id: string, updateNotificationDto: UpdateNotificationDto) {
     return await this.notificationModel.findOneAndUpdate(
       { _id: id },
       {

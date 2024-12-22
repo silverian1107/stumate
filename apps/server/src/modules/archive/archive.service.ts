@@ -348,7 +348,6 @@ export class ArchiveService {
     const result = await model
       .find(filter)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();

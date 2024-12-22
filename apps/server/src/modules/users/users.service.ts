@@ -38,6 +38,7 @@ import { TagDocument } from '../tags/schema/tag.schema';
 import { NotificationDocument } from '../notifications/schema/notification.schema';
 import { TodoDocument } from '../todo/schema/todo.schema';
 import { NotificationsService } from '../notifications/notifications.service';
+import { StatisticsService } from '../statistics/statistics.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -48,6 +49,7 @@ export class UsersService {
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
     private readonly notificationsService: NotificationsService,
+    private readonly statisticsService: StatisticsService,
     @InjectModel('Collection')
     private readonly collectionModel: SoftDeleteModel<CollectionDocument>,
     @InjectModel('Note')
@@ -124,6 +126,7 @@ export class UsersService {
       accountId: user.accountId,
       accountType: user.accountType,
     });
+    await this.statisticsService.getAdminStatistics();
     return newUser;
   }
 
@@ -166,6 +169,22 @@ export class UsersService {
       throw new NotFoundException('Not found user');
     }
     return user;
+  }
+
+  async getProfile(id: string) {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid User ID');
+    }
+    const user = await this.userModel.findOne({ _id: id }).select('-password');
+    if (!user) {
+      throw new NotFoundException('Not found user');
+    }
+    const userStatistics =
+      await this.statisticsService.createOrUpdateUserStatistics(id);
+    return {
+      user,
+      userStatistics,
+    };
   }
 
   async findUserByUsernameOrEmail(usernameOrEmail: string) {
@@ -319,6 +338,7 @@ export class UsersService {
       'Activate your account',
       'account-activation-email',
     );
+    await this.statisticsService.getAdminStatistics();
     return newUser;
   }
 
@@ -354,6 +374,7 @@ export class UsersService {
       'Activate your account',
       'account-activation-email',
     );
+    await this.statisticsService.getAdminStatistics();
     return newUser;
   }
 
@@ -446,6 +467,7 @@ export class UsersService {
     await this.todoModel.delete({ userId: id }, user._id);
     //soft delete for user
     await this.userModel.delete({ _id: id }, user._id);
+    await this.statisticsService.getAdminStatistics();
     return 'User was deleted successfully';
   }
 }

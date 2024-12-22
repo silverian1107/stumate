@@ -17,6 +17,7 @@ import { NotificationSchema } from '../notifications/schema/notification.schema'
 import { TagSchema } from '../tags/schema/tag.schema';
 import { TodoSchema } from '../todo/schema/todo.schema';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { StatisticsModule } from '../statistics/statistics.module';
 
 @Module({
   controllers: [UsersController],
@@ -57,6 +58,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     MongooseModule.forFeature([
       { name: 'UserStatistic', schema: UserStatisticSchema },
     ]),
+    StatisticsModule,
   ],
   exports: [UsersService],
 })
