@@ -64,15 +64,6 @@ export class UserStatistic {
 
   @Prop({ default: [] })
   monthlyStudyHeatmap: string[];
-
-  // @Prop()
-  // quoteOfTheDay: string;
-
-  // @Prop()
-  // bestStreak: number;
-
-  // @Prop()
-  // eventsToday: string[];
 }
 
 export const UserStatisticSchema = SchemaFactory.createForClass(UserStatistic);

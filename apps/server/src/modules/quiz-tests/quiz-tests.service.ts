@@ -54,6 +54,7 @@ export class QuizTestsService {
       },
     });
     await this.statisticsService.createOrUpdateUserStatistics(user._id);
+    await this.statisticsService.getAdminStatistics();
     return newQuizTest;
   }
 
@@ -97,7 +98,6 @@ export class QuizTestsService {
     const result = await this.quizTestModel
       .find(filter)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -124,7 +124,6 @@ export class QuizTestsService {
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
-      .select('-userId')
       .populate(population)
       .select(projection as any)
       .exec();
@@ -220,6 +219,7 @@ export class QuizTestsService {
     //soft delete for quiz test
     await this.quizTestModel.delete({ _id: id }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
+    await this.statisticsService.getAdminStatistics();
     return 'Quiz was deleted successfully';
   }
 }

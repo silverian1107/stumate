@@ -8,6 +8,8 @@ import {
   Delete,
   InternalServerErrorException,
   ForbiddenException,
+  NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -22,6 +24,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from '../users/users.interface';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { StatisticsService } from '../statistics/statistics.service';
+import { UpdateNotificationDto } from './dto/update-notification.dto';
 
 @Controller('notifications')
 export class NotificationsController {
@@ -40,17 +43,21 @@ export class NotificationsController {
   ) {
     try {
       const users = await this.userModel
-        .find({ role: 'USER' })
+        .find({ _id: { $in: createNotificationDto.userIds }, role: 'USER' })
         .select('-password');
+
+      if (users.length === 0) {
+        throw new NotFoundException('No users found');
+      }
+
       await Promise.all(
-        users.map(
-          async (user) =>
-            await this.notificationsService.createNotification(
-              user,
-              createNotificationDto.type,
-              createNotificationDto.title,
-              createNotificationDto.body,
-            ),
+        users.map((user) =>
+          this.notificationsService.createNotification(
+            user,
+            createNotificationDto.type,
+            createNotificationDto.title,
+            createNotificationDto.body,
+          ),
         ),
       );
     } catch {
@@ -86,8 +93,19 @@ export class NotificationsController {
 
   @Get()
   @ResponseMessage('Get all notifications')
-  async findAll(@User() user: IUser) {
-    return await this.notificationsService.findAll(user);
+  async findAllByUser(@User() user: IUser) {
+    return await this.notificationsService.findAllByUser(user);
+  }
+
+  @Get()
+  @Roles(Role.ADMIN)
+  @ResponseMessage('Get all notifications')
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') pageSize: string,
+    @Query() qs: string,
+  ) {
+    return this.notificationsService.findAll(+currentPage, +pageSize, qs);
   }
 
   @Patch(':id/read')
@@ -112,10 +130,10 @@ export class NotificationsController {
 
   @Patch(':id')
   @Roles(Role.ADMIN)
-  @ResponseMessage('Update a notification as read')
+  @ResponseMessage('Update a notification content')
   async update(
     @Param('id') id: string,
-    @Body() updateNotificationDto: CreateNotificationDto,
+    @Body() updateNotificationDto: UpdateNotificationDto,
   ) {
     return await this.notificationsService.update(id, updateNotificationDto);
   }

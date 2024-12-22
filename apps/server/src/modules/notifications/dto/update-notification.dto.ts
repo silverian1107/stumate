@@ -1,25 +1,8 @@
-import {
-  ArrayMinSize,
-  IsArray,
-  IsEnum,
-  IsMongoId,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { NotificationType } from '../schema/notification.schema';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateNotificationDto {
-  @ApiProperty({
-    description: 'Notification userId',
-  })
-  @IsNotEmpty()
-  @IsArray()
-  @ArrayMinSize(1)
-  @IsMongoId({ each: true })
-  userIds: string[];
-
+export class UpdateNotificationDto {
   @ApiProperty({
     description: 'Notification type',
     example: 'INFO',

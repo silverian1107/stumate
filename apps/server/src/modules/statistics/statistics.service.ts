@@ -18,8 +18,6 @@ import {
   QuizAttempt,
   QuizAttemptDocument,
 } from '../quiz-attempts/schema/quiz-attempt.schema';
-import { User } from 'src/decorator/customize';
-import { IUser } from '../users/users.interface';
 import { MyGateway } from 'src/gateway/gateway';
 import {
   FlashcardReview,
@@ -28,6 +26,7 @@ import {
   State,
 } from '../flashcards/schema/flashcard-review.schema';
 import { Deck, DeckDocument } from '../decks/schema/deck.schema';
+import { User as UserModel, UserDocument } from '../users/schema/user.schema';
 
 @Injectable()
 export class StatisticsService {
@@ -46,16 +45,68 @@ export class StatisticsService {
     private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
     @InjectModel(QuizAttempt.name)
     private readonly quizAttemptModel: SoftDeleteModel<QuizAttemptDocument>,
+    @InjectModel(UserModel.name)
+    private readonly userModel: SoftDeleteModel<UserDocument>,
     private readonly myGateway: MyGateway,
   ) {}
 
-  async findOne(@User() user: IUser) {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    return await this.userStatisticModel.findOne({
-      userId: user._id,
-      date: startOfDay,
+  async getAdminStatistics() {
+    const overview = {
+      totalAccounts: (await this.getStatistics(this.userModel)).total,
+      totalNotes: (await this.getStatistics(this.noteModel)).total,
+      totalFlashcards: (await this.getStatistics(this.flashcardModel)).total,
+      totalQuizzes: (await this.getStatistics(this.quizTestModel)).total,
+    };
+    const monthlyStatisticsChart = {
+      totalAccounts: (await this.getStatistics(this.userModel))
+        .monthlyStatistics,
+      totalNotes: (await this.getStatistics(this.noteModel)).monthlyStatistics,
+      totalFlashcards: (await this.getStatistics(this.flashcardModel))
+        .monthlyStatistics,
+      totalQuizzes: (await this.getStatistics(this.quizTestModel))
+        .monthlyStatistics,
+    };
+    this.myGateway.sendAdminStatistics({
+      overview,
+      monthlyStatisticsChart,
     });
+    return {
+      overview,
+      monthlyStatisticsChart,
+    };
+  }
+
+  async getStatistics(model: any) {
+    const total = await model.countDocuments();
+    const monthlyStatistics = await model.aggregate([
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          year: '$_id.year',
+          month: '$_id.month',
+          count: 1,
+          _id: 0,
+        },
+      },
+      {
+        $sort: {
+          year: 1,
+          month: 1,
+        },
+      },
+    ]);
+    return {
+      total,
+      monthlyStatistics,
+    };
   }
 
   async createOrUpdateUserStatistics(userId: string) {
@@ -150,14 +201,6 @@ export class StatisticsService {
 
     return newUserStatistic;
   }
-
-  // async getDailyStudyDuration(userId: string) {
-
-  // }
-
-  // async getStudyStreakDays(userId: string) {
-
-  // }
 
   async getTotalNotesCount(userId: string) {
     const notes = await this.noteModel.countDocuments({
@@ -327,8 +370,4 @@ export class StatisticsService {
       });
     return studiedFlashcardsCount;
   }
-
-  // async getSessionsThisWeek(userId: string) {
-
-  // }
 }

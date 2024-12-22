@@ -27,7 +27,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       this.server.emit('update-user-statistic', data);
     } catch (error) {
-      console.error('Error', error);
+      console.error('Error sending user statistics:', error);
     }
   }
 
@@ -35,7 +35,15 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       this.server.emit('send-notification', data);
     } catch (error) {
-      console.error('Error', error);
+      console.error('Error sending notification:', error);
+    }
+  }
+
+  sendAdminStatistics(data: any) {
+    try {
+      this.server.emit('update-admin-statistics', data);
+    } catch (error) {
+      console.error('Error sending admin statistics:', error);
     }
   }
 }

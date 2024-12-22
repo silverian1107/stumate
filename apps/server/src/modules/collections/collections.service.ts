@@ -318,6 +318,7 @@ export class CollectionsService {
     );
 
     await this.statisticsService.createOrUpdateUserStatistics(ownerId);
+    await this.statisticsService.getAdminStatistics();
 
     return 'Collection was deleted successfully';
   }

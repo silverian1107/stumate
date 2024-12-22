@@ -3,8 +3,12 @@ import { StatisticsService } from './statistics.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { User as UserModel, UserDocument } from '../users/schema/user.schema';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import {
+  User as UserModel,
+  UserDocument,
+  Role,
+} from '../users/schema/user.schema';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from '../users/users.interface';
 
 @Controller('statistics')
@@ -37,8 +41,16 @@ export class StatisticsController {
   }
 
   @Get()
+  @Roles(Role.USER)
   @ResponseMessage('Fetch user statistic')
   async getUserStatistic(@User() user: IUser) {
-    return await this.statisticsService.findOne(user);
+    return await this.statisticsService.createOrUpdateUserStatistics(user._id);
+  }
+
+  @Get('/admin')
+  @Roles(Role.ADMIN)
+  @ResponseMessage('Fetch admin statistic')
+  async getAdminStatistic() {
+    return await this.statisticsService.getAdminStatistics();
   }
 }
