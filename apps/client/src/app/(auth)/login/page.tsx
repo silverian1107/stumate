@@ -7,8 +7,8 @@ import LoginForm from './LoginForm';
 
 export default function LoginPage() {
   return (
-    <div className="flex size-full flex-col items-center justify-evenly gap-4 py-40">
-      <p className="-mb-10 text-[3rem] font-extrabold text-primary-main">
+    <div className="flex size-full flex-col items-center justify-evenly gap-4 py-20 md:py-40">
+      <p className="xl:-mb-10 text-[3rem] font-extrabold text-primary-main">
         Log in
       </p>
       <div className="w-[380px] rounded border border-primary-main/40 bg-white p-8 lg:w-[480px]">

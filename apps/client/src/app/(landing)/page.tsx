@@ -1,13 +1,19 @@
 'use client';
 
-import { AppBar, Toolbar } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
+import { FeatureSection } from '@/components/landingPage/features-section';
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { Button as CustomizedButton } from '@/components/ui/button';
 import { FlipWords } from '@/components/ui/flip-words';
-import LoginStatus from '@/components/UserAccount';
+
+import { Benefits } from '../../components/landingPage/benefit';
+import { GetStarted } from '../../components/landingPage/get-started';
+import { HowItWorks } from '../../components/landingPage/how-it-works';
+import { Navbar } from '../../components/landingPage/navbar';
+import { ScrollToTopButton } from '../../components/landingPage/scroll-to-top-button';
 
 export default function Landing() {
   const words = [
@@ -19,58 +25,37 @@ export default function Landing() {
     'think clearly'
   ];
 
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.start({ opacity: 1, y: 0 });
+  }, [controls]);
+
   return (
     <div
-      className="min-h-screen w-screen"
+      className="min-h-screen w-full relative pt-16"
       style={{
         backgroundImage:
           'linear-gradient(to bottom right, var(--primary-600), var(--accent-300))'
       }}
     >
-      <AppBar
-        position="static"
-        color="inherit"
-        className="shadow-sm sm:px-0 md:px-8 lg:px-40"
-      >
-        <Toolbar className="flex items-center gap-8">
-          <h1 className="select-none text-3xl font-extrabold text-primary-700">
-            StuMate
-          </h1>
-          <div className="space-x-6">
-            {['Features', 'AI Companion', 'About', 'Download'].map(
-              (text, index) => (
-                <Link
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={index}
-                  href="/#"
-                  className="text-gray-600  hover:text-primary-600"
-                >
-                  {text}
-                </Link>
-              )
-            )}
-          </div>
-          <div className="ml-auto space-x-2">
-            <LoginStatus />
-          </div>
-        </Toolbar>
-      </AppBar>
+      <Navbar />
 
-      <AuroraBackground>
+      <AuroraBackground className="">
         <motion.div
-          initial={{ opacity: 0.0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 40 }}
+          animate={controls}
           transition={{
             delay: 0.3,
             duration: 0.8,
             ease: 'easeInOut'
           }}
-          className="relative flex flex-col items-center justify-center gap-10 px-4 pb-32"
+          className="relative flex flex-col items-center justify-center gap-6 lg:gap-10 px-4 pb-32"
         >
-          <div className="-mb-8 text-center text-3xl font-bold dark:text-white md:text-7xl">
+          <div className="-mb-8 text-center text-5xl font-bold dark:text-white lg:text-6xl">
             Let&apos;s <FlipWords words={words} className="text-primary-700" />
           </div>
-          <div className="py-4 text-base font-extralight dark:text-neutral-200 md:text-4xl">
+          <div className="py-4 text-2xl font-extralight dark:text-neutral-200 lg:text-3xl">
             And this, is your{' '}
             <span className="font-bold text-primary-700 underline">
               companion
@@ -79,13 +64,19 @@ export default function Landing() {
           <Link href="/register">
             <CustomizedButton
               variant="ringHover"
-              className="bg-primary-700 px-8 py-6 text-lg hover:bg-primary-600"
+              className="bg-primary-700 px-4 py-2 lg:px-8 lg:py-6 text-base lg:text-lg hover:bg-primary-600"
             >
               Join us
             </CustomizedButton>
           </Link>
         </motion.div>
       </AuroraBackground>
+
+      <FeatureSection />
+      <Benefits />
+      <HowItWorks />
+      <GetStarted />
+      <ScrollToTopButton />
     </div>
   );
 }
