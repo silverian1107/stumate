@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -46,16 +47,16 @@ export class TagsService {
   ) {
     let resource: any;
     switch (resourceType) {
-      case 'collection':
+      case 'collections':
         resource = await this.collectionModel.findOne({ _id: resourceId });
         break;
-      case 'note':
+      case 'notes':
         resource = await this.noteModel.findOne({ _id: resourceId });
         break;
-      case 'deck':
+      case 'decks':
         resource = await this.deckModel.findOne({ _id: resourceId });
         break;
-      case 'quiz':
+      case 'quiz-tests':
         resource = await this.quizTestModel.findOne({ _id: resourceId });
         break;
       default:
@@ -91,25 +92,25 @@ export class TagsService {
     }
 
     switch (resourceType) {
-      case 'collection':
+      case 'collections':
         return await this.collectionModel.findOneAndUpdate(
           { _id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
-      case 'note':
+      case 'notes':
         return await this.noteModel.findOneAndUpdate(
           { _id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
-      case 'deck':
+      case 'decks':
         return await this.deckModel.findOneAndUpdate(
           { _id: resourceId },
           { $addToSet: { tags: id } },
           { new: true },
         );
-      case 'quiz':
+      case 'quizzes':
         return await this.quizTestModel.findOneAndUpdate(
           { _id: resourceId },
           { $addToSet: { tags: id } },
@@ -120,7 +121,7 @@ export class TagsService {
     }
   }
 
-  async handleRemoveTag(
+  async handleUnassignTag(
     resourceType: string,
     resourceId: string,
     id: string,
@@ -143,25 +144,25 @@ export class TagsService {
     }
 
     switch (resourceType) {
-      case 'collection':
+      case 'collections':
         return await this.collectionModel.findOneAndUpdate(
           { _id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
-      case 'note':
+      case 'notes':
         return await this.noteModel.findOneAndUpdate(
           { _id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
-      case 'deck':
+      case 'decks':
         return await this.deckModel.findOneAndUpdate(
           { _id: resourceId },
           { $pull: { tags: id } },
           { new: true },
         );
-      case 'quiz':
+      case 'quiz-tests':
         return await this.quizTestModel.findOneAndUpdate(
           { _id: resourceId },
           { $pull: { tags: id } },
@@ -177,7 +178,7 @@ export class TagsService {
     //Check name already exists
     const tagName = await this.tagModel.findOne({ name, userId: user._id });
     if (tagName) {
-      throw new BadRequestException(`Name '${name}' already exists`);
+      throw new ConflictException(`Name '${name}' already exists`);
     }
     //Create a new tag
     const newTag = await this.tagModel.create({

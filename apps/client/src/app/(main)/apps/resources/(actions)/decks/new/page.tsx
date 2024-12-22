@@ -44,7 +44,7 @@ export default function ResourcePage() {
       });
 
       toast.success('Resource created successfully');
-      router.replace('/apps/resources/decks/');
+      router.replace('/apps/resources/decks/view');
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error('Error submitting resource', {

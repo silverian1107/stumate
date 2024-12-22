@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 
 import MyEditor from '../_components/my-editor';
 import MyMenuBar from '../_components/my-menu-bar';
+import NoteStatusBar from '../_components/note-status-bar';
 
 export default function CreateNote() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -36,8 +37,9 @@ export default function CreateNote() {
   };
 
   return (
-    <div className="flex h-screen w-full relative">
+    <div className="flex h-screen w-full relative overflow-hidden">
       <div className="flex flex-1 flex-col w-full items-start bg-gray-50/50">
+        <NoteStatusBar />
         <MyMenuBar />
         <div className="flex w-full overflow-hidden gap-5">
           <MyEditor />

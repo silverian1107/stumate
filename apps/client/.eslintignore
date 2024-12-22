@@ -1,5 +1,5 @@
-# /src/components/ui/*
-# /src/components/ui/**
+/src/components/ui/*
+/src/components/ui/**
 node_modules
 out
 !.storybook

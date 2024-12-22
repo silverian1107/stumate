@@ -36,13 +36,11 @@ const NoteEditor = ({ noteId }: { noteId: string }) => {
 
   useEffect(() => {
     if (data?.data?.body) {
-      // Set the editor's initial value to the data.body
       setEditorValue({
         time: data.data.body.time,
         blocks: data.data.body.blocks
       });
     } else {
-      // Initialize with an empty structure if no data is available
       setEditorValue({
         time: Date.now(),
         blocks: []

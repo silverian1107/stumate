@@ -27,6 +27,7 @@ const MyTextEditor = ({ data }: { data: Note }) => {
         data: initialData,
         autofocus: true,
         tools,
+        readOnly: data.isArchived,
         onChange: async (event: API) => {
           const body = await event.saver.save();
           updateNoteMutate.mutate({
@@ -37,7 +38,13 @@ const MyTextEditor = ({ data }: { data: Note }) => {
       });
       ref.current = editor;
     }
-  }, [data._id, initialData, updateNoteMutate]);
+  }, [data._id, data.isArchived, initialData, updateNoteMutate]);
+
+  useEffect(() => {
+    if (ref.current && ref.current.readOnly) {
+      ref.current.readOnly.toggle(data.isArchived);
+    }
+  }, [data.isArchived]);
 
   return <div id="editor-js" className="h-fit" />;
 };

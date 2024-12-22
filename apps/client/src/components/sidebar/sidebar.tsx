@@ -25,9 +25,11 @@ export function LearnerSidebar() {
 
   const totalWordCount = () => {
     if (note?.body?.blocks) {
-      return note.body.blocks.reduce((total: number, block: any) => {
-        return total + countWords(block.data.text);
-      }, 0);
+      return note.body.blocks
+        .filter((block: any) => block?.data?.text)
+        .reduce((total: number, block: any) => {
+          return total + countWords(block.data.text);
+        }, 0);
     }
     return 0;
   };

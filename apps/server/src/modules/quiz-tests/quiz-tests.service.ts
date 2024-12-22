@@ -143,7 +143,10 @@ export class QuizTestsService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Quiz Test ID');
     }
-    const quizTest = await this.quizTestModel.findOne({ _id: id });
+    const quizTest = await this.quizTestModel.findOne({
+      _id: id,
+      isArchived: { $in: [true, false] },
+    });
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }

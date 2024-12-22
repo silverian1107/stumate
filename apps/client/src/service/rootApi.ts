@@ -261,7 +261,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const rootApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['NOTE', 'ATTACHMENT', 'TAG'],
+  tagTypes: ['NOTE', 'ATTACHMENT', 'TAG', 'USER'],
   endpoints: (builder) => ({
     register: builder.mutation<
       { token: string },
@@ -400,6 +400,14 @@ export const rootApi = createApi({
         method: 'PATCH'
       }),
       invalidatesTags: [{ type: 'TAG' }]
+    }),
+    getInfoUser: builder.query<any, { id: string }>({
+      query: ({ id }) => ({
+        url: 'users',
+        params: { id },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'USER' }]
     })
   })
 });
@@ -420,5 +428,6 @@ export const {
   useTagQuery,
   useCreateTagMutation,
   useDeleteTagMutation,
-  useRenameTagMutation
+  useRenameTagMutation,
+  useGetInfoUserQuery
 } = rootApi;

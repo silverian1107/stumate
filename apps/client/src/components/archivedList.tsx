@@ -1,4 +1,5 @@
 import { FileTextIcon, FolderOpenIcon } from 'lucide-react';
+import Link from 'next/link';
 
 import {
   useGetArchivedResources,
@@ -39,7 +40,10 @@ const ArchivedList = () => {
   return (
     <div className="space-y-2 overflow-auto">
       {dataArray.map((item) => (
-        <div
+        <Link
+          href={
+            item.type === 'Note' ? `/apps/resources/notes/${item._id}` : '#'
+          }
           key={item._id}
           className={cn(
             'flex items-center p-2 rounded-md transition-all hover:bg-primary-100',
@@ -78,7 +82,7 @@ const ArchivedList = () => {
               Delete
             </button>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

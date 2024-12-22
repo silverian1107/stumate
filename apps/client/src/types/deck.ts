@@ -7,6 +7,7 @@ export type DeckCreateDto = {
   noteId?: string;
   description?: string;
 };
+
 export interface BaseResource {
   _id?: string;
   name: string;

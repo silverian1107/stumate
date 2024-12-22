@@ -42,10 +42,17 @@ export class DecksService {
   async create(createDeckDto: CreateDeckDto, @User() user: IUser) {
     const { noteId, description } = createDeckDto;
 
-    const [, existingDecks] = await Promise.all([
-      this.noteService.findById(noteId),
-      this.deckModel.find({ userId: user._id }),
-    ]);
+    const promises = [];
+    if (noteId) {
+      promises.push(this.noteService.findById(noteId));
+    } else {
+      promises.push(Promise.resolve(null));
+    }
+
+    promises.push(this.deckModel.find({ userId: user._id }));
+
+    const [, existingDecks] = await Promise.all(promises);
+
     const existingDeckNames = existingDecks.map((deck) => deck.name);
     const newDeckName = handleDuplicateName(
       createDeckDto.name,
@@ -119,7 +126,10 @@ export class DecksService {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Deck ID');
     }
-    const deck = await this.deckModel.findOne({ _id: id });
+    const deck = await this.deckModel.findOne({
+      _id: id,
+      isArchived: { $in: [true, false] },
+    });
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }

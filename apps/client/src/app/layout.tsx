@@ -37,7 +37,7 @@ export default async function RootLayout({
               <ThemeProvider theme={theme}>
                 <RqProvider>
                   {children}
-                  <Toaster position="top-right" />
+                  <Toaster position="bottom-right" />
                   <SnackBar />
                 </RqProvider>
               </ThemeProvider>

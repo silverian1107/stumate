@@ -34,7 +34,10 @@ export class SummariesService {
     if (!mongoose.isValidObjectId(noteId)) {
       throw new BadRequestException('Invalid Note ID');
     }
-    const note = await this.noteModel.findOne({ _id: noteId });
+    const note = await this.noteModel.findOne({
+      _id: noteId,
+      isArchived: { $in: [true, false] },
+    });
     if (!note) {
       throw new NotFoundException('Not found note');
     }
@@ -108,7 +111,10 @@ export class SummariesService {
     if (!mongoose.isValidObjectId(noteId)) {
       throw new BadRequestException('Invalid Note ID');
     }
-    const note = await this.noteModel.findOne({ _id: noteId });
+    const note = await this.noteModel.findOne({
+      _id: noteId,
+      isArchived: { $in: [true, false] },
+    });
     if (!note) {
       throw new NotFoundException('Not found note');
     }
@@ -119,7 +125,10 @@ export class SummariesService {
         );
       }
     }
-    return await this.summaryModel.findOne({ noteId });
+    return await this.summaryModel.findOne({
+      noteId,
+      isArchived: { $in: [true, false] },
+    });
   }
 
   async update(

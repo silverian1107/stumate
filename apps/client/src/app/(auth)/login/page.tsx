@@ -1,4 +1,4 @@
-import { Apple } from '@mui/icons-material';
+import { Facebook } from '@mui/icons-material';
 import Link from 'next/link';
 
 import GoogleIcon from '@/access/GoogleIcon';
@@ -7,8 +7,8 @@ import LoginForm from './LoginForm';
 
 export default function LoginPage() {
   return (
-    <div className="flex size-full flex-col items-center justify-evenly gap-4 py-40">
-      <p className="-mb-10 text-[3rem] font-extrabold text-primary-main">
+    <div className="flex size-full flex-col items-center justify-evenly gap-4 py-20 md:py-40">
+      <p className="xl:-mb-10 text-[3rem] font-extrabold text-primary-main">
         Log in
       </p>
       <div className="w-[380px] rounded border border-primary-main/40 bg-white p-8 lg:w-[480px]">
@@ -30,8 +30,8 @@ export default function LoginPage() {
               href=""
               className="flex grow items-center justify-center gap-0.5 rounded border border-black/20 p-1"
             >
-              <Apple className="text-gray-500" />
-              <span className="text-black/60">Sign in with Apple</span>
+              <Facebook className="text-gray-500" />
+              <span className="text-black/60">Sign in with Facebook</span>
             </Link>
             <Link
               href=""

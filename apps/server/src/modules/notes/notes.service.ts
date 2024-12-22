@@ -200,9 +200,13 @@ export class NotesService {
       throw new BadRequestException('Invalid NoteId');
 
     const note = await this.noteModel
-      .findOne({ _id: noteId })
+      .findOne({
+        _id: noteId,
+        isArchived: { $in: [true, false] },
+      })
       .populate('childrenDocs')
-      .populate('sharedWithUsers', 'email username') // Specify the fields you want
+      .populate('sharedWithUsers', 'email username')
+      .populate('tags', 'name _id')
       .lean<Note>()
       .exec();
 
