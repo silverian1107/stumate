@@ -211,6 +211,95 @@ export interface IFetchTagsResponse {
   };
 }
 
+export interface ITagAdmin {
+  statusCode: number;
+  message: string;
+  data: {
+    allTags: Tag[];
+  };
+}
+export interface UserInfo {
+  _id: string;
+  username: string;
+  name?: string;
+  email: string;
+  isActive: boolean;
+  codeId?: string;
+  codeExpire?: string;
+  birthday?: string;
+  gender?: string;
+  avatarUrl?: string;
+  role: 'ADMIN' | 'USER';
+  accountType: 'LOCAL' | 'OAUTH';
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  refreshToken?: string;
+  lastLogin?: string;
+}
+
+interface UserStatistics {
+  accuracyRate: number;
+  accuracyRateToday: number;
+  completedTasksCount: number;
+  createdAt: string;
+  dailyStudyDuration: number;
+  dailyTaskList: string[];
+  date: string;
+  deleted: boolean;
+  flashcardMasteryProgressToday: number;
+  flashcardsCompletedToday: number;
+  flashcardsDueTodayCount: number;
+  lowAccuracyCount: number;
+  monthlyStudyHeatmap: any[];
+  quizzesCompletedToday: number;
+  sessionsThisWeek: number;
+  sharedResourcesCount: number;
+  studiedFlashcardsCount: number;
+  studyStreakDays: number;
+  totalFlashcardsCount: number;
+  totalNotesCount: number;
+  totalQuizzesCount: number;
+  updatedAt: string;
+  userId: string;
+  __v: number;
+  _id: string;
+}
+
+export interface User {
+  user: UserInfo;
+  userStatistics: UserStatistics;
+}
+interface PaginationMeta {
+  current: number;
+  pageSize: number;
+  pages: number;
+  total: number;
+}
+
+export interface FetchUsersResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: PaginationMeta;
+    result: UserInfo[];
+  };
+}
+interface InforUser {
+  statusCode: number;
+  message: string;
+  data: User;
+}
+interface CreateUser {
+  statusCode: number;
+  message: string;
+  data: {
+    _id: string;
+    craetedAt: string;
+  };
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -261,7 +350,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const rootApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['NOTE', 'ATTACHMENT', 'TAG', 'USER'],
+  tagTypes: ['NOTE', 'ATTACHMENT', 'TAG', 'USER', 'USERS', 'NOTI', 'TAG_ADMIN'],
   endpoints: (builder) => ({
     register: builder.mutation<
       { token: string },
@@ -372,6 +461,12 @@ export const rootApi = createApi({
       },
       providesTags: [{ type: 'TAG' }]
     }),
+    tagAdmin: builder.query<ITagAdmin, void>({
+      query: () => {
+        return '/tags';
+      },
+      providesTags: [{ type: 'TAG_ADMIN' }]
+    }),
     createTag: builder.mutation<
       { message: string; status: number },
       { name: string }
@@ -381,14 +476,14 @@ export const rootApi = createApi({
         method: 'POST',
         body: { name }
       }),
-      invalidatesTags: [{ type: 'TAG' }]
+      invalidatesTags: [{ type: 'TAG' }, { type: 'TAG_ADMIN' }]
     }),
     deleteTag: builder.mutation({
       query: (id) => ({
         url: `tags/${id}`,
         method: 'DELETE'
       }),
-      invalidatesTags: [{ type: 'TAG' }]
+      invalidatesTags: [{ type: 'TAG' }, { type: 'TAG_ADMIN' }]
     }),
     renameTag: builder.mutation<
       { status: number; message: string; data: Tag },
@@ -399,14 +494,63 @@ export const rootApi = createApi({
         body: { name },
         method: 'PATCH'
       }),
-      invalidatesTags: [{ type: 'TAG' }]
+      invalidatesTags: [{ type: 'TAG' }, { type: 'TAG_ADMIN' }]
     }),
-    getInfoUser: builder.query<any, { id: string }>({
-      query: ({ id }) => ({
+    getInfoUser: builder.query<InforUser, { id: string }>({
+      query: ({ id }) => {
+        return `users/${id}`;
+      },
+      providesTags: [{ type: 'USERS' }]
+    }),
+    getAllUser: builder.query<FetchUsersResponse, { current: number }>({
+      query: ({ current }) => ({
         url: 'users',
-        params: { id },
+        params: { current },
         method: 'GET'
       }),
+      providesTags: [{ type: 'USERS' }]
+    }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `users/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'USERS' }]
+    }),
+    createUser: builder.mutation<
+      CreateUser,
+      { username: string; email: string; password: string; role: string }
+    >({
+      query: ({ username, email, password, role }) => ({
+        url: '/users',
+        method: 'POST',
+        body: { username, email, password, role }
+      }),
+      invalidatesTags: [{ type: 'USERS' }]
+    }),
+    updateUser: builder.mutation<{ status: number; message: string }, any>({
+      query: (user) => ({
+        url: '/users',
+        method: 'PATCH',
+        body: user
+      }),
+      invalidatesTags: [{ type: 'USERS' }]
+    }),
+    createNotification: builder.mutation<
+      { statusCode: number; message: string },
+      { title: string; type: string; body: string }
+    >({
+      query: ({ title, type, body }) => ({
+        url: '/notifications/admin/send',
+        method: 'POST',
+        body: { title, type, body }
+      }),
+      invalidatesTags: [{ type: 'NOTI' }]
+    }),
+    getALlNotifications: builder.query<any, void>({
+      query: () => {
+        return '/notes/all';
+      },
       providesTags: [{ type: 'USER' }]
     })
   })
@@ -429,5 +573,11 @@ export const {
   useCreateTagMutation,
   useDeleteTagMutation,
   useRenameTagMutation,
-  useGetInfoUserQuery
+  useGetInfoUserQuery,
+  useGetAllUserQuery,
+  useDeleteUserMutation,
+  useCreateUserMutation,
+  useUpdateUserMutation,
+  useCreateNotificationMutation,
+  useTagAdminQuery
 } = rootApi;

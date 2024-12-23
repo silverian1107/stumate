@@ -26,18 +26,18 @@ const UpdateTagDialog = ({
 }) => {
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Edit User</DialogTitle>
+      <DialogTitle>Edit Tag</DialogTitle>
       <DialogContent>
         <TextField
           margin="dense"
           label="Tagname"
-          name="tagname"
+          name="name"
           fullWidth
           variant="outlined"
-          value={tag?.tagName}
+          value={tag?.name}
           onChange={handleChange}
-          error={!!errors.userName}
-          helperText={errors.userName}
+          error={!!errors.name}
+          helperText={errors.name}
         />
       </DialogContent>
       <DialogActions>
