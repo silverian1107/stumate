@@ -18,7 +18,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
     return (
       <section
         ref={ref}
-        className="bg-white rounded-lg shadow-md h-[calc(100vh-2rem)] overflow-y-auto"
+        className="bg-white rounded-lg shadow-md h-full overflow-y-auto"
         onScroll={handleScroll}
       >
         <div className="p-6 space-y-6">
