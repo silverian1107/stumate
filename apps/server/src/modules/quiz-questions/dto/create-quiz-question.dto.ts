@@ -24,7 +24,7 @@ export enum QuestionType {
   MULTIPLE_CHOICE = 'multiple',
   SINGLE_CHOICE = 'single',
   TRUE_FALSE = 'TRUE_FALSE',
-  SHORT_ANSWER = 'SHORT_ANSWER',
+  SHORT_ANSWER = 'short_answer',
 }
 
 export class CreateQuizQuestionDto {

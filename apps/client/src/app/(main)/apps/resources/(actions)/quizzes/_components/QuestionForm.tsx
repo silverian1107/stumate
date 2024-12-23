@@ -24,17 +24,25 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ question }) => {
     dispatch(updateQuestion({ ...question, text: e.target.value }));
   };
 
-  const handleTypeChange = (value: 'single' | 'multiple') => {
-    dispatch(
-      updateQuestion({
-        ...question,
-        type: value,
-        answers: question.answers.map((answer) => ({
-          ...answer,
-          isCorrect: false
-        }))
-      })
-    );
+  const handleTypeChange = (value: 'single' | 'multiple' | 'short_answer') => {
+    if (value === 'short_answer') {
+      dispatch(
+        updateQuestion({
+          ...question,
+          type: value,
+          answerText: '',
+          answers: []
+        })
+      );
+    } else {
+      dispatch(
+        updateQuestion({
+          ...question,
+          type: value,
+          answerText: undefined
+        })
+      );
+    }
   };
 
   const handleDelete = () => {
@@ -71,10 +79,16 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ question }) => {
           </Button>
           <Button
             variant={question.type === 'multiple' ? 'secondary' : 'ghost'}
-            className="rounded-r-md"
             onClick={() => handleTypeChange('multiple')}
           >
             Multiple Choice
+          </Button>
+          <Button
+            variant={question.type === 'short_answer' ? 'secondary' : 'ghost'}
+            className="rounded-r-md"
+            onClick={() => handleTypeChange('short_answer')}
+          >
+            Short Answer
           </Button>
         </div>
         <div>

@@ -7,19 +7,14 @@ import type { Question } from '@/redux/slices/quizSlice';
 
 interface PreviewProps {
   questions: Question[];
-  onScroll: (scrollTop: number) => void;
 }
 
 const Preview = forwardRef<HTMLDivElement, PreviewProps>(
-  ({ questions, onScroll }, ref) => {
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-      onScroll(e.currentTarget.scrollTop);
-    };
+  ({ questions }, ref) => {
     return (
       <section
         ref={ref}
         className="bg-white rounded-lg shadow-md h-full overflow-y-auto"
-        onScroll={handleScroll}
       >
         <div className="p-6 space-y-6">
           <h2 className="text-2xl font-bold mb-6">Quiz Preview</h2>
@@ -31,7 +26,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
               {question.type === 'single' ? (
                 <RadioGroup>
                   {question.answers
-                    .filter((answer) => answer.text.trim() !== '')
+                    ?.filter((answer) => answer.text.trim() !== '')
                     .map((answer) => (
                       <div
                         key={answer._id}
@@ -49,9 +44,9 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
                       </div>
                     ))}
                 </RadioGroup>
-              ) : (
+              ) : question.type === 'multiple' ? (
                 question.answers
-                  .filter((answer) => answer.text.trim() !== '')
+                  ?.filter((answer) => answer.text.trim() !== '')
                   .map((answer) => (
                     <div
                       key={answer._id}
@@ -67,6 +62,12 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(
                       </Label>
                     </div>
                   ))
+              ) : (
+                <div className="mb-2">
+                  <p className="pl-6 mt-1 block w-full">
+                    {question.answerText || ''}
+                  </p>
+                </div>
               )}
             </div>
           ))}

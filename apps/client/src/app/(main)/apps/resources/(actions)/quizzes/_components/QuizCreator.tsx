@@ -21,19 +21,33 @@ import QuestionForm from './QuestionForm';
 export function mapQuizBackendToFrontend(
   backendQuestions: QuizQuestion[]
 ): Question[] {
-  return backendQuestions.map((backendQuestion) => ({
-    _id: backendQuestion._id ?? uuidv4(),
-    text: backendQuestion.question,
-    type: backendQuestion.questionType,
-    answers: backendQuestion.answerOptions.map((answerOption: QuizAnswer) => ({
-      _id: answerOption._id ?? uuidv4(),
-      text: answerOption.option,
-      isCorrect: answerOption.isCorrect
-    })) as Answer[],
-    action: 'create',
-    originalAction: 'create',
-    isDeleted: false
-  }));
+  return backendQuestions.map((backendQuestion) => {
+    const mappedQuestion: Question = {
+      _id: backendQuestion._id ?? uuidv4(),
+      text: backendQuestion.question,
+      type: backendQuestion.questionType as
+        | 'single'
+        | 'multiple'
+        | 'short_answer',
+      answers:
+        backendQuestion.questionType !== 'short_answer'
+          ? (backendQuestion.answerOptions?.map((answerOption: QuizAnswer) => ({
+              _id: answerOption._id ?? uuidv4(),
+              text: answerOption.option,
+              isCorrect: answerOption.isCorrect
+            })) as Answer[])
+          : [],
+      answerText:
+        backendQuestion.questionType === 'short_answer'
+          ? backendQuestion.answerText
+          : undefined,
+      action: 'create',
+      originalAction: 'create',
+      isDeleted: false
+    };
+
+    return mappedQuestion;
+  });
 }
 
 const QuizCreator: React.FC = () => {
@@ -91,11 +105,7 @@ const QuizCreator: React.FC = () => {
           ))}
         </div>
         <div className="hidden lg:block h-full overflow-hidden">
-          <Preview
-            questions={questions}
-            onScroll={(scrollTop) => handleScroll(scrollTop, 'preview')}
-            ref={previewRef}
-          />
+          <Preview questions={questions} ref={previewRef} />
         </div>
       </div>
       <div className="fixed bottom-20 right-4 lg:hidden">
@@ -104,11 +114,7 @@ const QuizCreator: React.FC = () => {
             <Button>Preview Quiz</Button>
           </DialogTrigger>
           <DialogContent className="w-[90vw] max-w-[450px] h-[80vh] p-0">
-            <Preview
-              questions={questions}
-              onScroll={(scrollTop) => handleScroll(scrollTop, 'preview')}
-              ref={previewRef}
-            />
+            <Preview questions={questions} ref={previewRef} />
           </DialogContent>
         </Dialog>
       </div>
