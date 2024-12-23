@@ -62,7 +62,7 @@ export const useQuizQuestions = (quizId?: string) => {
   const { id: routeIds } = useParams<{ id: string }>();
   const actualQuizId = quizId || routeIds;
   const quizQuestionsQuery = useQuery({
-    queryKey: ['quiz-questions', quizId],
+    queryKey: ['quiz-questions', actualQuizId],
     queryFn: async (): Promise<QuizQuestion[]> => {
       if (!actualQuizId) {
         throw new Error('No quiz ID provided');
@@ -116,7 +116,7 @@ export const useQuizCreate = () => {
 export const useCreateQuestions = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ['quizzes'],
+    mutationKey: ['quiz-questions'],
     mutationFn: async (data: { quizId: string; questions: QuizQuestion[] }) => {
       const response = await QuizApi.bulkCreateQuestions(
         data.quizId,
@@ -151,7 +151,7 @@ export const useUpdateQuiz = () => {
 export const useUpdateQuestions = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ['quizzes'],
+    mutationKey: ['quiz-questions'],
     mutationFn: async (data: { quizId: string; questions: QuizQuestion[] }) => {
       const response = await QuizApi.bulkUpdateQuestions(
         data.quizId,
@@ -161,7 +161,7 @@ export const useUpdateQuestions = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['quizzes']
+        queryKey: ['quiz-questions']
       });
     }
   });
@@ -175,7 +175,7 @@ export const useDeleteQuestions = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['quizzes']
+        queryKey: ['quiz-questions']
       });
     }
   });
