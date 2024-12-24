@@ -14,6 +14,7 @@ import { GetStarted } from '../../components/landingPage/get-started';
 import { HowItWorks } from '../../components/landingPage/how-it-works';
 import { Navbar } from '../../components/landingPage/navbar';
 import { ScrollToTopButton } from '../../components/landingPage/scroll-to-top-button';
+import Footer from '@/components/landingPage/Footer';
 
 export default function Landing() {
   const words = [
@@ -76,7 +77,9 @@ export default function Landing() {
       <Benefits />
       <HowItWorks />
       <GetStarted />
+      <Footer />
       <ScrollToTopButton />
+      
     </div>
   );
 }
