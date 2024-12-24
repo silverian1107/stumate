@@ -33,7 +33,6 @@ export class NotificationsService {
     //Create a new notification
     const newNotification = await this.notificationModel.create({
       userId: user._id,
-      role: user.role,
       type,
       title,
       body,
