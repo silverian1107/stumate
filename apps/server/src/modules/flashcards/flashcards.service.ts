@@ -77,7 +77,7 @@ export class FlashcardsService {
     }
     const { data } = await firstValueFrom(
       this.httpService.post<{ Flashcards: { front: string; back: string }[] }>(
-        'http://localhost:8000/generate-flashcards',
+        'http://127.0.0.1:8000/generate-flashcards',
         { note_content: noteContent },
       ),
     );

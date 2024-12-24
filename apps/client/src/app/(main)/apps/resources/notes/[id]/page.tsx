@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { LearnerSidebar } from '@/components/sidebar/sidebar';
+import { LearnerSidebar } from '@/components/right-side-bar/right-side-bar';
 import { cn } from '@/lib/utils';
 
 import MyEditor from '../_components/my-editor';

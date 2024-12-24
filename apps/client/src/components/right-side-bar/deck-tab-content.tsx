@@ -1,24 +1,57 @@
 import { BookOpen, Plus, Sparkles } from 'lucide-react';
+import { useState } from 'react';
 
-import { useCreateDeck, useDeckByNoteId } from '@/hooks/use-deck';
+import {
+  useCreateDeck,
+  useDeckByNoteId,
+  useGenerateFlashcardsByAI
+} from '@/hooks/use-deck';
 import { useNoteById } from '@/hooks/use-note';
 
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Progress } from '../ui/progress';
+import { Spinner } from '../ui/spinner'; // Import the Spinner component
 
 export const DeckTabContent = () => {
   const { data: note, isLoading: isLoadingNote } = useNoteById();
   const { data, isLoading } = useDeckByNoteId(note._id);
 
   const createDeckMutation = useCreateDeck();
+  const generateFlashcardsByAIMutation = useGenerateFlashcardsByAI();
 
-  const handleCreateDeck = () => {
-    createDeckMutation.mutate({
-      noteId: note._id,
-      name: `${note.name}'s Deck`,
-      description: 'New deck description'
-    });
+  const [isCreatingDeck, setIsCreatingDeck] = useState(false);
+  const [isGeneratingByAI, setIsGeneratingByAI] = useState(false);
+
+  const handleCreateDeck = async () => {
+    setIsCreatingDeck(true);
+    try {
+      await createDeckMutation.mutateAsync({
+        noteId: note._id,
+        name: `${note.name}'s Deck`,
+        description: 'New deck description'
+      });
+    } finally {
+      setIsCreatingDeck(false);
+    }
+  };
+
+  const handleGenerateByAI = async () => {
+    setIsGeneratingByAI(true);
+    try {
+      const newDeckData = await createDeckMutation.mutateAsync({
+        noteId: note._id,
+        name: `${note.name}'s Deck`,
+        description: 'New deck description'
+      });
+
+      await generateFlashcardsByAIMutation.mutateAsync({
+        deckId: newDeckData._id,
+        noteId: note._id
+      });
+    } finally {
+      setIsGeneratingByAI(false);
+    }
   };
 
   if (isLoading || isLoadingNote) {
@@ -46,7 +79,7 @@ export const DeckTabContent = () => {
             <div>
               <h4 className="font-medium">{deck.name || 'Untitled Deck'}</h4>
               <p className="text-sm text-muted-foreground">
-                {deck?.cardCount || 0} cards
+                {flashcards?.length || 0} cards
               </p>
             </div>
             <Progress
@@ -71,12 +104,30 @@ export const DeckTabContent = () => {
           </>
         ) : (
           <div className="flex flex-col space-y-2">
-            <Button variant="outline" size="sm" onClick={handleCreateDeck}>
-              <Plus className="size-4 mr-2" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCreateDeck}
+              disabled={isCreatingDeck}
+            >
+              {isCreatingDeck ? (
+                <Spinner size="small" />
+              ) : (
+                <Plus className="size-4 mr-2" />
+              )}
               Create Deck
             </Button>
-            <Button variant="outline" size="sm" onClick={() => {}}>
-              <Sparkles className="size-4 mr-2" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGenerateByAI}
+              disabled={isGeneratingByAI}
+            >
+              {isGeneratingByAI ? (
+                <Spinner size="small" />
+              ) : (
+                <Sparkles className="size-4 mr-2" />
+              )}
               Generate by AI
             </Button>
           </div>

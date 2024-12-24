@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 
 import { FeatureSection } from '@/components/landingPage/features-section';
+import Footer from '@/components/landingPage/Footer';
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { Button as CustomizedButton } from '@/components/ui/button';
 import { FlipWords } from '@/components/ui/flip-words';
@@ -14,7 +15,6 @@ import { GetStarted } from '../../components/landingPage/get-started';
 import { HowItWorks } from '../../components/landingPage/how-it-works';
 import { Navbar } from '../../components/landingPage/navbar';
 import { ScrollToTopButton } from '../../components/landingPage/scroll-to-top-button';
-import Footer from '@/components/landingPage/Footer';
 
 export default function Landing() {
   const words = [
@@ -80,7 +80,6 @@ export default function Landing() {
       <Footer />
 
       <ScrollToTopButton />
-      
     </div>
   );
 }
