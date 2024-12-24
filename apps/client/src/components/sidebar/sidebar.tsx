@@ -1,6 +1,5 @@
 'use client';
 
-import { formatDistanceToNow } from 'date-fns';
 import { BarChart2, Calendar, Clock, Tag } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,13 +7,14 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNoteById } from '@/hooks/use-note';
 import { useSummaryByNoteId } from '@/hooks/use-summary';
+import formatShortDistanceToNow from '@/lib/utils';
 
 import { DeckTabContent } from './deck-tab-content';
 import QuizTabContent from './quiz-tab-content';
 import { SummaryTabContent } from './summary-tab-content';
 
 export function LearnerSidebar() {
-  const { data, isLoading } = useSummaryByNoteId();
+  const { isLoading } = useSummaryByNoteId();
   const { data: note, isLoading: isLoadingNote } = useNoteById();
 
   if (isLoading || isLoadingNote) return <div>Loading...</div>;
@@ -34,23 +34,47 @@ export function LearnerSidebar() {
     return 0;
   };
 
+  const tagLimit = 3;
+  const tagList = note?.tags?.slice(0, tagLimit).map((tag: any) => (
+    <span
+      key={tag.id}
+      className="bg-primary-50 px-1 py-0.5 rounded-full text-primary-700"
+    >
+      {tag.name}
+    </span>
+  ));
+
   return (
     <div className="h-full flex flex-col p-4 space-y-4 bg-background border-l">
-      <Card className="flex-none">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            Details
-          </CardTitle>
+      <Card className="flex-none space-y-2">
+        <CardHeader className="px-6 pt-3 pb-1">
+          <CardTitle className="text-lg flex items-center">Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Clock className="size-4" />
-            Last edited:{' '}
-            {formatDistanceToNow(note?.updatedAt, { addSuffix: true })}
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground leading-none tracking-tight justify-between w-full">
+              <p className="flex gap-0.5">
+                <Clock className="size-3" />
+                Last edited:{' '}
+              </p>
+              <span className="text-black">
+                {note?.updatedAt
+                  ? formatShortDistanceToNow(new Date(note.updatedAt))
+                  : 'N/A'}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Tag className="size-4" />
-            Tags: {data?.tags?.join(', ') || 'No tags'}
+          <div className="flex items-center gap-1 text-xs text-muted-foreground line-clamp-2">
+            <Tag className="size-3" />
+            Tags:
+            <span className="text-black space-x-0.5">
+              {tagList}
+              {note?.tags?.length > tagLimit && (
+                <span className="bg-primary-50 px-1 py-0.5 rounded-full text-primary-700">
+                  ...
+                </span>
+              )}
+            </span>
           </div>
           <div>
             <span className="text-sm font-medium">
