@@ -15,6 +15,10 @@ export const FlashcardsApi = {
     return DeckClient.post(`/${deckId}/flashcards/bulk/create`, flashcards);
   },
 
+  async generateByAI(deckId: string, noteId: string) {
+    return DeckClient.post(`/${deckId}/flashcards/${noteId}/bulk/ai`);
+  },
+
   async bulkUpdate(deckId: string, flashcards: FlashcardElement[]) {
     return DeckClient.post(`/${deckId}/flashcards/bulk/update`, flashcards);
   },

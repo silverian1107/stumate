@@ -4,3 +4,4 @@ dist
 .next 
 .env
 venv/
+mylogs.json

@@ -273,7 +273,7 @@ export const useCardBulkCreate = () => {
 
 export const useDeckByNoteId = (noteId: string) => {
   return useQuery({
-    queryKey: ['deck', { noteId }],
+    queryKey: ['deck', noteId],
     queryFn: async () => {
       if (!noteId) {
         throw new Error('noteId is required to fetch the deck.');
@@ -282,5 +282,26 @@ export const useDeckByNoteId = (noteId: string) => {
     },
     enabled: !!noteId,
     retry: false
+  });
+};
+
+export const useGenerateFlashcardsByAI = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { deckId: string; noteId: string }) => {
+      const { deckId, noteId } = data;
+      const response = await FlashcardsApi.generateByAI(deckId, noteId);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['deck'],
+        exact: false
+      });
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId', data.id]
+      });
+    }
   });
 };
