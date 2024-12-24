@@ -13,11 +13,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateNotificationDto {
   @ApiProperty({
     description: 'Notification userId',
+    required: false,
   })
-  @IsNotEmpty()
   @IsArray()
   @ArrayMinSize(1)
   @IsMongoId({ each: true })
+  @IsOptional()
   userIds: string[];
 
   @ApiProperty({

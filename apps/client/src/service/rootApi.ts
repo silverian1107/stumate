@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   BaseQueryFn,
   FetchArgs,
@@ -300,6 +299,36 @@ interface CreateUser {
   };
 }
 
+interface NotificationMeta {
+  current: number;
+  pageSize: number;
+  pages: number;
+  total: number;
+}
+
+export interface Notification {
+  _id: string;
+  userId: string;
+  role: string;
+  type: string;
+  title: string;
+  body: string;
+  isRead: boolean;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface NotificationResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: NotificationMeta;
+    result: Notification[];
+  };
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -480,7 +509,7 @@ export const rootApi = createApi({
     }),
     deleteTag: builder.mutation({
       query: (id) => ({
-        url: `tags/${id}`,
+        url: `/tags/${id}`,
         method: 'DELETE'
       }),
       invalidatesTags: [{ type: 'TAG' }, { type: 'TAG_ADMIN' }]
@@ -498,13 +527,13 @@ export const rootApi = createApi({
     }),
     getInfoUser: builder.query<InforUser, { id: string }>({
       query: ({ id }) => {
-        return `users/${id}`;
+        return `/users/${id}`;
       },
       providesTags: [{ type: 'USERS' }]
     }),
     getAllUser: builder.query<FetchUsersResponse, { current: number }>({
       query: ({ current }) => ({
-        url: 'users',
+        url: '/users',
         params: { current },
         method: 'GET'
       }),
@@ -512,7 +541,7 @@ export const rootApi = createApi({
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `users/${id}`,
+        url: `/users/${id}`,
         method: 'DELETE'
       }),
       invalidatesTags: [{ type: 'USERS' }]
@@ -547,11 +576,31 @@ export const rootApi = createApi({
       }),
       invalidatesTags: [{ type: 'NOTI' }]
     }),
-    getALlNotifications: builder.query<any, void>({
-      query: () => {
-        return '/notes/all';
-      },
-      providesTags: [{ type: 'USER' }]
+    getALlNotifications: builder.query<
+      NotificationResponse,
+      { current: number; title: string; createdAt: string }
+    >({
+      query: ({ current, title, createdAt }) => ({
+        url: 'notifications/all',
+        params: { current, title, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'NOTI' }]
+    }),
+    deleteNoti: builder.mutation({
+      query: (id) => ({
+        url: `/notifications/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'NOTI' }]
+    }),
+    updateNoti: builder.mutation<{ status: number; message: string }, any>({
+      query: (noti) => ({
+        url: `/notifications/${noti.id}`,
+        method: 'PATCH',
+        body: { title: noti.title, body: noti.body, type: noti.type }
+      }),
+      invalidatesTags: [{ type: 'NOTI' }]
     })
   })
 });
@@ -579,5 +628,8 @@ export const {
   useCreateUserMutation,
   useUpdateUserMutation,
   useCreateNotificationMutation,
-  useTagAdminQuery
+  useTagAdminQuery,
+  useGetALlNotificationsQuery,
+  useDeleteNotiMutation,
+  useUpdateNotiMutation
 } = rootApi;

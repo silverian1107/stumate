@@ -31,7 +31,6 @@ const UserDetail = () => {
       setUser(data.data);
     }
   }, [isSuccess, data]);
-  console.log('user', user);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState({ ...user?.user });
 
