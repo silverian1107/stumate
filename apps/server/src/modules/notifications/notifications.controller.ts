@@ -97,7 +97,7 @@ export class NotificationsController {
     return await this.notificationsService.findAllByUser(user);
   }
 
-  @Get()
+  @Get('all')
   @Roles(Role.ADMIN)
   @ResponseMessage('Get all notifications')
   findAll(

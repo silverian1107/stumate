@@ -1,25 +1,98 @@
 'use client';
 
-// import { useAccount } from '@/hooks/use-auth';
-// import { useGetInfoUserQuery } from '@/service/rootApi';
-import { Avatar } from '@mui/material';
+import { Avatar, MenuItem, TextField } from '@mui/material';
 import { Pen } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import InputField from './_components/InputField';
+import { useAccount } from '@/hooks/use-auth';
+import type { UserInfo } from '@/service/rootApi';
+import { useGetInfoUserQuery, useUpdateUserMutation } from '@/service/rootApi';
 
 const Profile = () => {
-  //   const data = useAccount();
-  //   const id = data.data?.data.user._id;
-  //   const response = useGetInfoUserQuery({ id } as { id: string });
+  const data = useAccount();
+  const id = data.data?.data.user._id;
+  const response = useGetInfoUserQuery({ id } as { id: string });
+  const [updateUser] = useUpdateUserMutation();
 
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    if (response.data) {
+      setUser(response.data.data.user);
+    }
+  }, [response]);
+
+  const handleInputChange = (field: string, value: string) => {
+    if (field === 'birthday') {
+      const today = new Date();
+      const selectedDate = new Date(value);
+      if (selectedDate > today) {
+        alert('Birthday cannot be a future date!');
+        return;
+      }
+    }
+
+    if (field === 'firstname' || field === 'lastname') {
+      setUser((prev) => {
+        if (!prev) return null;
+
+        const nameParts = prev?.name?.split(' ') || [];
+        if (field === 'firstname') {
+          if (nameParts.length > 0) {
+            nameParts[nameParts.length - 1] = value;
+          }
+        } else if (field === 'lastname') {
+          nameParts.splice(0, nameParts.length - 1, ...value.split(' '));
+        }
+
+        return {
+          ...prev,
+          name: nameParts.join(' ')
+        };
+      });
+      return;
+    }
+
+    setUser((prev) =>
+      prev
+        ? {
+            ...prev,
+            [field]: value
+          }
+        : null
+    );
+  };
+
+  const handleSave = async () => {
+    try {
+      if (!user) return;
+      const { _id: userId, username, name, birthday, gender, avatarUrl } = user;
+      await updateUser({
+        _id: userId,
+        username,
+        name,
+        birthday,
+        gender,
+        avatarUrl
+      });
+      toast.success('User updated successfully!', { position: 'top-right' });
+      setIsEdit(false);
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
+    }
+  };
   return (
-    <div className="px-8 py-5 rounded-lg bg-white w-2/3 h-[75vh] flex flex-col gap-5 ">
-      <div className="flex gap-5 items-center">
+    <div className="px-8 py-5 rounded-lg bg-white w-2/3 h-[75vh] flex flex-col gap-5 justify-center">
+      <div className="flex gap-5 items-center mb-6">
         <div className="relative w-fit">
           <Avatar
-            src=""
-            alt=""
+            src={user?.avatarUrl}
+            alt="avatar"
             sx={{ width: 150, height: 150 }}
             className="border border-purple-200 drop-shadow-md"
           />
@@ -28,66 +101,112 @@ const Profile = () => {
           </div>
         </div>
         <div className="h-fit">
-          <p className="font-bold text-xl"> Nguyen Van Tran Anh</p>
-          <p className="text-slate-500">230503</p>
+          <p className="font-bold text-xl"> {user?.name}</p>
+          <p className="text-slate-500">{user?.codeId}</p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-x-10 gap-y-5 ">
-        <InputField label="Firt Name" id="firt_name" value="Anh" type="text" />
-        <InputField
+        <TextField
+          margin="dense"
+          label="Firt Name"
+          fullWidth
+          variant="outlined"
+          value={user?.name?.split(' ').slice(-1).join(' ') || ''}
+          onChange={(e) => handleInputChange('firstname', e.target.value)}
+          disabled={!isEdit}
+        />
+        <TextField
+          margin="dense"
           label="Last Name"
-          id="last_name"
-          value="Nguyen Van tran"
-          type="text"
+          fullWidth
+          variant="outlined"
+          value={user?.name?.split(' ').slice(0, -1).join(' ') || ''}
+          onChange={(e) => handleInputChange('lastname', e.target.value)}
+          disabled={!isEdit}
         />
-        <InputField
-          label="User's Name"
-          id="user_name"
-          value="Anhpro"
-          type="text"
+        <TextField
+          label="Username"
+          value={user?.username || ''}
+          onChange={(e) => handleInputChange('username', e.target.value)}
+          fullWidth
+          disabled={!isEdit}
         />
-        <InputField
+        <TextField
+          margin="dense"
           label="Email"
-          id="email"
-          value="nguyenvantrananh2352003@gmail.com"
-          type="text"
+          fullWidth
+          variant="outlined"
+          value={user?.email || ''}
+          onChange={(e) => handleInputChange('email', e.target.value)}
+          disabled={!isEdit}
         />
-        <InputField
-          label="Phone Number"
-          id="phone_number"
-          value="0365657777"
-          type="text"
-        />
-        <InputField
+
+        <TextField
           label="Birthday"
-          id="birthday"
-          value="05/05/2003"
           type="date"
+          disabled={!isEdit}
+          value={
+            user?.birthday
+              ? new Date(user.birthday).toISOString().split('T')[0]
+              : ''
+          }
+          onChange={(e) => handleInputChange('birthday', e.target.value)}
+          InputProps={{
+            inputProps: {
+              max: new Date().toISOString().split('T')[0]
+            }
+          }}
+          InputLabelProps={{
+            shrink: true
+          }}
+          fullWidth
         />
-        <div className="flex flex-col gap-1">
-          <label htmlFor="gender">Gender</label>
-          <select
-            name=""
-            id=""
-            className=" border shadow rounded-md px-2 py-1.5 bg-slate-100 text-primary-950"
-          >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div
-          className="flex justify-end
-        
-         items-end "
+        <TextField
+          disabled={!isEdit}
+          select
+          label="Gender"
+          value={user?.gender || ''}
+          onChange={(e) => handleInputChange('gender', e.target.value)}
+          fullWidth
         >
+          <MenuItem value="MALE">Male</MenuItem>
+          <MenuItem value="FEMALE">Female</MenuItem>
+          <MenuItem value="OTHER">Other</MenuItem>
+        </TextField>
+      </div>
+      <div className="flex justify-center items-center ">
+        {isEdit ? (
+          <div>
+            <button
+              type="button"
+              className="border px-4 py-1 rounded-md border-red-500 text-red-500 text-sm mr-8"
+              onClick={() => {
+                setIsEdit(false);
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="border px-6 py-1 rounded-md bg-primary-500 text-white text-sm"
+              onClick={() => {
+                handleSave();
+              }}
+            >
+              Save
+            </button>
+          </div>
+        ) : (
           <button
             type="button"
-            className="border px-4 py-1 rounded-md bg-primary-500 text-white text-sm"
+            className="border px-6 py-1 rounded-md bg-primary-500 text-white text-sm"
+            onClick={() => {
+              setIsEdit(true);
+            }}
           >
             Edit
           </button>
-        </div>
+        )}
       </div>
     </div>
   );
