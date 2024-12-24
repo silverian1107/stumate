@@ -24,38 +24,37 @@ const DetailNoteDialog = ({
         {selectedNote && (
           <>
             <DialogContentText>
-              <strong className="mr-2">Note Name:</strong>{' '}
-              {selectedNote.noteName}
+              <strong className="mr-2">Note Name:</strong> {selectedNote.name}
             </DialogContentText>
             <DialogContentText>
-              <strong className="mr-2">Username:</strong>{' '}
-              {selectedNote.userName}
+              <strong className="mr-2">Username:</strong> {selectedNote.ownerId}
             </DialogContentText>
             <DialogContentText>
               <strong className="mr-2">Create Date:</strong>{' '}
-              {selectedNote.createDate}
+              {selectedNote.createdAt}
             </DialogContentText>
             <DialogContentText>
               <strong className="mr-2">Update Date:</strong>{' '}
-              {selectedNote.updateDate}
+              {selectedNote.updatedAt}
             </DialogContentText>
-
-            <DialogContentText>
-              <strong className="mr-2">Attachments:</strong> hehe
-            </DialogContentText>
-            <DialogContentText>
-              <strong className="mr-2">Tags:</strong>hehe
+            <DialogContentText className=" max-w-[30rem] text-nowrap overflow-hidden text-ellipsis">
+              <strong className="mr-2">Attachments:</strong>{' '}
+              {selectedNote?.attachment?.join(',') || 'No attachments'}
             </DialogContentText>
             <DialogContentText>
-              <strong className="mr-2">IsPublished:</strong> true
+              <strong className="mr-2">Tags:</strong>
+              {selectedNote?.tags?.join(',') || 'No tags'}
             </DialogContentText>
             <DialogContentText>
-              <strong className="mr-2">IsDeleted:</strong> true
+              <strong className="mr-2">IsPublished:</strong>{' '}
+              {selectedNote.isPublished ? 'true' : 'false'}
             </DialogContentText>
-            <DialogContentText className="w-[35vw] max-h-[20vh] flex flex-col">
+            <DialogContentText className="w-[35vw] max-h-[20vh]  flex flex-col">
               <strong className="text-wrap">Content:</strong>
-              <span className="text-wrap border px-2 py-1 overflow-auto">
-                nfkdsnf
+              <span className=" border px-2 py-1 overflow-auto min-h-10 flex flex-col">
+                {(selectedNote?.body?.blocks || []).map((block: any) => (
+                  <span key={block.id}>{block?.data?.text}</span>
+                ))}
               </span>
             </DialogContentText>
           </>

@@ -19,6 +19,7 @@ import {
   Typography
 } from '@mui/material';
 import { Edit, Send, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -266,11 +267,14 @@ const NotificationList = () => {
               <TableCell align="center" size="small" width="20%">
                 Title
               </TableCell>
-              <TableCell align="center" size="small" width="40%">
+              <TableCell align="center" size="small" width="30%">
                 Content
               </TableCell>
               <TableCell align="center" size="small">
                 Date Send
+              </TableCell>
+              <TableCell align="center" size="small">
+                To
               </TableCell>
               <TableCell align="center" size="small">
                 Type
@@ -289,19 +293,28 @@ const NotificationList = () => {
                 <TableCell
                   align="center"
                   size="small"
-                  className="overflow-hidden text-ellipsis"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
                 >
                   {row.title}
                 </TableCell>
                 <TableCell
                   align="center"
                   size="small"
-                  className="overflow-hidden text-ellipsis"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
                 >
                   {row.body}
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.createdAt.split('T')[0]}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-20"
+                >
+                  <Link href={`/admin/accounts/${row.userId}`}>
+                    {row.userId}
+                  </Link>
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.type}

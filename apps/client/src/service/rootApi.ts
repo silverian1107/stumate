@@ -54,27 +54,6 @@ interface IUpdateNoteRequest {
   attachment: string[];
 }
 
-interface INoteRoot {
-  _id: string;
-  ownerId: string;
-  parentId: string;
-  type: string;
-  name: string;
-  level: number;
-  position: number;
-  isPublished: boolean;
-  isArchived: boolean;
-  isDeleted: boolean;
-  attachment: string[];
-  tags: any[];
-  sharedWithUsers: any[];
-  deleted: boolean;
-  children: any[];
-  createdAt: string;
-  updatedAt: string;
-  body: IBody;
-}
-
 interface IBody {
   time: number;
   blocks: any[];
@@ -119,7 +98,7 @@ interface IUpdateNoteRequest {
   attachment: string[];
 }
 
-interface INoteRoot {
+export interface INoteRoot {
   _id: string;
   ownerId: string;
   parentId: string;
@@ -299,7 +278,7 @@ interface CreateUser {
   };
 }
 
-interface NotificationMeta {
+interface Meta {
   current: number;
   pageSize: number;
   pages: number;
@@ -324,8 +303,17 @@ interface NotificationResponse {
   statusCode: number;
   message: string;
   data: {
-    meta: NotificationMeta;
+    meta: Meta;
     result: Notification[];
+  };
+}
+
+interface AllNotesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: Meta;
+    result: INoteRoot[];
   };
 }
 
@@ -379,7 +367,17 @@ const baseQueryWithReauth: BaseQueryFn<
 export const rootApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['NOTE', 'ATTACHMENT', 'TAG', 'USER', 'USERS', 'NOTI', 'TAG_ADMIN'],
+  tagTypes: [
+    'NOTE',
+    'ATTACHMENT',
+    'TAG',
+    'USER',
+    'USERS',
+    'NOTI',
+    'TAG_ADMIN',
+    'NOTE_ADMIN',
+    'ARCHIVE_ADMIN'
+  ],
   endpoints: (builder) => ({
     register: builder.mutation<
       { token: string },
@@ -472,12 +470,13 @@ export const rootApi = createApi({
     }),
     archiveNoteById: builder.mutation<
       { status: number; description: string },
-      string
+      { id: string }
     >({
-      query: (id: string) => ({
+      query: ({ id }) => ({
         url: `/notes/${id}/archive`,
-        method: 'PATCH'
-      })
+        method: 'POST'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_ADMIN' }]
     }),
     statistics: builder.query<IUserStatistic, void>({
       query: () => {
@@ -601,6 +600,24 @@ export const rootApi = createApi({
         body: { title: noti.title, body: noti.body, type: noti.type }
       }),
       invalidatesTags: [{ type: 'NOTI' }]
+    }),
+    getAllNotes: builder.query<
+      AllNotesResponse,
+      { currentPage: number; createdAt: string }
+    >({
+      query: ({ currentPage, createdAt }) => ({
+        url: 'notes/all',
+        params: { currentPage, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'NOTE_ADMIN' }, { type: 'ARCHIVE_ADMIN' }]
+    }),
+    deleteNote: builder.mutation({
+      query: (id) => ({
+        url: `/notes/${id}/delete`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'NOTE_ADMIN' }]
     })
   })
 });
@@ -631,5 +648,7 @@ export const {
   useTagAdminQuery,
   useGetALlNotificationsQuery,
   useDeleteNotiMutation,
-  useUpdateNotiMutation
+  useUpdateNotiMutation,
+  useGetAllNotesQuery,
+  useDeleteNoteMutation
 } = rootApi;
