@@ -35,7 +35,7 @@ const ResourceCard = ({ id, name, description }: ResourceCardProps) => {
         </div>
       </div>
       <div className="text-sm">
-        <h1 className="-mb-1 text-xl font-bold">
+        <h1 className="-mb-1 text-xl font-bold line-clamp-2">
           {name}{' '}
           <span className="text-lg font-semibold text-primary-600 ">
             {/* ({data.length} cards) */}

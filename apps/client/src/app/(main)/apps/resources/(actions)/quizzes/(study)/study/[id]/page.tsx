@@ -20,13 +20,13 @@ import {
 } from '@/redux/slices/studyQuizSlice';
 import type { AppDispatch, RootState } from '@/redux/store';
 
+import QuizStudyProgress from '../../../../../../../../../components/quiz/quiz-study/QuizStudyProgress';
+import QuizStudyQuestion from '../../../../../../../../../components/quiz/quiz-study/QuizStudyQuestion';
+import QuizStudyResults from '../../../../../../../../../components/quiz/quiz-study/QuizStudyResults';
+import QuizStudySubmitButton from '../../../../../../../../../components/quiz/quiz-study/QuizStudySubmitButton';
 import { mapQuizBackendToFrontend } from '../../../_components/QuizCreator';
 import ConfirmDialog from '../../prepare/_components/confirm-dialog';
 import QuestionStatus from '../../prepare/_components/question-status';
-import QuizStudyProgress from './QuizStudyProgress';
-import QuizStudyQuestion from './QuizStudyQuestion';
-import QuizStudyResults from './QuizStudyResults';
-import QuizStudySubmitButton from './QuizStudySubmitButton';
 
 const QuizStudyPage: React.FC = () => {
   const router = useRouter();

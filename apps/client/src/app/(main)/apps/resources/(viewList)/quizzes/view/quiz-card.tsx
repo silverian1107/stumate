@@ -29,10 +29,10 @@ const QuizCard = ({ id, name, description }: ResourceCardProps) => {
         </div>
       </div>
       <div className="text-sm">
-        <h1 className="-mb-1 text-xl font-bold">
+        <h1 className="-mb-1 text-xl font-bold line-clamp-2">
           {name}{' '}
-          <span className="text-lg font-semibold text-primary-600 ">
-            {data.duration} min
+          <span className="font-semibold text-primary-600 text-lg">
+            {data.duration}m
           </span>
         </h1>
         <h2 className="line-clamp-1 text-sm font-medium text-primary-950/50">
