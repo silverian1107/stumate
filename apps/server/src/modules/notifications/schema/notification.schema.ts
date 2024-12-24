@@ -14,9 +14,6 @@ export class Notification {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   userId: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ required: true })
-  role: string;
-
   @Prop({ default: NotificationType.INFO })
   type: NotificationType;
 

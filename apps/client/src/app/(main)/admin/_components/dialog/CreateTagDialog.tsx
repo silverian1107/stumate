@@ -31,7 +31,7 @@ const CreateTagDialog = ({
         <TextField
           margin="dense"
           label="Name Tag"
-          name="tagName"
+          name="name"
           fullWidth
           variant="outlined"
           value={newTag.tagName}

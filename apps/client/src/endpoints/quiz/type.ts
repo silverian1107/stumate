@@ -8,13 +8,14 @@ export interface QuizCreateDto {
 
 export interface QuizAnswer {
   _id?: string;
-  option: string; // it mean text
+  option: string;
   isCorrect: boolean;
 }
 
 export interface QuizQuestion {
   _id?: string;
   question: string;
-  questionType: 'multiple' | 'single';
-  answerOptions: QuizAnswer[];
+  questionType: 'multiple' | 'single' | 'short_answer';
+  answerOptions?: QuizAnswer[];
+  answerText?: string;
 }

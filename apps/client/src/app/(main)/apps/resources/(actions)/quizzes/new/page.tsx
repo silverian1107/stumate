@@ -23,16 +23,23 @@ export default function ResourcePage() {
       if (!question.text.trim()) {
         return 'All questions must have text';
       }
-      if (question.answers.length === 0) {
+      if (question.type !== 'short_answer' && question.answers.length === 0) {
         return 'All questions must have at least one answer';
       }
-      if (!question.answers.some((answer) => answer.isCorrect)) {
+      if (
+        question.type !== 'short_answer' &&
+        !question.answers.some((answer) => answer.isCorrect)
+      ) {
         return 'Each question must have at least one correct answer';
       }
-      for (const answer of question.answers) {
-        if (!answer.text.trim()) {
-          return 'All answer options must have text';
+      if (question.type !== 'short_answer') {
+        for (const answer of question.answers) {
+          if (!answer.text.trim()) {
+            return 'All answer options must have text';
+          }
         }
+      } else if (!question.answerText?.trim()) {
+        return 'Short answer questions must have an answer text';
       }
     }
     return null;
@@ -40,8 +47,9 @@ export default function ResourcePage() {
 
   const handleSubmit = async (formData: QuizCreateDto) => {
     try {
-      if (validateQuiz()) {
-        toast.error(validateQuiz, {
+      const validationError = validateQuiz();
+      if (validationError) {
+        toast.error(validationError, {
           className: 'text-red-500',
           icon: <XIcon className="text-red-500" />
         });
@@ -51,10 +59,15 @@ export default function ResourcePage() {
       const payload = questions.map((question) => ({
         question: question.text,
         questionType: question.type,
-        answerOptions: question.answers.map((option) => ({
-          option: option.text,
-          isCorrect: option.isCorrect
-        })),
+        answerOptions:
+          question.type !== 'short_answer'
+            ? question.answers.map((option) => ({
+                option: option.text,
+                isCorrect: option.isCorrect
+              }))
+            : undefined,
+        answerText:
+          question.type === 'short_answer' ? question.answerText : undefined,
         point: 1
       }));
 

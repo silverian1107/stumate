@@ -5,7 +5,12 @@ import React, { useEffect } from 'react';
 import InputWithMultipleSelect from '@/components/ui/input-with-multi-select';
 import { ResourceTypeEnum } from '@/endpoints/tag-api';
 import { useNoteById } from '@/hooks/use-note';
-import { useAssignTag, useCreateTag, useTags } from '@/hooks/use-tag';
+import {
+  useAssignTag,
+  useCreateTag,
+  useTags,
+  useUnassignTag
+} from '@/hooks/use-tag';
 
 import MyTextEditor from './my-text-editor';
 import NoteTitle from './note-title';
@@ -18,7 +23,7 @@ const MyEditor = () => {
 
   const createTag = useCreateTag();
   const assignTag = useAssignTag();
-  const unassignTag = useAssignTag();
+  const unassignTag = useUnassignTag();
 
   const [selectedTags, setSelectedTags] = React.useState<Option[]>([]);
 
@@ -43,7 +48,7 @@ const MyEditor = () => {
     const tagsToCreate = newTags.filter((tag) => tag.label === tag.value);
 
     const createdTags = await Promise.all(
-      tagsToCreate.map((tag) => createTag.mutateAsync({ name: tag.label }))
+      tagsToCreate.map((tag) => createTag.mutateAsync({ name: tag.value }))
     );
 
     const updatedTags = newTags.map((tag) => {
@@ -63,37 +68,27 @@ const MyEditor = () => {
       (tag) =>
         !selectedTags.some((existingTag) => existingTag.value === tag.value)
     );
-    if (newTags.length > selectedTags.length) {
-      addedTags.forEach((tag) => {
-        if (data) {
-          assignTag.mutate(
-            {
-              resourceType: ResourceTypeEnum.Note,
-              resourceId: data._id,
-              tagId: tag.value
-            },
-            {
-              onError: () => {
-                return;
-              }
-            }
-          );
-        }
-      });
-    } else if (newTags.length < selectedTags.length) {
-      const deletedTags = selectedTags.filter(
-        (existingTag) => !newTags.some((tag) => tag.value === existingTag.value)
-      );
+    const deletedTags = selectedTags.filter(
+      (existingTag) => !newTags.some((tag) => tag.value === existingTag.value)
+    );
 
-      deletedTags.forEach((tag) => {
-        if (data) {
-          unassignTag.mutate({
+    if (data) {
+      await Promise.all([
+        ...addedTags.map((tag) =>
+          assignTag.mutateAsync({
             resourceType: ResourceTypeEnum.Note,
             resourceId: data._id,
             tagId: tag.value
-          });
-        }
-      });
+          })
+        ),
+        ...deletedTags.map((tag) =>
+          unassignTag.mutateAsync({
+            resourceType: ResourceTypeEnum.Note,
+            resourceId: data._id,
+            tagId: tag.value
+          })
+        )
+      ]);
     }
 
     setSelectedTags(updatedTags);

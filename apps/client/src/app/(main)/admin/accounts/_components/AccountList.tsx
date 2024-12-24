@@ -1,6 +1,12 @@
 'use client';
 
 import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Pagination,
   Paper,
@@ -12,62 +18,68 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Edit, Plus, Trash2 } from 'lucide-react';
+import { EllipsisVertical, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+import type { UserInfo } from '@/service/rootApi';
+import {
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useGetAllUserQuery
+} from '@/service/rootApi';
 
 import CreateUserDialog from '../../_components/dialog/CreateUserDialog';
 
 const AccountList = () => {
-  const defaultData = Array.from({ length: 71 }, (_, index) => ({
-    id: index + 1,
-    title: 'Nguyen Van Tran Anh',
-    company: 'AnhNoob',
-    field:
-      index % 3 === 0
-        ? 'marketing'
-        : index % 3 === 1
-          ? 'finance'
-          : 'engineering',
-    quantity: Math.floor(Math.random() * 20) + 1,
-    postDate: '09/12/2024',
-    deadline: '10/12/2024',
-    status: 'Đang mở'
-  }));
+  const [current, setCurrent] = useState(1);
+  const [count, setCount] = useState<number | null>(null);
+  const { data, isSuccess } = useGetAllUserQuery({ current });
+  const [deleteUser] = useDeleteUserMutation();
+  const [createUse] = useCreateUserMutation();
 
-  const [data, setData] = useState(defaultData);
-  const [page, setPage] = useState(1);
+  const [allUsers, setAllUsers] = useState<UserInfo[] | undefined>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
+  useEffect(() => {
+    if (isSuccess) {
+      setAllUsers(data.data.result);
+      setCount(data.data.meta.pages);
+    }
+  }, [isSuccess, data]);
+
   const [open, setOpen] = useState(false);
 
   const [newUser, setNewUser] = useState({
-    userName: '',
+    username: '',
     email: '',
-    passWord: '',
-    confirmPassword: '',
+    password: '',
+    confirm_password: '',
     role: 'USER'
   });
   const [errors, setErrors] = useState({
-    userName: '',
+    username: '',
     email: '',
-    passWord: '',
-    confirmPassword: '',
+    password: '',
+    confirm_password: '',
     role: 'USER'
   });
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setNewUser({
-      userName: '',
+      username: '',
       email: '',
-      passWord: '',
-      confirmPassword: '',
+      password: '',
+      confirm_password: '',
       role: 'USER'
     });
     setErrors({
-      userName: '',
+      username: '',
       email: '',
-      passWord: '',
-      confirmPassword: '',
+      password: '',
+      confirm_password: '',
       role: 'USER'
     });
   };
@@ -75,16 +87,16 @@ const AccountList = () => {
   const validateForm = () => {
     let isValid = true;
     const newErrors: {
-      userName: string;
+      username: string;
       email: string;
-      passWord: string;
-      confirmPassword: string;
+      password: string;
+      confirm_password: string;
       role: string;
     } = {
-      userName: '',
+      username: '',
       email: '',
-      passWord: '',
-      confirmPassword: '',
+      password: '',
+      confirm_password: '',
       role: ''
     };
 
@@ -92,16 +104,19 @@ const AccountList = () => {
       newErrors.email = 'Email is required';
       isValid = false;
     }
-    if (!newUser.userName.trim()) {
-      newErrors.userName = 'User name is required';
+    if (!newUser.username.trim()) {
+      newErrors.username = 'User name is required';
       isValid = false;
     }
-    if (!newUser.passWord.trim()) {
-      newErrors.passWord = 'Password is required';
+    if (!newUser.password.trim()) {
+      newErrors.password = 'Password is required';
       isValid = false;
     }
-    if (!newUser.confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Confirm Password is required';
+    if (!newUser.confirm_password.trim()) {
+      newErrors.confirm_password = 'Confirm Password is required';
+      isValid = false;
+    } else if (newUser.confirm_password !== newUser.password) {
+      newErrors.confirm_password = 'Confirm Password does not match Password';
       isValid = false;
     }
 
@@ -109,20 +124,21 @@ const AccountList = () => {
     return isValid;
   };
 
-  const ROWS_PER_PAGE = 8;
-  const paginatedData = data.slice(
-    (page - 1) * ROWS_PER_PAGE,
-    page * ROWS_PER_PAGE
-  );
-
-  // Xử lý xóa bài viết
-  const handleDelete = (id: number) => {
-    setData(data.filter((row) => row.id !== id));
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      handleClose();
+      try {
+        const { username, email, password, role } = newUser;
+        await createUse({ username, email, password, role });
+        handleClose();
+        toast.success('User created successfully!', {
+          position: 'top-right'
+        });
+      } catch (error) {
+        toast.error(`${error}`, {
+          description: 'Please try again.',
+          position: 'top-right'
+        });
+      }
     }
   };
   const handleChange = (
@@ -132,8 +148,32 @@ const AccountList = () => {
     setNewUser((prev) => ({ ...prev, [name!]: value }));
   };
 
+  const handleDeleteOpen = (user: UserInfo) => {
+    setSelectedUser(user);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteClose = () => {
+    setSelectedUser(null);
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteUser(selectedUser?._id);
+      setDeleteDialogOpen(false);
+      toast.success('User removed successfully!', { position: 'top-right' });
+      setSelectedUser(null);
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
+    }
+  };
+
   return (
-    <div className="p-6 rounded-lg bg-white w-full h-[80vh] relative ">
+    <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative ">
       <Typography variant="h5" gutterBottom className="flex justify-between">
         Manage Account
         <button
@@ -146,7 +186,7 @@ const AccountList = () => {
       </Typography>
       <TableContainer
         component={Paper}
-        sx={{ marginTop: '20px', minHeight: '60vh' }}
+        sx={{ marginTop: '20px', minHeight: '70vh' }}
       >
         <Table>
           <TableHead>
@@ -161,13 +201,13 @@ const AccountList = () => {
                 Username
               </TableCell>
               <TableCell align="center" size="small">
+                Email
+              </TableCell>
+              <TableCell align="center" size="small">
                 Birthday
               </TableCell>
               <TableCell align="center" size="small">
                 Gender
-              </TableCell>
-              <TableCell align="center" size="small">
-                Avatar
               </TableCell>
               <TableCell align="center" size="small">
                 Action
@@ -175,38 +215,42 @@ const AccountList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.map((row, index) => (
-              <TableRow key={row.id}>
+            {(allUsers || []).map((row, index) => (
+              <TableRow key={row._id}>
                 <TableCell align="center" size="small">
-                  {ROWS_PER_PAGE * (page - 1) + index + 1}
+                  {10 * (current - 1) + index + 1}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.title}
+                  {row.name || 'N/A'}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.company}
+                  {row.username}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="max-w-10 overflow-hidden text-ellipsis"
+                >
+                  {row.email}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.field}
+                  {row.birthday?.split('T')[0] || 'N/A'}
                 </TableCell>
-                <TableCell align="center" size="small">
-                  {row.quantity}
+                <TableCell align="center" size="small" className="max-w-[65px]">
+                  {row.gender || 'N/A'}
                 </TableCell>
-                <TableCell align="center" size="small">
-                  {row.postDate}
-                </TableCell>
-                <TableCell align="center" size="small">
+                <TableCell align="center" size="small" className="max-w-[70px]">
                   <div className="flex items-center justify-around ">
                     <Link
-                      href={`/admin/accounts/${row.id}`}
+                      href={`/admin/accounts/${row._id}`}
                       className="inline-block "
                     >
-                      <Edit className="text-primary-500" />
+                      <EllipsisVertical className="text-primary-500" />
                     </Link>
                     <IconButton
                       color="error"
                       size="small"
-                      onClick={() => handleDelete(row.id)}
+                      onClick={() => handleDeleteOpen(row)}
                     >
                       <Trash2 />
                     </IconButton>
@@ -218,9 +262,11 @@ const AccountList = () => {
         </Table>
       </TableContainer>
       <Pagination
-        count={Math.ceil(data.length / ROWS_PER_PAGE)}
-        page={page}
-        onChange={(e, value) => setPage(value)}
+        count={count || 1}
+        page={current}
+        onChange={(e, value) => {
+          setCurrent(value);
+        }}
         style={{
           marginTop: '20px',
           display: 'flex',
@@ -235,6 +281,28 @@ const AccountList = () => {
         handleSubmit={handleSubmit}
         newUser={newUser}
       />
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete the account for{' '}
+            <strong>{selectedUser?.username || 'this user'}</strong>?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
