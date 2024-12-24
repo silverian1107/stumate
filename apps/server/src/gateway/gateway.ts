@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -16,18 +17,18 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+    Logger.debug(`Client connected: ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+    Logger.debug(`Client disconnected: ${client.id}`);
   }
 
   sendUpdate(data: any) {
     try {
       this.server.emit('update-user-statistic', data);
     } catch (error) {
-      console.error('Error sending user statistics:', error);
+      Logger.error('Error sending user statistics:', error);
     }
   }
 
@@ -35,7 +36,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       this.server.emit('send-notification', data);
     } catch (error) {
-      console.error('Error sending notification:', error);
+      Logger.error('Error sending notification:', error);
     }
   }
 
@@ -43,7 +44,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       this.server.emit('update-admin-statistics', data);
     } catch (error) {
-      console.error('Error sending admin statistics:', error);
+      Logger.error('Error sending admin statistics:', error);
     }
   }
 }

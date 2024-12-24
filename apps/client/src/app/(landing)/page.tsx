@@ -76,6 +76,7 @@ export default function Landing() {
       <Benefits />
       <HowItWorks />
       <GetStarted />
+
       <ScrollToTopButton />
     </div>
   );

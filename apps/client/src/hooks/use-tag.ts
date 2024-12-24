@@ -52,11 +52,11 @@ export const useAssignTag = () => {
       resourceId: string;
       tagId: string;
     }) => {
-      return TagApi.unassign(resourceType, resourceId, tagId);
+      return TagApi.assign(resourceType, resourceId, tagId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['getDocuments'],
+        queryKey: ['getNoteById'],
         exact: false
       });
       queryClient.invalidateQueries({
@@ -83,7 +83,7 @@ export const useUnassignTag = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['getDocuments'],
+        queryKey: ['getNoteById'],
         exact: false
       });
       queryClient.invalidateQueries({

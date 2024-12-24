@@ -7,7 +7,7 @@ export function GetStarted() {
   return (
     <section id="get started" className="py-20 px-4 sm:px-6 lg:px-8 ">
       <div className="max-w-7xl mx-auto ">
-        <div className="backdrop-blur-lg bg-primary-200/30 rounded-2xl p-8 md:p-16 text-center">
+        <div className="backdrop-blur-lg bg-primary-400/10 rounded-2xl p-8 md:p-16 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -28,7 +28,7 @@ export function GetStarted() {
                 variant="link"
                 className="text-primary-700 px-4 py-2 bg-white hover:bg-white/90 hover:no-underline"
               >
-                Open Web Version
+                Open Stumate
                 <ArrowRight className="ml-2 size-4" />
               </Button>
             </div>

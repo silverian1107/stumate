@@ -23,17 +23,21 @@ import {
 } from '@mui/material';
 import { Edit, Plus, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { toast } from 'sonner';
+
+import { useCreateNotificationMutation } from '@/service/rootApi';
 
 const NotificationList = () => {
   // Dữ liệu mặc định
   const defaultData = Array.from({ length: 71 }, (_, index) => ({
     id: index + 1,
     title: 'Nguyen Van Tran Anh',
-    content: 'abcde',
+    body: 'abcde',
     date: '09/12/2024',
-    to: 'All',
     type: 'Alert'
   }));
+
+  const [createNotification, { isSuccess }] = useCreateNotificationMutation();
 
   // State
   const [data, setData] = useState(defaultData);
@@ -41,13 +45,11 @@ const NotificationList = () => {
   const [open, setOpen] = useState(false); // Trạng thái hiển thị popup
   const [newNotification, setNewNotification] = useState({
     title: '',
-    to: '',
-    type: 'Alert',
-    content: ''
+    type: 'INFO',
+    body: ''
   });
   const [errors, setErrors] = useState({
     title: '',
-    to: '',
     content: ''
   });
   const [searchValue, setSearchValue] = useState('');
@@ -70,11 +72,10 @@ const NotificationList = () => {
     setOpen(false);
     setNewNotification({
       title: '',
-      to: '',
-      type: 'Alert',
-      content: ''
+      type: 'INFO',
+      body: ''
     });
-    setErrors({ title: '', to: '', content: '' }); // Reset lỗi
+    setErrors({ title: '', content: '' }); // Reset lỗi
   };
 
   const handleChange = (
@@ -92,9 +93,8 @@ const NotificationList = () => {
   // Hàm kiểm tra lỗi
   const validateForm = () => {
     let isValid = true;
-    const newErrors: { title: string; to: string; content: string } = {
+    const newErrors: { title: string; content: string } = {
       title: '',
-      to: '',
       content: ''
     };
 
@@ -103,12 +103,7 @@ const NotificationList = () => {
       isValid = false;
     }
 
-    if (!newNotification.to.trim()) {
-      newErrors.to = 'Recipient is required';
-      isValid = false;
-    }
-
-    if (!newNotification.content.trim()) {
+    if (!newNotification.body.trim()) {
       newErrors.content = 'Content is required';
       isValid = false;
     }
@@ -117,21 +112,27 @@ const NotificationList = () => {
     return isValid;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      const newId = data.length + 1;
-      const date = new Date().toLocaleDateString(); // Ngày tạo tự động
-      setData([
-        ...data,
-        { id: newId, ...newNotification, date } // Thêm thông báo mới vào danh sách
-      ]);
-      setNewNotification({
-        title: '',
-        to: '',
-        type: 'Alert',
-        content: ''
-      }); // Reset form
-      handleClose();
+      try {
+        await createNotification(newNotification);
+        if (isSuccess) {
+          toast.success('Notification sent successfully!', {
+            position: 'top-right'
+          });
+          setNewNotification({
+            title: '',
+            type: 'Alert',
+            body: ''
+          });
+          handleClose();
+        }
+      } catch (error) {
+        toast.error(`${error}`, {
+          description: 'Please try again.',
+          position: 'top-right'
+        });
+      }
     }
   };
 
@@ -183,10 +184,7 @@ const NotificationList = () => {
                 Content
               </TableCell>
               <TableCell align="center" size="small">
-                Date
-              </TableCell>
-              <TableCell align="center" size="small">
-                To
+                Date Send
               </TableCell>
               <TableCell align="center" size="small">
                 Type
@@ -206,13 +204,10 @@ const NotificationList = () => {
                   {row.title}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.content}
+                  {row.body}
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.date}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  {row.to}
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.type}
@@ -256,7 +251,7 @@ const NotificationList = () => {
       {/* Popup Form */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create Notification</DialogTitle>
-        <DialogContent>
+        <DialogContent className="max-w-full">
           <TextField
             margin="dense"
             label="Title"
@@ -268,37 +263,26 @@ const NotificationList = () => {
             error={!!errors.title}
             helperText={errors.title}
           />
-          <TextField
-            margin="dense"
-            label="To"
-            name="to"
-            fullWidth
-            variant="outlined"
-            value={newNotification.to}
-            onChange={handleChange}
-            error={!!errors.to}
-            helperText={errors.to}
-          />
           <Select
             margin="dense"
-            fullWidth
             name="type"
+            fullWidth
             value={newNotification.type}
             onChange={handleSelectChange}
           >
-            <MenuItem value="Alert">Alert</MenuItem>
-            <MenuItem value="Error">Error</MenuItem>
-            <MenuItem value="Congratulation">Congratulation</MenuItem>
+            <MenuItem value="INFO">INFO</MenuItem>
+            <MenuItem value="WARNING">WARNING</MenuItem>
+            <MenuItem value="SUCCESS">SUCCESS</MenuItem>
           </Select>
           <TextField
             margin="dense"
             label="Content"
-            name="content"
+            name="body"
             fullWidth
             variant="outlined"
             multiline
             rows={4}
-            value={newNotification.content}
+            value={newNotification.body}
             onChange={handleChange}
             error={!!errors.content}
             helperText={errors.content}

@@ -1,6 +1,12 @@
 'use client';
 
 import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Pagination,
   Paper,
@@ -13,58 +19,115 @@ import {
   Typography
 } from '@mui/material';
 import { Edit, Plus, Trash2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+import type { Tag } from '@/service/rootApi';
+import {
+  useCreateTagMutation,
+  useDeleteTagMutation,
+  useRenameTagMutation,
+  useTagAdminQuery
+} from '@/service/rootApi';
 
 import CreateTagDialog from '../_components/dialog/CreateTagDialog';
 import UpdateTagDialog from '../_components/dialog/UpdateTagDialog';
 
 const TagList = () => {
-  const defaultData = Array.from({ length: 71 }, (_, index) => ({
-    id: index + 1,
-    tagName: `Nguyen Van Tran Anh ${index + 1}`,
-    username: 'anhpro',
-    date: '09/12/2024',
-    role: index % 2 === 0 ? 'admin' : 'user'
-  }));
+  const { data, isSuccess: isSuccessGet } = useTagAdminQuery();
+  const [renameTag] = useRenameTagMutation();
+  const [createTag] = useCreateTagMutation();
+  const [deleteTag] = useDeleteTagMutation();
 
-  const [data, setData] = useState(defaultData);
+  const [dataTags, setDataTags] = useState<Tag[] | undefined>(undefined);
   const [page, setPage] = useState(1);
   const [openCreate, setOpenCreate] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [tagUpdate, setTagUpdate] = useState(null);
-  const [filterRole, setFilterRole] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [tagUpdate, setTagUpdate] = useState<Tag>({
+    _id: '',
+    name: '',
+    userId: '',
+    deleted: false,
+    __v: 0,
+    createdBy: {
+      _id: '',
+      username: ''
+    },
+    createdAt: '',
+    updatedAt: ''
+  });
   const [newTag, setNewTag] = useState({
-    tagName: ''
+    name: ''
   });
   const [errors, setErrors] = useState({
-    tagName: ''
+    name: ''
   });
   const [searchValue, setSearchValue] = useState('');
+  const [tagDelete, setTagDelete] = useState<string | null>(null);
 
-  const filteredData = data.filter(
-    (row) =>
-      (!filterRole || row.role === filterRole) &&
-      (!searchValue ||
-        row.role.toLowerCase().includes(searchValue.toLowerCase()))
-  );
+  useEffect(() => {
+    if (isSuccessGet) {
+      setDataTags(data.data.allTags);
+    }
+  }, [data, isSuccessGet]);
 
-  const rowsPerPage = 8;
-  const paginatedData = filteredData.slice(
+  const filtereddataTags = (dataTags || []).filter((row) => {
+    return row.name.toLowerCase().includes(searchValue);
+  });
+
+  const rowsPerPage = 10;
+  const paginateddataTags = filtereddataTags.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
 
-  const handleDelete = (id: number) => {
-    setData(data.filter((row) => row.id !== id));
-  };
+  // const handleDelete = (id: number) => {
+  //   setDataTags(dataTags.filter((row) => row.id !== id));
+  // };
+  const validateForm = (name: string) => {
+    let isValid = true;
+    const newErrors: { name: string } = {
+      name: ''
+    };
 
+    if (!name.trim()) {
+      newErrors.name = 'Tag name is required';
+      isValid = false;
+    }
+    setErrors(newErrors);
+    return isValid;
+  };
   const handleOpenCreate = () => setOpenCreate(true);
-  const handleClose = () => {
+  const handleCloseCreate = () => {
     setOpenCreate(false);
     setNewTag({
-      tagName: ''
+      name: ''
     });
-    setErrors({ tagName: '' });
+    setErrors({ name: '' });
+  };
+  const handleChangeCreate = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewTag((prev) => ({ ...prev, [name!]: value }));
+  };
+  const handleSubmitCreate = async () => {
+    if (validateForm(newTag.name)) {
+      try {
+        const { name } = newTag;
+        await createTag({ name });
+        handleCloseCreate();
+        toast.success('Tag created successfully!', {
+          position: 'top-right'
+        });
+      } catch (error) {
+        toast.error(`${error}`, {
+          description: 'Please try again.',
+          position: 'top-right'
+        });
+      }
+    }
   };
 
   const handleOpenUpdate = (row: any) => {
@@ -75,41 +138,56 @@ const TagList = () => {
     setOpenUpdate(false);
   };
 
-  const handleChange = (
+  const handleChangeUpdate = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setNewTag((prev) => ({ ...prev, [name!]: value }));
+    setTagUpdate((prev) => ({ ...prev, [name!]: value }));
   };
 
-  const handleRoleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilterRole(e.target.value);
-    setPage(1);
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-    const newErrors: { tagName: string } = {
-      tagName: ''
-    };
-
-    if (!newTag.tagName.trim()) {
-      newErrors.tagName = 'Tag name is required';
-      isValid = false;
+  const handleSubmitUpdate = async () => {
+    if (validateForm(tagUpdate.name)) {
+      try {
+        const { name, _id: id } = tagUpdate;
+        await renameTag({ id, name });
+        handleCloseUpdate();
+        toast.success('Tag updated successfully!', {
+          position: 'top-right'
+        });
+      } catch (error) {
+        toast.error(`${error}`, {
+          description: 'Please try again.',
+          position: 'top-right'
+        });
+      }
     }
-
-    setErrors(newErrors);
-    return isValid;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      handleClose();
+  const handleDeleteOpen = (id: string) => {
+    setTagDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteClose = () => {
+    setTagDelete(null);
+    setDeleteDialogOpen(false);
+  };
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteTag(tagDelete);
+      setDeleteDialogOpen(false);
+      toast.success('Tag removed successfully!', { position: 'top-right' });
+      setTagDelete(null);
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
     }
   };
 
   return (
-    <div className="p-6 rounded-lg bg-white w-full h-[80vh] relative">
+    <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative">
       <Typography variant="h5" gutterBottom className="flex justify-between">
         Manage Tag
         <div className="flex gap-4 items-center">
@@ -122,15 +200,6 @@ const TagList = () => {
             placeholder="Search..."
             className="border-b text-sm px-2 py-1 border-primary-700"
           />
-          <select
-            className="text-sm  rounded-lg border-primary-500 text-primary-500"
-            value={filterRole}
-            onChange={handleRoleFilterChange}
-          >
-            <option value="">All</option>
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
-          </select>
         </div>
         <button
           type="button"
@@ -142,7 +211,7 @@ const TagList = () => {
       </Typography>
       <TableContainer
         component={Paper}
-        sx={{ marginTop: '20px', minHeight: '60vh' }}
+        sx={{ marginTop: '20px', minHeight: '70vh' }}
       >
         <Table>
           <TableHead>
@@ -157,10 +226,10 @@ const TagList = () => {
                 User name
               </TableCell>
               <TableCell align="center" size="small">
-                Date
+                Date Created
               </TableCell>
               <TableCell align="center" size="small">
-                Role
+                Date Updated
               </TableCell>
               <TableCell align="center" size="small">
                 Action
@@ -168,22 +237,22 @@ const TagList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.map((row, index) => (
-              <TableRow key={row.id}>
+            {paginateddataTags.map((row, index) => (
+              <TableRow key={row._id}>
                 <TableCell align="center" size="small">
                   {(page - 1) * rowsPerPage + index + 1}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.tagName}
+                  {row.name}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.username}
+                  {row.createdBy.username}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.date}
+                  {row.createdAt.split('T')[0]}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.role}
+                  {row.updatedAt.split('T')[0]}
                 </TableCell>
                 <TableCell align="center" size="small">
                   <IconButton
@@ -196,7 +265,7 @@ const TagList = () => {
                   <IconButton
                     color="error"
                     size="small"
-                    onClick={() => handleDelete(row.id)}
+                    onClick={() => handleDeleteOpen(row._id)}
                   >
                     <Trash2 />
                   </IconButton>
@@ -207,7 +276,7 @@ const TagList = () => {
         </Table>
       </TableContainer>
       <Pagination
-        count={Math.ceil(filteredData.length / rowsPerPage)}
+        count={Math.ceil(filtereddataTags.length / rowsPerPage)}
         page={page}
         onChange={(e, value) => setPage(value)}
         style={{
@@ -223,19 +292,40 @@ const TagList = () => {
       <CreateTagDialog
         open={openCreate}
         errors={errors}
-        handleChange={handleChange}
-        handleClose={handleClose}
-        handleSubmit={handleSubmit}
+        handleChange={handleChangeCreate}
+        handleClose={handleCloseCreate}
+        handleSubmit={handleSubmitCreate}
         newTag={newTag}
       />
       <UpdateTagDialog
         open={openUpdate}
         errors={errors}
-        handleChange={handleChange}
+        handleChange={handleChangeUpdate}
         handleClose={handleCloseUpdate}
-        handleSubmit={handleSubmit}
+        handleSubmit={handleSubmitUpdate}
         tag={tagUpdate}
       />
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete this tag
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -74,7 +74,8 @@ export const useUpdateNote = () => {
         exact: false
       });
       queryClient.invalidateQueries({
-        queryKey: ['getNoteById', data._id]
+        queryKey: ['getNoteById'],
+        exact: false
       });
       if (data.parentId) {
         queryClient.invalidateQueries({

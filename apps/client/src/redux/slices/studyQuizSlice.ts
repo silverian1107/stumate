@@ -70,7 +70,27 @@ const quizStudySlice = createSlice({
         }
       }
     },
+    setUserShortAnswer: (
+      state,
+      action: PayloadAction<{ questionId: string; answerText: string }>
+    ) => {
+      const { questionId, answerText } = action.payload;
+      const question = state.questions.find((q) => q._id === questionId);
+      if (!question) return;
 
+      const userAnswer = state.userAnswers.find(
+        (ua) => ua.quizQuestionId === questionId
+      );
+
+      if (userAnswer) {
+        userAnswer.answer = [{ _id: '', answer: answerText }];
+      } else {
+        state.userAnswers.push({
+          quizQuestionId: questionId,
+          answer: [{ _id: '', answer: answerText }]
+        });
+      }
+    },
     setShowResults: (state, action: PayloadAction<boolean>) => {
       state.showResults = action.payload;
     },
@@ -80,6 +100,11 @@ const quizStudySlice = createSlice({
   }
 });
 
-export const { setQuestions, setUserAnswer, setShowResults, clearAnswers } =
-  quizStudySlice.actions;
+export const {
+  setQuestions,
+  setUserAnswer,
+  setUserShortAnswer,
+  setShowResults,
+  clearAnswers
+} = quizStudySlice.actions;
 export default quizStudySlice.reducer;

@@ -32,13 +32,13 @@ const CreateUserDialog = ({
         <TextField
           margin="dense"
           label="Username"
-          name="userName"
+          name="username"
           fullWidth
           variant="outlined"
-          value={newUser.userName}
+          value={newUser.username}
           onChange={handleChange}
-          error={!!errors.userName}
-          helperText={errors.userName}
+          error={!!errors.username}
+          helperText={errors.username}
         />
         <TextField
           margin="dense"
@@ -57,10 +57,10 @@ const CreateUserDialog = ({
           name="password"
           fullWidth
           variant="outlined"
-          value={newUser.passWord}
+          value={newUser.password}
           onChange={handleChange}
-          error={!!errors.passWord}
-          helperText={errors.passWord}
+          error={!!errors.password}
+          helperText={errors.password}
         />
         <TextField
           margin="dense"
@@ -68,10 +68,10 @@ const CreateUserDialog = ({
           name="confirm_password"
           fullWidth
           variant="outlined"
-          value={newUser.confirmPassword}
+          value={newUser.confirm_password}
           onChange={handleChange}
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword}
+          error={!!errors.confirm_password}
+          helperText={errors.confirm_password}
         />
         <TextField
           margin="dense"

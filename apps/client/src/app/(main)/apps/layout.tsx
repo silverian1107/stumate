@@ -7,9 +7,11 @@ import { useAccount } from '@/hooks/use-auth';
 
 import Sidebar from './_components/Sidebar';
 
-export default function Layout({
-  children
-}: Readonly<{ children: React.ReactNode }>) {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export default function Layout({ children }: LayoutProps) {
   const { isLoading } = useAccount();
 
   if (isLoading) {

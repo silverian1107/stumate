@@ -9,7 +9,7 @@ export class QuizQuestion {
   @Prop({ required: true })
   question: string;
 
-  @Prop({ default: 'MULTIPLE_CHOICE', required: true })
+  @Prop({ default: 'multiple', required: true })
   questionType: string;
 
   @Prop({

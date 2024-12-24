@@ -10,10 +10,11 @@ export interface Answer {
 export interface Question {
   _id: string;
   text: string;
-  type: 'single' | 'multiple';
+  type: 'single' | 'multiple' | 'short_answer';
   answers: Answer[];
-  action?: 'create' | 'update' | 'delete';
-  originalAction?: 'create' | 'update';
+  answerText?: string;
+  action: 'create' | 'update' | 'delete';
+  originalAction: 'create' | 'update';
   isDeleted?: boolean;
 }
 
@@ -36,7 +37,7 @@ const quizSlice = createSlice({
       const { originalAction = 'create', ...question } = action.payload;
       const newQuestion: Question = {
         ...question,
-        action: originalAction === 'create' ? 'create' : undefined,
+        action: originalAction === 'create' ? 'create' : 'update',
         originalAction,
         isDeleted: false
       };

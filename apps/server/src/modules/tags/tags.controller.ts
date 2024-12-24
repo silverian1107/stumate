@@ -61,8 +61,10 @@ export class TagsController {
   @ResponseMessage('Create a new tag')
   async create(@Body() createTagDto: CreateTagDto, @User() user: IUser) {
     const newTag = await this.tagsService.create(createTagDto, user);
+
     return {
       _id: newTag?._id,
+      name: newTag?.name,
       createdAt: newTag?.createdAt,
     };
   }

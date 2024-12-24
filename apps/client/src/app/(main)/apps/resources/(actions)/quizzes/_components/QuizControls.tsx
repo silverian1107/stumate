@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@/components/ui/button';
 import {
   addQuestion,
+  type Question,
   removeAllQuestions,
   restoreQuestion
 } from '@/redux/slices/quizSlice';
@@ -16,17 +17,22 @@ const QuizControls: React.FC = () => {
   const questions = useSelector((state: RootState) => state.quiz.questions);
 
   const handleAddQuestion = () => {
-    dispatch(
-      addQuestion({
-        _id: uuidv4(),
-        text: '',
-        type: 'single',
-        originalAction: 'create',
-        answers: Array(4)
-          .fill(null)
-          .map(() => ({ _id: uuidv4(), text: '', isCorrect: false }))
-      })
-    );
+    const newQuestion: Question = {
+      _id: uuidv4(),
+      text: '',
+      type: 'single',
+      originalAction: 'create',
+      action: 'create',
+      answers: Array(4)
+        .fill(null)
+        .map(() => ({
+          _id: uuidv4(),
+          text: '',
+          isCorrect: false
+        })),
+      isDeleted: false
+    };
+    dispatch(addQuestion(newQuestion));
   };
 
   const handleRemoveAllQuestions = () => {
