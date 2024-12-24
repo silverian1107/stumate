@@ -42,9 +42,17 @@ export class NotificationsController {
     @Body() createNotificationDto: CreateNotificationDto,
   ) {
     try {
-      const users = await this.userModel
-        .find({ _id: { $in: createNotificationDto.userIds }, role: 'USER' })
-        .select('-password');
+      let users;
+      if (
+        createNotificationDto.userIds &&
+        createNotificationDto.userIds.length > 0
+      ) {
+        users = await this.userModel
+          .find({ _id: { $in: createNotificationDto.userIds }, role: 'USER' })
+          .select('-password');
+      } else {
+        users = await this.userModel.find({ role: 'USER' }).select('-password');
+      }
 
       if (users.length === 0) {
         throw new NotFoundException('No users found');
@@ -97,7 +105,7 @@ export class NotificationsController {
     return await this.notificationsService.findAllByUser(user);
   }
 
-  @Get()
+  @Get('all')
   @Roles(Role.ADMIN)
   @ResponseMessage('Get all notifications')
   findAll(
@@ -142,10 +150,12 @@ export class NotificationsController {
   @ResponseMessage('Delete a notification')
   async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
     const foundNotification = await this.notificationsService.findOne(id);
-    if (foundNotification.userId.toString() !== user._id) {
-      throw new ForbiddenException(
-        `You don't have permission to access this resource`,
-      );
+    if (user.role === 'USER') {
+      if (foundNotification.userId.toString() !== user._id) {
+        throw new ForbiddenException(
+          `You don't have permission to access this resource`,
+        );
+      }
     }
     return this.notificationsService.remove(id, user);
   }

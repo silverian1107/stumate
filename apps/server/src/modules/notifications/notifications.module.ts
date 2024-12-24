@@ -15,12 +15,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
         schema: NotificationSchema,
       },
     ]),
-    MongooseModule.forFeature([
-      {
-        name: 'User',
-        schema: UserSchema,
-      },
-    ]),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     GatewayModule,
     StatisticsModule,
   ],
