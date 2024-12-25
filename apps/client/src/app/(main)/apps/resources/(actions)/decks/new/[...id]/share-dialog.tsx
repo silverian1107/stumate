@@ -8,27 +8,28 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useNoteById } from '@/hooks/use-note';
-import { useShareNote, useUnshareNote } from '@/hooks/use-share';
+import { useDeckById } from '@/hooks/use-deck';
+import { useShareDeck, useUnshareDeck } from '@/hooks/use-share';
 
 interface ShareDialogProps {
-  noteId: string;
+  deckId: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const ShareDialog = ({ noteId, isOpen, onClose }: ShareDialogProps) => {
+const ShareDialog = ({ deckId, isOpen, onClose }: ShareDialogProps) => {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
-  const { data, isLoading } = useNoteById();
-  const shareNote = useShareNote();
-  const unshareNote = useUnshareNote();
+
+  const { data, isLoading } = useDeckById(deckId);
+  const shareDeck = useShareDeck();
+  const unshareDeck = useUnshareDeck();
 
   const handleShare = (e: React.FormEvent) => {
     e.preventDefault();
     if (!usernameOrEmail.trim()) return;
 
-    shareNote.mutate(
-      { noteId, usernameOrEmail },
+    shareDeck.mutate(
+      { deckId, usernameOrEmail },
       {
         onSuccess: () => {
           setUsernameOrEmail('');
@@ -39,14 +40,14 @@ const ShareDialog = ({ noteId, isOpen, onClose }: ShareDialogProps) => {
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleUnshare = (usernameOrEmail: string) => {
-    unshareNote.mutate({ noteId, usernameOrEmail });
+    unshareDeck.mutate({ deckId, usernameOrEmail });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Share Note</DialogTitle>
+          <DialogTitle>Share Deck</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleShare} className="flex gap-2 mt-4">
           <Input
@@ -54,7 +55,7 @@ const ShareDialog = ({ noteId, isOpen, onClose }: ShareDialogProps) => {
             value={usernameOrEmail}
             onChange={(e) => setUsernameOrEmail(e.target.value)}
           />
-          <Button type="submit" disabled={shareNote.isPending}>
+          <Button type="submit" disabled={shareDeck.isPending}>
             Share
           </Button>
         </form>
@@ -81,7 +82,7 @@ const ShareDialog = ({ noteId, isOpen, onClose }: ShareDialogProps) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleUnshare(user.email)}
-                        disabled={unshareNote.isPending}
+                        disabled={unshareDeck.isPending}
                         className="hover:bg-red-50 hover:text-red-600"
                       >
                         Unshare

@@ -1,7 +1,8 @@
 'use client';
 
 import { AxiosError } from 'axios';
-import { useEffect } from 'react';
+import { Share2Icon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
@@ -15,10 +16,12 @@ import type { Deck } from '@/types/deck';
 
 import { ResourceElements } from '../../../_components/creator';
 import { DeckActionHeader } from '../../../_components/header';
+import ShareDialog from './share-dialog';
 
-export default function ResourcePage() {
+export default function DeckPage() {
   const dispatch = useDispatch();
   const resource = useSelector((state: RootState) => state.decks);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const {
     isEditing,
@@ -56,7 +59,7 @@ export default function ResourcePage() {
       });
 
       if (hasErrors) {
-        return; // Prevent submission
+        return;
       }
 
       const resourceToSubmit: Deck = {
@@ -78,6 +81,17 @@ export default function ResourcePage() {
 
   return (
     <>
+      <div className="w-full flex justify-end">
+        <button
+          type="button"
+          className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
+          onClick={() => setIsShareDialogOpen(true)}
+        >
+          <Share2Icon className="size-4" />
+          Share Deck
+        </button>
+      </div>
+
       <DeckActionHeader
         initialData={initialResource}
         isEditing={isEditing}
@@ -85,6 +99,12 @@ export default function ResourcePage() {
         isSubmitting={isSubmitting}
       />
       <ResourceElements />
+
+      <ShareDialog
+        deckId={initialResource?._id || ''}
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+      />
     </>
   );
 }

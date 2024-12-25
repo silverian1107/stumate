@@ -6,6 +6,10 @@ interface DeckCreateDTO {
 }
 
 export const DeckApi = {
+  async create(data: DeckCreateDTO) {
+    return (await DeckClient.post('', data)).data;
+  },
+
   async findByOwner() {
     return DeckClient.get('/all');
   },
@@ -19,11 +23,16 @@ export const DeckApi = {
     return response.data.data;
   },
 
-  async create(data: DeckCreateDTO) {
-    return (await DeckClient.post('', data)).data;
-  },
-
   async update(deckId: string, data: { name?: string; description?: string }) {
     return (await DeckClient.patch(`${deckId}`, data)).data;
+  },
+
+  async share(deckId: string, usernameOrEmail: string) {
+    return (await DeckClient.post(`${deckId}/share`, { usernameOrEmail })).data;
+  },
+
+  async unshare(deckId: string, usernameOrEmail: string) {
+    return (await DeckClient.post(`${deckId}/unshare`, { usernameOrEmail }))
+      .data;
   }
 };
