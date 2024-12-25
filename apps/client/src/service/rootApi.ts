@@ -405,6 +405,72 @@ interface IAllQuizzesResponse {
   };
 }
 
+export interface LogEntry {
+  id: string;
+  datetime: string;
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
+  originalUrl: string;
+  statusCode: number;
+  ip: string;
+  user?: UserInfo;
+  level: 'INFO' | 'WARN' | 'ERROR';
+}
+
+interface MetaLog {
+  current: number;
+  pageSize: number;
+  pages: number;
+  total: number;
+}
+
+interface LogsResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: MetaLog;
+    result: LogEntry[];
+  };
+}
+
+export interface AdminStatisticResponse {
+  statusCode: number;
+  message: string;
+  data: AdminStatisticData;
+}
+
+// Data structure
+export interface AdminStatisticData {
+  overview: Overview;
+  monthlyStatisticsChart: MonthlyStatisticsChart;
+}
+
+// Overview structure
+export interface Overview {
+  totalAccounts: number;
+  totalNotes: number;
+  totalFlashcards: number;
+  totalQuizzes: number;
+}
+
+// Monthly Statistics Chart structure
+export interface MonthlyStatisticsChart {
+  totalAccounts: MonthlyData[];
+  totalNotes: MonthlyData[];
+  totalFlashcards: MonthlyData[];
+  totalQuizzes: MonthlyData[];
+}
+
+// Monthly data structure
+export interface MonthlyData {
+  count: number;
+  year: number;
+  month: number;
+}
+export interface FilterParams {
+  method?: string;
+  datetime?: string;
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -469,7 +535,8 @@ export const rootApi = createApi({
     'FLASHCARD_ADMIN',
     'ARCHIVE_FLASHCARD_ADMIN',
     'ARCHIVE_QUIZ',
-    'ARCHIVE_QUIZ_ADMIN'
+    'ARCHIVE_QUIZ_ADMIN',
+    'LOG'
   ],
   endpoints: (builder) => ({
     register: builder.mutation<
@@ -516,10 +583,9 @@ export const rootApi = createApi({
         method: 'POST'
       })
     }),
-    refreshToken: builder.mutation<AuthResponse, { refreshToken: string }>({
-      query: ({ refreshToken }) => ({
+    refreshToken: builder.query<any, void>({
+      query: () => ({
         url: '/auth/refresh',
-        body: { refreshToken },
         method: 'GET'
       })
     }),
@@ -809,7 +875,7 @@ export const rootApi = createApi({
     }),
     getAllArQuizzes: builder.query<AllArQuizzesResponse, void>({
       query: () => ({
-        url: 'quizzes/archived-resources/all',
+        url: '/quizzes/archived-resources/all',
         method: 'GET'
       }),
       providesTags: [{ type: 'ARCHIVE_QUIZ' }]
@@ -833,6 +899,40 @@ export const rootApi = createApi({
         { type: 'ARCHIVE_QUIZ' },
         { type: 'ARCHIVE_QUIZ_ADMIN' }
       ]
+    }),
+    getLogs: builder.query<
+      LogsResponse,
+      { currentPage: number; filters: FilterParams }
+    >({
+      query: ({ currentPage, filters }) => ({
+        url: 'mylogs',
+        params: { currentPage, ...filters },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'LOG' }]
+    }),
+    deleteLog: builder.mutation({
+      query: ({ id }) => ({
+        url: `/mylogs/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'LOG' }]
+    }),
+    getStatisticsAdmin: builder.query<AdminStatisticResponse, void>({
+      query: () => {
+        return '/statistics/admin';
+      }
+    }),
+    editAvatar: builder.mutation<
+      { status: number; message: string },
+      { avatarUrl: string }
+    >({
+      query: (avatarUrl) => ({
+        url: '/users',
+        method: 'PATCH',
+        body: { avatarUrl }
+      }),
+      invalidatesTags: [{ type: 'USERS' }]
     })
   })
 });
@@ -842,7 +942,6 @@ export const {
   useLoginMutation,
   useVerifyOTPMutation,
   useResendOTPMutation,
-  useRefreshTokenMutation,
   useUploadFilesMutation,
   useDeleteFileMutation,
   useCreateNoteMutation,
@@ -877,5 +976,10 @@ export const {
   useGetAllArQuizzesQuery,
   useDeleteQuizMutation,
   useRestoreQuizByIdMutation,
-  useRestoreFlashcardByIdMutation
+  useRestoreFlashcardByIdMutation,
+  useGetLogsQuery,
+  useDeleteLogMutation,
+  useGetStatisticsAdminQuery,
+  useEditAvatarMutation,
+  useRefreshTokenQuery
 } = rootApi;

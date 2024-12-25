@@ -209,6 +209,7 @@ export class QuizTestsService {
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }
+    console.log('quizTest', quizTest);
     const userId = quizTest.ownerId.toString();
     if (user.role === 'USER') {
       if (userId !== user._id) {

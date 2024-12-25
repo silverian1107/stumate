@@ -7,13 +7,18 @@ import { toast } from 'sonner';
 
 import { useAccount } from '@/hooks/use-auth';
 import type { UserInfo } from '@/service/rootApi';
-import { useGetInfoUserQuery, useUpdateUserMutation } from '@/service/rootApi';
+import {
+  useEditAvatarMutation,
+  useGetInfoUserQuery,
+  useUpdateUserMutation
+} from '@/service/rootApi';
 
 const Profile = () => {
   const data = useAccount();
   const id = data.data?.data.user._id;
   const response = useGetInfoUserQuery({ id } as { id: string });
   const [updateUser] = useUpdateUserMutation();
+  // const [editAvatarUrl] = useEditAvatarMutation();
 
   const [user, setUser] = useState<UserInfo | null>(null);
   const [isEdit, setIsEdit] = useState(false);

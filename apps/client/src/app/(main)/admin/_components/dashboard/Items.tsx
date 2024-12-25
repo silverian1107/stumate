@@ -1,35 +1,37 @@
 import { ClipboardList, Layers, NotepadText, UsersRound } from 'lucide-react';
 
+import type { Overview } from '@/service/rootApi';
+
 import ItemDashboard from './ItemDashboard';
 
-const Items = () => {
+const Items = ({ overview }: { overview: Overview }) => {
   return (
     <div className="grid grid-cols-4 gap-5">
       <ItemDashboard
         title="Accounts"
-        value={12}
-        unit={12 > 0 ? 'users' : 'user'}
+        value={overview.totalAccounts}
+        unit={overview.totalAccounts > 1 ? 'Users' : 'User'}
         Icon={UsersRound}
         path="/admin/accounts"
       />
       <ItemDashboard
         title="Notes"
-        value={14}
-        unit="note"
+        value={overview.totalNotes}
+        unit={overview.totalNotes > 1 ? 'Notes' : 'Note'}
         Icon={NotepadText}
         path="/admin/notes"
       />
       <ItemDashboard
         title="Flashcards"
-        value={20}
-        unit="Flashcards"
+        value={overview.totalFlashcards}
+        unit={overview.totalFlashcards > 1 ? 'Flashcards' : 'Flashcard'}
         Icon={Layers}
         path="/admin/flashcards"
       />
       <ItemDashboard
         title="Quizzes"
-        value={20}
-        unit="Quizzes"
+        value={overview.totalQuizzes}
+        unit={overview.totalQuizzes > 1 ? 'Quizzes' : 'Quiz'}
         Icon={ClipboardList}
         path="/admin/quizzes"
       />

@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import * as fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -18,6 +19,7 @@ export class LoggerMiddleware implements NestMiddleware {
         level = 'INFO';
       }
       const log = {
+        id: uuidv4(),
         datetime: new Date().toLocaleString(),
         method,
         originalUrl,

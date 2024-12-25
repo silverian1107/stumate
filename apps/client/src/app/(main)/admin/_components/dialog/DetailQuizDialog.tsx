@@ -33,7 +33,7 @@ const DetailQuizDialog = ({
             </DialogContentText>
             <DialogContentText>
               <strong className="mr-2">Duration:</strong>{' '}
-              {selectedQuiz.duration}
+              {selectedQuiz.duration || 'N/A'}
             </DialogContentText>
             <DialogContentText>
               <strong className="mr-2">Status:</strong> {selectedQuiz.status}
@@ -58,7 +58,7 @@ const DetailQuizDialog = ({
               {selectedQuiz.title || selectedQuiz.name}
             </DialogContentText>
             <DialogContentText className="w-[35vw] max-h-[20vh]  flex flex-col">
-              <strong className="text-wrap">Front:</strong>
+              <strong className="text-wrap">Descriptipn:</strong>
               <span className=" border px-2 py-1 overflow-auto min-h-10 flex flex-col">
                 {selectedQuiz.description}
               </span>
