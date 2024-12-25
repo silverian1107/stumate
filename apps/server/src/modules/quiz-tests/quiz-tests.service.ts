@@ -209,7 +209,7 @@ export class QuizTestsService {
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }
-    const userId = quizTest.userId.toString();
+    const userId = quizTest.ownerId.toString();
     if (user.role === 'USER') {
       if (userId !== user._id) {
         throw new ForbiddenException(

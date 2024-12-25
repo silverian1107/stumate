@@ -28,6 +28,7 @@ import { TodoModule } from './modules/todo/todo.module';
 import { SummariesModule } from './modules/summaries/summaries.module';
 import { LoggerMiddleware } from './modules/mylogs/logger.middleware';
 import { MylogsModule } from './modules/mylogs/mylogs.module';
+import { SearchModule } from './modules/search/search.module';
 
 @Module({
   imports: [
@@ -97,6 +98,7 @@ import { MylogsModule } from './modules/mylogs/mylogs.module';
     SummariesModule,
     NotesModule,
     MylogsModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

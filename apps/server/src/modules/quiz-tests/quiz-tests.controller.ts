@@ -85,7 +85,7 @@ export class QuizTestsController {
   async findOne(@Param('id') id: string, @User() user: IUser) {
     const foundQuizTest = await this.quizTestsService.findById(id);
     if (user.role === 'USER') {
-      if (foundQuizTest.userId.toString() !== user._id) {
+      if (foundQuizTest.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -104,7 +104,7 @@ export class QuizTestsController {
   ) {
     console.log(6);
     const foundQuizTest = await this.quizTestsService.findOne(id);
-    if (foundQuizTest.userId.toString() !== user._id) {
+    if (foundQuizTest.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );

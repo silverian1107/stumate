@@ -205,7 +205,7 @@ export class DecksService {
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
-    const userId = deck.userId.toString();
+    const userId = deck.ownerId.toString();
     if (user.role === 'USER') {
       if (userId !== user._id) {
         throw new ForbiddenException(

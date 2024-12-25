@@ -2484,5 +2484,6395 @@
       "role": "USER"
     },
     "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:21:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:21:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:41:07 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:41:08 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:41:10 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:41:14 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:05 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:07 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:39 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:41 AM",
+    "method": "GET",
+    "originalUrl": "/api/decks/search?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:42:45 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 404,
+    "ip": "::1",
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:45:45 AM",
+    "method": "GET",
+    "originalUrl": "/api/search",
+    "statusCode": 404,
+    "ip": "::1",
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:46:02 AM",
+    "method": "GET",
+    "originalUrl": "/api/search",
+    "statusCode": 404,
+    "ip": "::1",
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:46:02 AM",
+    "method": "GET",
+    "originalUrl": "/api/search",
+    "statusCode": 404,
+    "ip": "::1",
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:46:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/search",
+    "statusCode": 404,
+    "ip": "::1",
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:11 AM",
+    "method": "GET",
+    "originalUrl": "/api/search",
+    "statusCode": 401,
+    "ip": "::1",
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:21 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:22 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:22 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:22 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:23 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:25 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:49:29 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 9:55:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:55:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:55:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:56:23 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:56:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:56:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:56:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:56:25 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:56:59 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:58:11 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:58:18 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:58:18 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 9:58:18 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:00:19 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:00:23 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:00:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:00:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:01:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:01:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:01:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:01:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:03:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:03:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:03:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:03:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:03:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/statistics",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:03:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:09:29 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:09:36 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:09:37 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:09:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:09:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:09:50 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:09:50 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:22 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=b&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=be&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=bew&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=bew+&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=bew&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=be&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=b&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=n&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=ne&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+n&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+no&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+not&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+note&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+not&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+no&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+n&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new+&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=new&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=ne&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=n&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:11:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:12:10 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:16:00 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:16:01 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:16:01 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:16:01 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:16:02 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:16:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:16:08 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:05 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:07 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:13 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:27 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:27 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:27 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:27 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:28 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:30 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:34 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 400,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "WARN"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:19:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:20:28 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:20:28 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:20:28 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:20:28 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:21:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:21:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:21:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::ffff:127.0.0.1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:21:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:10 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:10 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:10 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:10 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:26:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:27:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:27:59 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:28:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:28:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:15 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:15 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:15 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:15 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:37 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=50",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:37 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:29:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:30:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:32:43 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:32:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:32:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:32:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:32:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:24 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:35:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:37:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:37:43 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:38:17 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:38:19 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:38:40 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:38:41 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:07 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:22 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:46 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:50 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:39:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:40:14 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:40:39 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:40:41 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:40:46 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:43:12 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:43:14 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:44:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:44:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=5",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:44:28 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=4",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:44:28 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=5",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:44:32 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=4",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:44:32 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=5",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:46:35 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=5",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:46:35 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:46:37 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:46:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:47:18 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:47:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:13 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=3",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:13 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=2",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:18 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:19 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=2",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:19 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:20 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:21 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:49:22 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:31 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:32 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=2",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:34 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:35 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:36 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:37 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:45 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:45 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=1",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:46 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=1",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=1",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:47 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=4&pageSize=1",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=5&pageSize=1",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=4&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:50 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:51:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=20",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:02 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=20",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:02 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:04 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:05 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:05 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:07 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:07 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=4&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:08 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:08 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:08 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=1",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:52:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:53:49 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:53:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:29 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:43 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=n&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:43 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=no&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:43 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=not&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:43 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=note&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:43 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=not&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=no&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=n&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=d&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:44 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=de&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:45 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=dec&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:45 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=deck&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:45 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=dec&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:46 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=de&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:46 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=d&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:54:46 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:55:07 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:55:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:55:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:55:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:55:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:55:59 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=2&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:56:00 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=3&pageSize=2",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:11 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:11 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:46 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83376f7b4c09c1367760",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83376f7b4c09c1367760/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:51 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83376f7b4c09c1367760",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83376f7b4c09c1367760/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c13677d5",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c13677d5/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c13677d5",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c13677d5/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c136780d",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c136780d/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c136780d",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83396f7b4c09c136780d/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833a6f7b4c09c1367845",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833a6f7b4c09c1367845/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833a6f7b4c09c1367845",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833a6f7b4c09c1367845/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833b6f7b4c09c136787d",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833b6f7b4c09c136787d/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833b6f7b4c09c136787d",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:55 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833b6f7b4c09c136787d/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:56 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:56 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833c6f7b4c09c13678b5",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833c6f7b4c09c13678b5/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833c6f7b4c09c13678b5",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833c6f7b4c09c13678b5/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833d6f7b4c09c13679a3",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833d6f7b4c09c13679a3/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:57 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833d6f7b4c09c13679db",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833d6f7b4c09c13679db/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833d6f7b4c09c13679db",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "POST",
+    "originalUrl": "/api/notes",
+    "statusCode": 201,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833d6f7b4c09c13679db/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b83386f7b4c09c136779b",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10/summaries",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 10:59:58 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:36 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:36 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:36 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:00:36 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676b833e6f7b4c09c1367a10/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:05:08 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:32 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=d&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:32 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=de&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=dec&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=deck&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:37 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:38 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "PATCH",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "PATCH",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:06:48 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections/6755c5bd17c6f0cbc38844eb",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:09 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:16 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:33 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/tags",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:07:54 AM",
+    "method": "GET",
+    "originalUrl": "/api/notes/676076b9b094ef248ee6e1e7/summaries",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:08:08 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:08:15 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:08:17 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:08:17 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:08:17 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:14:52 AM",
+    "method": "GET",
+    "originalUrl": "/api/auth/account",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:14:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/collections?currentPage=1&pageSize=10&qs=",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:14:53 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:16:01 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=a&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:16:03 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=b&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:16:05 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=d&currentPage=1&pageSize=25",
+    "statusCode": 304,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/25/2024, 11:16:06 AM",
+    "method": "GET",
+    "originalUrl": "/api/search/?query=q&currentPage=1&pageSize=25",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "673314e5311bd6703f0c3e57",
+      "username": "silverian",
+      "email": "lednhatkhai@gmail.com",
+      "role": "USER"
+    },
+    "level": "INFO"
   }
 ]

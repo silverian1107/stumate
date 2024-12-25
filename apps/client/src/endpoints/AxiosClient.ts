@@ -52,5 +52,13 @@ const NoteClient = createCustomClient('http://localhost:3000/api/notes');
 const DeckClient = createCustomClient('http://localhost:3000/api/decks');
 const QuizClient = createCustomClient('http://localhost:3000/api/quiz-tests');
 const TagClient = createCustomClient('http://localhost:3000/api/tags');
+const SearchClient = createCustomClient('http://localhost:3000/api/search');
 
-export { CollectionClient, DeckClient, NoteClient, QuizClient, TagClient };
+export {
+  CollectionClient,
+  DeckClient,
+  NoteClient,
+  QuizClient,
+  SearchClient,
+  TagClient
+};

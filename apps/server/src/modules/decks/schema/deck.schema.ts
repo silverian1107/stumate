@@ -13,7 +13,7 @@ export class Deck {
   description: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true })
-  userId: mongoose.Schema.Types.ObjectId;
+  ownerId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Note', require: false })
   noteId: mongoose.Schema.Types.ObjectId;

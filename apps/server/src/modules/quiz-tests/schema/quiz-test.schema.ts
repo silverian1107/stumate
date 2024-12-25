@@ -34,7 +34,7 @@ export class QuizTest {
     ref: 'User',
     require: true,
   })
-  userId: mongoose.Schema.Types.ObjectId;
+  ownerId: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
