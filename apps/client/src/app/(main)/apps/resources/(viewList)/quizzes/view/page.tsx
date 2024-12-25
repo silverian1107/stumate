@@ -2,14 +2,21 @@
 
 import { LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 import { useQuizzesByOwner } from '@/hooks/quiz/use-quiz';
 import type { Quiz } from '@/types/deck';
 
+import { useSearch } from '../../SearchContext';
 import QuizCard from './quiz-card';
 
 const Quizzes = () => {
   const { data, isLoading, error } = useQuizzesByOwner();
+  const { searchQuery, setSearchQuery } = useSearch();
+
+  useEffect(() => {
+    setSearchQuery('');
+  }, [setSearchQuery]);
 
   if (isLoading) {
     return (
@@ -44,9 +51,13 @@ const Quizzes = () => {
     );
   }
 
+  const filteredData = data.filter((quiz) =>
+    quiz.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 xl:grid-cols-4">
-      {data.map((quiz: Quiz) => (
+      {filteredData.map((quiz: Quiz) => (
         <QuizCard
           key={quiz._id}
           id={quiz._id}
