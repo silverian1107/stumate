@@ -63,7 +63,7 @@ export class DecksService {
       name: newDeckName,
       description,
       noteId: noteId || null,
-      userId: user._id,
+      ownerId: user._id,
       createdBy: {
         _id: user._id,
         username: user.username,
@@ -75,7 +75,7 @@ export class DecksService {
   async findByUser(user: IUser, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
 
-    filter.userId = user._id;
+    filter.ownerId = user._id;
 
     const totalItems = (await this.deckModel.find(filter)).length;
     const result = await this.deckModel
@@ -155,7 +155,9 @@ export class DecksService {
       throw new BadRequestException('NoteId is required.');
     }
 
-    const deck = await this.deckModel.findOne({ noteId, userId }).exec();
+    const deck = await this.deckModel
+      .findOne({ noteId, ownerId: userId })
+      .exec();
 
     if (!deck) {
       throw new NotFoundException('No deck found with the given noteId.');

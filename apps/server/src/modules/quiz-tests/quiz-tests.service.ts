@@ -37,7 +37,7 @@ export class QuizTestsService {
     delete restDto.name;
     //Check title already exists
     const existingQuizTests = await this.quizTestModel.find({
-      userId: user._id,
+      ownerId: user._id,
     });
     const existingQuizTestNames = existingQuizTests.map(
       (quizTest) => quizTest.name,
@@ -47,7 +47,7 @@ export class QuizTestsService {
     const newQuizTest = await this.quizTestModel.create({
       name: newQuizName,
       ...restDto,
-      userId: user._id,
+      ownerId: user._id,
       createdBy: {
         _id: user._id,
         username: user.username,
@@ -92,7 +92,7 @@ export class QuizTestsService {
   async findByUser(user: IUser, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
 
-    filter.userId = user._id;
+    filter.ownerId = user._id;
 
     const totalItems = (await this.quizTestModel.find(filter)).length;
     const result = await this.quizTestModel
@@ -173,7 +173,7 @@ export class QuizTestsService {
     }
     const quizTest = await this.quizTestModel.findOne({
       noteId,
-      userId: user._id,
+      ownerId: user._id,
     });
 
     return quizTest;
