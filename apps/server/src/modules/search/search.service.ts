@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { SoftDeleteModel } from 'mongoose-delete';
 import { DeckDocument } from '../decks/schema/deck.schema';
 import { NoteDocument } from '../notes/schema/note.schema';
 import { QuizTestDocument } from '../quiz-tests/schema/quiz-test.schema';
@@ -9,10 +9,12 @@ import { IUser } from '../users/users.interface';
 @Injectable()
 export class SearchService {
   constructor(
-    @InjectModel('Deck') private readonly deckModel: Model<DeckDocument>,
-    @InjectModel('Note') private readonly noteModel: Model<NoteDocument>,
+    @InjectModel('Deck')
+    private readonly deckModel: SoftDeleteModel<DeckDocument>,
+    @InjectModel('Note')
+    private readonly noteModel: SoftDeleteModel<NoteDocument>,
     @InjectModel('QuizTest')
-    private readonly quizTestModel: Model<QuizTestDocument>,
+    private readonly quizTestModel: SoftDeleteModel<QuizTestDocument>,
   ) {}
 
   async searchEntities(

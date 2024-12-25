@@ -64,5 +64,10 @@ export class Deck {
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);
+DeckSchema.index({ ownerId: 1 });
+DeckSchema.index({ noteId: 1 });
+DeckSchema.index({ ownerId: 1, noteId: 1 });
+DeckSchema.index({ ownerId: 1, isCloned: 1 });
+DeckSchema.index({ tags: 1 });
 
 DeckSchema.plugin(archivePlugin);

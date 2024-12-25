@@ -60,3 +60,7 @@ export class FlashcardReview {
 
 export const FlashcardReviewSchema =
   SchemaFactory.createForClass(FlashcardReview);
+FlashcardReviewSchema.index({ flashcardId: 1 });
+FlashcardReviewSchema.index({ userId: 1 });
+FlashcardReviewSchema.index({ nextReview: 1 });
+FlashcardReviewSchema.index({ userId: 1, flashcardId: 1 });

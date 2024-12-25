@@ -71,5 +71,9 @@ export class QuizQuestion {
 }
 
 export const QuizQuestionSchema = SchemaFactory.createForClass(QuizQuestion);
+QuizQuestionSchema.index({ userId: 1 });
+QuizQuestionSchema.index({ quizTestId: 1 });
+QuizQuestionSchema.index({ questionType: 1 });
+QuizQuestionSchema.index({ createdAt: -1 });
 
 QuizQuestionSchema.plugin(archivePlugin);
