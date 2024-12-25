@@ -1,6 +1,8 @@
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 import { useSearch } from '@/hooks/use-search';
+import { cn } from '@/lib/utils';
 
 import {
   Dialog,
@@ -65,18 +67,38 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ isOpen, onClose }) => {
               Showing {startResult}-{endResult} of {totalResults} results
             </p>
             <div className="overflow-auto">
-              <ul className="mt-2">
+              <div className="mt-2 flex flex-col gap-1">
                 {data.result.map((item: any) => (
-                  <li key={item._id} className="mb-2">
-                    <small className="text-gray-400 capitalize">
-                      {item.type === 'quizTest' ? 'Quiz' : item.type}
-                    </small>
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                    </div>
-                  </li>
+                  <Link
+                    href={
+                      item.type === 'note'
+                        ? `/apps/resources/notes/${item._id}`
+                        : item.type === 'deck'
+                          ? `/apps/resources/decks/new/${item._id}`
+                          : `/apps/resources/quizzes/edit/${item._id}`
+                    }
+                    key={item._id}
+                    onClick={() => onClose()}
+                    className="bg-primary-50/60 rounded px-2 py-1 hover:bg-primary-50"
+                  >
+                    <span className="flex flex-col gap-1">
+                      <span
+                        className={cn(
+                          'text-xs text-gray-500 capitalize font-medium',
+                          item.type === 'note'
+                            ? 'text-blue-500'
+                            : item.type === 'deck'
+                              ? 'text-green-500'
+                              : 'text-orange-500'
+                        )}
+                      >
+                        {item.type === 'quizTest' ? 'Quiz' : item.type}
+                      </span>
+                      {item.name}
+                    </span>
+                  </Link>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
         )}

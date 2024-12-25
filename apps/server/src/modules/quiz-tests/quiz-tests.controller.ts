@@ -102,7 +102,6 @@ export class QuizTestsController {
     @Body() updateQuizTestDto: UpdateQuizTestDto,
     @User() user: IUser,
   ) {
-    console.log(6);
     const foundQuizTest = await this.quizTestsService.findOne(id);
     if (foundQuizTest.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
@@ -115,7 +114,6 @@ export class QuizTestsController {
   @Delete(':id')
   @ResponseMessage('Delete a quiz test')
   async remove(@Param('id') id: string, @User() user: IUser): Promise<any> {
-    console.log(7);
     return await this.quizTestsService.remove(id, user);
   }
 }

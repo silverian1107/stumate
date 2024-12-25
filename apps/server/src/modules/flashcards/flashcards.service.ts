@@ -144,6 +144,8 @@ export class FlashcardsService {
     user: IUser,
   ) {
     const deck = await this.decks.findOne(deckId);
+    console.log(deck);
+
     if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
