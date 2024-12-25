@@ -19,7 +19,6 @@ import {
   Typography
 } from '@mui/material';
 import { RotateCcw, Trash2 } from 'lucide-react';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -149,7 +148,7 @@ const QuizPage = () => {
                 Description
               </TableCell>
               <TableCell align="center" size="small">
-                Question's Number
+                Question&apos;s Number
               </TableCell>
               <TableCell align="center" size="small">
                 Duration

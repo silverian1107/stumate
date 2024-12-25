@@ -117,7 +117,7 @@ const NotePage = () => {
   return (
     <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative">
       <Typography variant="h5" gutterBottom className="flex gap-80">
-        Manage Notes
+        Archive Notes
         <div className="flex gap-4">
           <div className="flex gap-3 px-1 rounded-lg border border-primary-200 text-sm items-center">
             <p>Created Date:</p>

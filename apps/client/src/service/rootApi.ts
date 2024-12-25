@@ -326,6 +326,85 @@ interface AllArNotesResponse {
   };
 }
 
+interface IUser {
+  _id: string;
+  username: string;
+}
+
+export interface IFlashcard {
+  _id: string;
+  front: string;
+  back: string;
+  userId: string;
+  deckId: string;
+  isCloned: boolean;
+  sharedWithUsers: string[];
+  createdBy: IUser;
+  isArchived: boolean;
+  archivedAt: string | null;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface IAllFlashcardsResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: Meta;
+    result: IFlashcard[];
+  };
+}
+
+interface AllArFlashcardsResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    total: number;
+    result: IFlashcard[];
+  };
+}
+
+export interface IQuiz {
+  _id: string;
+  title?: string;
+  name?: string;
+  description: string;
+  numberOfQuestion: number;
+  duration: number;
+  status: string;
+  userId: string;
+  tags: string[];
+  isCloned: boolean;
+  sharedWithUsers: string[];
+  createdBy: IUser;
+  isArchived: boolean;
+  archivedAt: string | null;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface AllArQuizzesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    total: number;
+    result: IQuiz[];
+  };
+}
+
+interface IAllQuizzesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: Meta;
+    result: IQuiz[];
+  };
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -386,7 +465,11 @@ export const rootApi = createApi({
     'TAG_ADMIN',
     'NOTE_ADMIN',
     'ARCHIVE_ADMIN',
-    'NOTE_AR'
+    'NOTE_AR',
+    'FLASHCARD_ADMIN',
+    'ARCHIVE_FLASHCARD_ADMIN',
+    'ARCHIVE_QUIZ',
+    'ARCHIVE_QUIZ_ADMIN'
   ],
   endpoints: (builder) => ({
     register: builder.mutation<
@@ -645,6 +728,111 @@ export const rootApi = createApi({
         method: 'POST'
       }),
       invalidatesTags: [{ type: 'ARCHIVE_ADMIN' }, { type: 'NOTE_AR' }]
+    }),
+    getAllFlashcard: builder.query<
+      IAllFlashcardsResponse,
+      { current: number; createdAt: string }
+    >({
+      query: ({ current, createdAt }) => ({
+        url: '/flashcards',
+        params: { current, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [
+        { type: 'FLASHCARD_ADMIN' },
+        { type: 'ARCHIVE_FLASHCARD_ADMIN' }
+      ]
+    }),
+    archiveFlashcardById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/flashcards/archive/${id}`,
+        method: 'PATCH'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_FLASHCARD_ADMIN' },
+        { type: 'FLASHCARD_ADMIN' }
+      ]
+    }),
+    getAllArFlashcards: builder.query<AllArFlashcardsResponse, void>({
+      query: () => ({
+        url: 'flashcards/archived',
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'ARCHIVE_FLASHCARD_ADMIN' }]
+    }),
+    deleteFlashcard: builder.mutation({
+      query: ({ id }) => ({
+        url: `/flashcards/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_FLASHCARD_ADMIN' }]
+    }),
+    restoreFlashcardById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/flashcards/restore/${id}`,
+        method: 'PATCH'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_ADMIN' },
+        { type: 'ARCHIVE_FLASHCARD_ADMIN' }
+      ]
+    }),
+    getAllQuizzes: builder.query<
+      IAllQuizzesResponse,
+      { current: number; createdAt: string }
+    >({
+      query: ({ current, createdAt }) => ({
+        url: '/quiz-tests/all',
+        params: { current, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'ARCHIVE_QUIZ' }, { type: 'ARCHIVE_QUIZ_ADMIN' }]
+    }),
+    archiveQuizById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/quizzes/${id}/archive`,
+        method: 'POST'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_QUIZ_ADMIN' },
+        { type: 'ARCHIVE_QUIZ' }
+      ]
+    }),
+    getAllArQuizzes: builder.query<AllArQuizzesResponse, void>({
+      query: () => ({
+        url: 'quizzes/archived-resources/all',
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'ARCHIVE_QUIZ' }]
+    }),
+    deleteQuiz: builder.mutation({
+      query: ({ id }) => ({
+        url: `/quiz-tests/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_QUIZ' }]
+    }),
+    restoreQuizById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/quizzes/${id}/restore`,
+        method: 'POST'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_QUIZ' },
+        { type: 'ARCHIVE_QUIZ_ADMIN' }
+      ]
     })
   })
 });
@@ -679,5 +867,15 @@ export const {
   useGetAllNotesQuery,
   useDeleteNoteMutation,
   useGetAllArNotesQuery,
-  useRestoreNoteByIdMutation
+  useRestoreNoteByIdMutation,
+  useGetAllFlashcardQuery,
+  useArchiveFlashcardByIdMutation,
+  useGetAllArFlashcardsQuery,
+  useDeleteFlashcardMutation,
+  useGetAllQuizzesQuery,
+  useArchiveQuizByIdMutation,
+  useGetAllArQuizzesQuery,
+  useDeleteQuizMutation,
+  useRestoreQuizByIdMutation,
+  useRestoreFlashcardByIdMutation
 } = rootApi;

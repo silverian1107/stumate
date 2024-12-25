@@ -18,54 +18,60 @@ import {
   Typography
 } from '@mui/material';
 import { EllipsisVertical, Trash2 } from 'lucide-react';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import type { INoteRoot } from '@/service/rootApi';
+import type { IFlashcard } from '@/service/rootApi';
 import {
-  useArchiveNoteByIdMutation,
-  useGetAllNotesQuery
+  useArchiveFlashcardByIdMutation,
+  useGetAllFlashcardQuery
 } from '@/service/rootApi';
 
-import DetailNoteDialog from '../_components/dialog/DetailNoteDialog';
+import DetailFlashcardDialog from '../_components/dialog/DetailFlashcardDialog';
 import Panigation from '../_components/Panigation';
 
 const FlashcardPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [current, setCurrent] = useState(1);
   const [createdAt, setCreatedAt] = useState('');
 
-  const { data, isSuccess } = useGetAllNotesQuery({
-    currentPage,
+  const { data, isSuccess } = useGetAllFlashcardQuery({
+    current,
     createdAt
   });
-  const [archiveNoteByIdMutation] = useArchiveNoteByIdMutation();
+  console.log('data', data);
+  const [archiveFlashcardById] = useArchiveFlashcardByIdMutation();
 
   const [count, setCount] = useState<number>(1);
-  const [dataNotes, setDataNotes] = useState<INoteRoot[] | undefined>();
+  const [dataFlashcards, setDataFlashcards] = useState<
+    IFlashcard[] | undefined
+  >();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedNote, setSelectedNote] = useState<INoteRoot | null>(null);
-  const [selectedNoteDele, setSelectedNoteDele] = useState<string | null>(null);
+  const [selectedFlashcard, setSelectedFlashcard] = useState<IFlashcard | null>(
+    null
+  );
+  const [selectedFlashcardDele, setSelectedFlashcardDele] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     if (isSuccess) {
-      setDataNotes(data.data.result);
+      setDataFlashcards(data.data.result);
       setCount(data.data.meta.pages);
     }
   }, [isSuccess, data, createdAt]);
 
   const [open, setOpen] = useState(false);
 
-  const handleOpen = (note: INoteRoot) => {
+  const handleOpen = (flashcard: IFlashcard) => {
     setOpen(true);
-    setSelectedNote(note);
+    setSelectedFlashcard(flashcard);
   };
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleDeleteOpen = (id: string) => {
-    setSelectedNoteDele(id);
+    setSelectedFlashcardDele(id);
     setDeleteDialogOpen(true);
   };
 
@@ -75,13 +81,13 @@ const FlashcardPage = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      if (selectedNoteDele) {
-        await archiveNoteByIdMutation({ id: selectedNoteDele });
+      if (selectedFlashcardDele) {
+        await archiveFlashcardById({ id: selectedFlashcardDele });
         setDeleteDialogOpen(false);
-        toast.success('Note removed successfully!', {
+        toast.success('Flashcard removed successfully!', {
           position: 'top-right'
         });
-        setSelectedNote(null);
+        setSelectedFlashcard(null);
       }
     } catch (error) {
       toast.error(`${error}`, {
@@ -119,11 +125,14 @@ const FlashcardPage = () => {
               <TableCell align="center" size="small">
                 SST
               </TableCell>
-              <TableCell align="center" size="small" width="30%">
-                Note Name
+              <TableCell align="center" size="small" width="20%">
+                Front
+              </TableCell>
+              <TableCell align="center" size="small" width="20%">
+                Back
               </TableCell>
               <TableCell align="center" size="small">
-                Username
+                Created By
               </TableCell>
               <TableCell align="center" size="small">
                 Created Date
@@ -137,64 +146,66 @@ const FlashcardPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(dataNotes || [])
-              .filter((row) => row.isArchived !== true)
-              .map((row, index) => (
-                <TableRow key={row._id}>
-                  <TableCell align="center" size="small">
-                    {10 * (currentPage - 1) + index + 1}
-                  </TableCell>
-                  <TableCell
-                    align="center"
+            {(dataFlashcards || []).map((row, index) => (
+              <TableRow key={row._id}>
+                <TableCell align="center" size="small">
+                  {10 * (current - 1) + index + 1}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-20 text-nowrap"
+                >
+                  {row.front}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-20 text-nowrap"
+                >
+                  {row.back}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                >
+                  {row.createdBy.username}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.createdAt.split('T')[0]}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.updatedAt.split('T')[0]}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  <IconButton
+                    color="primary"
                     size="small"
-                    className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                    onClick={() => handleOpen(row)}
                   >
-                    {row.name}
-                  </TableCell>
-                  <TableCell
-                    align="center"
+                    <EllipsisVertical />
+                  </IconButton>
+                  <IconButton
+                    color="error"
                     size="small"
-                    className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                    onClick={() => handleDeleteOpen(row._id)}
                   >
-                    <Link href={`/admin/accounts/${row.ownerId}`}>
-                      {' '}
-                      {row.ownerId}
-                    </Link>
-                  </TableCell>
-                  <TableCell align="center" size="small">
-                    {row.createdAt.split('T')[0]}
-                  </TableCell>
-                  <TableCell align="center" size="small">
-                    {row.updatedAt.split('T')[0]}
-                  </TableCell>
-                  <TableCell align="center" size="small">
-                    <IconButton
-                      color="primary"
-                      size="small"
-                      onClick={() => handleOpen(row)}
-                    >
-                      <EllipsisVertical />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      size="small"
-                      onClick={() => handleDeleteOpen(row._id)}
-                    >
-                      <Trash2 />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    <Trash2 />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
       <Panigation
         count={count}
-        page={currentPage}
-        setCurrent={(value: number) => setCurrentPage(value)}
+        page={current}
+        setCurrent={(value: number) => setCurrent(value)}
       />
-      <DetailNoteDialog
-        selectedNote={selectedNote}
+      <DetailFlashcardDialog
+        selectedFlashcard={selectedFlashcard}
         handleCloseDialog={handleClose}
         isDialogOpen={open}
       />
@@ -207,7 +218,7 @@ const FlashcardPage = () => {
         <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
-            Are you sure you want to delete the notification?
+            Are you sure you want to delete the flashcard?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

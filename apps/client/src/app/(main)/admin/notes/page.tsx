@@ -39,7 +39,7 @@ const NotePage = () => {
     currentPage,
     createdAt
   });
-  const [archiveNoteByIdMutation] = useArchiveNoteByIdMutation();
+  const [archiveNoteById] = useArchiveNoteByIdMutation();
 
   const [count, setCount] = useState<number>(1);
   const [dataNotes, setDataNotes] = useState<INoteRoot[] | undefined>();
@@ -76,7 +76,7 @@ const NotePage = () => {
   const handleDeleteConfirm = async () => {
     try {
       if (selectedNoteDele) {
-        await archiveNoteByIdMutation({ id: selectedNoteDele });
+        await archiveNoteById({ id: selectedNoteDele });
         setDeleteDialogOpen(false);
         toast.success('Note removed successfully!', {
           position: 'top-right'

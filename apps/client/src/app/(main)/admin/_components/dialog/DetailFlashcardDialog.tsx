@@ -28,7 +28,8 @@ const DetailFlashcardDialog = ({
               {selectedFlashcard.createdBy.username}
             </DialogContentText>
             <DialogContentText>
-              <strong className="mr-2">DeckID: </strong> {selectedFlashcard.deckId}
+              <strong className="mr-2">DeckID: </strong>{' '}
+              {selectedFlashcard.deckId}
             </DialogContentText>
             <DialogContentText>
               <strong className="mr-2">Create Date:</strong>{' '}
@@ -39,7 +40,8 @@ const DetailFlashcardDialog = ({
               {selectedFlashcard.updatedAt}
             </DialogContentText>
             <DialogContentText>
-              <strong className="mr-2">Shared:</strong> {selectedFlashcard.isCloned ? 'true' : 'false'}
+              <strong className="mr-2">Shared:</strong>{' '}
+              {selectedFlashcard.isCloned ? 'true' : 'false'}
             </DialogContentText>
             <DialogContentText className="w-[35vw] max-h-[20vh]  flex flex-col">
               <strong className="text-wrap">Front:</strong>
