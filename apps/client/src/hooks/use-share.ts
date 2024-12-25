@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import { NoteClient } from '@/endpoints/AxiosClient';
 import { DeckApi } from '@/endpoints/deck-api';
+import { QuizApi } from '@/endpoints/quiz/quiz-api';
 
 export const useShareNote = () => {
   const queryClient = useQueryClient();
@@ -59,13 +60,46 @@ export const useShareDeck = () => {
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['getDeckById', variables.deckId]
+        queryKey: ['decks', variables.deckId]
       });
 
       toast.success('Access granted');
     },
     onError: () => {
       toast.error('Failed to share deck', {
+        description: 'Unable to share with the specified user'
+      });
+    }
+  });
+};
+
+export const useShareQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      quizId,
+      usernameOrEmail
+    }: {
+      quizId: string;
+      usernameOrEmail: string;
+    }) => {
+      const response = await QuizApi.share(quizId, usernameOrEmail);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getSharedUsers', variables.quizId]
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes', variables.quizId]
+      });
+
+      toast.success('Access granted');
+    },
+    onError: () => {
+      toast.error('Failed to share quiz', {
         description: 'Unable to share with the specified user'
       });
     }
@@ -129,7 +163,42 @@ export const useUnshareDeck = () => {
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['getDeckById', variables.deckId]
+        queryKey: ['decks', variables.deckId]
+      });
+
+      toast.success('Access revoked', {
+        description: 'Successfully revoked access'
+      });
+    },
+    onError: () => {
+      toast.error('Failed to revoke access', {
+        description: 'Unable to remove share permission'
+      });
+    }
+  });
+};
+
+export const useUnshareQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      quizId,
+      usernameOrEmail
+    }: {
+      quizId: string;
+      usernameOrEmail: string;
+    }) => {
+      const response = await QuizApi.unshare(quizId, usernameOrEmail);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getSharedUsers', variables.quizId]
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes', variables.quizId]
       });
 
       toast.success('Access revoked', {

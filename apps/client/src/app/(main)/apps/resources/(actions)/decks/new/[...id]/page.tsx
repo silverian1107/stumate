@@ -16,7 +16,7 @@ import type { Deck } from '@/types/deck';
 
 import { ResourceElements } from '../../../_components/creator';
 import { DeckActionHeader } from '../../../_components/header';
-import ShareDialog from './share-dialog';
+import ShareDeckDialog from './share-deck-dialog';
 
 export default function DeckPage() {
   const dispatch = useDispatch();
@@ -48,7 +48,6 @@ export default function DeckPage() {
     try {
       let hasErrors = false;
 
-      // Check each card for errors
       resource.flashcards.forEach((fc, index) => {
         const frontError = !fc.front.trim();
         const backError = !fc.back.trim();
@@ -100,7 +99,7 @@ export default function DeckPage() {
       />
       <ResourceElements />
 
-      <ShareDialog
+      <ShareDeckDialog
         deckId={initialResource?._id || ''}
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}

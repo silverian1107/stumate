@@ -67,7 +67,7 @@ export class SharedResourcesService {
       case 'decks':
         resource = await this.deckModel.findOne({ _id: resourceId });
         break;
-      case 'quizzes':
+      case 'quiz-tests':
         resource = await this.quizTestModel.findOne({ _id: resourceId });
         break;
       default:
@@ -137,7 +137,7 @@ export class SharedResourcesService {
           `${user.username} has shared a deck with you. Check it out now!`,
         );
         return 'Deck was shared successfully';
-      case 'quizzes':
+      case 'quiz-tests':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId },
           { $addToSet: { sharedWithUsers: sharedUser._id } },
@@ -215,7 +215,7 @@ export class SharedResourcesService {
           `${user.username} has unshared a deck with you.`,
         );
         return 'Deck was unshared successfully';
-      case 'quizzes':
+      case 'quiz-tests':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId },
           { $pull: { sharedWithUsers: unsharedUser._id } },
@@ -351,7 +351,7 @@ export class SharedResourcesService {
         }
         break;
 
-      case 'quizzes':
+      case 'quiz-tests':
         originalResource = await this.quizTestModel.findOne({
           _id: resourceId,
           sharedWithUsers: { $in: [user._id] },
@@ -448,7 +448,7 @@ export class SharedResourcesService {
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quizzes':
+      case 'quiz-tests':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';
@@ -523,7 +523,7 @@ export class SharedResourcesService {
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quizzes':
+      case 'quiz-tests':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';
@@ -588,7 +588,7 @@ export class SharedResourcesService {
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quizzes':
+      case 'quiz-tests':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';
@@ -635,7 +635,7 @@ export class SharedResourcesService {
         relatedModel = this.flashcardModel;
         relatedField = 'deckId';
         break;
-      case 'quizzes':
+      case 'quiz-tests':
         model = this.quizTestModel;
         relatedModel = this.quizQuestionModel;
         relatedField = 'quizTestId';
