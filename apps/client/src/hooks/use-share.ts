@@ -2,31 +2,31 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { NoteClient } from '@/endpoints/AxiosClient';
+import { DeckApi } from '@/endpoints/deck-api';
 
-// hooks/use-share.ts
 export const useShareNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
-      resourceId,
+      noteId,
       usernameOrEmail
     }: {
-      resourceId: string;
+      noteId: string;
       usernameOrEmail: string;
     }) => {
-      const response = await NoteClient.post(`/${resourceId}/share`, {
+      const response = await NoteClient.post(`/${noteId}/share`, {
         usernameOrEmail
       });
       return response.data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['getSharedUsers', variables.resourceId]
+        queryKey: ['getSharedUsers', variables.noteId]
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['getNoteById', variables.resourceId]
+        queryKey: ['getNoteById', variables.noteId]
       });
 
       toast.success('Access granted');
@@ -39,29 +39,97 @@ export const useShareNote = () => {
   });
 };
 
+export const useShareDeck = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      deckId,
+      usernameOrEmail
+    }: {
+      deckId: string;
+      usernameOrEmail: string;
+    }) => {
+      const response = await DeckApi.share(deckId, usernameOrEmail);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getSharedUsers', variables.deckId]
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['getDeckById', variables.deckId]
+      });
+
+      toast.success('Access granted');
+    },
+    onError: () => {
+      toast.error('Failed to share deck', {
+        description: 'Unable to share with the specified user'
+      });
+    }
+  });
+};
+
 export const useUnshareNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
-      resourceId,
+      noteId,
       usernameOrEmail
     }: {
-      resourceId: string;
+      noteId: string;
       usernameOrEmail: string;
     }) => {
-      const response = await NoteClient.post(`/${resourceId}/unshare`, {
+      const response = await NoteClient.post(`/${noteId}/unshare`, {
         usernameOrEmail
       });
       return response.data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['getSharedUsers', variables.resourceId]
+        queryKey: ['getSharedUsers', variables.noteId]
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['getNoteById', variables.resourceId]
+        queryKey: ['getNoteById', variables.noteId]
+      });
+
+      toast.success('Access revoked', {
+        description: 'Successfully revoked access'
+      });
+    },
+    onError: () => {
+      toast.error('Failed to revoke access', {
+        description: 'Unable to remove share permission'
+      });
+    }
+  });
+};
+
+export const useUnshareDeck = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      deckId,
+      usernameOrEmail
+    }: {
+      deckId: string;
+      usernameOrEmail: string;
+    }) => {
+      const response = await DeckApi.unshare(deckId, usernameOrEmail);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getSharedUsers', variables.deckId]
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['getDeckById', variables.deckId]
       });
 
       toast.success('Access revoked', {

@@ -242,6 +242,16 @@ export const useCreateDeck = () => {
   });
 };
 
+export const useDeckById = (deckId: string) => {
+  return useQuery({
+    queryKey: ['decks', deckId],
+    queryFn: async () => {
+      const response = await DeckApi.findById(deckId);
+      return response.data.data;
+    }
+  });
+};
+
 export const useCardBulkCreate = () => {
   const queryClient = useQueryClient();
   return useMutation({

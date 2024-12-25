@@ -68,6 +68,7 @@ export class DecksController {
         );
       }
     }
+
     return foundDeck;
   }
 
@@ -80,7 +81,7 @@ export class DecksController {
     @Body() updateDeckDto: UpdateDeckDto,
     @User() user: IUser,
   ) {
-    const foundDeck = await this.decksService.findOne(id);
+    const foundDeck = await this.decksService.findById(id);
     if (foundDeck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
