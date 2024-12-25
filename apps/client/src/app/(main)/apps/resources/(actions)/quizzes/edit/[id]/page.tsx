@@ -1,7 +1,8 @@
 'use client';
 
-import { CheckIcon, XIcon } from 'lucide-react';
+import { CheckIcon, Share2Icon, XIcon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
@@ -17,10 +18,13 @@ import type { RootState } from '@/redux/store';
 
 import { QuizHeader } from '../../_components/headers';
 import QuizCreateElement from '../../_components/quiz-create-element';
+import ShareQuizDialog from './share-quiz-dialog';
 
 export default function QuizActionPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const updateQuizMutation = useUpdateQuiz();
   const createQuestionsMutation = useCreateQuestions();
@@ -154,10 +158,25 @@ export default function QuizActionPage() {
 
   return (
     <>
+      <div className="w-full md:w-3/4 flex justify-end mx-auto">
+        <button
+          type="button"
+          className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
+          onClick={() => setIsShareDialogOpen(true)}
+        >
+          <Share2Icon className="size-4" />
+          Share Quiz
+        </button>
+      </div>
       <QuizHeader onSubmit={handleSubmit} isEditing />
       <div className="flex-1 overflow-hidden">
         <QuizCreateElement />
       </div>
+      <ShareQuizDialog
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        quizId={id!}
+      />
     </>
   );
 }

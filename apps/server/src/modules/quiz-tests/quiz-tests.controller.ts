@@ -102,7 +102,7 @@ export class QuizTestsController {
     @Body() updateQuizTestDto: UpdateQuizTestDto,
     @User() user: IUser,
   ) {
-    const foundQuizTest = await this.quizTestsService.findOne(id);
+    const foundQuizTest = await this.quizTestsService.findById(id);
     if (foundQuizTest.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,

@@ -17,7 +17,7 @@ interface ShareDialogProps {
   onClose: () => void;
 }
 
-const ShareDialog = ({ deckId, isOpen, onClose }: ShareDialogProps) => {
+const ShareDeckDialog = ({ deckId, isOpen, onClose }: ShareDialogProps) => {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
 
   const { data, isLoading } = useDeckById(deckId);
@@ -103,4 +103,4 @@ const ShareDialog = ({ deckId, isOpen, onClose }: ShareDialogProps) => {
   );
 };
 
-export default ShareDialog;
+export default ShareDeckDialog;

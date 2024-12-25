@@ -139,28 +139,17 @@ export class QuizTestsService {
     };
   }
 
-  async findOne(id: string) {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('Invalid Quiz Test ID');
-    }
-    const quizTest = await this.quizTestModel.findOne({
-      _id: id,
-      isArchived: { $in: [true, false] },
-    });
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
-    }
-    return quizTest;
-  }
-
   async findById(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Quiz Test ID');
     }
-    const quizTest = await this.quizTestModel.findOne({
-      _id: id,
-      isArchived: { $in: [true, false] },
-    });
+    const quizTest = await this.quizTestModel
+      .findOne({
+        _id: id,
+        isArchived: { $in: [true, false] },
+      })
+      .populate('sharedWithUsers', 'email username')
+      .exec();
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }

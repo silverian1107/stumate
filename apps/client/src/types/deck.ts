@@ -50,6 +50,7 @@ export interface Quiz extends BaseResource {
   numberOfQuestion: number;
   duration: number;
   elements: QuizElement[];
+  sharedWithUsers?: [];
 }
 
 export type Resource = Deck | Quiz;
