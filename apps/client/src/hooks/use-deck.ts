@@ -315,3 +315,17 @@ export const useGenerateFlashcardsByAI = () => {
     }
   });
 };
+
+export const useArchiveDeck = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (deckId: string) => {
+      const response = await DeckApi.archive(deckId);
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
+    }
+  });
+};

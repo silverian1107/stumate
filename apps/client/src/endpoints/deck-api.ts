@@ -27,6 +27,10 @@ export const DeckApi = {
     return (await DeckClient.patch(`${deckId}`, data)).data;
   },
 
+  async archive(deckId: string) {
+    return DeckClient.post(`${deckId}/archive`);
+  },
+
   async share(deckId: string, usernameOrEmail: string) {
     return (await DeckClient.post(`${deckId}/share`, { usernameOrEmail })).data;
   },
