@@ -244,6 +244,7 @@ const AccountList = () => {
                     <Link
                       href={`/admin/accounts/${row._id}`}
                       className="inline-block "
+                      title="Detail"
                     >
                       <EllipsisVertical className="text-primary-500" />
                     </Link>
@@ -251,6 +252,7 @@ const AccountList = () => {
                       color="error"
                       size="small"
                       onClick={() => handleDeleteOpen(row)}
+                      title="Delete"
                     >
                       <Trash2 />
                     </IconButton>

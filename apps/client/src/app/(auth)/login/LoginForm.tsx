@@ -60,12 +60,8 @@ export default function LoginForm() {
           })
         );
         dispatch(openSnackbar({ message: data?.message }));
-        Cookies.set('access_token', data.data.access_token, {
-          expires: 30 * 1000 * 60 * 4
-        });
-        Cookies.set('role', data.data.user.role, {
-          expires: 30 * 1000 * 60
-        });
+        Cookies.set('access_token', data.data.access_token);
+        Cookies.set('role', data.data.user.role);
         if (data.data.user.role.toLowerCase() === 'user') {
           redirect('/apps');
         } else {

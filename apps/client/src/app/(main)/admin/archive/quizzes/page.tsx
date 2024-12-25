@@ -8,6 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Pagination,
   Paper,
   Table,
   TableBody,
@@ -17,48 +18,41 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { EllipsisVertical, Trash2 } from 'lucide-react';
+import { RotateCcw, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import type { IQuiz } from '@/service/rootApi';
 import {
-  useArchiveQuizByIdMutation,
-  useGetAllQuizzesQuery
+  useDeleteQuizMutation,
+  useGetAllArQuizzesQuery,
+  useRestoreQuizByIdMutation
 } from '@/service/rootApi';
 
-import DetailQuizDialog from '../_components/dialog/DetailQuizDialog';
-import Panigation from '../_components/Panigation';
-
 const QuizPage = () => {
-  const [current, setCurrent] = useState(1);
   const [createdAt, setCreatedAt] = useState('');
 
-  const { data, isSuccess } = useGetAllQuizzesQuery({
-    current,
-    createdAt
-  });
-  console.log('data', data);
-  const [archiveQuizById] = useArchiveQuizByIdMutation();
+  const { data, isSuccess } = useGetAllArQuizzesQuery();
+  const [restoreQuizById] = useRestoreQuizByIdMutation();
+  const [deleteQuiz] = useDeleteQuizMutation();
 
   const [count, setCount] = useState<number>(1);
   const [dataQuizzes, setDataQuizzes] = useState<IQuiz[] | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedQuiz, setSelectedQuiz] = useState<IQuiz | null>(null);
+  const [selectedQuiz, setSelectedQuiz] = useState<string | null>(null);
   const [selectedQuizDele, setSelectedQuizDele] = useState<string | null>(null);
 
   useEffect(() => {
     if (isSuccess) {
       setDataQuizzes(data.data.result);
-      setCount(data.data.meta.pages);
     }
   }, [isSuccess, data, createdAt]);
 
   const [open, setOpen] = useState(false);
 
-  const handleOpen = (Quiz: IQuiz) => {
+  const handleOpen = (id: string) => {
     setOpen(true);
-    setSelectedQuiz(Quiz);
+    setSelectedQuiz(id);
   };
   const handleClose = () => {
     setOpen(false);
@@ -76,7 +70,7 @@ const QuizPage = () => {
   const handleDeleteConfirm = async () => {
     try {
       if (selectedQuizDele) {
-        await archiveQuizById({ id: selectedQuizDele });
+        await deleteQuiz({ id: selectedQuizDele });
         setDeleteDialogOpen(false);
         toast.success('Quiz removed successfully!', {
           position: 'top-right'
@@ -91,10 +85,38 @@ const QuizPage = () => {
     }
   };
 
+  const handleRestoreConfirm = async () => {
+    try {
+      if (selectedQuiz) {
+        await restoreQuizById({ id: selectedQuiz });
+        setOpen(false);
+        toast.success('Quiz restored successfully!', {
+          position: 'top-right'
+        });
+        setSelectedQuiz(null);
+      }
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
+    }
+  };
+
+  const filtereddataTags = (dataQuizzes || []).filter((row) => {
+    return row.createdAt.includes(createdAt.split('T')[0].toLowerCase());
+  });
+
+  const rowsPerPage = 10;
+  const paginatedDataQuizzes = filtereddataTags.slice(
+    (count - 1) * rowsPerPage,
+    count * rowsPerPage
+  );
+
   return (
     <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative">
       <Typography variant="h5" gutterBottom className="flex gap-80">
-        Manage Quizzes
+        Archive Quizzes
         <div className="flex gap-4">
           <div className="flex gap-3 px-1 rounded-lg border border-primary-200 text-sm items-center">
             <p>Created Date:</p>
@@ -140,10 +162,10 @@ const QuizPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(dataQuizzes || []).map((row, index) => (
+            {(paginatedDataQuizzes || []).map((row, index) => (
               <TableRow key={row._id}>
                 <TableCell align="center" size="small">
-                  {10 * (current - 1) + index + 1}
+                  {10 * (count - 1) + index + 1}
                 </TableCell>
                 <TableCell
                   align="center"
@@ -179,14 +201,16 @@ const QuizPage = () => {
                   <IconButton
                     color="primary"
                     size="small"
-                    onClick={() => handleOpen(row)}
+                    onClick={() => handleOpen(row._id)}
+                    title="Restore"
                   >
-                    <EllipsisVertical />
+                    <RotateCcw />
                   </IconButton>
                   <IconButton
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row._id)}
+                    title="Delete"
                   >
                     <Trash2 />
                   </IconButton>
@@ -196,15 +220,15 @@ const QuizPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Panigation
-        count={count}
-        page={current}
-        setCurrent={(value: number) => setCurrent(value)}
-      />
-      <DetailQuizDialog
-        selectedQuiz={selectedQuiz}
-        handleCloseDialog={handleClose}
-        isDialogOpen={open}
+      <Pagination
+        count={Math.ceil(filtereddataTags.length / rowsPerPage)}
+        page={count}
+        onChange={(e, value) => setCount(value)}
+        style={{
+          marginTop: '20px',
+          display: 'flex',
+          justifyContent: 'center'
+        }}
       />
       <Dialog
         open={deleteDialogOpen}
@@ -227,7 +251,29 @@ const QuizPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Restore</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to restore the Quiz?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleRestoreConfirm} color="error">
+            Restore
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
+
 export default QuizPage;
