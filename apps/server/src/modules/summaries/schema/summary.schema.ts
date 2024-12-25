@@ -42,4 +42,8 @@ export class Summary {
 
 export const SummarySchema = SchemaFactory.createForClass(Summary);
 
+SummarySchema.index({ userId: 1 });
+SummarySchema.index({ noteId: 1 });
+SummarySchema.index({ createdAt: -1 });
+
 SummarySchema.plugin(archivePlugin);

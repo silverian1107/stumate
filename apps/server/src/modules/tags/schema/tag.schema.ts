@@ -31,3 +31,6 @@ export class Tag {
 }
 
 export const TagSchema = SchemaFactory.createForClass(Tag);
+TagSchema.index({ userId: 1 });
+TagSchema.index({ name: 1, userId: 1 }, { unique: true });
+TagSchema.index({ createdAt: -1 });

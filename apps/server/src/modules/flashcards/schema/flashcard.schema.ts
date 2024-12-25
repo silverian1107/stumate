@@ -47,5 +47,10 @@ export class Flashcard {
 }
 
 export const FlashcardSchema = SchemaFactory.createForClass(Flashcard);
+FlashcardSchema.index({ userId: 1 });
+FlashcardSchema.index({ noteId: 1 });
+FlashcardSchema.index({ deckId: 1 });
+FlashcardSchema.index({ userId: 1, deckId: 1 });
+FlashcardSchema.index({ sharedWithUsers: 1 });
 
 FlashcardSchema.plugin(archivePlugin);

@@ -74,3 +74,7 @@ export class QuizAttempt {
 }
 
 export const QuizAttemptSchema = SchemaFactory.createForClass(QuizAttempt);
+QuizAttemptSchema.index({ userId: 1 });
+QuizAttemptSchema.index({ quizTestId: 1 });
+QuizAttemptSchema.index({ status: 1 });
+QuizAttemptSchema.index({ createdAt: -1 });

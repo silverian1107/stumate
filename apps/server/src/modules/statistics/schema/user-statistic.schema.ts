@@ -67,3 +67,6 @@ export class UserStatistic {
 }
 
 export const UserStatisticSchema = SchemaFactory.createForClass(UserStatistic);
+UserStatisticSchema.index({ userId: 1 });
+UserStatisticSchema.index({ date: 1 });
+UserStatisticSchema.index({ userId: 1, date: 1 });
