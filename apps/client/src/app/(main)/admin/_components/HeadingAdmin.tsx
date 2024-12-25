@@ -88,7 +88,7 @@ const HeadingAdmin = ({
         <div className="flex flex-col items-center ">
           <AvatarUser className="!bg-primary-main">
             {user?.avatarUrl ? (
-              <Avatar className="w-[100px] h-[100px]">
+              <Avatar className="size-[100px]">
                 <AvatarImage
                   src={user?.avatarUrl || ''}
                   alt={user?.name || ''}
@@ -163,7 +163,7 @@ const HeadingAdmin = ({
         <IconButton size="medium" className="!p-0">
           <AvatarUser className="!bg-primary-main">
             {user?.avatarUrl ? (
-              <Avatar className="w-[100px] h-[100px]">
+              <Avatar className="size-[100px]">
                 <AvatarImage
                   src={user?.avatarUrl || ''}
                   alt={user?.name || ''}

@@ -7,11 +7,7 @@ import { toast } from 'sonner';
 
 import { useAccount } from '@/hooks/use-auth';
 import type { UserInfo } from '@/service/rootApi';
-import {
-  useEditAvatarMutation,
-  useGetInfoUserQuery,
-  useUpdateUserMutation
-} from '@/service/rootApi';
+import { useGetInfoUserQuery, useUpdateUserMutation } from '@/service/rootApi';
 
 const Profile = () => {
   const data = useAccount();

@@ -8,11 +8,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { login, logout } from '../redux/slices/authSlice';
 import type { RootState } from '../redux/store';
 
-interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  // userInfo?: Record<string, any>;
-}
 interface RefreshResponse {
   access_token: string;
   user: {

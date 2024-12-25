@@ -7,10 +7,10 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useAccount } from '@/hooks/use-auth';
+import { useRefreshTokenQuery } from '@/service/rootApi';
 
 import HeadingAdmin from './_components/HeadingAdmin';
 import NavbarAdmin from './_components/NavbarAmin';
-import { useRefreshTokenQuery } from '@/service/rootApi';
 
 export default function Layout({
   children
