@@ -27,10 +27,14 @@ interface NavbarAdminProps {
 }
 
 const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
-  const [openSubmenu, setOpenSubmenu] = useState(false);
+  const [openSubmenuResources, setOpenSubmenuResources] = useState(false);
+  const [openSubmenuAr, setOpenSubmenuAr] = useState(false);
 
   const handleSubmenuClick = () => {
-    setOpenSubmenu(!openSubmenu);
+    setOpenSubmenuResources(!openSubmenuResources);
+  };
+  const handleSubmenuArClick = () => {
+    setOpenSubmenuAr(!openSubmenuAr);
   };
   return (
     <div className="size-full py-10 bg-primary-100 border-r border-gray-200 font-bold">
@@ -77,10 +81,10 @@ const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
               sx={{ '& span': { fontSize: '16px' } }}
             />
           )}
-          {isOpen && (openSubmenu ? <ExpandLess /> : <ExpandMore />)}
+          {isOpen && (openSubmenuResources ? <ExpandLess /> : <ExpandMore />)}
         </ListItemButton>
 
-        <Collapse in={openSubmenu} timeout="auto" unmountOnExit>
+        <Collapse in={openSubmenuResources} timeout="auto" unmountOnExit>
           <ul className="pl-8">
             <li>
               <ItemNavbar
@@ -121,12 +125,59 @@ const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
           label="Manage Notifications"
           path="/admin/notifications"
         />
-        <ItemNavbar
-          Icon={ArchiveX}
-          isOpen={isOpen}
-          label="Archive"
-          path="/admin/archive"
-        />
+        <ListItemButton
+          onClick={handleSubmenuArClick}
+          className="hover:bg-gray-200"
+          sx={{ py: '8px' }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: '32px',
+              marginRight: '4px'
+            }}
+          >
+            <ArchiveX
+              className="size-5"
+              color="hsl(247 45.1% 20% / var(--tw-bg-opacity))"
+            />
+          </ListItemIcon>
+          {isOpen && (
+            <ListItemText
+              primary="Archived"
+              sx={{ '& span': { fontSize: '16px' } }}
+            />
+          )}
+          {isOpen && (openSubmenuAr ? <ExpandLess /> : <ExpandMore />)}
+        </ListItemButton>
+
+        <Collapse in={openSubmenuAr} timeout="auto" unmountOnExit>
+          <ul className="pl-8">
+            <li>
+              <ItemNavbar
+                Icon={NotepadText}
+                isOpen={isOpen}
+                label="Manage Notes"
+                path="/admin/archive/notes"
+              />
+            </li>
+            <li>
+              <ItemNavbar
+                Icon={Layers}
+                isOpen={isOpen}
+                label="Manage Flashcards"
+                path="/admin/archive/flashcards"
+              />
+            </li>
+            <li>
+              <ItemNavbar
+                Icon={ClipboardList}
+                isOpen={isOpen}
+                label="Manage Quizzes"
+                path="/admin/archive/quizzes"
+              />
+            </li>
+          </ul>
+        </Collapse>
       </List>
     </div>
   );

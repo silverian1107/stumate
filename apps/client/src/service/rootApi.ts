@@ -317,6 +317,15 @@ interface AllNotesResponse {
   };
 }
 
+interface AllArNotesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    total: number;
+    result: INoteRoot[];
+  };
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -376,7 +385,8 @@ export const rootApi = createApi({
     'NOTI',
     'TAG_ADMIN',
     'NOTE_ADMIN',
-    'ARCHIVE_ADMIN'
+    'ARCHIVE_ADMIN',
+    'NOTE_AR'
   ],
   endpoints: (builder) => ({
     register: builder.mutation<
@@ -612,12 +622,29 @@ export const rootApi = createApi({
       }),
       providesTags: [{ type: 'NOTE_ADMIN' }, { type: 'ARCHIVE_ADMIN' }]
     }),
+    getAllArNotes: builder.query<AllArNotesResponse, void>({
+      query: () => ({
+        url: 'notes/archived-resources/all',
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'NOTE_AR' }]
+    }),
     deleteNote: builder.mutation({
-      query: (id) => ({
+      query: ({ id }) => ({
         url: `/notes/${id}/delete`,
         method: 'DELETE'
       }),
-      invalidatesTags: [{ type: 'NOTE_ADMIN' }]
+      invalidatesTags: [{ type: 'NOTE_AR' }]
+    }),
+    restoreNoteById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/notes/${id}/restore`,
+        method: 'POST'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_ADMIN' }, { type: 'NOTE_AR' }]
     })
   })
 });
@@ -650,5 +677,7 @@ export const {
   useDeleteNotiMutation,
   useUpdateNotiMutation,
   useGetAllNotesQuery,
-  useDeleteNoteMutation
+  useDeleteNoteMutation,
+  useGetAllArNotesQuery,
+  useRestoreNoteByIdMutation
 } = rootApi;

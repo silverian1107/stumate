@@ -324,6 +324,7 @@ const NotificationList = () => {
                     color="primary"
                     size="small"
                     onClick={() => handleOpenUpdate(row)}
+                    title="Edit"
                   >
                     <Edit />
                   </IconButton>
@@ -331,6 +332,7 @@ const NotificationList = () => {
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row)}
+                    title="Delete"
                   >
                     <Trash2 />
                   </IconButton>

@@ -8,6 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Pagination,
   Paper,
   Table,
   TableBody,
@@ -17,48 +18,42 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { EllipsisVertical, Trash2 } from 'lucide-react';
+import { RotateCcw, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import type { INoteRoot } from '@/service/rootApi';
 import {
-  useArchiveNoteByIdMutation,
-  useGetAllNotesQuery
+  useDeleteNoteMutation,
+  useGetAllArNotesQuery,
+  useRestoreNoteByIdMutation
 } from '@/service/rootApi';
 
-import DetailNoteDialog from '../_components/dialog/DetailNoteDialog';
-import Panigation from '../_components/Panigation';
-
 const NotePage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const [createdAt, setCreatedAt] = useState('');
 
-  const { data, isSuccess } = useGetAllNotesQuery({
-    currentPage,
-    createdAt
-  });
-  const [archiveNoteByIdMutation] = useArchiveNoteByIdMutation();
+  const { data, isSuccess } = useGetAllArNotesQuery();
+  const [restoreNoteById] = useRestoreNoteByIdMutation();
+  const [deleteNote] = useDeleteNoteMutation();
 
   const [count, setCount] = useState<number>(1);
   const [dataNotes, setDataNotes] = useState<INoteRoot[] | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedNote, setSelectedNote] = useState<INoteRoot | null>(null);
+  const [selectedNote, setSelectedNote] = useState<string | null>(null);
   const [selectedNoteDele, setSelectedNoteDele] = useState<string | null>(null);
 
   useEffect(() => {
     if (isSuccess) {
       setDataNotes(data.data.result);
-      setCount(data.data.meta.pages);
     }
   }, [isSuccess, data, createdAt]);
 
   const [open, setOpen] = useState(false);
 
-  const handleOpen = (note: INoteRoot) => {
+  const handleOpen = (id: string) => {
     setOpen(true);
-    setSelectedNote(note);
+    setSelectedNote(id);
   };
   const handleClose = () => {
     setOpen(false);
@@ -76,7 +71,7 @@ const NotePage = () => {
   const handleDeleteConfirm = async () => {
     try {
       if (selectedNoteDele) {
-        await archiveNoteByIdMutation({ id: selectedNoteDele });
+        await deleteNote({ id: selectedNoteDele });
         setDeleteDialogOpen(false);
         toast.success('Note removed successfully!', {
           position: 'top-right'
@@ -90,6 +85,34 @@ const NotePage = () => {
       });
     }
   };
+
+  const handleRestoreConfirm = async () => {
+    try {
+      if (selectedNote) {
+        await restoreNoteById({ id: selectedNote });
+        setOpen(false);
+        toast.success('Note restored successfully!', {
+          position: 'top-right'
+        });
+        setSelectedNote(null);
+      }
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
+    }
+  };
+
+  const filtereddataTags = (dataNotes || []).filter((row) => {
+    return row.createdAt.includes(createdAt.split('T')[0].toLowerCase());
+  });
+
+  const rowsPerPage = 10;
+  const paginatedDataNotes = filtereddataTags.slice(
+    (count - 1) * rowsPerPage,
+    count * rowsPerPage
+  );
 
   return (
     <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative">
@@ -137,68 +160,66 @@ const NotePage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(dataNotes || [])
-              .filter((row) => row.isArchived !== true)
-              .map((row, index) => (
-                <TableRow key={row._id}>
-                  <TableCell align="center" size="small">
-                    {10 * (currentPage - 1) + index + 1}
-                  </TableCell>
-                  <TableCell
-                    align="center"
+            {(paginatedDataNotes || []).map((row, index) => (
+              <TableRow key={row._id}>
+                <TableCell align="center" size="small">
+                  {(count - 1) * rowsPerPage + index + 1}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                >
+                  {row.name}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                >
+                  <Link href={`/admin/accounts/${row.ownerId}`}>
+                    {' '}
+                    {row.ownerId}
+                  </Link>
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.createdAt.split('T')[0]}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  {row.updatedAt.split('T')[0]}
+                </TableCell>
+                <TableCell align="center" size="small">
+                  <IconButton
+                    color="primary"
                     size="small"
-                    className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                    onClick={() => handleOpen(row._id)}
+                    title="Restore"
                   >
-                    {row.name}
-                  </TableCell>
-                  <TableCell
-                    align="center"
+                    <RotateCcw />
+                  </IconButton>
+                  <IconButton
+                    color="error"
                     size="small"
-                    className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                    onClick={() => handleDeleteOpen(row._id)}
+                    title="Delete"
                   >
-                    <Link href={`/admin/accounts/${row.ownerId}`}>
-                      {' '}
-                      {row.ownerId}
-                    </Link>
-                  </TableCell>
-                  <TableCell align="center" size="small">
-                    {row.createdAt.split('T')[0]}
-                  </TableCell>
-                  <TableCell align="center" size="small">
-                    {row.updatedAt.split('T')[0]}
-                  </TableCell>
-                  <TableCell align="center" size="small">
-                    <IconButton
-                      color="primary"
-                      size="small"
-                      onClick={() => handleOpen(row)}
-                      title="Detail"
-                    >
-                      <EllipsisVertical />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      size="small"
-                      onClick={() => handleDeleteOpen(row._id)}
-                      title="Delete"
-                    >
-                      <Trash2 />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    <Trash2 />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Panigation
-        count={count}
-        page={currentPage}
-        setCurrent={(value: number) => setCurrentPage(value)}
-      />
-      <DetailNoteDialog
-        selectedNote={selectedNote}
-        handleCloseDialog={handleClose}
-        isDialogOpen={open}
+      <Pagination
+        count={Math.ceil(filtereddataTags.length / rowsPerPage)}
+        page={count}
+        onChange={(e, value) => setCount(value)}
+        style={{
+          marginTop: '20px',
+          display: 'flex',
+          justifyContent: 'center'
+        }}
       />
       <Dialog
         open={deleteDialogOpen}
@@ -218,6 +239,27 @@ const NotePage = () => {
           </Button>
           <Button onClick={handleDeleteConfirm} color="error">
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Restore</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to restore the note?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleRestoreConfirm} color="error">
+            Restore
           </Button>
         </DialogActions>
       </Dialog>
