@@ -34,6 +34,10 @@ export const useCreateNote = () => {
       queryClient.invalidateQueries({
         queryKey: ['getDocuments', null]
       });
+      queryClient.invalidateQueries({
+        queryKey: ['search'],
+        exact: false
+      });
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -75,6 +79,10 @@ export const useUpdateNote = () => {
       });
       queryClient.invalidateQueries({
         queryKey: ['getNoteById'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['search'],
         exact: false
       });
       if (data.parentId) {

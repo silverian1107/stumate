@@ -62,7 +62,7 @@ export class FlashcardsService {
     }
     if (
       note.ownerId.toString() !== user._id ||
-      deck.userId.toString() !== user._id
+      deck.ownerId.toString() !== user._id
     ) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
@@ -114,7 +114,7 @@ export class FlashcardsService {
 
   async findByDeckAndUser(deckId: string, user: IUser, qs: string) {
     const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -144,7 +144,7 @@ export class FlashcardsService {
     user: IUser,
   ) {
     const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -181,7 +181,7 @@ export class FlashcardsService {
     user: IUser,
   ) {
     const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -208,7 +208,7 @@ export class FlashcardsService {
     @User() user: IUser,
   ) {
     const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -238,7 +238,7 @@ export class FlashcardsService {
 
   async handleStudyFlashcard(deckId: string, user: IUser) {
     const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -326,7 +326,7 @@ export class FlashcardsService {
 
   async handleDeckProgress(deckId: string, user: IUser) {
     const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -373,7 +373,7 @@ export class FlashcardsService {
 
   async findByUserAndDeckId(deckId: string, user: IUser) {
     const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -460,7 +460,7 @@ export class FlashcardsService {
   async remove(deckId: string, id: string, @User() user: IUser) {
     const deck = await this.decks.findOne(deckId);
     if (user.role === 'USER') {
-      if (deck.userId.toString() !== user._id) {
+      if (deck.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -488,7 +488,7 @@ export class FlashcardsService {
   async removeMultiple(deckId: string, flashcardIds: string[], user: IUser) {
     const deck = await this.decks.findOne(deckId);
     if (user.role === 'USER') {
-      if (deck.userId.toString() !== user._id) {
+      if (deck.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -535,7 +535,7 @@ export class FlashcardsService {
   async removeAll(deckId: string, @User() user: IUser) {
     const deck = await this.decks.findOne(deckId);
     if (user.role === 'USER') {
-      if (deck.userId.toString() !== user._id) {
+      if (deck.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );

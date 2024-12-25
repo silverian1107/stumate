@@ -88,7 +88,7 @@ const Main = () => {
       </div>
     );
   }
-  console.log('statistic: ', statistics);
+
   if (!data) return null;
   return (
     <div className="flex-1 flex h-screen bg-primary-50 flex-col box-border">
