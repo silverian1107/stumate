@@ -2,7 +2,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Layers3 } from 'lucide-react';
 import Link from 'next/link';
 
-import IconDashboard from '../../_components/IconDashboard';
+import IconDashboard from '../../../../../components/sidebar/IconDashboard';
 
 const CardDue = ({
   flashcardsDueTodayCount = 0

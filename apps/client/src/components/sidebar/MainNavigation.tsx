@@ -1,0 +1,32 @@
+import { Home, Inbox, Search, Settings, Sparkle } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+
+import SidebarItem from './SidebarItem';
+
+const MainNavigation = () => {
+  const pathname = usePathname();
+
+  return (
+    <div className="flex flex-col">
+      <SidebarItem isButton label="Search" icon={Search} />
+      <SidebarItem
+        isButton
+        label="Home"
+        icon={Home}
+        active={pathname === '/apps'}
+        href="/apps"
+      />
+      <SidebarItem isButton label="Settings" icon={Settings} />
+      <SidebarItem isButton label="Inbox" icon={Inbox} />
+      <SidebarItem
+        isButton
+        label="Resources"
+        icon={Sparkle}
+        active={pathname.includes('resources')}
+        href="/apps/resources/decks/view"
+      />
+    </div>
+  );
+};
+
+export default MainNavigation;

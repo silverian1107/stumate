@@ -1,48 +1,25 @@
 'use client';
 
-import {
-  Archive,
-  ArrowRightCircle,
-  Home,
-  Inbox,
-  LogOutIcon,
-  Menu,
-  PlusCircle,
-  Search,
-  Settings,
-  Sparkle,
-  Tags
-} from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { Menu } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import ArchivedList from '@/components/archivedList';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from '@/components/ui/sheet';
+import BottomNavigation from '@/components/sidebar/BottomNavigation';
+import CollectionsSection from '@/components/sidebar/CollectionsSection';
+import DocumentList from '@/components/sidebar/DocumentList';
+import MainNavigation from '@/components/sidebar/MainNavigation';
+import ResizeHandle from '@/components/sidebar/ResizeHandle';
+import UserProfile from '@/components/UserProfile';
 import { useAccount } from '@/hooks/use-auth';
 import { useCreateCollection } from '@/hooks/use-collection';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { cn } from '@/lib/utils';
 
-import DocumentList from './DocumentList';
-import SidebarItem from './SidebarItem';
-
 const Sidebar = () => {
-  const pathname = usePathname();
   const { data, error, isLoading } = useAccount();
   const createCollection = useCreateCollection();
-
   const isTablet = useMediaQuery('(max-width: 768px)');
 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(240);
   const [isResizing, setIsResizing] = useState(false);
 
@@ -54,7 +31,6 @@ const Sidebar = () => {
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (!isResizing) return;
-
       const newWidth = Math.max(200, Math.min(480, e.clientX));
       setSidebarWidth(newWidth);
     },
@@ -93,107 +69,21 @@ const Sidebar = () => {
 
   const sidebarContent = (
     <>
-      {/* User Profile Section */}
-      <div className="group flex h-[64px] w-full items-center justify-between px-5 text-base transition-all duration-300 hover:bg-primary-800">
-        <div className="flex items-center gap-2">
-          <Avatar className="border-2 border-black">
-            <AvatarImage src="/avatar.jpg" />
-            <AvatarFallback>Jo</AvatarFallback>
-          </Avatar>
-          <span className="font-semibold transition-all duration-300 group-hover:text-white">
-            {data.data.user.username}
-          </span>
-        </div>
-        <button
-          className="cursor-pointer"
-          type="button"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-        >
-          <ArrowRightCircle className="size-5 transition-all duration-300 group-hover:text-white" />
-        </button>
-      </div>
-
-      {/* Main Navigation Items */}
-      <div className="flex flex-col">
-        <SidebarItem isButton label="Search" icon={Search} />
-        <SidebarItem
-          isButton
-          label="Home"
-          icon={Home}
-          active={pathname === '/apps'}
-          href="/apps"
-        />
-        <SidebarItem isButton label="Settings" icon={Settings} />
-        <SidebarItem isButton label="Inbox" icon={Inbox} />
-        <SidebarItem
-          isButton
-          label="Resources"
-          icon={Sparkle}
-          active={pathname.includes('resources')}
-          href="/apps/resources/decks/view"
-        />
-      </div>
-
-      {/* Separator */}
-      <div className="mx-auto my-2 h-px w-4/5 bg-primary-300" />
-
-      {/* Collections Section */}
-      <SidebarItem
-        label="New Collections"
-        icon={PlusCircle}
-        isButton={false}
-        onClick={handleCreate}
+      <UserProfile
+        data={data}
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
       />
-
-      {/* Document List and Bottom Items */}
+      <MainNavigation />
+      <div className="mx-auto my-2 h-px w-4/5 bg-primary-300" />
+      <CollectionsSection handleCreate={handleCreate} />
       <div className="w-full flex-1 flex flex-col overflow-auto">
         <div className="w-full overflow-auto flex-1 max-h-[320px]">
-          <DocumentList />
+          <DocumentList parentDocumentId={undefined} />
         </div>
-
-        {/* Bottom Navigation Items */}
-        <div className="mt-auto">
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <div>
-                <SidebarItem
-                  isButton
-                  label="Archive"
-                  icon={Archive}
-                  onClick={() => setIsSheetOpen(true)}
-                />
-              </div>
-            </SheetTrigger>
-            <SheetContent side="left" className="overflow-auto">
-              <SheetHeader>
-                <SheetTitle>Archive</SheetTitle>
-              </SheetHeader>
-              <SheetDescription className="text-center">
-                See your archived resources
-              </SheetDescription>
-              <ArchivedList />
-            </SheetContent>
-          </Sheet>
-
-          <SidebarItem
-            isButton
-            label="Tags"
-            icon={Tags}
-            href="/apps/resources/tags"
-          />
-          <SidebarItem isButton label="Logout" icon={LogOutIcon} />
-        </div>
+        <BottomNavigation />
       </div>
-
-      {/* Resize Handle */}
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <div
-        className={cn(
-          'absolute right-0 top-0 h-full w-1 cursor-ew-resize hover:bg-primary-300',
-          isResizing ? 'bg-primary-300' : 'bg-transparent'
-        )}
-        onMouseDown={handleMouseDown}
-      />
+      <ResizeHandle isResizing={isResizing} handleMouseDown={handleMouseDown} />
     </>
   );
 

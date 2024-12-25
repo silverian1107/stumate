@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 
-import IconDashboard from '@/app/(main)/apps/_components/IconDashboard';
+import IconDashboard from '@/components/sidebar/IconDashboard';
 
 const EachPerfrom = ({
   icon: Icon,

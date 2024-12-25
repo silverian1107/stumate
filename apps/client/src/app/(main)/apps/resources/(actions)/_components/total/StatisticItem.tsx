@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 
-import IconWrapper from '@/app/(main)/apps/_components/IconWrapper';
+import IconWrapper from '@/components/IconWrapper';
 
 const StatisticItem = ({
   icon: Icon,

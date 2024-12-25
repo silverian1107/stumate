@@ -1,7 +1,7 @@
 import { CloudSun, LayoutGrid } from 'lucide-react';
 import React from 'react';
 
-import IconWrapper from '../../_components/IconWrapper';
+import IconWrapper from '@/components/IconWrapper';
 
 const Header = ({ username }: { username: string }) => {
   return (

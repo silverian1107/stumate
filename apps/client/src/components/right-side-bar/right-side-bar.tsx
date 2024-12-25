@@ -37,7 +37,7 @@ export function LearnerSidebar() {
   const tagLimit = 3;
   const tagList = note?.tags?.slice(0, tagLimit).map((tag: any) => (
     <span
-      key={tag.id}
+      key={tag._id}
       className="bg-primary-50 px-1 py-0.5 rounded-full text-primary-700"
     >
       {tag.name}
