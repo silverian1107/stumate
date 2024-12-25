@@ -8,6 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Pagination,
   Paper,
   Table,
   TableBody,
@@ -17,55 +18,54 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { EllipsisVertical, Trash2 } from 'lucide-react';
+import { RotateCcw, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import type { IQuiz } from '@/service/rootApi';
+import type { IFlashcard } from '@/service/rootApi';
 import {
-  useArchiveQuizByIdMutation,
-  useGetAllQuizzesQuery
+  useDeleteFlashcardMutation,
+  useGetAllArFlashcardsQuery,
+  useRestoreFlashcardByIdMutation
 } from '@/service/rootApi';
 
-import DetailQuizDialog from '../_components/dialog/DetailQuizDialog';
-import Panigation from '../_components/Panigation';
-
-const QuizPage = () => {
-  const [current, setCurrent] = useState(1);
+const FlashcardPage = () => {
   const [createdAt, setCreatedAt] = useState('');
 
-  const { data, isSuccess } = useGetAllQuizzesQuery({
-    current,
-    createdAt
-  });
-  console.log('data', data);
-  const [archiveQuizById] = useArchiveQuizByIdMutation();
+  const { data, isSuccess } = useGetAllArFlashcardsQuery();
+  const [restoreFlashcardById] = useRestoreFlashcardByIdMutation();
+  const [deleteFlashcard] = useDeleteFlashcardMutation();
 
   const [count, setCount] = useState<number>(1);
-  const [dataQuizzes, setDataQuizzes] = useState<IQuiz[] | undefined>();
+  const [dataFlashcards, setDataFlashcards] = useState<
+    IFlashcard[] | undefined
+  >();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedQuiz, setSelectedQuiz] = useState<IQuiz | null>(null);
-  const [selectedQuizDele, setSelectedQuizDele] = useState<string | null>(null);
+  const [selectedFlashcard, setSelectedFlashcard] = useState<string | null>(
+    null
+  );
+  const [selectedFlashcardDele, setSelectedFlashcardDele] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     if (isSuccess) {
-      setDataQuizzes(data.data.result);
-      setCount(data.data.meta.pages);
+      setDataFlashcards(data.data.result);
     }
   }, [isSuccess, data, createdAt]);
 
   const [open, setOpen] = useState(false);
 
-  const handleOpen = (Quiz: IQuiz) => {
+  const handleOpen = (id: string) => {
     setOpen(true);
-    setSelectedQuiz(Quiz);
+    setSelectedFlashcard(id);
   };
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleDeleteOpen = (id: string) => {
-    setSelectedQuizDele(id);
+    setSelectedFlashcardDele(id);
     setDeleteDialogOpen(true);
   };
 
@@ -75,13 +75,13 @@ const QuizPage = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      if (selectedQuizDele) {
-        await archiveQuizById({ id: selectedQuizDele });
+      if (selectedFlashcardDele) {
+        await deleteFlashcard({ id: selectedFlashcardDele });
         setDeleteDialogOpen(false);
-        toast.success('Quiz removed successfully!', {
+        toast.success('Flashcard removed successfully!', {
           position: 'top-right'
         });
-        setSelectedQuiz(null);
+        setSelectedFlashcard(null);
       }
     } catch (error) {
       toast.error(`${error}`, {
@@ -91,10 +91,38 @@ const QuizPage = () => {
     }
   };
 
+  const handleRestoreConfirm = async () => {
+    try {
+      if (selectedFlashcard) {
+        await restoreFlashcardById({ id: selectedFlashcard });
+        setOpen(false);
+        toast.success('Flashcard restored successfully!', {
+          position: 'top-right'
+        });
+        setSelectedFlashcard(null);
+      }
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
+    }
+  };
+
+  const filtereddataTags = (dataFlashcards || []).filter((row) => {
+    return row.createdAt.includes(createdAt.split('T')[0].toLowerCase());
+  });
+
+  const rowsPerPage = 10;
+  const paginatedDataFlashcards = filtereddataTags.slice(
+    (count - 1) * rowsPerPage,
+    count * rowsPerPage
+  );
+
   return (
     <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative">
       <Typography variant="h5" gutterBottom className="flex gap-80">
-        Manage Quizzes
+        Archive Flashcards
         <div className="flex gap-4">
           <div className="flex gap-3 px-1 rounded-lg border border-primary-200 text-sm items-center">
             <p>Created Date:</p>
@@ -120,19 +148,19 @@ const QuizPage = () => {
                 SST
               </TableCell>
               <TableCell align="center" size="small" width="20%">
-                Name
+                Front
               </TableCell>
               <TableCell align="center" size="small" width="20%">
-                Description
+                Back
               </TableCell>
               <TableCell align="center" size="small">
-                Question&apos;s Number
+                Created By
               </TableCell>
               <TableCell align="center" size="small">
-                Duration
+                Created Date
               </TableCell>
               <TableCell align="center" size="small">
-                Create By
+                Updated Date
               </TableCell>
               <TableCell align="center" size="small">
                 Action
@@ -140,24 +168,24 @@ const QuizPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(dataQuizzes || []).map((row, index) => (
+            {(paginatedDataFlashcards || []).map((row, index) => (
               <TableRow key={row._id}>
                 <TableCell align="center" size="small">
-                  {10 * (current - 1) + index + 1}
+                  {10 * (count - 1) + index + 1}
                 </TableCell>
                 <TableCell
                   align="center"
                   size="small"
                   className="overflow-hidden text-ellipsis max-w-20 text-nowrap"
                 >
-                  {row.title || row.name}
+                  {row.front}
                 </TableCell>
                 <TableCell
                   align="center"
                   size="small"
                   className="overflow-hidden text-ellipsis max-w-20 text-nowrap"
                 >
-                  {row.description}
+                  {row.back}
                 </TableCell>
                 <TableCell
                   align="center"
@@ -167,26 +195,25 @@ const QuizPage = () => {
                   {row.createdBy.username}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.numberOfQuestion}
+                  {row.createdAt.split('T')[0]}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.duration}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  {row.createdBy.username}
+                  {row.updatedAt.split('T')[0]}
                 </TableCell>
                 <TableCell align="center" size="small">
                   <IconButton
                     color="primary"
                     size="small"
-                    onClick={() => handleOpen(row)}
+                    onClick={() => handleOpen(row._id)}
+                    title="Restore"
                   >
-                    <EllipsisVertical />
+                    <RotateCcw />
                   </IconButton>
                   <IconButton
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row._id)}
+                    title="Delete"
                   >
                     <Trash2 />
                   </IconButton>
@@ -196,15 +223,15 @@ const QuizPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Panigation
-        count={count}
-        page={current}
-        setCurrent={(value: number) => setCurrent(value)}
-      />
-      <DetailQuizDialog
-        selectedQuiz={selectedQuiz}
-        handleCloseDialog={handleClose}
-        isDialogOpen={open}
+      <Pagination
+        count={Math.ceil(filtereddataTags.length / rowsPerPage)}
+        page={count}
+        onChange={(e, value) => setCount(value)}
+        style={{
+          marginTop: '20px',
+          display: 'flex',
+          justifyContent: 'center'
+        }}
       />
       <Dialog
         open={deleteDialogOpen}
@@ -215,7 +242,7 @@ const QuizPage = () => {
         <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
-            Are you sure you want to delete the Quiz?
+            Are you sure you want to delete the Flashcard?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -227,7 +254,29 @@ const QuizPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Restore</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to restore the Flashcard?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleRestoreConfirm} color="error">
+            Restore
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
-export default QuizPage;
+
+export default FlashcardPage;
