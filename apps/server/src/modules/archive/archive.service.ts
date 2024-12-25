@@ -125,7 +125,7 @@ export class ArchiveService {
           ),
         ]);
         return 'Note was archived successfully';
-      case 'deck':
+      case 'decks':
         const flashcards = await this.flashcardModel.find({
           deckId: resourceId,
         });
@@ -374,10 +374,10 @@ export class ArchiveService {
       case 'notes':
         model = this.noteModel;
         break;
-      case 'deck':
+      case 'decks':
         model = this.deckModel;
         break;
-      case 'quizzes':
+      case 'quiz-tests':
         model = this.quizTestModel;
         break;
       default:

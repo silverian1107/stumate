@@ -44,12 +44,16 @@ export const NoteApi = {
       attachment
     });
   },
-  async archive(resourceId: string) {
-    return NoteClient.post(`${resourceId}/archive`);
+  async archive(noteId: string) {
+    return NoteClient.post(`${noteId}/archive`);
   },
 
-  async restore(resourceId: string) {
-    return NoteClient.post(`${resourceId}/restore`);
+  async restore(noteId: string) {
+    return NoteClient.post(`${noteId}/restore`);
+  },
+
+  async delete(noteId: string) {
+    return NoteClient.delete(`/${noteId}`);
   },
 
   async getSummaryByNoteId(noteId: string) {
@@ -66,13 +70,13 @@ export const NoteApi = {
     });
   },
 
-  shareResource(resourceId: string, usernameOrEmail: string) {
-    return NoteClient.post(`${resourceId}/share`, { usernameOrEmail });
+  shareResource(noteId: string, usernameOrEmail: string) {
+    return NoteClient.post(`${noteId}/share`, { usernameOrEmail });
   },
-  unshareResource(resourceId: string, usernameOrEmail: string) {
-    return NoteClient.post(`${resourceId}/unshare`, { usernameOrEmail });
+  unshareResource(noteId: string, usernameOrEmail: string) {
+    return NoteClient.post(`${noteId}/unshare`, { usernameOrEmail });
   },
-  getSharedUsers(resourceId: string) {
-    return NoteClient.get(`${resourceId}/shared-users`);
+  getSharedUsers(noteId: string) {
+    return NoteClient.get(`${noteId}/shared-users`);
   }
 };
