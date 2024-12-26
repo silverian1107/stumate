@@ -1,12 +1,12 @@
 'use client';
 
 import { AxiosError } from 'axios';
-import { Share2Icon } from 'lucide-react';
+import { ArchiveIcon, Share2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import { useDeckManager } from '@/hooks/use-deck';
+import { useArchiveDeck, useDeckManager } from '@/hooks/use-deck';
 import {
   setFlashcardErrors,
   setFlashcards
@@ -18,15 +18,12 @@ import { ResourceElements } from '../../../_components/creator';
 import { DeckActionHeader } from '../../../_components/header';
 import ShareDeckDialog from './share-deck-dialog';
 
-// import {ArchiveIcon} from 'lucide-react'
-// import { useArchiveDeck} from '@/hooks/use-deck';
-
 export default function DeckPage() {
   const dispatch = useDispatch();
   const resource = useSelector((state: RootState) => state.decks);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
-  // tạo 1 biến const archiveDeck = useArchiveDeck();
+  const archiveDeck = useArchiveDeck();
 
   const { isEditing, deck, saveResource, isSubmitting, isLoading } =
     useDeckManager();
@@ -78,25 +75,22 @@ export default function DeckPage() {
     }
   };
 
-  // const handleArchiveDeck = async () => {
-  //   thằng này là thằng sử dụng cái biến archiveDeck phía trên, truyền _id của cái deck vào để lưu trữ hắn
-  //   await archiveDeck.mutateAsync(deck?._id || '');
-  //
-  //
-  //  toast.success('Deck archived successfully!'); // Không cần quan tâm thằng này
-  // };
+  const handleArchiveDeck = async () => {
+    await archiveDeck.mutateAsync(deck?._id || '');
+    toast.success('Deck archived successfully!'); // Không cần quan tâm thằng này
+  };
 
   return (
     <>
       <div className="w-full flex justify-start">
-        {/* <button
+        <button
           type="button"
           onClick={handleArchiveDeck}
           className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
         >
           <ArchiveIcon className="size-4" />
           Archive
-        </button> */}
+        </button>
         <button
           type="button"
           className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80 ml-auto"
