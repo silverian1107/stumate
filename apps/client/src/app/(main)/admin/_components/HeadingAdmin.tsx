@@ -126,10 +126,10 @@ const HeadingAdmin = ({
     </MenuProfile>
   );
   return (
-    <header className="bg-primary-200 shadow-md flex justify-between items-center px-6">
-      <div className="container flex justify-between items-center text-[#212F3F] border-b border-b-[#E9EAEC] h-[64px] ">
+    <header className="bg-primary-200 shadow-md flex justify-between items-center px-6 h-[64px]">
+      <div className="container flex justify-between items-center text-[#212F3F] ">
         <div className="flex items-center w-1/5 justify-between px-6">
-          <Link href="/">
+          <Link href="/admin">
             <Avatar className="border-2 ">
               <AvatarImage src="/avatar.jpg" />
               <AvatarFallback>Jo</AvatarFallback>
@@ -159,7 +159,7 @@ const HeadingAdmin = ({
           </div>
         </div>
       </div>
-      <div>
+      <div className="flex ">
         <IconButton size="medium" className="!p-0">
           <AvatarUser className="!bg-primary-main">
             {user?.avatarUrl ? (

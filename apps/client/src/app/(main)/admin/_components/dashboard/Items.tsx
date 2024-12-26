@@ -6,7 +6,7 @@ import ItemDashboard from './ItemDashboard';
 
 const Items = ({ overview }: { overview: Overview }) => {
   return (
-    <div className="grid grid-cols-4 gap-5">
+    <div className="grid grid-cols-4 lg:gap-5 gap-3">
       <ItemDashboard
         title="Accounts"
         value={overview.totalAccounts}

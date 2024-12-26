@@ -173,6 +173,7 @@ const QuizPage = () => {
                     color="primary"
                     size="small"
                     onClick={() => handleOpen(row)}
+                    title="Detail"
                   >
                     <EllipsisVertical />
                   </IconButton>
@@ -180,6 +181,7 @@ const QuizPage = () => {
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row._id)}
+                    title="Archive"
                   >
                     <Trash2 />
                   </IconButton>

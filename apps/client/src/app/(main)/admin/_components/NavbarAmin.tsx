@@ -157,7 +157,7 @@ const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
               <ItemNavbar
                 Icon={NotepadText}
                 isOpen={isOpen}
-                label="Manage Notes"
+                label="Archive Notes"
                 path="/admin/archive/notes"
               />
             </li>
@@ -165,7 +165,7 @@ const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
               <ItemNavbar
                 Icon={Layers}
                 isOpen={isOpen}
-                label="Manage Flashcards"
+                label="Archive Flashcards"
                 path="/admin/archive/flashcards"
               />
             </li>
@@ -173,7 +173,7 @@ const NavbarAdmin = ({ isOpen }: NavbarAdminProps) => {
               <ItemNavbar
                 Icon={ClipboardList}
                 isOpen={isOpen}
-                label="Manage Quizzes"
+                label="Archive Quizzes"
                 path="/admin/archive/quizzes"
               />
             </li>

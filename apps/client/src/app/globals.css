@@ -229,3 +229,24 @@ input[type='number'] {
   justify-content: center;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .MuiTableCell-root {
+    font-size: 0.75rem; /* Thu nhỏ font chữ */
+  }
+}
+
+@media (max-width: 480px) {
+  .MuiTableContainer-root {
+    overflow-x: scroll; /* Kích hoạt thanh cuộn ngang */
+  }
+
+  .MuiTableCell-root {
+    padding: 8px; /* Thu nhỏ khoảng cách */
+  }
+
+  .action-cell {
+    min-width: 80px; /* Thu nhỏ kích thước cột hành động */
+  }
+}
+
