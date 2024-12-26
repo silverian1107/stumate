@@ -123,7 +123,7 @@ const RevenueChart = ({
   return (
     <div className="bg-white rounded-lg p-5 flex-1 w-full">
       <div className="flex flex-col gap-5 rounded-lg w-full h-[50vh] lg:h-[55vh]">
-        <Line className="w-full h-full" options={options} data={data} />
+        <Line className="size-full" options={options} data={data} />
       </div>
       <div className="flex items-center gap-2 mt-5">
         <span>Year: {monthlyStatisticsChart.totalAccounts[0]?.year}</span>
