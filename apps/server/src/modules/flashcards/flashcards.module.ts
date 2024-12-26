@@ -13,6 +13,7 @@ import {
 } from './schema/flashcard-review.schema';
 import { HttpModule } from '@nestjs/axios';
 import { Note, NoteSchema } from '../notes/schema/note.schema';
+import { FlashcardsWithhoutDeckIdController } from './flashcards-without-deckId.controller';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { Note, NoteSchema } from '../notes/schema/note.schema';
     HttpModule,
     MongooseModule.forFeature([{ name: Note.name, schema: NoteSchema }]),
   ],
-  controllers: [FlashcardsController],
+  controllers: [FlashcardsController, FlashcardsWithhoutDeckIdController],
   providers: [FlashcardsService],
   exports: [FlashcardsService],
 })

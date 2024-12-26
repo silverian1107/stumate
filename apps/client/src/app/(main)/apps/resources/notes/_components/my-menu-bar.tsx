@@ -12,7 +12,6 @@ import { useArchiveNote, useNoteById, useRestoreNote } from '@/hooks/use-note';
 import NoteTitle from './note-title';
 import ShareDialog from './share-dialog';
 
-// components/menu-bar.tsx
 const MyMenuBar = () => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 

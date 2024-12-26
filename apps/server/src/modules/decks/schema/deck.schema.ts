@@ -13,7 +13,7 @@ export class Deck {
   description: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true })
-  userId: mongoose.Schema.Types.ObjectId;
+  ownerId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Note', require: false })
   noteId: mongoose.Schema.Types.ObjectId;
@@ -64,5 +64,10 @@ export class Deck {
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);
+DeckSchema.index({ ownerId: 1 });
+DeckSchema.index({ noteId: 1 });
+DeckSchema.index({ ownerId: 1, noteId: 1 });
+DeckSchema.index({ ownerId: 1, isCloned: 1 });
+DeckSchema.index({ tags: 1 });
 
 DeckSchema.plugin(archivePlugin);

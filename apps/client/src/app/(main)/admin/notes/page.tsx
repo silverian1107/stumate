@@ -1,8 +1,13 @@
 'use client';
 
 import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
-  Pagination,
   Paper,
   Table,
   TableBody,
@@ -13,72 +18,100 @@ import {
   Typography
 } from '@mui/material';
 import { EllipsisVertical, Trash2 } from 'lucide-react';
-import React, { useState } from 'react';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+import type { INoteRoot } from '@/service/rootApi';
+import {
+  useArchiveNoteByIdMutation,
+  useGetAllNotesQuery
+} from '@/service/rootApi';
 
 import DetailNoteDialog from '../_components/dialog/DetailNoteDialog';
+import Panigation from '../_components/Panigation';
 
 const NotePage = () => {
-  const defaultData = Array.from({ length: 10 }, (_, index) => ({
-    id: index + 1,
-    noteName: 'hehe',
-    userName: 'Anhpro',
-    createDate: '12/09/2024',
-    updateDate: '09/12/2024'
-  }));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [createdAt, setCreatedAt] = useState('');
 
-  const [data, setData] = useState(defaultData);
-  const [page, setPage] = useState(1);
-  const [dateFilter, setDateFilter] = useState('');
-  const [selectedNote, setSelectedNote] = useState<any>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const filteredData = data.filter((row) => {
-    const matchesDate = dateFilter ? row.createDate === dateFilter : true;
-    return matchesDate;
+  const { data, isSuccess } = useGetAllNotesQuery({
+    currentPage,
+    createdAt
   });
+  const [archiveNoteById] = useArchiveNoteByIdMutation();
 
-  const rowsPerPage = 8;
-  const paginatedData = filteredData.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  const [count, setCount] = useState<number>(1);
+  const [dataNotes, setDataNotes] = useState<INoteRoot[] | undefined>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedNote, setSelectedNote] = useState<INoteRoot | null>(null);
+  const [selectedNoteDele, setSelectedNoteDele] = useState<string | null>(null);
 
-  const handleDelete = (id: number) => {
-    setData(data.filter((row) => row.id !== id));
-  };
+  useEffect(() => {
+    if (isSuccess) {
+      setDataNotes(data.data.result);
+      setCount(data.data.meta.pages);
+    }
+  }, [isSuccess, data, createdAt]);
 
-  const handleDetail = (note: any) => {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = (note: INoteRoot) => {
+    setOpen(true);
     setSelectedNote(note);
-    setIsDialogOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
+  const handleDeleteOpen = (id: string) => {
+    setSelectedNoteDele(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      if (selectedNoteDele) {
+        await archiveNoteById({ id: selectedNoteDele });
+        setDeleteDialogOpen(false);
+        toast.success('Note removed successfully!', {
+          position: 'top-right'
+        });
+        setSelectedNote(null);
+      }
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
+    }
   };
 
   return (
-    <div className="p-6 rounded-lg bg-white w-full h-[80vh] relative">
-      <Typography
-        variant="h5"
-        gutterBottom
-        className="flex gap-40 items-center"
-      >
+    <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative">
+      <Typography variant="h5" gutterBottom className="flex gap-80">
         Manage Notes
-        <div className="flex gap-10  text-sm mt-1 items-center ">
-          {/* Category Filter */}
-          <div className="flex gap-3 px-1 rounded-lg border border-primary-200 items-center">
-            <p>Date create:</p>
+        <div className="flex gap-4">
+          <div className="flex gap-3 px-1 rounded-lg border border-primary-200 text-sm items-center">
+            <p>Created Date:</p>
             <input
               type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
+              value={createdAt}
+              onChange={(e) => {
+                const date = new Date(e.target.value);
+                setCreatedAt(date.toISOString());
+              }}
             />
           </div>
         </div>
       </Typography>
       <TableContainer
         component={Paper}
-        sx={{ marginTop: '20px', minHeight: '60vh' }}
+        sx={{ marginTop: '20px', minHeight: '70vh' }}
       >
         <Table>
           <TableHead>
@@ -86,17 +119,17 @@ const NotePage = () => {
               <TableCell align="center" size="small">
                 SST
               </TableCell>
-              <TableCell align="center" size="small">
-                Note name
+              <TableCell align="center" size="small" width="30%">
+                Note Name
               </TableCell>
               <TableCell align="center" size="small">
                 Username
               </TableCell>
               <TableCell align="center" size="small">
-                Create date
+                Created Date
               </TableCell>
               <TableCell align="center" size="small">
-                Update date
+                Updated Date
               </TableCell>
               <TableCell align="center" size="small">
                 Action
@@ -104,61 +137,91 @@ const NotePage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.map((row, index) => (
-              <TableRow key={row.id}>
-                <TableCell align="center" size="small">
-                  {index + 1}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  {row.noteName}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  {row.userName}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  {row.createDate}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  {row.updateDate}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  <IconButton
+            {(dataNotes || [])
+              .filter((row) => row.isArchived !== true)
+              .map((row, index) => (
+                <TableRow key={row._id}>
+                  <TableCell align="center" size="small">
+                    {10 * (currentPage - 1) + index + 1}
+                  </TableCell>
+                  <TableCell
+                    align="center"
                     size="small"
-                    color="primary"
-                    onClick={() => handleDetail(row)}
+                    className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
                   >
-                    <EllipsisVertical />
-                  </IconButton>
-                  <IconButton
-                    color="error"
+                    {row.name}
+                  </TableCell>
+                  <TableCell
+                    align="center"
                     size="small"
-                    onClick={() => handleDelete(row.id)}
+                    className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
                   >
-                    <Trash2 />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+                    <Link href={`/admin/accounts/${row.ownerId}`}>
+                      {' '}
+                      {row.ownerId}
+                    </Link>
+                  </TableCell>
+                  <TableCell align="center" size="small">
+                    {row.createdAt.split('T')[0]}
+                  </TableCell>
+                  <TableCell align="center" size="small">
+                    {row.updatedAt.split('T')[0]}
+                  </TableCell>
+                  <TableCell align="center" size="small">
+                    <IconButton
+                      color="primary"
+                      size="small"
+                      onClick={() => handleOpen(row)}
+                      title="Detail"
+                    >
+                      <EllipsisVertical />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      size="small"
+                      onClick={() => handleDeleteOpen(row._id)}
+                      title="Delete"
+                    >
+                      <Trash2 />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Pagination
-        count={Math.ceil(filteredData.length / rowsPerPage)}
-        page={page}
-        onChange={(e, value) => setPage(value)}
-        style={{
-          marginTop: '20px',
-          display: 'flex',
-          justifyContent: 'center'
-        }}
+      <Panigation
+        count={count}
+        page={currentPage}
+        setCurrent={(value: number) => setCurrentPage(value)}
       />
       <DetailNoteDialog
-        isDialogOpen={isDialogOpen}
-        handleCloseDialog={handleCloseDialog}
         selectedNote={selectedNote}
+        handleCloseDialog={handleClose}
+        isDialogOpen={open}
       />
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete the note?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
-
 export default NotePage;

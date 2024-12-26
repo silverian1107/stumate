@@ -34,6 +34,10 @@ export const useCreateNote = () => {
       queryClient.invalidateQueries({
         queryKey: ['getDocuments', null]
       });
+      queryClient.invalidateQueries({
+        queryKey: ['search'],
+        exact: false
+      });
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -77,6 +81,10 @@ export const useUpdateNote = () => {
         queryKey: ['getNoteById'],
         exact: false
       });
+      queryClient.invalidateQueries({
+        queryKey: ['search'],
+        exact: false
+      });
       if (data.parentId) {
         queryClient.invalidateQueries({
           queryKey: ['getDocuments', data.parentId]
@@ -87,6 +95,39 @@ export const useUpdateNote = () => {
       toast.error('Failed to update note', {
         description: 'From useUpdateNote'
       });
+    }
+  });
+};
+
+export const useRestoreNote = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (noteId: string) => {
+      const response = await NoteApi.restore(noteId);
+      return response.data.data;
+    },
+    onSuccess: (_, noteId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedResources']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getNoteById', noteId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedNote']
+      });
+
+      toast.success('Note Restored', {
+        description: 'The note has been successfully restored'
+      });
+    },
+    onError: () => {
+      toast.error('Failed to restore the note');
     }
   });
 };
@@ -123,12 +164,12 @@ export const useArchiveNote = () => {
   });
 };
 
-export const useRestoreNote = () => {
+export const useDeleteNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (noteId: string) => {
-      const response = await NoteApi.restore(noteId);
+      const response = await NoteApi.delete(noteId);
       return response.data.data;
     },
     onSuccess: (_, noteId) => {
@@ -142,16 +183,15 @@ export const useRestoreNote = () => {
       queryClient.invalidateQueries({
         queryKey: ['getNoteById', noteId]
       });
-      queryClient.invalidateQueries({
-        queryKey: ['getArchivedNote']
-      });
 
-      toast.success('Note Restored', {
-        description: 'The note has been successfully restored'
+      toast.success('Note Deleted', {
+        description: 'The note has been successfully deleted'
       });
     },
     onError: () => {
-      toast.error('Failed to restore the note');
+      toast.error('Failed to delete the note', {
+        description: 'From useDeleteNote'
+      });
     }
   });
 };

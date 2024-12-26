@@ -52,7 +52,7 @@ export class FlashcardsService {
 
   //websocket
   async handleCreateMultipleByAI(deckId: string, noteId: string, user: IUser) {
-    const deck = await this.decks.findOne(deckId);
+    const deck = await this.decks.findById(deckId);
     if (!mongoose.isValidObjectId(noteId)) {
       throw new BadRequestException('Invalid Note ID');
     }
@@ -62,7 +62,7 @@ export class FlashcardsService {
     }
     if (
       note.ownerId.toString() !== user._id ||
-      deck.userId.toString() !== user._id
+      deck.ownerId.toString() !== user._id
     ) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
@@ -113,8 +113,8 @@ export class FlashcardsService {
   }
 
   async findByDeckAndUser(deckId: string, user: IUser, qs: string) {
-    const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    const deck = await this.decks.findById(deckId);
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -143,8 +143,10 @@ export class FlashcardsService {
     createFlashcardData: CreateFlashcardDto[],
     user: IUser,
   ) {
-    const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    const deck = await this.decks.findById(deckId);
+    console.log(deck);
+
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -180,8 +182,8 @@ export class FlashcardsService {
     updateFlashcardData: UpdateMultipleFlashcardDto[],
     user: IUser,
   ) {
-    const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    const deck = await this.decks.findById(deckId);
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -207,8 +209,8 @@ export class FlashcardsService {
     createFlashcardDto: CreateFlashcardDto,
     @User() user: IUser,
   ) {
-    const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    const deck = await this.decks.findById(deckId);
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -237,8 +239,8 @@ export class FlashcardsService {
   }
 
   async handleStudyFlashcard(deckId: string, user: IUser) {
-    const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    const deck = await this.decks.findById(deckId);
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -325,8 +327,8 @@ export class FlashcardsService {
   }
 
   async handleDeckProgress(deckId: string, user: IUser) {
-    const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    const deck = await this.decks.findById(deckId);
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -372,8 +374,8 @@ export class FlashcardsService {
   }
 
   async findByUserAndDeckId(deckId: string, user: IUser) {
-    const deck = await this.decks.findOne(deckId);
-    if (deck.userId.toString() !== user._id) {
+    const deck = await this.decks.findById(deckId);
+    if (deck.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -458,9 +460,9 @@ export class FlashcardsService {
 
   //websocket
   async remove(deckId: string, id: string, @User() user: IUser) {
-    const deck = await this.decks.findOne(deckId);
+    const deck = await this.decks.findById(deckId);
     if (user.role === 'USER') {
-      if (deck.userId.toString() !== user._id) {
+      if (deck.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -486,9 +488,9 @@ export class FlashcardsService {
   }
 
   async removeMultiple(deckId: string, flashcardIds: string[], user: IUser) {
-    const deck = await this.decks.findOne(deckId);
+    const deck = await this.decks.findById(deckId);
     if (user.role === 'USER') {
-      if (deck.userId.toString() !== user._id) {
+      if (deck.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -533,9 +535,9 @@ export class FlashcardsService {
 
   //websocket
   async removeAll(deckId: string, @User() user: IUser) {
-    const deck = await this.decks.findOne(deckId);
+    const deck = await this.decks.findById(deckId);
     if (user.role === 'USER') {
-      if (deck.userId.toString() !== user._id) {
+      if (deck.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -568,5 +570,95 @@ export class FlashcardsService {
     await this.statisticsService.getAdminStatistics();
 
     return { message: 'Flashcard deleted successfully' };
+  }
+  async archive(id: string) {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Flashcard ID');
+    }
+    const flashcard = await this.flashcardModel.findOne({ _id: id });
+    if (!flashcard) {
+      throw new NotFoundException('Not found flashcard');
+    }
+    await this.flashcardReviewModel.updateOne(
+      { flashcardId: id },
+      { nextReview: null },
+    );
+    await this.flashcardModel.updateMany(
+      { _id: id },
+      { isArchived: true, archivedAt: new Date() },
+    );
+  }
+
+  async restore(id: string) {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Flashcard ID');
+    }
+    const flashcard = await this.flashcardModel.findOne({
+      _id: id,
+      isArchived: true,
+    });
+    if (!flashcard) {
+      throw new NotFoundException('Not found flashcard');
+    }
+    await this.flashcardReviewModel.updateOne(
+      { flashcardId: id },
+      { nextReview: Date.now() },
+    );
+    await this.flashcardModel.updateMany(
+      { _id: id, isArchived: true },
+      { isArchived: false, archivedAt: null },
+    );
+  }
+
+  async delete(id: string, user: IUser) {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Flashcard ID');
+    }
+    const flashcard = await this.flashcardModel.findOne({
+      _id: id,
+      isArchived: true,
+    });
+    if (!flashcard) {
+      throw new NotFoundException('Not found flashcard');
+    }
+    await this.flashcardReviewModel.updateMany(
+      { flashcardId: id },
+      { nextReview: null },
+    );
+    await this.flashcardModel.delete({ _id: id, isArchived: true }, user._id);
+  }
+
+  async findAllArchived(currentPage: number, pageSize: number, qs: string) {
+    const { filter, sort, population, projection } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    currentPage = currentPage ? currentPage : 1;
+    const limit = pageSize ? pageSize : 10;
+    const offset = (currentPage - 1) * limit;
+
+    filter.isArchived = true;
+
+    const totalItems = (await this.flashcardModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const result = await this.flashcardModel
+      .find(filter)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort as any)
+      .populate(population)
+      .select(projection as any)
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        total: totalItems,
+      },
+      result,
+    };
   }
 }

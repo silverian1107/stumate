@@ -282,11 +282,7 @@ const TagList = () => {
         style={{
           marginTop: '20px',
           display: 'flex',
-          justifyContent: 'center',
-          position: 'absolute',
-          bottom: 20,
-          left: 0,
-          right: 0
+          justifyContent: 'center'
         }}
       />
       <CreateTagDialog

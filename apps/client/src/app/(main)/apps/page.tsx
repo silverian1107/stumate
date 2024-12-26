@@ -25,7 +25,7 @@ import Total from './resources/(actions)/_components/Total';
 const Main = () => {
   const router = useRouter();
   const { data, error, isLoading } = useAccount();
-  const [socket, setSocket] = useState<any>(null);
+  const [, setSocket] = useState<any>(null);
   const [statistics, setStatistics] = useState<IUserStatistic | null>(null);
 
   const response = useStatisticsQuery();
@@ -33,11 +33,10 @@ const Main = () => {
   useEffect(() => {
     if (data?.data?.user) {
       if (response.isSuccess) {
-        console.log('response: ', response);
         setStatistics(response.data);
       }
       // Khởi tạo kết nối Socket.IO với token trong header
-      const newSocket = io('http://localhost:3000', {
+      const newSocket = io('http://127.0.0.1:3000', {
         auth: {
           token: Cookies.get('access_token') // Token lưu trong cookie
         },
@@ -61,7 +60,6 @@ const Main = () => {
       newSocket.on('disconnect', () => {
         console.log('Disconnected from server.');
       });
-      console.log(socket);
       setSocket(newSocket);
 
       return () => {
@@ -88,7 +86,7 @@ const Main = () => {
       </div>
     );
   }
-  console.log('statistic: ', statistics);
+
   if (!data) return null;
   return (
     <div className="flex-1 flex h-screen bg-primary-50 flex-col box-border">

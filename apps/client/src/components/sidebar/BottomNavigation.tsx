@@ -1,5 +1,10 @@
+'use client';
+
+import Cookies from 'js-cookie';
 import { Archive, LogOutIcon, Tags } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import ArchivedList from '@/components/archivedList';
 import {
@@ -10,12 +15,20 @@ import {
   SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet';
+import { AxiosClient } from '@/endpoints/AxiosClient';
 
 import SidebarItem from './SidebarItem';
 
 const BottomNavigation = () => {
+  const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
+  const handleLogout = async () => {
+    await AxiosClient.post('/auth/logout');
+    Cookies.remove('access_token');
+    router.push('/');
+    toast.success('Logged out successfully');
+  };
   return (
     <div className="mt-auto">
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -46,7 +59,12 @@ const BottomNavigation = () => {
         icon={Tags}
         href="/apps/resources/tags"
       />
-      <SidebarItem isButton label="Logout" icon={LogOutIcon} />
+      <SidebarItem
+        isButton
+        label="Logout"
+        icon={LogOutIcon}
+        onClick={handleLogout}
+      />
     </div>
   );
 };

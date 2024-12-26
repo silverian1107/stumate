@@ -63,7 +63,7 @@ export class DecksService {
       name: newDeckName,
       description,
       noteId: noteId || null,
-      userId: user._id,
+      ownerId: user._id,
       createdBy: {
         _id: user._id,
         username: user.username,
@@ -75,7 +75,7 @@ export class DecksService {
   async findByUser(user: IUser, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
 
-    filter.userId = user._id;
+    filter.ownerId = user._id;
 
     const totalItems = (await this.deckModel.find(filter)).length;
     const result = await this.deckModel
@@ -122,28 +122,18 @@ export class DecksService {
     };
   }
 
-  async findOne(id: string) {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('Invalid Deck ID');
-    }
-    const deck = await this.deckModel.findOne({
-      _id: id,
-      isArchived: { $in: [true, false] },
-    });
-    if (!deck) {
-      throw new NotFoundException('Not found deck');
-    }
-    return deck;
-  }
-
   async findById(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Deck ID');
     }
-    const deck = await this.deckModel.findOne({
-      _id: id,
-      isArchived: { $in: [true, false] },
-    });
+    const deck = await this.deckModel
+      .findOne({
+        _id: id,
+        isArchived: { $in: [true, false] },
+      })
+      .populate('sharedWithUsers', 'email username')
+      .exec();
+
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
@@ -155,7 +145,9 @@ export class DecksService {
       throw new BadRequestException('NoteId is required.');
     }
 
-    const deck = await this.deckModel.findOne({ noteId, userId }).exec();
+    const deck = await this.deckModel
+      .findOne({ noteId, ownerId: userId })
+      .exec();
 
     if (!deck) {
       throw new NotFoundException('No deck found with the given noteId.');
@@ -205,7 +197,7 @@ export class DecksService {
     if (!deck) {
       throw new NotFoundException('Not found deck');
     }
-    const userId = deck.userId.toString();
+    const userId = deck.ownerId.toString();
     if (user.role === 'USER') {
       if (userId !== user._id) {
         throw new ForbiddenException(

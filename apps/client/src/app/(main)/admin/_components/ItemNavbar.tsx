@@ -27,8 +27,8 @@ const ItemNavbar = ({
         onMouseLeave={() => setIsHovered(false)}
         className={
           pathname === path
-            ? '!bg-primary-300 !text-white !font-bold'
-            : 'hover:!bg-primary-700 hover:!text-white'
+            ? '!bg-primary-300 !text-white !font-bold max-h-11'
+            : 'hover:!bg-primary-700 hover:!text-white max-h-11'
         }
         sx={{ py: '8px' }}
       >

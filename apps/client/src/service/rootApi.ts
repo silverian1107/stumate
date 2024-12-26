@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   BaseQueryFn,
   FetchArgs,
@@ -55,27 +54,6 @@ interface IUpdateNoteRequest {
   attachment: string[];
 }
 
-interface INoteRoot {
-  _id: string;
-  ownerId: string;
-  parentId: string;
-  type: string;
-  name: string;
-  level: number;
-  position: number;
-  isPublished: boolean;
-  isArchived: boolean;
-  isDeleted: boolean;
-  attachment: string[];
-  tags: any[];
-  sharedWithUsers: any[];
-  deleted: boolean;
-  children: any[];
-  createdAt: string;
-  updatedAt: string;
-  body: IBody;
-}
-
 interface IBody {
   time: number;
   blocks: any[];
@@ -120,7 +98,7 @@ interface IUpdateNoteRequest {
   attachment: string[];
 }
 
-interface INoteRoot {
+export interface INoteRoot {
   _id: string;
   ownerId: string;
   parentId: string;
@@ -300,6 +278,133 @@ interface CreateUser {
   };
 }
 
+interface Meta {
+  current: number;
+  pageSize: number;
+  pages: number;
+  total: number;
+}
+
+export interface Notification {
+  _id: string;
+  userId: string;
+  role: string;
+  type: string;
+  title: string;
+  body: string;
+  isRead: boolean;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface NotificationResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: Meta;
+    result: Notification[];
+  };
+}
+
+interface AllNotesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: Meta;
+    result: INoteRoot[];
+  };
+}
+
+interface AllArNotesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    total: number;
+    result: INoteRoot[];
+  };
+}
+
+interface IUser {
+  _id: string;
+  username: string;
+}
+
+export interface IFlashcard {
+  _id: string;
+  front: string;
+  back: string;
+  userId: string;
+  deckId: string;
+  isCloned: boolean;
+  sharedWithUsers: string[];
+  createdBy: IUser;
+  isArchived: boolean;
+  archivedAt: string | null;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface IAllFlashcardsResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: Meta;
+    result: IFlashcard[];
+  };
+}
+
+interface AllArFlashcardsResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    total: number;
+    result: IFlashcard[];
+  };
+}
+
+export interface IQuiz {
+  _id: string;
+  title?: string;
+  name?: string;
+  description: string;
+  numberOfQuestion: number;
+  duration: number;
+  status: string;
+  userId: string;
+  tags: string[];
+  isCloned: boolean;
+  sharedWithUsers: string[];
+  createdBy: IUser;
+  isArchived: boolean;
+  archivedAt: string | null;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface AllArQuizzesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    total: number;
+    result: IQuiz[];
+  };
+}
+
+interface IAllQuizzesResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: Meta;
+    result: IQuiz[];
+  };
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -350,7 +455,22 @@ const baseQueryWithReauth: BaseQueryFn<
 export const rootApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['NOTE', 'ATTACHMENT', 'TAG', 'USER', 'USERS', 'NOTI', 'TAG_ADMIN'],
+  tagTypes: [
+    'NOTE',
+    'ATTACHMENT',
+    'TAG',
+    'USER',
+    'USERS',
+    'NOTI',
+    'TAG_ADMIN',
+    'NOTE_ADMIN',
+    'ARCHIVE_ADMIN',
+    'NOTE_AR',
+    'FLASHCARD_ADMIN',
+    'ARCHIVE_FLASHCARD_ADMIN',
+    'ARCHIVE_QUIZ',
+    'ARCHIVE_QUIZ_ADMIN'
+  ],
   endpoints: (builder) => ({
     register: builder.mutation<
       { token: string },
@@ -443,12 +563,13 @@ export const rootApi = createApi({
     }),
     archiveNoteById: builder.mutation<
       { status: number; description: string },
-      string
+      { id: string }
     >({
-      query: (id: string) => ({
+      query: ({ id }) => ({
         url: `/notes/${id}/archive`,
-        method: 'PATCH'
-      })
+        method: 'POST'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_ADMIN' }]
     }),
     statistics: builder.query<IUserStatistic, void>({
       query: () => {
@@ -480,7 +601,7 @@ export const rootApi = createApi({
     }),
     deleteTag: builder.mutation({
       query: (id) => ({
-        url: `tags/${id}`,
+        url: `/tags/${id}`,
         method: 'DELETE'
       }),
       invalidatesTags: [{ type: 'TAG' }, { type: 'TAG_ADMIN' }]
@@ -498,13 +619,13 @@ export const rootApi = createApi({
     }),
     getInfoUser: builder.query<InforUser, { id: string }>({
       query: ({ id }) => {
-        return `users/${id}`;
+        return `/users/${id}`;
       },
       providesTags: [{ type: 'USERS' }]
     }),
     getAllUser: builder.query<FetchUsersResponse, { current: number }>({
       query: ({ current }) => ({
-        url: 'users',
+        url: '/users',
         params: { current },
         method: 'GET'
       }),
@@ -512,7 +633,7 @@ export const rootApi = createApi({
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `users/${id}`,
+        url: `/users/${id}`,
         method: 'DELETE'
       }),
       invalidatesTags: [{ type: 'USERS' }]
@@ -547,11 +668,171 @@ export const rootApi = createApi({
       }),
       invalidatesTags: [{ type: 'NOTI' }]
     }),
-    getALlNotifications: builder.query<any, void>({
-      query: () => {
-        return '/notes/all';
-      },
-      providesTags: [{ type: 'USER' }]
+    getALlNotifications: builder.query<
+      NotificationResponse,
+      { current: number; title: string; createdAt: string }
+    >({
+      query: ({ current, title, createdAt }) => ({
+        url: 'notifications/all',
+        params: { current, title, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'NOTI' }]
+    }),
+    deleteNoti: builder.mutation({
+      query: (id) => ({
+        url: `/notifications/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'NOTI' }]
+    }),
+    updateNoti: builder.mutation<{ status: number; message: string }, any>({
+      query: (noti) => ({
+        url: `/notifications/${noti.id}`,
+        method: 'PATCH',
+        body: { title: noti.title, body: noti.body, type: noti.type }
+      }),
+      invalidatesTags: [{ type: 'NOTI' }]
+    }),
+    getAllNotes: builder.query<
+      AllNotesResponse,
+      { currentPage: number; createdAt: string }
+    >({
+      query: ({ currentPage, createdAt }) => ({
+        url: 'notes/all',
+        params: { currentPage, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'NOTE_ADMIN' }, { type: 'ARCHIVE_ADMIN' }]
+    }),
+    getAllArNotes: builder.query<AllArNotesResponse, void>({
+      query: () => ({
+        url: 'notes/archived-resources/all',
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'NOTE_AR' }]
+    }),
+    deleteNote: builder.mutation({
+      query: ({ id }) => ({
+        url: `/notes/${id}/delete`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'NOTE_AR' }]
+    }),
+    restoreNoteById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/notes/${id}/restore`,
+        method: 'POST'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_ADMIN' }, { type: 'NOTE_AR' }]
+    }),
+    getAllFlashcard: builder.query<
+      IAllFlashcardsResponse,
+      { current: number; createdAt: string }
+    >({
+      query: ({ current, createdAt }) => ({
+        url: '/flashcards',
+        params: { current, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [
+        { type: 'FLASHCARD_ADMIN' },
+        { type: 'ARCHIVE_FLASHCARD_ADMIN' }
+      ]
+    }),
+    archiveFlashcardById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/flashcards/archive/${id}`,
+        method: 'PATCH'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_FLASHCARD_ADMIN' },
+        { type: 'FLASHCARD_ADMIN' }
+      ]
+    }),
+    getAllArFlashcards: builder.query<AllArFlashcardsResponse, void>({
+      query: () => ({
+        url: 'flashcards/archived',
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'ARCHIVE_FLASHCARD_ADMIN' }]
+    }),
+    deleteFlashcard: builder.mutation({
+      query: ({ id }) => ({
+        url: `/flashcards/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_FLASHCARD_ADMIN' }]
+    }),
+    restoreFlashcardById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/flashcards/restore/${id}`,
+        method: 'PATCH'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_ADMIN' },
+        { type: 'ARCHIVE_FLASHCARD_ADMIN' }
+      ]
+    }),
+    getAllQuizzes: builder.query<
+      IAllQuizzesResponse,
+      { current: number; createdAt: string }
+    >({
+      query: ({ current, createdAt }) => ({
+        url: '/quiz-tests/all',
+        params: { current, createdAt },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'ARCHIVE_QUIZ' }, { type: 'ARCHIVE_QUIZ_ADMIN' }]
+    }),
+    archiveQuizById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/quizzes/${id}/archive`,
+        method: 'POST'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_QUIZ_ADMIN' },
+        { type: 'ARCHIVE_QUIZ' }
+      ]
+    }),
+    getAllArQuizzes: builder.query<AllArQuizzesResponse, void>({
+      query: () => ({
+        url: 'quizzes/archived-resources/all',
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'ARCHIVE_QUIZ' }]
+    }),
+    deleteQuiz: builder.mutation({
+      query: ({ id }) => ({
+        url: `/quiz-tests/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'ARCHIVE_QUIZ' }]
+    }),
+    restoreQuizById: builder.mutation<
+      { status: number; description: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/quizzes/${id}/restore`,
+        method: 'POST'
+      }),
+      invalidatesTags: [
+        { type: 'ARCHIVE_QUIZ' },
+        { type: 'ARCHIVE_QUIZ_ADMIN' }
+      ]
     })
   })
 });
@@ -579,5 +860,22 @@ export const {
   useCreateUserMutation,
   useUpdateUserMutation,
   useCreateNotificationMutation,
-  useTagAdminQuery
+  useTagAdminQuery,
+  useGetALlNotificationsQuery,
+  useDeleteNotiMutation,
+  useUpdateNotiMutation,
+  useGetAllNotesQuery,
+  useDeleteNoteMutation,
+  useGetAllArNotesQuery,
+  useRestoreNoteByIdMutation,
+  useGetAllFlashcardQuery,
+  useArchiveFlashcardByIdMutation,
+  useGetAllArFlashcardsQuery,
+  useDeleteFlashcardMutation,
+  useGetAllQuizzesQuery,
+  useArchiveQuizByIdMutation,
+  useGetAllArQuizzesQuery,
+  useDeleteQuizMutation,
+  useRestoreQuizByIdMutation,
+  useRestoreFlashcardByIdMutation
 } = rootApi;

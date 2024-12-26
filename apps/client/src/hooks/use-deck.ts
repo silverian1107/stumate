@@ -242,6 +242,16 @@ export const useCreateDeck = () => {
   });
 };
 
+export const useDeckById = (deckId: string) => {
+  return useQuery({
+    queryKey: ['decks', deckId],
+    queryFn: async () => {
+      const response = await DeckApi.findById(deckId);
+      return response.data.data;
+    }
+  });
+};
+
 export const useCardBulkCreate = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -302,6 +312,20 @@ export const useGenerateFlashcardsByAI = () => {
       queryClient.invalidateQueries({
         queryKey: ['flashcardsByDeckId', data.id]
       });
+    }
+  });
+};
+
+export const useArchiveDeck = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (deckId: string) => {
+      const response = await DeckApi.archive(deckId);
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
     }
   });
 };

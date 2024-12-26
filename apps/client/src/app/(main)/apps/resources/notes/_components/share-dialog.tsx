@@ -1,4 +1,3 @@
-// components/share-dialog.tsx
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -29,7 +28,7 @@ const ShareDialog = ({ noteId, isOpen, onClose }: ShareDialogProps) => {
     if (!usernameOrEmail.trim()) return;
 
     shareNote.mutate(
-      { resourceId: noteId, usernameOrEmail },
+      { noteId, usernameOrEmail },
       {
         onSuccess: () => {
           setUsernameOrEmail('');
@@ -40,7 +39,7 @@ const ShareDialog = ({ noteId, isOpen, onClose }: ShareDialogProps) => {
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleUnshare = (usernameOrEmail: string) => {
-    unshareNote.mutate({ resourceId: noteId, usernameOrEmail });
+    unshareNote.mutate({ noteId, usernameOrEmail });
   };
 
   return (

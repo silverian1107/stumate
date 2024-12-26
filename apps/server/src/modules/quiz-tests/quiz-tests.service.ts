@@ -37,7 +37,7 @@ export class QuizTestsService {
     delete restDto.name;
     //Check title already exists
     const existingQuizTests = await this.quizTestModel.find({
-      userId: user._id,
+      ownerId: user._id,
     });
     const existingQuizTestNames = existingQuizTests.map(
       (quizTest) => quizTest.name,
@@ -47,7 +47,7 @@ export class QuizTestsService {
     const newQuizTest = await this.quizTestModel.create({
       name: newQuizName,
       ...restDto,
-      userId: user._id,
+      ownerId: user._id,
       createdBy: {
         _id: user._id,
         username: user.username,
@@ -92,7 +92,7 @@ export class QuizTestsService {
   async findByUser(user: IUser, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
 
-    filter.userId = user._id;
+    filter.ownerId = user._id;
 
     const totalItems = (await this.quizTestModel.find(filter)).length;
     const result = await this.quizTestModel
@@ -139,28 +139,17 @@ export class QuizTestsService {
     };
   }
 
-  async findOne(id: string) {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('Invalid Quiz Test ID');
-    }
-    const quizTest = await this.quizTestModel.findOne({
-      _id: id,
-      isArchived: { $in: [true, false] },
-    });
-    if (!quizTest) {
-      throw new NotFoundException('Not found quiz test');
-    }
-    return quizTest;
-  }
-
   async findById(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new BadRequestException('Invalid Quiz Test ID');
     }
-    const quizTest = await this.quizTestModel.findOne({
-      _id: id,
-      isArchived: { $in: [true, false] },
-    });
+    const quizTest = await this.quizTestModel
+      .findOne({
+        _id: id,
+        isArchived: { $in: [true, false] },
+      })
+      .populate('sharedWithUsers', 'email username')
+      .exec();
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }
@@ -173,7 +162,7 @@ export class QuizTestsService {
     }
     const quizTest = await this.quizTestModel.findOne({
       noteId,
-      userId: user._id,
+      ownerId: user._id,
     });
 
     return quizTest;
@@ -209,7 +198,7 @@ export class QuizTestsService {
     if (!quizTest) {
       throw new NotFoundException('Not found quiz test');
     }
-    const userId = quizTest.userId.toString();
+    const userId = quizTest.ownerId.toString();
     if (user.role === 'USER') {
       if (userId !== user._id) {
         throw new ForbiddenException(

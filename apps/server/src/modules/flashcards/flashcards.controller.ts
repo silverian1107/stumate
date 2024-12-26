@@ -147,18 +147,6 @@ export class FlashcardsController {
     return await this.flashcardsService.handleDeckProgress(deckId, user);
   }
 
-  @Get()
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Get all flashcards by deckId' })
-  @ResponseMessage('Fetch list flashcard with pagination')
-  findAll(
-    @Query('current') currentPage: string,
-    @Query('pageSize') pageSize: string,
-    @Query() qs: string,
-  ) {
-    return this.flashcardsService.findAll(+currentPage, +pageSize, qs);
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Get a flashcard by id' })
   @ResponseMessage('Fetch flashcard by id')

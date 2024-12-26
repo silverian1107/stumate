@@ -42,5 +42,14 @@ export const QuizApi = {
     return QuizClient.delete(`/${quizId}/quiz-questions/bulk/delete`, {
       data: questionIds
     });
+  },
+
+  async share(quizId: string, usernameOrEmail: string) {
+    return (await QuizClient.post(`${quizId}/share`, { usernameOrEmail })).data;
+  },
+
+  async unshare(quizId: string, usernameOrEmail: string) {
+    return (await QuizClient.post(`${quizId}/unshare`, { usernameOrEmail }))
+      .data;
   }
 };

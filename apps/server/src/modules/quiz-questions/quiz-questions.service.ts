@@ -42,7 +42,7 @@ export class QuizQuestionsService {
     noteId: string,
     user: IUser,
   ) {
-    const quizTest = await this.quizTestService.findOne(quizTestId);
+    const quizTest = await this.quizTestService.findById(quizTestId);
     if (!mongoose.isValidObjectId(noteId)) {
       throw new BadRequestException('Invalid Note ID');
     }
@@ -52,7 +52,7 @@ export class QuizQuestionsService {
     }
     if (
       note.ownerId.toString() !== user._id ||
-      quizTest.userId.toString() !== user._id
+      quizTest.ownerId.toString() !== user._id
     ) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
@@ -128,8 +128,8 @@ export class QuizQuestionsService {
     createQuizQuestionDto: CreateQuizQuestionDto,
     @User() user: IUser,
   ) {
-    const quizTest = await this.quizTestService.findOne(quizTestId);
-    if (quizTest.userId.toString() !== user._id) {
+    const quizTest = await this.quizTestService.findById(quizTestId);
+    if (quizTest.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -160,9 +160,9 @@ export class QuizQuestionsService {
     createQuizQuestionDtos: CreateQuizQuestionDto[],
     user: IUser,
   ) {
-    const quizTest = await this.quizTestService.findOne(quizTestId);
+    const quizTest = await this.quizTestService.findById(quizTestId);
 
-    if (quizTest.userId.toString() !== user._id) {
+    if (quizTest.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -201,8 +201,8 @@ export class QuizQuestionsService {
   }
 
   async findByQuizTestId(quizTestId: string, user: IUser) {
-    const quizTest = await this.quizTestService.findOne(quizTestId);
-    if (quizTest.userId.toString() !== user._id) {
+    const quizTest = await this.quizTestService.findById(quizTestId);
+    if (quizTest.ownerId.toString() !== user._id) {
       throw new ForbiddenException(
         `You don't have permission to access this resource`,
       );
@@ -253,8 +253,8 @@ export class QuizQuestionsService {
     user: IUser,
   ) {
     // First, verify the quiz test belongs to the user (optional but recommended)
-    const quizTest = await this.quizTestService.findOne(quizTestId);
-    if (!quizTest || quizTest.userId.toString() !== user._id.toString()) {
+    const quizTest = await this.quizTestService.findById(quizTestId);
+    if (!quizTest || quizTest.ownerId.toString() !== user._id.toString()) {
       throw new ForbiddenException(
         `You don't have permission to update these questions`,
       );
@@ -290,9 +290,9 @@ export class QuizQuestionsService {
   }
 
   async remove(quizTestId: string, id: string, @User() user: IUser) {
-    const quizTest = await this.quizTestService.findOne(quizTestId);
+    const quizTest = await this.quizTestService.findById(quizTestId);
     if (user.role === 'USER') {
-      if (quizTest.userId.toString() !== user._id) {
+      if (quizTest.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );
@@ -309,9 +309,9 @@ export class QuizQuestionsService {
   }
 
   async removeMultiple(quizTestId: string, questionIds: string[], user: IUser) {
-    const quizTest = await this.quizTestService.findOne(quizTestId);
+    const quizTest = await this.quizTestService.findById(quizTestId);
     if (user.role === 'USER') {
-      if (quizTest.userId.toString() !== user._id) {
+      if (quizTest.ownerId.toString() !== user._id) {
         throw new ForbiddenException(
           `You don't have permission to access this resource`,
         );

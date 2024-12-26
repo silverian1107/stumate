@@ -158,7 +158,7 @@ export class NotesController {
     return this.notesService.updateById(noteId, updateData);
   }
 
-  @Delete(':noteId/delete')
+  @Delete(':noteId')
   @ApiOperation({ summary: 'Delete a note by ID' })
   @ApiParam({ name: 'noteId', required: true })
   @ApiResponse({
