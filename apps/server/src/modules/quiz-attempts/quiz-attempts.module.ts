@@ -8,6 +8,15 @@ import { QuizQuestionsModule } from '../quiz-questions/quiz-questions.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { QuizAttemptsWithoutQuizIdController } from './quiz-attempts-without-quizId.controller';
+import { CustomAttemptService } from './custom-quiz-attempts.service';
+import {
+  CustomAttempt,
+  CustomAttemptSchema,
+} from './schema/custom-attempt.schema';
+import {
+  QuizQuestion,
+  QuizQuestionSchema,
+} from '../quiz-questions/schema/quiz-question.schema';
 
 @Module({
   imports: [
@@ -16,6 +25,14 @@ import { QuizAttemptsWithoutQuizIdController } from './quiz-attempts-without-qui
         name: QuizAttempt.name,
         schema: QuizAttemptSchema,
       },
+      {
+        name: CustomAttempt.name,
+        schema: CustomAttemptSchema,
+      },
+      {
+        name: QuizQuestion.name,
+        schema: QuizQuestionSchema,
+      },
     ]),
     forwardRef(() => QuizTestsModule),
     forwardRef(() => QuizQuestionsModule),
@@ -23,7 +40,7 @@ import { QuizAttemptsWithoutQuizIdController } from './quiz-attempts-without-qui
     NotificationsModule,
   ],
   controllers: [QuizAttemptsController, QuizAttemptsWithoutQuizIdController],
-  providers: [QuizAttemptsService],
+  providers: [QuizAttemptsService, CustomAttemptService],
   exports: [QuizAttemptsService],
 })
 export class QuizAttemptsModule {}

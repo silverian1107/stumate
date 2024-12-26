@@ -6,6 +6,10 @@ export const QuizApi = {
     return QuizClient.get('');
   },
 
+  async findByUserWithPagination(page: number, size: number) {
+    return QuizClient.get(`/with-pagination`, { params: { page, size } });
+  },
+
   async findById(id: string) {
     return QuizClient.get(`/${id}`);
   },

@@ -335,10 +335,11 @@ export class StatisticsService {
   }
 
   async getLowAccuracyCount(userId: string) {
-    const quizAttempts = await this.quizAttemptModel.find({ userId });
+    const quizAttempts = await this.quizAttemptModel.find({ ownerId: userId });
     const completedQuizTestIds = new Set(
       quizAttempts.map((attempt) => attempt.quizTestId.toString()),
     );
+
     const quizTestsAccuracy = {};
     quizAttempts.forEach((attempt) => {
       const accuracy =

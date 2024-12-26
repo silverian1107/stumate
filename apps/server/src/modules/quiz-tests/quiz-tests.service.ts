@@ -107,6 +107,49 @@ export class QuizTestsService {
     };
   }
 
+  async getWithPagination(user: IUser, currentPage = 1, pageSize = 10) {
+    if (!Number.isInteger(currentPage) || currentPage <= 0) {
+      throw new BadRequestException('Current page must be a positive integer');
+    }
+    if (!Number.isInteger(pageSize) || pageSize <= 0) {
+      throw new BadRequestException('Page size must be a positive integer');
+    }
+
+    if (!user || !user._id) {
+      throw new BadRequestException(
+        'User information is required for this operation',
+      );
+    }
+
+    const skip = (currentPage - 1) * pageSize;
+
+    try {
+      const filter = { ownerId: user._id };
+
+      const totalItems = await this.quizTestModel.countDocuments(filter).exec();
+      const results = await this.quizTestModel
+        .find(filter)
+        .sort({ updatedAt: -1 })
+        .skip(skip)
+        .limit(pageSize)
+        .exec();
+
+      const totalPages = Math.ceil(totalItems / pageSize);
+
+      return {
+        meta: {
+          current: currentPage,
+          pageSize,
+          pages: totalPages,
+          total: totalItems,
+        },
+        result: results,
+      };
+    } catch (error) {
+      throw new Error(`Failed to get paginated results: ${error.message}`);
+    }
+  }
+
   async findAll(currentPage: number, pageSize: number, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;
