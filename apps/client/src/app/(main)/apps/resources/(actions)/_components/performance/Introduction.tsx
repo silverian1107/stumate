@@ -17,11 +17,11 @@ const Introduction = () => {
       </div>
       <div className="flex items-center mr-4">
         <div className="size-4 bg-primary-600 border mr-2" />
-        <span>5+</span>
+        <span>{`>`}8</span>
       </div>
       <div className="flex items-center mr-4">
         <div className="size-4 bg-primary-800 border mr-2" />
-        <span>5+</span>
+        <span>10+</span>
       </div>
     </div>
   );
