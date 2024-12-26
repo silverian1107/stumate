@@ -183,6 +183,7 @@ const FlashcardPage = () => {
                     color="primary"
                     size="small"
                     onClick={() => handleOpen(row)}
+                    title="Detail"
                   >
                     <EllipsisVertical />
                   </IconButton>
@@ -190,6 +191,7 @@ const FlashcardPage = () => {
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row._id)}
+                    title="Archive"
                   >
                     <Trash2 />
                   </IconButton>

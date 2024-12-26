@@ -184,12 +184,12 @@ const LogPage = () => {
                   size="small"
                   className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
                 >
-                  {row.datetime.split(',').join(' ')}
+                  {row.datetime.split(',')[0]}
                 </TableCell>
                 <TableCell
                   align="center"
                   size="small"
-                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                  className="overflow-hidden text-ellipsis max-w-[20%] text-nowrap"
                 >
                   {row?.user?.username || 'N/A'}
                 </TableCell>
@@ -231,6 +231,7 @@ const LogPage = () => {
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row.id)}
+                    title="Delete"
                   >
                     <Trash2 />
                   </IconButton>

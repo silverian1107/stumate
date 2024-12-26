@@ -139,7 +139,7 @@ const Profile = () => {
           variant="outlined"
           value={user?.email || ''}
           onChange={(e) => handleInputChange('email', e.target.value)}
-          disabled={!isEdit}
+          disabled
         />
 
         <TextField

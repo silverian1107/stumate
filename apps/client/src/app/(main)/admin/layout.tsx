@@ -4,9 +4,11 @@ import Cookies from 'js-cookie';
 import { LoaderCircle } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 
 import { useAccount } from '@/hooks/use-auth';
+import { logout } from '@/redux/slices/authSlice';
 import { useRefreshTokenQuery } from '@/service/rootApi';
 
 import HeadingAdmin from './_components/HeadingAdmin';
@@ -15,12 +17,29 @@ import NavbarAdmin from './_components/NavbarAmin';
 export default function Layout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(true);
   const { data, error, isLoading } = useAccount();
   const response = useRefreshTokenQuery();
   const handleToggleNavbar = () => {
     setIsOpen(!isOpen);
   };
+  useEffect(() => {
+    const updateNavbarState = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
+    };
+
+    updateNavbarState();
+    window.addEventListener('resize', updateNavbarState);
+
+    return () => {
+      window.removeEventListener('resize', updateNavbarState);
+    };
+  }, []);
   useEffect(() => {
     if (error) {
       if (response.data && !response.isError) {
@@ -29,7 +48,14 @@ export default function Layout({
           Cookies.set('access_token', newToken);
         }
       } else {
-        Cookies.remove('access_token');
+        document.cookie.split(';').forEach((cookie) => {
+          const eqPos = cookie.indexOf('=');
+          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+          document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        });
+        localStorage.clear();
+        sessionStorage.clear();
+        dispatch(logout());
         toast('Unauthorized', {
           description: 'Please login to continue',
           position: 'top-right'

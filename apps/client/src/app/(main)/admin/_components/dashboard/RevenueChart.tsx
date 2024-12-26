@@ -84,7 +84,7 @@ const RevenueChart = ({
 
   const options = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const
@@ -92,16 +92,38 @@ const RevenueChart = ({
       title: {
         display: true,
         text: 'Statistics',
-        font: { size: 30 },
+        font: { size: 20 },
         color: 'hsl(247 45.1% 20%)'
+      }
+    },
+    layout: {
+      padding: {
+        top: 20,
+        bottom: 20,
+        left: 10,
+        right: 10
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#333',
+          font: { size: 12 }
+        }
+      },
+      y: {
+        ticks: {
+          color: '#333',
+          font: { size: 12 }
+        }
       }
     }
   };
 
   return (
     <div className="bg-white rounded-lg p-5 flex-1 w-full">
-      <div className="flex flex-col gap-5 rounded-lg w-full">
-        <Line className="w-full max-h-[55vh]" options={options} data={data} />
+      <div className="flex flex-col gap-5 rounded-lg w-full h-[50vh] lg:h-[55vh]">
+        <Line className="size-full" options={options} data={data} />
       </div>
       <div className="flex items-center gap-2 mt-5">
         <span>Year: {monthlyStatisticsChart.totalAccounts[0]?.year}</span>
