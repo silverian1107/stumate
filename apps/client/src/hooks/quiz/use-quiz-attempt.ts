@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
+import type { CustomAttempt } from '@/endpoints/quiz/quiz-attempt';
 import { QuizAttemptApi } from '@/endpoints/quiz/quiz-attempt';
 
 export const useQuizAttemptData = () => {
@@ -40,6 +41,14 @@ export const useSubmitQuizAttempt = () => {
       return (
         await QuizAttemptApi.submitQuizAttempt(quizTestId, attemptId, answers)
       ).data;
+    }
+  });
+};
+
+export const useCreateCustomQuizAttempt = () => {
+  return useMutation({
+    mutationFn: async (customAttempt: CustomAttempt) => {
+      return (await QuizAttemptApi.createCustomAttempt(customAttempt)).data;
     }
   });
 };
