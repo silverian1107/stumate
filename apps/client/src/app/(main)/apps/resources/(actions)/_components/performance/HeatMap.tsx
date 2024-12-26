@@ -15,7 +15,7 @@ const HeatMap = ({ statistics }: { statistics: IUserStatistic }) => {
     { date: '2024-11-02', count: 2 },
     { date: '2024-11-03', count: 3 }
   ];
-console.log(statistics);
+  console.log(statistics);
   return (
     <div className="w-full max-h-fit px-4 bg-white flex justify-center">
       <div className="flex items-end justify-between w-fit ">
