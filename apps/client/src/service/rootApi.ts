@@ -466,6 +466,27 @@ export interface FilterParams {
   datetime?: string;
 }
 
+export interface TodoItem {
+  _id: string;
+  userId: string;
+  todo: string;
+  isCompleted: boolean;
+  createdBy: {
+    _id: string;
+    username: string;
+  };
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface TodoRes {
+  status: number;
+  message: string;
+  data: TodoItem[];
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
@@ -531,7 +552,8 @@ export const rootApi = createApi({
     'ARCHIVE_FLASHCARD_ADMIN',
     'ARCHIVE_QUIZ',
     'ARCHIVE_QUIZ_ADMIN',
-    'LOG'
+    'LOG',
+    'TODO'
   ],
   endpoints: (builder) => ({
     register: builder.mutation<
@@ -928,6 +950,51 @@ export const rootApi = createApi({
         body: { avatarUrl }
       }),
       invalidatesTags: [{ type: 'USERS' }]
+    }),
+    getTodo: builder.query<TodoRes, void>({
+      query: () => {
+        return '/todo';
+      },
+      providesTags: [{ type: 'TODO' }]
+    }),
+    completeTodo: builder.mutation<
+      { status: number; message: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/todo/${id}/completed`,
+        method: 'PATCH'
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
+    }),
+    editTodo: builder.mutation<
+      { status: number; message: string },
+      { id: string; todo: string }
+    >({
+      query: ({ id, todo }) => ({
+        url: `/todo/${id}`,
+        method: 'PATCH',
+        body: { todo }
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
+    }),
+    deleteTodo: builder.mutation({
+      query: ({ id }) => ({
+        url: `/todo/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
+    }),
+    addTodo: builder.mutation<
+      { status: number; message: string },
+      { todo: string }
+    >({
+      query: ({ todo }) => ({
+        url: '/todo',
+        method: 'POST',
+        body: { todo }
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
     })
   })
 });
@@ -976,5 +1043,10 @@ export const {
   useDeleteLogMutation,
   useGetStatisticsAdminQuery,
   useEditAvatarMutation,
-  useRefreshTokenQuery
+  useRefreshTokenQuery,
+  useCompleteTodoMutation,
+  useDeleteTodoMutation,
+  useEditTodoMutation,
+  useGetTodoQuery,
+  useAddTodoMutation
 } = rootApi;
