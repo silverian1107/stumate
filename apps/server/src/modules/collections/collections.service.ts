@@ -264,8 +264,22 @@ export class CollectionsService {
 
     const collectionsToDelete = [];
     const notesToDelete = [];
-    const stack = [collectionId];
 
+    let currentCollectionId = collectionId;
+    while (currentCollectionId) {
+      const currentCollection = await this.collectionModel.findOne({
+        _id: currentCollectionId,
+        isArchived: true,
+      });
+
+      if (currentCollection) {
+        collectionsToDelete.push(currentCollection._id);
+        currentCollectionId = currentCollection.parentId ?? null;
+      } else {
+        break;
+      }
+    }
+    const stack = [collectionId];
     while (stack.length > 0) {
       const currentCollectionId = stack.pop();
       const currentCollection = await this.collectionModel.findOne({
@@ -274,8 +288,7 @@ export class CollectionsService {
       });
 
       if (currentCollection) {
-        collectionsToDelete.push(currentCollection._id);
-        for (const child of currentCollection.children) {
+        for (const child of currentCollection.children ?? []) {
           if (child.type === 'Collection') {
             stack.push(child._id);
           } else if (child.type === 'Note') {
@@ -307,13 +320,17 @@ export class CollectionsService {
     await this.summaryModel.delete(
       {
         noteId: { $in: notesToDelete },
+        isArchived: true,
       },
       user._id,
     );
-    await this.noteModel.delete({ _id: { $in: notesToDelete } }, user._id);
+    await this.noteModel.delete(
+      { _id: { $in: notesToDelete }, isArchived: true },
+      user._id,
+    );
 
     await this.collectionModel.delete(
-      { _id: { $in: collectionsToDelete } },
+      { _id: { $in: collectionsToDelete }, isArchived: true },
       user._id,
     );
 
