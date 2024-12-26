@@ -2484,5 +2484,33 @@
       "role": "USER"
     },
     "level": "INFO"
+  },
+  {
+    "datetime": "12/26/2024, 11:33:40 AM",
+    "method": "DELETE",
+    "originalUrl": "/api/notes/6761400d44dd4ee3c93c1b7c/delete",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "67684fae67e7dae65f95430f",
+      "username": "admin",
+      "email": "admin@example.com",
+      "role": "ADMIN"
+    },
+    "level": "INFO"
+  },
+  {
+    "datetime": "12/26/2024, 11:34:05 AM",
+    "method": "DELETE",
+    "originalUrl": "/api/notes/6761400d44dd4ee3c93c1b7c/delete",
+    "statusCode": 200,
+    "ip": "::1",
+    "user": {
+      "_id": "67684fae67e7dae65f95430f",
+      "username": "admin",
+      "email": "admin@example.com",
+      "role": "ADMIN"
+    },
+    "level": "INFO"
   }
 ]
