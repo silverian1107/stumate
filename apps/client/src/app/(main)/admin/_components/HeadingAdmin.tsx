@@ -17,17 +17,29 @@ import {
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import type { MouseEventHandler } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { logout } from '@/redux/slices/authSlice';
+import type { UserInfo } from '@/service/rootApi';
+import { useGetInfoUserQuery } from '@/service/rootApi';
 
 const HeadingAdmin = ({
-  handleToggleNavbar
+  handleToggleNavbar,
+  id
 }: {
   handleToggleNavbar: MouseEventHandler<HTMLButtonElement>;
+  id: string;
 }) => {
+  const response = useGetInfoUserQuery({ id });
+  const [user, setUser] = useState<UserInfo | null>(null);
+
+  useEffect(() => {
+    if (response.data) {
+      setUser(response.data.data.user);
+    }
+  }, [response]);
   const [isHovered, setIsHovered] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -75,18 +87,28 @@ const HeadingAdmin = ({
       <div className="w-full flex flex-col text-slate-500 px-4  space-y-2">
         <div className="flex flex-col items-center ">
           <AvatarUser className="!bg-primary-main">
-            {'Anh'[0].toUpperCase()}
+            {user?.avatarUrl ? (
+              <Avatar className="size-[100px]">
+                <AvatarImage
+                  src={user?.avatarUrl || ''}
+                  alt={user?.name || ''}
+                />
+              </Avatar>
+            ) : (
+              user?.username[0]
+            )}
           </AvatarUser>
-          <p>@anhpro</p>
+          <p>@{user?.username}</p>
         </div>
         <p className="flex items-center text-xs ">
-          <Mail className="mr-3 size-4" /> nguyenvantrananh@gmail.com{' '}
+          <Mail className="mr-3 size-4" /> {user?.email}
         </p>
         <p className="flex items-center text-xs">
-          <Cake className="mr-3 size-4" /> 23/05/2003{' '}
+          <Cake className="mr-3 size-4" />{' '}
+          {user?.birthday?.split('T')[0] || 'N/A'}
         </p>
         <p className="flex items-center text-xs">
-          <Shield className="mr-3 size-4" /> Male{' '}
+          <Shield className="mr-3 size-4" /> {user?.gender || 'N/A'}
         </p>
       </div>
       <MenuItem onClick={handleRedirectProfile}>
@@ -128,24 +150,8 @@ const HeadingAdmin = ({
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              {/* <button
-                className="flex justify-between items-center gap-5 px-5 py-1 rounded-md hover:bg-secondary z-10"
-                type="button"
-              >
-                <IconAvatar />
-                <IconDropdown className={'w-3 h-3'} />
-              </button> */}
-              {/* <div className="absolute after:contents w-full h-4 top-12"></div> */}
               {isHovered && (
                 <div className="absolute flex flex-col items-center bg-white min-w-[200px] right-0 z-50 shadow-md rounded-md top-[54px]">
-                  {/* <ItemDropdown
-                    url={'/account.stacky.vn'}
-                    icon={
-                      <IconSignUp className={'w-6 h-6'} color={'#424242'} />
-                    }
-                    children={'Đăng xuất'}
-                    onClick={handleLogout}
-                  /> */}
                   <button type="button">Log out</button>
                 </div>
               )}
@@ -155,13 +161,20 @@ const HeadingAdmin = ({
       </div>
       <div>
         <IconButton size="medium" className="!p-0">
-          {/* <AccountCircle /> */}
           <AvatarUser className="!bg-primary-main">
-            {'Anh'[0].toUpperCase()}
+            {user?.avatarUrl ? (
+              <Avatar className="size-[100px]">
+                <AvatarImage
+                  src={user?.avatarUrl || ''}
+                  alt={user?.name || ''}
+                />
+              </Avatar>
+            ) : (
+              user?.username[0]
+            )}
           </AvatarUser>
         </IconButton>
         <IconButton size="medium" onClick={handleUserProfileClick}>
-          {/* <AccountCircle /> */}
           {anchorEl ? (
             <ChevronUp className="size-5" />
           ) : (

@@ -172,7 +172,7 @@ const QuizPage = () => {
                   size="small"
                   className="overflow-hidden text-ellipsis max-w-20 text-nowrap"
                 >
-                  {row.title || row.name}
+                  {row.title ? row.title : row.name}
                 </TableCell>
                 <TableCell
                   align="center"
@@ -180,13 +180,6 @@ const QuizPage = () => {
                   className="overflow-hidden text-ellipsis max-w-20 text-nowrap"
                 >
                   {row.description}
-                </TableCell>
-                <TableCell
-                  align="center"
-                  size="small"
-                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
-                >
-                  {row.createdBy.username}
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.numberOfQuestion}

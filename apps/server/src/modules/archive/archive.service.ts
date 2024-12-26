@@ -323,7 +323,9 @@ export class ArchiveService {
     const { filter, sort, population, projection } = aqp(qs);
 
     filter.isArchived = true;
-    filter.$or = [{ userId: user._id }, { ownerId: user._id }];
+    if (user.role === 'USER') {
+      filter.$or = [{ userId: user._id }, { ownerId: user._id }];
+    }
 
     let model: any;
     switch (resourceType) {

@@ -159,18 +159,11 @@ const QuizPage = () => {
                 >
                   {row.description}
                 </TableCell>
-                <TableCell
-                  align="center"
-                  size="small"
-                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
-                >
-                  {row.createdBy.username}
-                </TableCell>
                 <TableCell align="center" size="small">
                   {row.numberOfQuestion}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.duration}
+                  {row.duration || 'N/A'}
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.createdBy.username}

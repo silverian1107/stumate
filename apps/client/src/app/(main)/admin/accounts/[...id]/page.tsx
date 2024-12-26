@@ -146,7 +146,7 @@ const UserDetail = () => {
             <Typography variant="body1">{user?.user.role || 'N/A'}</Typography>
           </Box>
         </Box>
-        {user?.user.role === 'ADMIN' && (
+        {user?.user.role === 'USER' && (
           <>
             <Divider sx={{ width: '100%' }} />
             <Typography variant="h6" className="pl-5">
