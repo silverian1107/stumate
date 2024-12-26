@@ -218,9 +218,12 @@ export class QuizTestsService {
       }
     }
     //soft delete for quiz question
-    await this.quizQuestionModel.delete({ quizTestId: id }, user._id);
+    await this.quizQuestionModel.delete(
+      { quizTestId: id, isArchived: true },
+      user._id,
+    );
     //soft delete for quiz test
-    await this.quizTestModel.delete({ _id: id }, user._id);
+    await this.quizTestModel.delete({ _id: id, isArchived: true }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
     await this.statisticsService.getAdminStatistics();
     return 'Quiz was deleted successfully';

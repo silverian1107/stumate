@@ -247,8 +247,23 @@ export class NotesService {
     }
 
     const notesToDelete = [];
-    const stack = [noteId];
 
+    let currentNoteId = noteId;
+    while (currentNoteId) {
+      const currentNote = await this.noteModel.findOne({
+        _id: currentNoteId,
+        isArchived: true,
+      });
+
+      if (currentNote) {
+        notesToDelete.push(currentNote._id);
+        currentNoteId = currentNote.parentId ?? null;
+      } else {
+        break;
+      }
+    }
+
+    const stack = [noteId];
     while (stack.length > 0) {
       const currentNoteId = stack.pop();
       const currentNote = await this.noteModel.findOne({
@@ -269,10 +284,14 @@ export class NotesService {
     await this.summaryModel.delete(
       {
         noteId: { $in: notesToDelete },
+        isArchived: true,
       },
       user._id,
     );
-    await this.noteModel.delete({ _id: { $in: notesToDelete } }, user._id);
+    await this.noteModel.delete(
+      { _id: { $in: notesToDelete }, isArchived: true },
+      user._id,
+    );
 
     await this.statisticsService.createOrUpdateUserStatistics(ownerId);
     await this.statisticsService.getAdminStatistics();
