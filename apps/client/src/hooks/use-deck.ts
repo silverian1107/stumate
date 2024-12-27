@@ -244,7 +244,7 @@ export const useCreateDeck = () => {
 
 export const useDeckById = (deckId: string) => {
   return useQuery({
-    queryKey: ['decks'],
+    queryKey: ['deck', deckId],
     queryFn: async () => {
       const response = await DeckApi.findById(deckId);
       return response.data.data;
@@ -283,9 +283,9 @@ export const useArchiveDeck = () => {
       const response = await DeckApi.archive(deckId);
       return response.data.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
-      queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
+      queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
     }
   });
 };
@@ -309,6 +309,7 @@ export const useRestoreDeck = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
     }
   });
 };
@@ -322,6 +323,7 @@ export const useDeleteDeck = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
     }
   });
 };

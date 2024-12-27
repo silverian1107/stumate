@@ -199,3 +199,66 @@ export const useDeleteQuestions = () => {
     }
   });
 };
+
+export const useArchiveQuiz = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['archive-quiz'],
+    mutationFn: async (data: { quizId: string }) => {
+      const response = await QuizApi.archive(data.quizId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['quizz'],
+        exact: false
+      });
+    }
+  });
+};
+
+export const useRestoreQuiz = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['restore-quiz'],
+    mutationFn: async (data: { quizId: string }) => {
+      const response = await QuizApi.restore(data.quizId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['quizz'],
+        exact: false
+      });
+    }
+  });
+};
+
+export const useDeleteQuiz = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['delete-quiz'],
+    mutationFn: async (data: { quizId: string }) => {
+      const response = await QuizApi.delete(data.quizId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['quizz'],
+        exact: false
+      });
+    }
+  });
+};
