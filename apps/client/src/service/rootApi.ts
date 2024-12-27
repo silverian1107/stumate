@@ -281,7 +281,6 @@ interface Meta {
 }
 
 export interface Notification {
-  includes(_id: string): unknown;
   _id: string;
   userId: string;
   role: string;
@@ -295,27 +294,13 @@ export interface Notification {
   __v: number;
 }
 
-export interface NotificationResponse {
+interface NotificationResponse {
   statusCode: number;
   message: string;
   data: {
     meta: Meta;
     result: Notification[];
   };
-}
-
-interface MarkAsReadResponse {
-  message: string;
-}
-
-interface MarkAllAsReadResponse {
-  message: string;
-  modifiedCount: number;
-}
-
-interface DeleteAllResponse {
-  message: string;
-  deletedCount: number;
 }
 
 interface AllNotesResponse {
@@ -596,7 +581,6 @@ export const rootApi = createApi({
         method: 'POST'
       })
     }),
-
     verifyOTP: builder.mutation<
       { success: boolean },
       { email: string; codeId: string }
@@ -614,35 +598,8 @@ export const rootApi = createApi({
         method: 'POST'
       })
     }),
-    forgotPassword: builder.mutation<{ success: boolean }, { email: string }>({
-      query: ({ email }) => ({
-        url: '/auth/forgot-password',
-        body: { email },
-        method: 'POST'
-      })
-    }),
-    verifyCodePassword: builder.mutation<
-      { success: boolean },
-      { email: string; codeId: string }
-    >({
-      query: ({ email, codeId }) => ({
-        url: '/auth/verify-password-reset-code',
-        body: { email, codeId },
-        method: 'POST'
-      })
-    }),
-    changePassword: builder.mutation<
-      { success: boolean },
-      { email: string; password: string }
-    >({
-      query: ({ email, password }) => ({
-        url: '/auth/change-password',
-        body: { email, password },
-        method: 'POST'
-      })
-    }),
-    refreshToken: builder.mutation<AuthResponse, { refreshToken: string }>({
-      query: ({ refreshToken }) => ({
+    refreshToken: builder.query<any, void>({
+      query: () => ({
         url: '/auth/refresh',
         method: 'GET'
       })
@@ -789,38 +746,6 @@ export const rootApi = createApi({
         url: '/notifications/admin/send',
         method: 'POST',
         body: { title, type, body }
-      }),
-      invalidatesTags: [{ type: 'NOTI' }]
-    }),
-    getUserNotifications: builder.query<
-      NotificationResponse,
-      { current: number }
-    >({
-      query: ({ current }) => ({
-        url: 'notifications',
-        params: { current },
-        method: 'GET'
-      }),
-      providesTags: [{ type: 'NOTI' }]
-    }),
-    markNotificationAsRead: builder.mutation<MarkAsReadResponse, string>({
-      query: (id) => ({
-        url: `notifications/${id}/read`,
-        method: 'PATCH'
-      }),
-      invalidatesTags: [{ type: 'NOTI' }]
-    }),
-    markAllNotificationsAsRead: builder.mutation<MarkAllAsReadResponse, void>({
-      query: () => ({
-        url: 'notifications/all-read',
-        method: 'PATCH'
-      }),
-      invalidatesTags: [{ type: 'NOTI' }]
-    }),
-    deleteAllNotifications: builder.mutation<DeleteAllResponse, void>({
-      query: () => ({
-        url: 'notifications/all',
-        method: 'DELETE'
       }),
       invalidatesTags: [{ type: 'NOTI' }]
     }),
@@ -1075,9 +1000,6 @@ export const rootApi = createApi({
 export const {
   useRegisterMutation,
   useLoginMutation,
-  useForgotPasswordMutation,
-  useVerifyCodePasswordMutation,
-  useChangePasswordMutation,
   useVerifyOTPMutation,
   useResendOTPMutation,
   useUploadFilesMutation,
@@ -1098,10 +1020,6 @@ export const {
   useUpdateUserMutation,
   useCreateNotificationMutation,
   useTagAdminQuery,
-  useGetUserNotificationsQuery,
-  useMarkNotificationAsReadMutation,
-  useMarkAllNotificationsAsReadMutation,
-  useDeleteAllNotificationsMutation,
   useGetALlNotificationsQuery,
   useDeleteNotiMutation,
   useUpdateNotiMutation,
