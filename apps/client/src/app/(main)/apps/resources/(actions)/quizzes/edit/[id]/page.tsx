@@ -1,15 +1,26 @@
 'use client';
 
-import { CheckIcon, Share2Icon, XIcon } from 'lucide-react';
+import {
+  ArchiveIcon,
+  CheckIcon,
+  Share2Icon,
+  Undo2Icon,
+  XIcon
+} from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
+import StatusBar from '@/components/status-bar';
 import type { QuizCreateDto } from '@/endpoints/quiz/type';
 import {
+  useArchiveQuiz,
   useCreateQuestions,
   useDeleteQuestions,
+  useDeleteQuiz,
+  useQuizById,
+  useRestoreQuiz,
   useUpdateQuestions,
   useUpdateQuiz
 } from '@/hooks/quiz/use-quiz';
@@ -24,12 +35,18 @@ export default function QuizActionPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
+  const { data: quiz, isLoading } = useQuizById(id);
+
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const updateQuizMutation = useUpdateQuiz();
   const createQuestionsMutation = useCreateQuestions();
   const updateQuestionsMutation = useUpdateQuestions();
   const deleteQuestionsMutation = useDeleteQuestions();
+
+  const archiveQuiz = useArchiveQuiz();
+  const restoreQuiz = useRestoreQuiz();
+  const deleteQuiz = useDeleteQuiz();
 
   const questions = useSelector((state: RootState) => state.quiz.questions);
 
@@ -156,27 +173,84 @@ export default function QuizActionPage() {
     }
   };
 
+  const handleArchive = async () => {
+    await archiveQuiz.mutateAsync(id as string);
+    toast.success('Quiz archived successfully', {
+      className: 'text-green-500',
+      icon: <CheckIcon className="text-green-500" />
+    });
+  };
+
+  const handleRestore = async () => {
+    await restoreQuiz.mutateAsync(id as string);
+    toast.success('Quiz restored successfully', {
+      className: 'text-green-500',
+      icon: <CheckIcon className="text-green-500" />
+    });
+  };
+
+  const handleDelete = async () => {
+    await deleteQuiz.mutateAsync(id as string);
+    toast.success('Quiz deleted successfully', {
+      className: 'text-green-500',
+      icon: <CheckIcon className="text-green-500" />
+    });
+  };
+
+  if (isLoading || !quiz) {
+    return null;
+  }
+
   return (
     <>
-      <div className="w-full md:w-3/4 flex justify-end mx-auto">
-        <button
-          type="button"
-          className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
-          onClick={() => setIsShareDialogOpen(true)}
-        >
-          <Share2Icon className="size-4" />
-          Share Quiz
-        </button>
-      </div>
-      <QuizHeader onSubmit={handleSubmit} isEditing />
-      <div className="flex-1 overflow-hidden">
-        <QuizCreateElement />
-      </div>
-      <ShareQuizDialog
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-        quizId={id!}
+      <StatusBar
+        type="Quiz"
+        data={quiz}
+        isLoading={isLoading}
+        handleRestore={handleRestore}
+        handleDelete={handleDelete}
       />
+      <div className="size-full flex flex-col px-4 py-8 space-y-6 xl:w-4/5 mx-auto lg:text-base">
+        <div className="w-full md:w-3/4 flex justify-start mx-auto">
+          {!quiz.isArchived && (
+            <button
+              type="button"
+              onClick={handleArchive}
+              className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
+            >
+              <ArchiveIcon className="size-4" />
+              Archive
+            </button>
+          )}
+          {quiz.isArchived && (
+            <button
+              type="button"
+              onClick={handleRestore}
+              className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
+            >
+              <Undo2Icon className="size-4" />
+              Restore
+            </button>
+          )}
+          <button
+            type="button"
+            className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80 ml-auto"
+            onClick={() => setIsShareDialogOpen(true)}
+          >
+            <Share2Icon className="size-4" />
+            Share Quiz
+          </button>
+        </div>
+        <QuizHeader onSubmit={handleSubmit} isEditing />
+        <div className="flex-1 overflow-hidden">
+          <QuizCreateElement />
+        </div>
+        <ShareQuizDialog
+          isOpen={isShareDialogOpen}
+          onClose={() => setIsShareDialogOpen(false)}
+          quizId={id!}
+        />
+      </div>
     </>
   );
 }

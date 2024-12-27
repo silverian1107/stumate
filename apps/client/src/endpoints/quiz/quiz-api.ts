@@ -22,6 +22,10 @@ export const QuizApi = {
     return QuizClient.get(`/by-note/${noteId}`);
   },
 
+  async findArchived() {
+    return QuizClient.get('/archived-resources/all');
+  },
+
   async create(data: QuizCreateDto) {
     return (await QuizClient.post('', data)).data;
   },
