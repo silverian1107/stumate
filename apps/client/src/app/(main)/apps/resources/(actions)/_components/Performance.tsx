@@ -10,7 +10,7 @@ const Performance = ({ statistics }: { statistics: IUserStatistic }) => {
       <div className="w-full px-10">
         <DetailPerform statistics={statistics} />
       </div>
-      <HeatMap statistics={statistics} />
+      <HeatMap />
     </div>
   );
 };

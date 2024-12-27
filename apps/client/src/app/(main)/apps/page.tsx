@@ -132,7 +132,7 @@ const Main = () => {
             dailyStudyDuration={statistics?.data?.dailyStudyDuration ?? 0}
             studyStreakDays={statistics?.data?.studyStreakDays ?? 0}
           />
-          <CalendarDashboard dailyTaskList={statistics?.data.dailyTaskList} />
+          <CalendarDashboard />
         </div>
       </div>
     </div>

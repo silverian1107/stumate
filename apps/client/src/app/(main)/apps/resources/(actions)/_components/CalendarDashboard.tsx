@@ -4,7 +4,7 @@ import Calendar from 'react-calendar';
 
 import TodayEvents from './TodayEvents';
 
-const CalendarDashboard = ({ dailyTaskList }: { dailyTaskList: any }) => {
+const CalendarDashboard = () => {
   const today = new Date();
   return (
     <div className="flex flex-col bg-white rounded-lg h-full box-border border border-primary-100 ">
@@ -20,7 +20,7 @@ const CalendarDashboard = ({ dailyTaskList }: { dailyTaskList: any }) => {
           return null;
         }}
       />
-      <TodayEvents dailyTaskList={dailyTaskList} />
+      <TodayEvents />
     </div>
   );
 };
