@@ -1,12 +1,20 @@
 'use client';
 
 import { AxiosError } from 'axios';
-import { ArchiveIcon, Share2Icon } from 'lucide-react';
+import { ArchiveIcon, Share2Icon, Undo2Icon } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import { useArchiveDeck, useDeckManager } from '@/hooks/use-deck';
+import StatusBar from '@/components/status-bar';
+import {
+  useArchiveDeck,
+  useDeckById,
+  useDeckManager,
+  useDeleteDeck,
+  useRestoreDeck
+} from '@/hooks/use-deck';
 import {
   setFlashcardErrors,
   setFlashcards
@@ -19,14 +27,18 @@ import { DeckActionHeader } from '../../../_components/header';
 import ShareDeckDialog from './share-deck-dialog';
 
 export default function DeckPage() {
+  const { id } = useParams();
+  const { data: deck } = useDeckById(id as string);
+
   const dispatch = useDispatch();
   const resource = useSelector((state: RootState) => state.decks);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const archiveDeck = useArchiveDeck();
+  const restoreDeck = useRestoreDeck();
+  const deleteDeck = useDeleteDeck();
 
-  const { isEditing, deck, saveResource, isSubmitting, isLoading } =
-    useDeckManager();
+  const { isEditing, saveResource, isSubmitting, isLoading } = useDeckManager();
 
   useEffect(() => {
     if (deck && deck.flashcards) {
@@ -77,43 +89,74 @@ export default function DeckPage() {
 
   const handleArchiveDeck = async () => {
     await archiveDeck.mutateAsync(deck?._id || '');
-    toast.success('Deck archived successfully!'); // Không cần quan tâm thằng này
+    toast.success('Deck archived successfully!');
+  };
+
+  const handleRestoreDeck = async () => {
+    await restoreDeck.mutateAsync(deck?._id || '');
+    toast.success('Deck restored successfully!');
+  };
+
+  const handleDeleteDeck = async () => {
+    await deleteDeck.mutateAsync(deck?._id || '');
+    toast.success('Deck deleted successfully!');
   };
 
   return (
     <>
-      <div className="w-full flex justify-start">
-        <button
-          type="button"
-          onClick={handleArchiveDeck}
-          className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
-        >
-          <ArchiveIcon className="size-4" />
-          Archive
-        </button>
-        <button
-          type="button"
-          className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80 ml-auto"
-          onClick={() => setIsShareDialogOpen(true)}
-        >
-          <Share2Icon className="size-4" />
-          Share Deck
-        </button>
+      <StatusBar
+        type="Deck"
+        data={deck}
+        isLoading={isLoading}
+        handleRestore={handleRestoreDeck}
+        handleDelete={handleDeleteDeck}
+      />
+      <div className="mx-auto flex size-full flex-col space-y-6 px-4 py-8 lg:w-4/5 lg:text-base xl:w-3/5">
+        <div className="w-full flex justify-start">
+          {!deck.isArchived && (
+            <button
+              type="button"
+              onClick={handleArchiveDeck}
+              className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
+            >
+              <ArchiveIcon className="size-4" />
+              Archive
+            </button>
+          )}
+          {deck.isArchived && (
+            <button
+              type="button"
+              onClick={handleRestoreDeck}
+              className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80"
+            >
+              <Undo2Icon className="size-4" />
+              Restore
+            </button>
+          )}
+          <button
+            type="button"
+            className="border-primary-500 text-primary-500 border text-sm rounded-md px-2 py-1 flex items-center gap-2 hover:bg-primary-100/80 ml-auto"
+            onClick={() => setIsShareDialogOpen(true)}
+          >
+            <Share2Icon className="size-4" />
+            Share Deck
+          </button>
+        </div>
+
+        <DeckActionHeader
+          initialData={deck}
+          isEditing={isEditing}
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+        />
+        <ResourceElements />
+
+        <ShareDeckDialog
+          deckId={deck?._id || ''}
+          isOpen={isShareDialogOpen}
+          onClose={() => setIsShareDialogOpen(false)}
+        />
       </div>
-
-      <DeckActionHeader
-        initialData={deck}
-        isEditing={isEditing}
-        onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-      />
-      <ResourceElements />
-
-      <ShareDeckDialog
-        deckId={deck?._id || ''}
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-      />
     </>
   );
 }

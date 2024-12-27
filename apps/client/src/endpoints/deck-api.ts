@@ -38,5 +38,18 @@ export const DeckApi = {
   async unshare(deckId: string, usernameOrEmail: string) {
     return (await DeckClient.post(`${deckId}/unshare`, { usernameOrEmail }))
       .data;
+  },
+
+  async getArchivedDecks() {
+    const response = await DeckClient.get('/archived-resources/all');
+    return response;
+  },
+
+  async restore(deckId: string) {
+    return (await DeckClient.post(`${deckId}/restore`)).data;
+  },
+
+  async delete(deckId: string) {
+    return (await DeckClient.delete(`${deckId}`)).data;
   }
 };

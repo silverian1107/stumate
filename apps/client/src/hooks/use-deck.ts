@@ -244,10 +244,84 @@ export const useCreateDeck = () => {
 
 export const useDeckById = (deckId: string) => {
   return useQuery({
-    queryKey: ['decks', deckId],
+    queryKey: ['decks'],
     queryFn: async () => {
       const response = await DeckApi.findById(deckId);
       return response.data.data;
+    }
+  });
+};
+
+export const useDeckByNoteId = (noteId: string) => {
+  return useQuery({
+    queryKey: ['decks', noteId],
+    queryFn: async () => {
+      if (!noteId) {
+        throw new Error('noteId is required to fetch the deck.');
+      }
+      return DeckApi.findByNoteId(noteId);
+    },
+    enabled: !!noteId,
+    retry: false
+  });
+};
+
+export const useDeckByOwner = () => {
+  return useQuery({
+    queryKey: ['decks'],
+    queryFn: async () => {
+      const response = await DeckApi.findByOwner();
+      return response.data.data;
+    }
+  });
+};
+
+export const useArchiveDeck = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (deckId: string) => {
+      const response = await DeckApi.archive(deckId);
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
+    }
+  });
+};
+
+export const useGetArchivedDeck = () => {
+  return useQuery({
+    queryKey: ['getArchivedDeck'],
+    queryFn: async () => {
+      const response = await DeckApi.getArchivedDecks();
+      return response.data.data;
+    }
+  });
+};
+
+export const useRestoreDeck = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (deckId: string) => {
+      const response = await DeckApi.restore(deckId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
+    }
+  });
+};
+
+export const useDeleteDeck = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (deckId: string) => {
+      const response = await DeckApi.delete(deckId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
     }
   });
 };
@@ -281,20 +355,6 @@ export const useCardBulkCreate = () => {
   });
 };
 
-export const useDeckByNoteId = (noteId: string) => {
-  return useQuery({
-    queryKey: ['deck', noteId],
-    queryFn: async () => {
-      if (!noteId) {
-        throw new Error('noteId is required to fetch the deck.');
-      }
-      return DeckApi.findByNoteId(noteId);
-    },
-    enabled: !!noteId,
-    retry: false
-  });
-};
-
 export const useGenerateFlashcardsByAI = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -312,20 +372,6 @@ export const useGenerateFlashcardsByAI = () => {
       queryClient.invalidateQueries({
         queryKey: ['flashcardsByDeckId', data.id]
       });
-    }
-  });
-};
-
-export const useArchiveDeck = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (deckId: string) => {
-      const response = await DeckApi.archive(deckId);
-      return response.data.data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['decks'] });
-      queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
     }
   });
 };

@@ -1,11 +1,10 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { DeckApi } from '@/endpoints/deck-api';
+import { useDeckByOwner } from '@/hooks/use-deck';
 
 import DeckCard from '../../../_components/deck-card';
 import { useSearch } from '../../SearchContext';
@@ -17,17 +16,9 @@ interface Deck {
 }
 
 const DeckPage = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['decks'],
-    queryFn: async () => {
-      const response = await DeckApi.findByOwner();
-      return response.data;
-    },
-    staleTime: 1000 * 60 * 5,
-    retry: false
-  });
-
   const { searchQuery, setSearchQuery } = useSearch();
+
+  const { data, isLoading, error } = useDeckByOwner();
 
   useEffect(() => {
     setSearchQuery('');
@@ -52,7 +43,7 @@ const DeckPage = () => {
     );
   }
 
-  if (data.data.result.length === 0) {
+  if (data.result.length === 0) {
     return (
       <div className="flex text-lg size-full items-center justify-center flex-col font-medium">
         <p>No deck found</p>
@@ -69,7 +60,7 @@ const DeckPage = () => {
     );
   }
 
-  const { result } = data.data;
+  const { result } = data;
 
   const filteredDecks = result.filter((deck: Deck) =>
     deck.name.toLowerCase().includes(searchQuery.toLowerCase())

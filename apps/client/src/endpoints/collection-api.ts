@@ -53,7 +53,7 @@ export const CollectionApi = {
     return response.data;
   },
 
-  async getArchivedResources() {
+  async getArchivedDocuments() {
     const [noteResponse, collectionResponse] = await Promise.all([
       NoteClient.get('/archived-resources/all'),
       CollectionClient.get('/archived-resources/all')

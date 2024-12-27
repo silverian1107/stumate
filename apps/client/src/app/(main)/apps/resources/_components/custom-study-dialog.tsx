@@ -67,7 +67,7 @@ export function CustomStudyDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary">
-          <Settings className="mr-2 size-4" />
+          <Settings className="size-4" />
           Custom study
         </Button>
       </DialogTrigger>

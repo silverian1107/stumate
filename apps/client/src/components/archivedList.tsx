@@ -16,14 +16,14 @@ import {
 } from '@/components/ui/dialog';
 import {
   useDeleteCollection,
-  useGetArchivedResources,
+  useGetArchivedDocuments,
   useRestoreCollection
 } from '@/hooks/use-collection';
 import { useDeleteNote, useRestoreNote } from '@/hooks/use-note';
 import { cn } from '@/lib/utils';
 
 const ArchivedList = () => {
-  const { data, isLoading } = useGetArchivedResources();
+  const { data, isLoading } = useGetArchivedDocuments();
 
   const restoreNotes = useRestoreNote();
   const restoreCollections = useRestoreCollection();

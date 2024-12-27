@@ -137,7 +137,6 @@ export class FlashcardsService {
     };
   }
 
-  //websocket
   async createMultiple(
     deckId: string,
     createFlashcardData: CreateFlashcardDto[],

@@ -202,11 +202,11 @@ export const useUpdateCollection = () => {
   });
 };
 
-export const useGetArchivedResources = () => {
+export const useGetArchivedDocuments = () => {
   return useQuery({
     queryKey: ['getArchivedResources'],
     queryFn: async () => {
-      const response = await CollectionApi.getArchivedResources();
+      const response = await CollectionApi.getArchivedDocuments();
       return response;
     },
     staleTime: 5 * 60 * 1000
