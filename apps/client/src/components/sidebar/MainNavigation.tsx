@@ -33,7 +33,13 @@ const MainNavigation = () => {
         href="/apps"
       />
       <SidebarItem isButton label="Settings" icon={Settings} />
-      <SidebarItem isButton label="Inbox" icon={Inbox} />
+      <SidebarItem
+        isButton
+        label="Inbox"
+        icon={Inbox}
+        active={pathname === '/apps/inbox'}
+        href="/apps/inbox"
+      />
       <SidebarItem
         isButton
         label="Resources"
