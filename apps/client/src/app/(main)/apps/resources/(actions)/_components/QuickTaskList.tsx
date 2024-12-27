@@ -19,7 +19,7 @@ const QuickTasksList = () => {
   const [addTodo] = useAddTodoMutation();
 
   const [newTask, setNewTask] = useState('');
-  const [activePopup, setActivePopup] = useState<string | null>(null); // Track active popup
+  const [activePopup, setActivePopup] = useState<string | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
 
@@ -85,7 +85,7 @@ const QuickTasksList = () => {
               <li
                 key={task._id}
                 className={`flex items-center justify-between px-2   ${
-                  task.isCompleted ? 'bg-primary-100' : ''
+                  task?.isCompleted ? 'bg-primary-100' : ''
                 }`}
               >
                 <div className="flex items-center">
