@@ -146,7 +146,7 @@ export class ArchiveService {
           { isArchived: true, archivedAt: new Date() },
         );
         return 'Deck was archived successfully';
-      case 'quizzes':
+      case 'quiz-tests':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId },
           { isArchived: true, archivedAt: new Date() },
@@ -282,7 +282,7 @@ export class ArchiveService {
           ),
         ]);
         return 'Note was restored successfully';
-      case 'deck':
+      case 'decks':
         const flashcards = await this.flashcardModel.find({
           deckId: resourceId,
           isArchived: true,
@@ -304,7 +304,7 @@ export class ArchiveService {
           { isArchived: false, archivedAt: null },
         );
         return 'Deck was restored successfully';
-      case 'quizzes':
+      case 'quiz-tests':
         await this.quizQuestionModel.updateMany(
           { quizTestId: resourceId, isArchived: true },
           { isArchived: false, archivedAt: null },
@@ -335,10 +335,10 @@ export class ArchiveService {
       case 'notes':
         model = this.noteModel;
         break;
-      case 'deck':
+      case 'decks':
         model = this.deckModel;
         break;
-      case 'quizzes':
+      case 'quizz-tests':
         model = this.quizTestModel;
         break;
       default:

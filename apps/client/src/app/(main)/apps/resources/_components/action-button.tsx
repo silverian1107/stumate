@@ -10,16 +10,18 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
+import { ArchivedResourcesDialog } from './ArchivedResourcesDialog';
 import { CustomStudyDialog } from './custom-study-dialog';
 
 const ActionButton = () => {
   return (
     <div className="flex w-full items-center justify-end gap-2">
+      <ArchivedResourcesDialog />
       <CustomStudyDialog />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button>
-            <PlusIcon className="mr-2 size-4" />
+            <PlusIcon className="size-4" />
             Create new
           </Button>
         </DropdownMenuTrigger>

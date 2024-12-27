@@ -4,13 +4,24 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { LearnerSidebar } from '@/components/right-side-bar/right-side-bar';
+import StatusBar from '@/components/status-bar';
+import { useNoteById, useRestoreNote } from '@/hooks/use-note';
 import { cn } from '@/lib/utils';
 
 import MyEditor from '../_components/my-editor';
 import MyMenuBar from '../_components/my-menu-bar';
-import NoteStatusBar from '../_components/note-status-bar';
 
 export default function CreateNote() {
+  const { data: noteData, isLoading } = useNoteById();
+  const restoreNotes = useRestoreNote();
+  const handleRestore = () => {
+    if (noteData?._id) {
+      restoreNotes.mutate(noteData._id);
+    }
+  };
+
+  const handleDelete = () => {};
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showChevronLeft, setShowChevronLeft] = useState(false);
 
@@ -39,7 +50,13 @@ export default function CreateNote() {
   return (
     <div className="flex h-screen w-full relative overflow-hidden">
       <div className="flex flex-1 flex-col w-full items-start bg-gray-50/50">
-        <NoteStatusBar />
+        <StatusBar
+          type="Note"
+          data={noteData}
+          isLoading={isLoading}
+          handleRestore={handleRestore}
+          handleDelete={handleDelete}
+        />
         <MyMenuBar />
         <div className="flex w-full overflow-hidden gap-5">
           <MyEditor />
