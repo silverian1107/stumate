@@ -43,6 +43,11 @@ export const CollectionApi = {
     return CollectionClient.post(`${resourceId}/archive`);
   },
 
+  async delete(collectionId: string) {
+    const response = await CollectionClient.delete(`/${collectionId}`);
+    return response.data;
+  },
+
   async updateById(collectionId: string, data: UpdateCollectionBody) {
     const response = await CollectionClient.patch(`/${collectionId}`, data);
     return response.data;

@@ -491,7 +491,6 @@ const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.accessToken;
-    console.log('token: ', token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -506,7 +505,6 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  console.log('args: ', args);
   if (result?.error?.status === 401) {
     const refreshResult = await baseQuery(
       {

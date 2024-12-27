@@ -44,7 +44,7 @@ const BottomNavigation = () => {
         </SheetTrigger>
         <SheetContent side="left" className="overflow-auto">
           <SheetHeader>
-            <SheetTitle>Archive</SheetTitle>
+            <SheetTitle className="text-center">Archive</SheetTitle>
           </SheetHeader>
           <SheetDescription className="text-center">
             See your archived resources

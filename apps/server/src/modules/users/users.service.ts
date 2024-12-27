@@ -82,12 +82,11 @@ export class UsersService {
     await this.createAdminIfNotExists();
   }
 
-  // Function to create an admin account if it does not exist
   async createAdminIfNotExists() {
     const adminExists = await this.userModel.findOne({ username: 'admin' });
 
     if (!adminExists) {
-      const hashedPassword = await bcrypt.hash('admin', 10); // Hash the password
+      const hashedPassword = await bcrypt.hash('admin', 10);
       const adminUser = new this.userModel({
         name: 'Administrator',
         username: 'admin',
