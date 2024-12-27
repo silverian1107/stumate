@@ -32,6 +32,23 @@ import {
 
 import CreateUserDialog from '../../_components/dialog/CreateUserDialog';
 
+const useStyles = {
+  tableContainer: {
+    marginTop: '20px',
+    maxHeight: '70vh',
+    overflowX: 'auto' as const
+  },
+  tableCell: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
+  },
+  actionCell: {
+    minWidth: '100px',
+    textAlign: 'center' as const
+  }
+};
+
 const AccountList = () => {
   const [current, setCurrent] = useState(1);
   const [count, setCount] = useState<number | null>(null);
@@ -100,8 +117,14 @@ const AccountList = () => {
       role: ''
     };
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+
     if (!newUser.email.trim()) {
       newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!emailRegex.test(newUser.email)) {
+      newErrors.email = 'Invalid email format';
       isValid = false;
     }
     if (!newUser.username.trim()) {
@@ -110,6 +133,10 @@ const AccountList = () => {
     }
     if (!newUser.password.trim()) {
       newErrors.password = 'Password is required';
+      isValid = false;
+    } else if (!passwordRegex.test(newUser.password)) {
+      newErrors.password =
+        'Password must be 8+ chars, include upper, lower & special chars.';
       isValid = false;
     }
     if (!newUser.confirm_password.trim()) {
@@ -186,9 +213,10 @@ const AccountList = () => {
       </Typography>
       <TableContainer
         component={Paper}
+        style={useStyles.tableContainer}
         sx={{ marginTop: '20px', minHeight: '70vh' }}
       >
-        <Table>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell align="center" size="small">
@@ -209,7 +237,11 @@ const AccountList = () => {
               <TableCell align="center" size="small">
                 Gender
               </TableCell>
-              <TableCell align="center" size="small">
+              <TableCell
+                align="center"
+                size="small"
+                style={useStyles.actionCell}
+              >
                 Action
               </TableCell>
             </TableRow>
@@ -220,32 +252,42 @@ const AccountList = () => {
                 <TableCell align="center" size="small">
                   {10 * (current - 1) + index + 1}
                 </TableCell>
-                <TableCell align="center" size="small">
+                <TableCell
+                  align="center"
+                  size="small"
+                  style={useStyles.tableCell}
+                  className="max-w-40 overflow-hidden text-ellipsis"
+                >
                   {row.name || 'N/A'}
                 </TableCell>
-                <TableCell align="center" size="small">
+                <TableCell
+                  align="center"
+                  size="small"
+                  style={useStyles.tableCell}
+                >
                   {row.username}
                 </TableCell>
                 <TableCell
                   align="center"
                   size="small"
-                  className="max-w-10 overflow-hidden text-ellipsis"
+                  style={useStyles.tableCell}
+                  className="max-w-40 overflow-hidden text-ellipsis"
                 >
                   {row.email}
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.birthday?.split('T')[0] || 'N/A'}
                 </TableCell>
-                <TableCell align="center" size="small" className="max-w-[65px]">
+                <TableCell align="center" size="small">
                   {row.gender || 'N/A'}
                 </TableCell>
-                <TableCell align="center" size="small" className="max-w-[70px]">
-                  <div className="flex items-center justify-around ">
-                    <Link
-                      href={`/admin/accounts/${row._id}`}
-                      className="inline-block "
-                      title="Detail"
-                    >
+                <TableCell
+                  align="center"
+                  size="small"
+                  style={useStyles.actionCell}
+                >
+                  <div className="flex items-center justify-around">
+                    <Link href={`/admin/accounts/${row._id}`} title="Detail">
                       <EllipsisVertical className="text-primary-500" />
                     </Link>
                     <IconButton
@@ -263,6 +305,7 @@ const AccountList = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
       <Pagination
         count={count || 1}
         page={current}

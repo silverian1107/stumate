@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
@@ -135,7 +136,7 @@ export class CollectionsController {
   //   return this.collectionsService.restoreById(collectionId, user._id);
   // }
 
-  @Patch(':collectionId/delete')
+  @Delete(':collectionId')
   @ApiOperation({ summary: 'Delete a collection by ID' })
   @ApiResponse({ status: 200, description: 'The deleted collection.' })
   @ApiResponse({ status: 400 })

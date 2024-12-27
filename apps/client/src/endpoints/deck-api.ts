@@ -27,6 +27,10 @@ export const DeckApi = {
     return (await DeckClient.patch(`${deckId}`, data)).data;
   },
 
+  async archive(deckId: string) {
+    return DeckClient.post(`${deckId}/archive`);
+  },
+
   async share(deckId: string, usernameOrEmail: string) {
     return (await DeckClient.post(`${deckId}/share`, { usernameOrEmail })).data;
   },
@@ -34,5 +38,18 @@ export const DeckApi = {
   async unshare(deckId: string, usernameOrEmail: string) {
     return (await DeckClient.post(`${deckId}/unshare`, { usernameOrEmail }))
       .data;
+  },
+
+  async getArchivedDecks() {
+    const response = await DeckClient.get('/archived-resources/all');
+    return response;
+  },
+
+  async restore(deckId: string) {
+    return (await DeckClient.post(`${deckId}/restore`)).data;
+  },
+
+  async delete(deckId: string) {
+    return (await DeckClient.delete(`${deckId}`)).data;
   }
 };

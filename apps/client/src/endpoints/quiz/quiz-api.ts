@@ -6,6 +6,10 @@ export const QuizApi = {
     return QuizClient.get('');
   },
 
+  async findByUserWithPagination(page: number, size: number) {
+    return QuizClient.get(`/with-pagination`, { params: { page, size } });
+  },
+
   async findById(id: string) {
     return QuizClient.get(`/${id}`);
   },
@@ -51,5 +55,17 @@ export const QuizApi = {
   async unshare(quizId: string, usernameOrEmail: string) {
     return (await QuizClient.post(`${quizId}/unshare`, { usernameOrEmail }))
       .data;
+  },
+
+  async archive(quizId: string) {
+    return (await QuizClient.post(`${quizId}/archive`)).data;
+  },
+
+  async restore(quizId: string) {
+    return (await QuizClient.post(`${quizId}/restore`)).data;
+  },
+
+  async delete(quizId: string) {
+    return (await QuizClient.delete(`${quizId}`)).data;
   }
 };

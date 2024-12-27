@@ -159,18 +159,11 @@ const QuizPage = () => {
                 >
                   {row.description}
                 </TableCell>
-                <TableCell
-                  align="center"
-                  size="small"
-                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
-                >
-                  {row.createdBy.username}
-                </TableCell>
                 <TableCell align="center" size="small">
                   {row.numberOfQuestion}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.duration}
+                  {row.duration || 'N/A'}
                 </TableCell>
                 <TableCell align="center" size="small">
                   {row.createdBy.username}
@@ -180,6 +173,7 @@ const QuizPage = () => {
                     color="primary"
                     size="small"
                     onClick={() => handleOpen(row)}
+                    title="Detail"
                   >
                     <EllipsisVertical />
                   </IconButton>
@@ -187,6 +181,7 @@ const QuizPage = () => {
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row._id)}
+                    title="Archive"
                   >
                     <Trash2 />
                   </IconButton>

@@ -206,9 +206,12 @@ export class DecksService {
       }
     }
     //soft delete for all flashcard
-    await this.flashcardModel.delete({ deckId: id }, user._id);
+    await this.flashcardModel.delete(
+      { deckId: id, isArchived: true },
+      user._id,
+    );
     //soft delete for deck
-    await this.deckModel.delete({ _id: id }, user._id);
+    await this.deckModel.delete({ _id: id, isArchived: true }, user._id);
     await this.statisticsService.createOrUpdateUserStatistics(userId);
     await this.statisticsService.getAdminStatistics();
     return 'Deck was deleted successfully';

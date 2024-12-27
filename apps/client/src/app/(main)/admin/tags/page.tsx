@@ -259,6 +259,7 @@ const TagList = () => {
                     color="primary"
                     size="small"
                     onClick={() => handleOpenUpdate(row)}
+                    title="Edit"
                   >
                     <Edit />
                   </IconButton>
@@ -266,6 +267,7 @@ const TagList = () => {
                     color="error"
                     size="small"
                     onClick={() => handleDeleteOpen(row._id)}
+                    title="Delete"
                   >
                     <Trash2 />
                   </IconButton>

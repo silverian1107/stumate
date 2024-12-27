@@ -1,8 +1,13 @@
 'use client';
 
 import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
-  Pagination,
   Paper,
   Table,
   TableBody,
@@ -13,74 +18,128 @@ import {
   Typography
 } from '@mui/material';
 import { Trash2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+import type { FilterParams, LogEntry } from '@/service/rootApi';
+import { useDeleteLogMutation, useGetLogsQuery } from '@/service/rootApi';
+
+import Panigation from '../_components/Panigation';
 
 const LogPage = () => {
-  const defaultData = Array.from({ length: 10 }, (_, index) => ({
-    id: index + 1,
-    category: 'user',
-    event: 'User logs in',
-    name: 'anhpro',
-    date: '09/12/2024'
-  }));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<FilterParams>({});
 
-  const [data, setData] = useState(defaultData);
-  const [page, setPage] = useState(1);
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
-
-  const filteredData = data.filter((row) => {
-    const matchesCategory = categoryFilter
-      ? row.category === categoryFilter
-      : true;
-    const matchesDate = dateFilter ? row.date === dateFilter : true;
-    return matchesCategory && matchesDate;
+  const { data, isSuccess } = useGetLogsQuery({
+    currentPage,
+    filters
   });
+  const [deleteLog] = useDeleteLogMutation();
 
-  const rowsPerPage = 8;
-  const paginatedData = filteredData.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  const [count, setCount] = useState<number>(1);
+  const [dataLogs, setDataLogs] = useState<LogEntry[] | undefined>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedLog, setSelectedLog] = useState<string | null>(null);
 
-  const handleDelete = (id: number) => {
-    setData(data.filter((row) => row.id !== id));
+  const formatDate = (date: string) => {
+    const [year, month, day] = date.split('-');
+    return `${month}/${day}/${year}`;
+  };
+
+  const parseDate = (dateString: string) => {
+    const [month, day, year] = dateString.split('/');
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputDate = e.target.value;
+    if (!inputDate) {
+      setFilters((prev) => ({
+        ...prev,
+        datetime: undefined
+      }));
+      return;
+    }
+    const formattedDate = formatDate(inputDate);
+    setFilters((prev) => ({
+      ...prev,
+      datetime: formattedDate
+    }));
+  };
+  // Handle method filter
+  const handleMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const method = e.target.value;
+    setFilters((prev) => ({
+      ...prev,
+      method: method || undefined
+    }));
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setDataLogs(data.data.result);
+      setCount(data.data.meta.pages);
+    }
+  }, [isSuccess, data, filters]);
+
+  const handleDeleteOpen = (id: string) => {
+    setSelectedLog(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteClose = () => {
+    setSelectedLog(null);
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteLog(selectedLog);
+      setDeleteDialogOpen(false);
+      toast.success('Log removed successfully!', {
+        position: 'top-right'
+      });
+      setSelectedLog(null);
+    } catch (error) {
+      toast.error(`${error}`, {
+        description: 'Please try again.',
+        position: 'top-right'
+      });
+    }
   };
 
   return (
-    <div className="p-6 rounded-lg bg-white w-full h-[80vh] relative">
-      <Typography
-        variant="h5"
-        gutterBottom
-        className="flex gap-40 items-center"
-      >
+    <div className="p-6 rounded-lg bg-white w-full h-[88vh] relative">
+      <Typography variant="h5" gutterBottom className="flex gap-20">
         Manage Logs
-        <div className="flex gap-10  text-sm mt-1 items-center ">
-          {/* Category Filter */}
-          <div className="flex gap-3 border px-1 rounded-lg border-primary-200">
-            <p>Category:</p>
+        <div className="flex gap-20">
+          <div className="flex gap-1 !text-sm items-center">
+            <label htmlFor="method"> Method:</label>
             <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              onChange={handleMethodChange}
+              className="border rounded-md text-sm px-2 py-1 border-primary-200"
             >
               <option value="">All</option>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PATCH">PATCH</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
             </select>
           </div>
-          <div className="flex gap-3 px-1 rounded-lg border border-primary-200 items-center">
+          <div className="flex gap-3 px-1 rounded-lg border border-primary-200 text-sm items-center">
             <p>Date:</p>
             <input
               type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
+              value={filters.datetime ? parseDate(filters.datetime) : ''}
+              onChange={handleDateChange}
             />
           </div>
         </div>
       </Typography>
       <TableContainer
         component={Paper}
-        sx={{ marginTop: '20px', minHeight: '60vh' }}
+        sx={{ marginTop: '20px', minHeight: '70vh' }}
       >
         <Table>
           <TableHead>
@@ -89,16 +148,25 @@ const LogPage = () => {
                 SST
               </TableCell>
               <TableCell align="center" size="small">
-                Category
+                Date & Time
               </TableCell>
               <TableCell align="center" size="small">
-                Event
+                Username
               </TableCell>
               <TableCell align="center" size="small">
-                Name
+                Level
               </TableCell>
               <TableCell align="center" size="small">
-                Date
+                HTTP Method
+              </TableCell>
+              <TableCell align="center" size="small">
+                Request URL
+              </TableCell>
+              <TableCell align="center" size="small">
+                Status Code
+              </TableCell>
+              <TableCell align="center" size="small">
+                API Address
               </TableCell>
               <TableCell align="center" size="small">
                 Action
@@ -106,28 +174,64 @@ const LogPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.map((row, index) => (
+            {(dataLogs || []).map((row, index) => (
               <TableRow key={row.id}>
                 <TableCell align="center" size="small">
-                  {index + 1}
+                  {10 * (currentPage - 1) + index + 1}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap"
+                >
+                  {row.datetime.split(',')[0]}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-[20%] text-nowrap"
+                >
+                  {row?.user?.username || 'N/A'}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.category}
+                  <p
+                    className={
+                      row.level === 'ERROR'
+                        ? 'text-red-600'
+                        : row.level === 'WARN'
+                          ? 'text-yellow-600'
+                          : 'text-green-600'
+                    }
+                  >
+                    {row.level}
+                  </p>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap text-bold"
+                >
+                  {row.method}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  size="small"
+                  className="overflow-hidden text-ellipsis max-w-10 text-nowrap text-bold"
+                >
+                  {row.originalUrl}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.event}
+                  {row.statusCode}
                 </TableCell>
                 <TableCell align="center" size="small">
-                  {row.name}
-                </TableCell>
-                <TableCell align="center" size="small">
-                  {row.date}
+                  {row.ip}
                 </TableCell>
                 <TableCell align="center" size="small">
                   <IconButton
                     color="error"
                     size="small"
-                    onClick={() => handleDelete(row.id)}
+                    onClick={() => handleDeleteOpen(row.id)}
+                    title="Delete"
                   >
                     <Trash2 />
                   </IconButton>
@@ -137,16 +241,32 @@ const LogPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Pagination
-        count={Math.ceil(filteredData.length / rowsPerPage)}
-        page={page}
-        onChange={(e, value) => setPage(value)}
-        style={{
-          marginTop: '20px',
-          display: 'flex',
-          justifyContent: 'center'
-        }}
+      <Panigation
+        count={count}
+        page={currentPage}
+        setCurrent={(value: number) => setCurrentPage(value)}
       />
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-method"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-method">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete the notification?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

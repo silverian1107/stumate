@@ -144,6 +144,37 @@ export const useArchiveCollection = () => {
   });
 };
 
+export const useDeleteCollection = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (collectionId: string) => {
+      const response = await CollectionApi.delete(collectionId);
+      return response.data.data;
+    },
+    onSuccess: (_, collectionId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getNotes']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedCollection']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedResources']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getDocuments', collectionId]
+      });
+    },
+    onError: () => {
+      toast.error('Failed to delete the collection');
+    }
+  });
+};
+
 export const useUpdateCollection = () => {
   const queryClient = useQueryClient();
 
@@ -171,11 +202,11 @@ export const useUpdateCollection = () => {
   });
 };
 
-export const useGetArchivedResources = () => {
+export const useGetArchivedDocuments = () => {
   return useQuery({
     queryKey: ['getArchivedResources'],
     queryFn: async () => {
-      const response = await CollectionApi.getArchivedResources();
+      const response = await CollectionApi.getArchivedDocuments();
       return response;
     },
     staleTime: 5 * 60 * 1000

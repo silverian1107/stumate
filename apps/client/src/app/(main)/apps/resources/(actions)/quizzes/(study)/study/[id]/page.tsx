@@ -6,6 +6,10 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
+import QuizStudyProgress from '@/components/quiz/quiz-study/QuizStudyProgress';
+import QuizStudyQuestion from '@/components/quiz/quiz-study/QuizStudyQuestion';
+import QuizStudyResults from '@/components/quiz/quiz-study/QuizStudyResults';
+import QuizStudySubmitButton from '@/components/quiz/quiz-study/QuizStudySubmitButton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   useQuizAttemptData,
@@ -20,10 +24,6 @@ import {
 } from '@/redux/slices/studyQuizSlice';
 import type { AppDispatch, RootState } from '@/redux/store';
 
-import QuizStudyProgress from '../../../../../../../../../components/quiz/quiz-study/QuizStudyProgress';
-import QuizStudyQuestion from '../../../../../../../../../components/quiz/quiz-study/QuizStudyQuestion';
-import QuizStudyResults from '../../../../../../../../../components/quiz/quiz-study/QuizStudyResults';
-import QuizStudySubmitButton from '../../../../../../../../../components/quiz/quiz-study/QuizStudySubmitButton';
 import { mapQuizBackendToFrontend } from '../../../_components/QuizCreator';
 import ConfirmDialog from '../../prepare/_components/confirm-dialog';
 import QuestionStatus from '../../prepare/_components/question-status';

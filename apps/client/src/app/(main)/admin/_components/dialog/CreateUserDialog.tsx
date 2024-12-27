@@ -61,6 +61,7 @@ const CreateUserDialog = ({
           onChange={handleChange}
           error={!!errors.password}
           helperText={errors.password}
+          type="password"
         />
         <TextField
           margin="dense"
@@ -72,6 +73,7 @@ const CreateUserDialog = ({
           onChange={handleChange}
           error={!!errors.confirm_password}
           helperText={errors.confirm_password}
+          type="password"
         />
         <TextField
           margin="dense"
@@ -82,8 +84,6 @@ const CreateUserDialog = ({
           variant="outlined"
           value={newUser.role}
           onChange={handleChange}
-          error={!!errors.role}
-          helperText={errors.role}
         >
           <MenuItem value="USER">User</MenuItem>
           <MenuItem value="ADMIN">Admin</MenuItem>

@@ -19,6 +19,7 @@ import Achieve from './resources/(actions)/_components/Achieve';
 import CalendarDashboard from './resources/(actions)/_components/CalendarDashboard';
 import Maxim from './resources/(actions)/_components/Maxim';
 import Performance from './resources/(actions)/_components/Performance';
+import QuickTasksList from './resources/(actions)/_components/QuickTaskList';
 import ShortSession from './resources/(actions)/_components/ShortSession';
 import Total from './resources/(actions)/_components/Total';
 
@@ -66,7 +67,7 @@ const Main = () => {
         newSocket.disconnect();
       };
     }
-  }, [data, response.isSuccess]);
+  }, [data, response.isSuccess, response.data]);
 
   useEffect(() => {
     if (error) {
@@ -104,7 +105,7 @@ const Main = () => {
               statistics?.data?.notesRevisedTodayCount ?? 0
             }
           />
-          <div className="element-dashboard row-span-2 ">4</div>
+          <QuickTasksList />
           <LowAccQuiz
             quizzesCompletedToday={statistics?.data?.quizzesCompletedToday ?? 0}
           />
@@ -119,7 +120,7 @@ const Main = () => {
             }
           />
           <Maxim />
-          <Performance />
+          {statistics && <Performance statistics={statistics} />}
         </div>
         <div className=" w-1/4 h-full flex flex-col gap-4  box-border">
           <Total

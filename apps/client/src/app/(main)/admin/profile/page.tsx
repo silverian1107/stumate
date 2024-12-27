@@ -14,6 +14,7 @@ const Profile = () => {
   const id = data.data?.data.user._id;
   const response = useGetInfoUserQuery({ id } as { id: string });
   const [updateUser] = useUpdateUserMutation();
+  // const [editAvatarUrl] = useEditAvatarMutation();
 
   const [user, setUser] = useState<UserInfo | null>(null);
   const [isEdit, setIsEdit] = useState(false);
@@ -138,7 +139,7 @@ const Profile = () => {
           variant="outlined"
           value={user?.email || ''}
           onChange={(e) => handleInputChange('email', e.target.value)}
-          disabled={!isEdit}
+          disabled
         />
 
         <TextField

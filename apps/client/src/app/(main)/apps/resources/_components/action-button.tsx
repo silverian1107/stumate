@@ -1,5 +1,5 @@
 import { StackIcon } from '@radix-ui/react-icons';
-import { ClipboardListIcon, PlusIcon, Settings } from 'lucide-react';
+import { ClipboardListIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -10,19 +10,18 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
+import { ArchivedResourcesDialog } from './ArchivedResourcesDialog';
+import { CustomStudyDialog } from './custom-study-dialog';
+
 const ActionButton = () => {
   return (
     <div className="flex w-full items-center justify-end gap-2">
-      <Button variant="secondary">
-        <span>
-          <Settings />
-        </span>
-        Custom study
-      </Button>
+      <ArchivedResourcesDialog />
+      <CustomStudyDialog />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button>
-            <PlusIcon className="text-white" />
+            <PlusIcon className="size-4" />
             Create new
           </Button>
         </DropdownMenuTrigger>
@@ -30,13 +29,13 @@ const ActionButton = () => {
         <DropdownMenuContent>
           <Link href="/apps/resources/decks/new">
             <DropdownMenuItem className="cursor-pointer">
-              <StackIcon className="inline-block mr-2" />
+              <StackIcon className="mr-2 size-4" />
               Flashcard
             </DropdownMenuItem>
           </Link>
           <Link href="/apps/resources/quizzes/new">
             <DropdownMenuItem className="cursor-pointer">
-              <ClipboardListIcon className="inline-block mr-2" />
+              <ClipboardListIcon className="mr-2 size-4" />
               Quizzes
             </DropdownMenuItem>
           </Link>

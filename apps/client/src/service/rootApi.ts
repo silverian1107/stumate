@@ -8,11 +8,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { login, logout } from '../redux/slices/authSlice';
 import type { RootState } from '../redux/store';
 
-interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  // userInfo?: Record<string, any>;
-}
 interface RefreshResponse {
   access_token: string;
   user: {
@@ -420,11 +415,97 @@ interface IAllQuizzesResponse {
   };
 }
 
+export interface LogEntry {
+  id: string;
+  datetime: string;
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
+  originalUrl: string;
+  statusCode: number;
+  ip: string;
+  user?: UserInfo;
+  level: 'INFO' | 'WARN' | 'ERROR';
+}
+
+interface MetaLog {
+  current: number;
+  pageSize: number;
+  pages: number;
+  total: number;
+}
+
+interface LogsResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    meta: MetaLog;
+    result: LogEntry[];
+  };
+}
+
+export interface AdminStatisticResponse {
+  statusCode: number;
+  message: string;
+  data: AdminStatisticData;
+}
+
+// Data structure
+export interface AdminStatisticData {
+  overview: Overview;
+  monthlyStatisticsChart: MonthlyStatisticsChart;
+}
+
+// Overview structure
+export interface Overview {
+  totalAccounts: number;
+  totalNotes: number;
+  totalFlashcards: number;
+  totalQuizzes: number;
+}
+
+// Monthly Statistics Chart structure
+export interface MonthlyStatisticsChart {
+  totalAccounts: MonthlyData[];
+  totalNotes: MonthlyData[];
+  totalFlashcards: MonthlyData[];
+  totalQuizzes: MonthlyData[];
+}
+
+// Monthly data structure
+export interface MonthlyData {
+  count: number;
+  year: number;
+  month: number;
+}
+export interface FilterParams {
+  method?: string;
+  datetime?: string;
+}
+
+export interface TodoItem {
+  _id: string;
+  userId: string;
+  todo: string;
+  isCompleted: boolean;
+  createdBy: {
+    _id: string;
+    username: string;
+  };
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface TodoRes {
+  status: number;
+  message: string;
+  data: TodoItem[];
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:3000/api',
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.accessToken;
-    console.log('token: ', token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -439,7 +520,6 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  console.log('args: ', args);
   if (result?.error?.status === 401) {
     const refreshResult = await baseQuery(
       {
@@ -484,7 +564,9 @@ export const rootApi = createApi({
     'FLASHCARD_ADMIN',
     'ARCHIVE_FLASHCARD_ADMIN',
     'ARCHIVE_QUIZ',
-    'ARCHIVE_QUIZ_ADMIN'
+    'ARCHIVE_QUIZ_ADMIN',
+    'LOG',
+    'TODO'
   ],
   endpoints: (builder) => ({
     register: builder.mutation<
@@ -562,7 +644,6 @@ export const rootApi = createApi({
     refreshToken: builder.mutation<AuthResponse, { refreshToken: string }>({
       query: ({ refreshToken }) => ({
         url: '/auth/refresh',
-        body: { refreshToken },
         method: 'GET'
       })
     }),
@@ -884,7 +965,7 @@ export const rootApi = createApi({
     }),
     getAllArQuizzes: builder.query<AllArQuizzesResponse, void>({
       query: () => ({
-        url: 'quizzes/archived-resources/all',
+        url: '/quizzes/archived-resources/all',
         method: 'GET'
       }),
       providesTags: [{ type: 'ARCHIVE_QUIZ' }]
@@ -908,6 +989,85 @@ export const rootApi = createApi({
         { type: 'ARCHIVE_QUIZ' },
         { type: 'ARCHIVE_QUIZ_ADMIN' }
       ]
+    }),
+    getLogs: builder.query<
+      LogsResponse,
+      { currentPage: number; filters: FilterParams }
+    >({
+      query: ({ currentPage, filters }) => ({
+        url: 'mylogs',
+        params: { currentPage, ...filters },
+        method: 'GET'
+      }),
+      providesTags: [{ type: 'LOG' }]
+    }),
+    deleteLog: builder.mutation({
+      query: ({ id }) => ({
+        url: `/mylogs/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'LOG' }]
+    }),
+    getStatisticsAdmin: builder.query<AdminStatisticResponse, void>({
+      query: () => {
+        return '/statistics/admin';
+      }
+    }),
+    editAvatar: builder.mutation<
+      { status: number; message: string },
+      { avatarUrl: string }
+    >({
+      query: (avatarUrl) => ({
+        url: '/users',
+        method: 'PATCH',
+        body: { avatarUrl }
+      }),
+      invalidatesTags: [{ type: 'USERS' }]
+    }),
+    getTodo: builder.query<TodoRes, void>({
+      query: () => {
+        return '/todo';
+      },
+      providesTags: [{ type: 'TODO' }]
+    }),
+    completeTodo: builder.mutation<
+      { status: number; message: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/todo/${id}/completed`,
+        method: 'PATCH'
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
+    }),
+    editTodo: builder.mutation<
+      { status: number; message: string },
+      { id: string; todo: string }
+    >({
+      query: ({ id, todo }) => ({
+        url: `/todo/${id}`,
+        method: 'PATCH',
+        body: { todo }
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
+    }),
+    deleteTodo: builder.mutation({
+      query: ({ id }) => ({
+        url: `/todo/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
+    }),
+    addTodo: builder.mutation<
+      { status: number; message: string },
+      { todo: string }
+    >({
+      query: ({ todo }) => ({
+        url: '/todo',
+        method: 'POST',
+        body: { todo }
+      }),
+      invalidatesTags: [{ type: 'TODO' }]
     })
   })
 });
@@ -920,7 +1080,6 @@ export const {
   useChangePasswordMutation,
   useVerifyOTPMutation,
   useResendOTPMutation,
-  useRefreshTokenMutation,
   useUploadFilesMutation,
   useDeleteFileMutation,
   useCreateNoteMutation,
@@ -959,5 +1118,15 @@ export const {
   useGetAllArQuizzesQuery,
   useDeleteQuizMutation,
   useRestoreQuizByIdMutation,
-  useRestoreFlashcardByIdMutation
+  useRestoreFlashcardByIdMutation,
+  useGetLogsQuery,
+  useDeleteLogMutation,
+  useGetStatisticsAdminQuery,
+  useEditAvatarMutation,
+  useRefreshTokenQuery,
+  useCompleteTodoMutation,
+  useDeleteTodoMutation,
+  useEditTodoMutation,
+  useGetTodoQuery,
+  useAddTodoMutation
 } = rootApi;

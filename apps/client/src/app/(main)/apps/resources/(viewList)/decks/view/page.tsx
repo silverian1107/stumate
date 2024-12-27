@@ -1,12 +1,13 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
-import { DeckApi } from '@/endpoints/deck-api';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useDeckByOwner } from '@/hooks/use-deck';
 
-import ResourceCard from '../../../_components/resource-card';
+import DeckCard from '../../../_components/deck-card';
+import { useSearch } from '../../SearchContext';
 
 interface Deck {
   _id: string;
@@ -14,21 +15,22 @@ interface Deck {
   description: string;
 }
 
-const Flashcards = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['decks'],
-    queryFn: async () => {
-      const response = await DeckApi.findByOwner();
-      return response.data;
-    },
-    staleTime: 1000 * 60 * 5,
-    retry: false
-  });
+const DeckPage = () => {
+  const { searchQuery, setSearchQuery } = useSearch();
+
+  const { data, isLoading, error } = useDeckByOwner();
+
+  useEffect(() => {
+    setSearchQuery('');
+  }, [setSearchQuery]);
 
   if (isLoading) {
     return (
-      <div className="flex size-full items-center justify-center bg-primary-100">
-        <LoaderCircle className="size-16 animate-spin" />
+      <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Skeleton key={index} className="h-64 w-full bg-gray-200" />
+        ))}
       </div>
     );
   }
@@ -41,7 +43,7 @@ const Flashcards = () => {
     );
   }
 
-  if (data.data.result.length === 0) {
+  if (data.result.length === 0) {
     return (
       <div className="flex text-lg size-full items-center justify-center flex-col font-medium">
         <p>No deck found</p>
@@ -51,18 +53,23 @@ const Flashcards = () => {
             href="new"
             className="text-primary-600 cursor-pointer font-bold hover:underline"
           >
-            create a new deck
+            creating a new deck
           </Link>
         </p>
       </div>
     );
   }
 
-  const { result } = data.data;
+  const { result } = data;
+
+  const filteredDecks = result.filter((deck: Deck) =>
+    deck.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 xl:grid-cols-4">
-      {result.map((deck: Deck) => (
-        <ResourceCard
+      {filteredDecks.map((deck: Deck) => (
+        <DeckCard
           key={deck._id}
           id={deck._id}
           name={deck.name}
@@ -73,4 +80,4 @@ const Flashcards = () => {
   );
 };
 
-export default Flashcards;
+export default DeckPage;

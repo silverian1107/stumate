@@ -62,6 +62,21 @@ export class QuizTestsController {
     return this.quizTestsService.findByUser(user, qs);
   }
 
+  @Get('with-pagination')
+  @Roles(Role.USER)
+  @ResponseMessage('Get quiz test by user')
+  getWithPagination(
+    @User() user: IUser,
+    @Query('currentPage') currentPage = 1,
+    @Query('pageSize') pageSize = 10,
+  ) {
+    return this.quizTestsService.getWithPagination(
+      user,
+      +currentPage,
+      +pageSize,
+    );
+  }
+
   @Get('by-note/:noteId')
   @Roles(Role.USER)
   @ResponseMessage('Get quiz test by user')

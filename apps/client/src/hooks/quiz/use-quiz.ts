@@ -7,12 +7,14 @@ import { toast } from 'sonner';
 import { QuizApi } from '@/endpoints/quiz/quiz-api';
 import type { QuizCreateDto, QuizQuestion } from '@/endpoints/quiz/type';
 import type { Quiz } from '@/types/deck';
+import type { PaginatedResult, WithId } from '@/types/pagination';
 
 export const useQuizzesByOwner = () => {
   const quizzesQuery = useQuery({
     queryKey: ['quizzes'],
     queryFn: async (): Promise<Quiz[]> => {
       const response = await QuizApi.findByOwner();
+
       return response.data.data.result;
     },
     staleTime: 1000 * 60 * 5
@@ -41,6 +43,23 @@ export const useQuizById = (quizId?: string) => {
   });
 
   return fetchQuizById;
+};
+
+export const useQuizzesByOwnerWithPagination = (
+  currentPage = 1,
+  pageSize = 10
+) => {
+  return useQuery({
+    queryKey: ['quizzes', currentPage, pageSize],
+    queryFn: async (): Promise<PaginatedResult<Quiz & WithId>> => {
+      const response = await QuizApi.findByUserWithPagination(
+        currentPage,
+        pageSize
+      );
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 5
+  });
 };
 
 export const useQuizByNoteId = () => {
@@ -176,6 +195,69 @@ export const useDeleteQuestions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['quiz-questions']
+      });
+    }
+  });
+};
+
+export const useArchiveQuiz = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['archive-quiz'],
+    mutationFn: async (data: { quizId: string }) => {
+      const response = await QuizApi.archive(data.quizId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['quizz'],
+        exact: false
+      });
+    }
+  });
+};
+
+export const useRestoreQuiz = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['restore-quiz'],
+    mutationFn: async (data: { quizId: string }) => {
+      const response = await QuizApi.restore(data.quizId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['quizz'],
+        exact: false
+      });
+    }
+  });
+};
+
+export const useDeleteQuiz = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['delete-quiz'],
+    mutationFn: async (data: { quizId: string }) => {
+      const response = await QuizApi.delete(data.quizId);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['quizzes'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['quizz'],
+        exact: false
       });
     }
   });
