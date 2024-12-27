@@ -204,8 +204,8 @@ export const useArchiveQuiz = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['archive-quiz'],
-    mutationFn: async (data: { quizId: string }) => {
-      const response = await QuizApi.archive(data.quizId);
+    mutationFn: async (quizId: string) => {
+      const response = await QuizApi.archive(quizId);
       return response.data.data;
     },
     onSuccess: () => {
@@ -225,8 +225,8 @@ export const useRestoreQuiz = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['restore-quiz'],
-    mutationFn: async (data: { quizId: string }) => {
-      const response = await QuizApi.restore(data.quizId);
+    mutationFn: async (quizId: string) => {
+      const response = await QuizApi.restore(quizId);
       return response.data.data;
     },
     onSuccess: () => {
@@ -246,8 +246,8 @@ export const useDeleteQuiz = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['delete-quiz'],
-    mutationFn: async (data: { quizId: string }) => {
-      const response = await QuizApi.delete(data.quizId);
+    mutationFn: async (quizId: string) => {
+      const response = await QuizApi.delete(quizId);
       return response.data.data;
     },
     onSuccess: () => {
@@ -259,6 +259,16 @@ export const useDeleteQuiz = () => {
         queryKey: ['quizz'],
         exact: false
       });
+    }
+  });
+};
+
+export const useGetArchivedQuizzes = () => {
+  return useQuery({
+    queryKey: ['archived-quizzes'],
+    queryFn: async (): Promise<Quiz[]> => {
+      const response = await QuizApi.findArchived();
+      return response.data.data;
     }
   });
 };
