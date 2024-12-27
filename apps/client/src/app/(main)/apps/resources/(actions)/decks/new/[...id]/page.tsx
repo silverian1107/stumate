@@ -1,8 +1,13 @@
 'use client';
 
 import { AxiosError } from 'axios';
-import { ArchiveIcon, Share2Icon, Undo2Icon } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import {
+  ArchiveIcon,
+  ArrowLeftIcon,
+  Share2Icon,
+  Undo2Icon
+} from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
@@ -28,6 +33,7 @@ import ShareDeckDialog from './share-deck-dialog';
 
 export default function DeckPage() {
   const { id } = useParams();
+  const router = useRouter();
   const { data: deck } = useDeckById(id as string);
 
   const dispatch = useDispatch();
@@ -112,7 +118,11 @@ export default function DeckPage() {
         handleDelete={handleDeleteDeck}
       />
       <div className="mx-auto flex size-full flex-col space-y-6 px-4 py-8 lg:w-4/5 lg:text-base xl:w-3/5">
-        <div className="w-full flex justify-start">
+        <div className="w-full flex justify-start gap-2 px-2 items-center">
+          <ArrowLeftIcon
+            onClick={() => router.back()}
+            className="size-8 p-1 rounded-full text-primary-300 hover:text-primary-600 hover:bg-primary-100 cursor-pointer"
+          />
           {!deck.isArchived && (
             <button
               type="button"

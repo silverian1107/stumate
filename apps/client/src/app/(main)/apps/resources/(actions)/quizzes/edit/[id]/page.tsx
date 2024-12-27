@@ -2,6 +2,7 @@
 
 import {
   ArchiveIcon,
+  ArrowLeftIcon,
   CheckIcon,
   Share2Icon,
   Undo2Icon,
@@ -211,7 +212,11 @@ export default function QuizActionPage() {
         handleDelete={handleDelete}
       />
       <div className="size-full flex flex-col px-4 py-8 space-y-6 xl:w-4/5 mx-auto lg:text-base">
-        <div className="w-full md:w-3/4 flex justify-start mx-auto">
+        <div className="w-full md:w-3/4 flex justify-start mx-auto gap-2">
+          <ArrowLeftIcon
+            onClick={() => router.back()}
+            className="size-8 p-1 rounded-full text-primary-300 hover:text-primary-600 hover:bg-primary-100 cursor-pointer"
+          />
           {!quiz.isArchived && (
             <button
               type="button"

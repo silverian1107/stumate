@@ -79,9 +79,16 @@ const DeckCard = ({ id, name, description }: ResourceCardProps) => {
           </Button>
         </Link>
         <Link href={`/apps/resources/decks/study/${id}`} prefetch>
-          <Button variant="default" className="px-6">
-            <PlayIcon /> Study
-          </Button>
+          {data.result.length > 0 && (
+            <Button variant="default" className="px-6">
+              <PlayIcon /> Study
+            </Button>
+          )}
+          {!data.result.length && (
+            <Button variant="default" className="px-6" disabled>
+              <PlayIcon /> No cards
+            </Button>
+          )}
         </Link>
       </div>
     </div>

@@ -56,11 +56,11 @@ export const useShareDeck = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['getSharedUsers', variables.deckId]
+        queryKey: ['share-decks', variables.deckId]
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['decks', variables.deckId]
+        queryKey: ['deck', variables.deckId]
       });
 
       toast.success('Access granted');
@@ -159,11 +159,12 @@ export const useUnshareDeck = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['getSharedUsers', variables.deckId]
+        queryKey: ['share-decks'],
+        exact: false
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['decks', variables.deckId]
+        queryKey: ['deck', variables.deckId]
       });
 
       toast.success('Access revoked', {
