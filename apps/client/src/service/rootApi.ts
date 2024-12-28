@@ -281,7 +281,6 @@ interface Meta {
 }
 
 export interface Notification {
-  includes(_id: string): unknown;
   _id: string;
   userId: string;
   role: string;
@@ -641,8 +640,8 @@ export const rootApi = createApi({
         method: 'POST'
       })
     }),
-    refreshToken: builder.mutation<AuthResponse, { refreshToken: string }>({
-      query: ({ refreshToken }) => ({
+    refreshToken: builder.query<any, void>({
+      query: () => ({
         url: '/auth/refresh',
         method: 'GET'
       })
