@@ -13,6 +13,14 @@ export default function LoginPage() {
       </p>
       <div className="w-[380px] rounded border border-primary-main/40 bg-white p-8 lg:w-[480px]">
         <LoginForm />
+        <div className="mt-4 text-center">
+          <Link
+            href="/forgot-password"
+            className="text-sm font-medium text-primary-main hover:underline focus:underline focus:outline-none"
+          >
+            Forgot your password?
+          </Link>
+        </div>
         <div className="flex flex-col items-center text-sm">
           <p className="mt-4 font-bold ">
             If you don&apos;t have an account?{' '}
