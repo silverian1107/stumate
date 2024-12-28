@@ -5,18 +5,21 @@ import { useEffect } from 'react';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDeckByOwner } from '@/hooks/use-deck';
+import type { DeckFromServer } from '@/types/deck';
 
 import DeckCard from '../../../_components/deck-card';
 import { useSearch } from '../../SearchContext';
 
 interface Deck {
+  updatedAt: string | number | Date;
+  studyStatus: any;
   _id: string;
   name: string;
   description: string;
 }
 
 const DeckPage = () => {
-  const { searchQuery, setSearchQuery } = useSearch();
+  const { searchQuery, setSearchQuery, sortOption } = useSearch();
 
   const { data, isLoading, error } = useDeckByOwner();
 
@@ -62,20 +65,49 @@ const DeckPage = () => {
 
   const { result } = data;
 
-  const filteredDecks = result.filter((deck: Deck) =>
-    deck.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredDecks = result
+    .filter((deck: Deck) =>
+      deck.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a: Deck, b: Deck) => {
+      if (sortOption === 'name') {
+        return a.name.localeCompare(b.name);
+      }
+      if (sortOption === 'updatedAt') {
+        return (
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+      }
+      if (sortOption === 'lastStudied') {
+        const aLastStudied = a.studyStatus.lastStudied
+          ? new Date(a.studyStatus.lastStudied)
+          : new Date(0);
+        const bLastStudied = b.studyStatus.lastStudied
+          ? new Date(b.studyStatus.lastStudied)
+          : new Date(0);
+        return bLastStudied.getTime() - aLastStudied.getTime();
+      }
+      return 0;
+    });
 
   return (
     <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 xl:grid-cols-4">
-      {filteredDecks.map((deck: Deck) => (
-        <DeckCard
-          key={deck._id}
-          id={deck._id}
-          name={deck.name}
-          description={deck.description}
-        />
-      ))}
+      {filteredDecks.map(
+        (
+          deck: Pick<
+            DeckFromServer,
+            '_id' | 'name' | 'description' | 'studyStatus'
+          >
+        ) => (
+          <DeckCard
+            key={deck._id}
+            _id={deck._id}
+            name={deck.name}
+            description={deck.description}
+            studyStatus={deck.studyStatus}
+          />
+        )
+      )}
     </div>
   );
 };

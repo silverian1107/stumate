@@ -338,7 +338,7 @@ export class ArchiveService {
       case 'decks':
         model = this.deckModel;
         break;
-      case 'quizz-tests':
+      case 'quiz-tests':
         model = this.quizTestModel;
         break;
       default:

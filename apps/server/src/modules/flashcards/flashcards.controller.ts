@@ -120,7 +120,12 @@ export class FlashcardsController {
   @ApiOperation({ summary: 'Study flashcards by deckId' })
   @ResponseMessage('Study flashcards')
   async getStudyDeck(@Param('deckId') deckId: string, @User() user: IUser) {
-    return await this.flashcardsService.handleStudyFlashcard(deckId, user);
+    const response = await this.flashcardsService.handleStudyFlashcard(
+      deckId,
+      user,
+    );
+
+    return response;
   }
 
   @Post(':id/mark')
@@ -132,7 +137,7 @@ export class FlashcardsController {
     @Body() markFlashcardDTO: MarkFlashcardDTO,
     @User() user: IUser,
   ) {
-    return await this.flashcardsService.handleMarkFlashcard(
+    return await this.flashcardsService.handleFlashcardAndDeckProgress(
       id,
       markFlashcardDTO,
       user,

@@ -55,3 +55,30 @@ export interface Quiz extends BaseResource {
 }
 
 export type Resource = Deck | Quiz;
+
+export type DeckFromServer = {
+  _id: string;
+  name: string;
+  description: string;
+  ownerId: string;
+  noteId: string | null;
+  studyStatus: {
+    totalCards: number;
+    reviewedCards: number;
+    dueToday: number;
+    progress: number;
+    lastStudied: Date;
+  };
+  tags: string[];
+  isCloned: boolean;
+  sharedWithUsers: string[];
+  createdBy: {
+    _id: string;
+    username: string;
+  };
+  isArchived: boolean;
+  archivedAt: string | null;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+};

@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import {
   BadRequestException,
   ForbiddenException,
@@ -6,6 +7,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import aqp from 'api-query-params';
+import mongoose, { Types } from 'mongoose';
+import { SoftDeleteModel } from 'mongoose-delete';
+import { firstValueFrom } from 'rxjs';
+import { User } from 'src/decorator/customize';
+import { DecksService } from '../decks/decks.service';
+import { Note, NoteDocument } from '../notes/schema/note.schema';
+import { NotificationsService } from '../notifications/notifications.service';
+import { StatisticsService } from '../statistics/statistics.service';
+import { IUser } from '../users/users.interface';
+import { reviewFlashcard } from './../../helpers/utils';
 import {
   CreateFlashcardDto,
   MarkFlashcardDTO,
@@ -14,25 +27,12 @@ import {
   UpdateFlashcardDto,
   UpdateMultipleFlashcardDto,
 } from './dto/update-flashcard.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { IUser } from '../users/users.interface';
-import { User } from 'src/decorator/customize';
-import { Flashcard, FlashcardDocument } from './schema/flashcard.schema';
-import aqp from 'api-query-params';
-import mongoose, { Types } from 'mongoose';
-import { DecksService } from '../decks/decks.service';
-import { SoftDeleteModel } from 'mongoose-delete';
-import { StatisticsService } from '../statistics/statistics.service';
-import { NotificationsService } from '../notifications/notifications.service';
 import {
   FlashcardReview,
   FlashcardReviewDocument,
   State,
 } from './schema/flashcard-review.schema';
-import { reviewFlashcard } from './../../helpers/utils';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import { Note, NoteDocument } from '../notes/schema/note.schema';
+import { Flashcard, FlashcardDocument } from './schema/flashcard.schema';
 
 @Injectable()
 export class FlashcardsService {
@@ -280,6 +280,117 @@ export class FlashcardsService {
     return {
       flashcards: sortedFlashcards.length > 0 ? sortedFlashcards : [],
       message: sortedFlashcards.length > 0 ? '' : 'No flashcard due for review',
+    };
+  }
+
+  async handleFlashcardAndDeckProgress(
+    flashcardId: string,
+    markFlashcardDTO: MarkFlashcardDTO,
+    user: IUser,
+  ) {
+    // Handle flashcard marking
+    const flashcardReview = await this.flashcardReviewModel
+      .findOne({ flashcardId })
+      .populate('flashcardId');
+
+    if (!flashcardReview) {
+      throw new NotFoundException('Flashcard review not found');
+    }
+
+    if (flashcardReview.userId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+
+    const isDueForReview = reviewFlashcard(
+      flashcardReview,
+      markFlashcardDTO.rating,
+      markFlashcardDTO.reviewDate,
+    );
+
+    flashcardReview.rating = markFlashcardDTO.rating;
+
+    if (markFlashcardDTO.rating < 3) {
+      flashcardReview.state = State.Relearning;
+    } else if (
+      [State.New, State.Review, State.Relearning].includes(
+        flashcardReview.state,
+      )
+    ) {
+      flashcardReview.state = State.Review;
+    }
+
+    await flashcardReview.save();
+
+    // Update user statistics
+    await this.statisticsService.createOrUpdateUserStatistics(user._id);
+
+    // Find deckId from flashcard
+    const flashcard = await this.flashcardModel.findById(flashcardId);
+    if (!flashcard) {
+      throw new NotFoundException('Flashcard not found');
+    }
+
+    const deckId = flashcard.deckId;
+
+    // Handle deck progress
+    const deck = await this.decks.findById(deckId.toString());
+    if (!deck || deck.ownerId.toString() !== user._id) {
+      throw new ForbiddenException(
+        `You don't have permission to access this resource`,
+      );
+    }
+
+    const flashcards = await this.flashcardModel.find({
+      userId: user._id,
+      deckId,
+    });
+
+    const flashcardReviews = await this.flashcardReviewModel.find({
+      userId: user._id,
+      flashcardId: { $in: flashcards.map((flashcard) => flashcard._id) },
+    });
+
+    const totalCards = flashcards.length;
+    const reviewedCards = flashcardReviews.filter(
+      (flashcardReview) => flashcardReview.state === State.Review,
+    ).length;
+
+    const dueToday = flashcardReviews.filter(
+      (flashcardReview) => flashcardReview.nextReview <= Date.now(),
+    ).length;
+
+    const progress = totalCards > 0 ? (reviewedCards / totalCards) * 100 : 0;
+
+    deck.studyStatus = {
+      totalCards,
+      reviewedCards,
+      dueToday,
+      progress,
+      lastStudied: new Date(),
+    };
+
+    await deck.save();
+
+    // Send notification
+    const cardsDueToday =
+      await this.statisticsService.getFlashcardsDueTodayCount(
+        user._id.toString(),
+      );
+
+    if (cardsDueToday === 0) {
+      await this.notificationsService.sendSuccessNotification(
+        user,
+        `All Cards Completed!`,
+        `Awesome! You've finished reviewing all your cards for today. Keep it going!`,
+      );
+    }
+
+    return {
+      flashcardReview,
+      isDueForReview,
+      deck,
     };
   }
 

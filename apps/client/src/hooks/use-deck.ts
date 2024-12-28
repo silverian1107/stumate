@@ -235,9 +235,13 @@ export const useCreateDeck = () => {
       const response = await DeckApi.create(deck);
       return response.data;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['decks', data._id] });
-      queryClient.invalidateQueries({ queryKey: ['decks'] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId'],
+        exact: false
+      });
     }
   });
 };
@@ -286,6 +290,10 @@ export const useArchiveDeck = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
       queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId'],
+        exact: false
+      });
     }
   });
 };
@@ -310,6 +318,14 @@ export const useRestoreDeck = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
       queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedDeck'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId'],
+        exact: false
+      });
     }
   });
 };
@@ -324,6 +340,14 @@ export const useDeleteDeck = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'], exact: false });
       queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ['getArchivedDeck'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId'],
+        exact: false
+      });
     }
   });
 };

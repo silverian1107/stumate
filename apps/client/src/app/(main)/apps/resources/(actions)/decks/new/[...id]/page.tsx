@@ -91,6 +91,8 @@ export default function DeckPage() {
         });
       }
     }
+
+    router.back();
   };
 
   const handleArchiveDeck = async () => {

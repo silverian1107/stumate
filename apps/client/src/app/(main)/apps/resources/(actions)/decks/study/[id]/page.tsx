@@ -2,6 +2,7 @@
 
 import { EyeIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 import FlashcardRating from '@/components/flashcard/flashcard-rating';
@@ -17,11 +18,18 @@ import { useMarkFlashcard, useStudyFlashcards } from '@/hooks/use-flashcard';
 // eslint-disable-next-line import/no-absolute-path
 
 const FlashcardStudyPage = () => {
+  const { id } = useParams();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const { data: flashcards, isLoading, isError, error } = useStudyFlashcards();
+  const {
+    data: flashcards,
+    isLoading,
+    isError,
+    error
+  } = useStudyFlashcards(id as string);
   const markFlashcard = useMarkFlashcard();
 
   const handleNext = (rating: number) => {

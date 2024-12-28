@@ -3,13 +3,21 @@
 import { Search, X } from 'lucide-react';
 import React, { useState } from 'react';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 import { useSearch } from './SearchContext';
 
 const SearchBar: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const { searchQuery, setSearchQuery } = useSearch();
+  const { searchQuery, setSearchQuery, sortOption, setSortOption } =
+    useSearch();
 
   const clearSearch = () => {
     setSearchQuery('');
@@ -22,7 +30,17 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="relative h-full">
+    <div className="relative flex h-full items-center gap-1">
+      <Select value={sortOption} onValueChange={setSortOption}>
+        <SelectTrigger className="w-[180px] border-primary-600/40 text-primary-600 font-medium rounded-sm">
+          <SelectValue placeholder="Sort by" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="lastStudied">Last Studied</SelectItem>
+          <SelectItem value="updatedAt">Updated At</SelectItem>
+          <SelectItem value="name">Name</SelectItem>
+        </SelectContent>
+      </Select>
       <input
         className="h-full rounded-sm border border-primary-600/40 bg-inherit px-4 text-primary-950 focus:border-2 focus:border-primary-600 focus:outline-none sm:w-[240px] md:w-[360px]"
         placeholder="Search..."

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { formatDistanceToNow } from 'date-fns';
 import { PenLine, PlayIcon } from 'lucide-react';
 import Link from 'next/link';
 
@@ -6,34 +7,46 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FlashcardsApi } from '@/endpoints/flashcard-api';
+import { useStudyFlashcards } from '@/hooks/use-flashcard';
+import type { DeckFromServer } from '@/types/deck';
 
-interface ResourceCardProps {
-  id: string;
-  name: string;
-  description: string;
-}
-
-const DeckCard = ({ id, name, description }: ResourceCardProps) => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['flashcardsByDeckId', id],
+const DeckCard = ({
+  _id,
+  name,
+  description,
+  studyStatus
+}: Partial<DeckFromServer>) => {
+  const { data, isLoading, error } = useQuery<{
+    total: number;
+    result: unknown[];
+  }>({
+    queryKey: ['flashcardsByDeckId', _id],
     queryFn: async () => {
-      const response = (await FlashcardsApi.findAllInDeck(id)).data;
+      const response = (await FlashcardsApi.findAllInDeck(_id as string)).data;
       return response.data;
     },
     staleTime: 1000 * 60 * 5
   });
 
-  if (isLoading) {
+  const { data: flashcards, isLoading: flashcardsLoading } = useStudyFlashcards(
+    _id as string
+  );
+
+  if (isLoading || flashcardsLoading || !data) {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     DeckCardSkeleton();
   }
 
-  if (error || !data) {
+  if (error || !flashcards) {
     return (
       <div className="flex w-full flex-col justify-between gap-3 rounded-sm bg-white px-4 py-3 text-base">
-        <h1 className="text-red-500">Failed to load flashcards</h1>
+        loading
       </div>
     );
+  }
+
+  if (!data) {
+    return null;
   }
 
   return (
@@ -50,7 +63,7 @@ const DeckCard = ({ id, name, description }: ResourceCardProps) => {
         <h1 className="-mb-1 text-xl font-bold line-clamp-2">
           {name}{' '}
           <span className="text-lg font-semibold text-primary-600 ">
-            {/* ({data.length} cards) */}
+            ({data.result.length} cards)
           </span>
         </h1>
         <h2 className="line-clamp-1 text-sm font-medium text-primary-950/50">
@@ -60,34 +73,49 @@ const DeckCard = ({ id, name, description }: ResourceCardProps) => {
       <div className="text-sm">
         <div className="flex items-center justify-between">
           <p className="font-semibold text-primary-950/50">Last studied: </p>
-          <h1>2 days ago</h1>
+          <h1>
+            {studyStatus?.lastStudied ? (
+              formatDistanceToNow(studyStatus?.lastStudied, {
+                addSuffix: true
+              })
+            ) : (
+              <span className="text-primary-600 font-bold tracking-wide">
+                New
+              </span>
+            )}
+          </h1>
         </div>
         <div className="flex items-center justify-between">
           <p className="font-semibold text-primary-950/50">Due today: </p>
-          <h1>25</h1>
+          <h1>{flashcards.length}</h1>
         </div>
         <div className="flex items-center justify-between">
           <p className="font-semibold text-primary-950/50">Progress: </p>
-          <h1>75%</h1>
+          <h1>{studyStatus?.progress}%</h1>
         </div>
       </div>
-      <Progress value={75} />
+      <Progress value={studyStatus?.progress} />
       <div className="flex w-full justify-end gap-2">
-        <Link href={`/apps/resources/decks/new/${id}`}>
+        <Link href={`/apps/resources/decks/new/${_id}`}>
           <Button variant="secondary" className="px-4 hover:bg-primary-100/80">
             <PenLine /> Edit
           </Button>
         </Link>
-        <Link href={`/apps/resources/decks/study/${id}`} prefetch>
-          {data.result.length > 0 && (
+        <Link href={`/apps/resources/decks/study/${_id}`} prefetch>
+          {flashcards.length > 0 ? (
             <Button variant="default" className="px-6">
               <PlayIcon /> Study
             </Button>
-          )}
-          {!data.result.length && (
+          ) : !isLoading && !data.result.length ? (
             <Button variant="default" className="px-6" disabled>
               <PlayIcon /> No cards
             </Button>
+          ) : (
+            flashcards.length === 0 && (
+              <Button variant="default" className="px-6" disabled>
+                <PlayIcon /> All good
+              </Button>
+            )
           )}
         </Link>
       </div>

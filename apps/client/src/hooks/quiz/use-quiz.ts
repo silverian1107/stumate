@@ -214,7 +214,7 @@ export const useArchiveQuiz = () => {
         exact: false
       });
       queryClient.invalidateQueries({
-        queryKey: ['quizz'],
+        queryKey: ['quiz'],
         exact: false
       });
     }
@@ -235,7 +235,11 @@ export const useRestoreQuiz = () => {
         exact: false
       });
       queryClient.invalidateQueries({
-        queryKey: ['quizz'],
+        queryKey: ['quiz'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['archived-quizzes'],
         exact: false
       });
     }
@@ -256,7 +260,11 @@ export const useDeleteQuiz = () => {
         exact: false
       });
       queryClient.invalidateQueries({
-        queryKey: ['quizz'],
+        queryKey: ['quiz'],
+        exact: false
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['archived-quizzes'],
         exact: false
       });
     }
@@ -266,7 +274,7 @@ export const useDeleteQuiz = () => {
 export const useGetArchivedQuizzes = () => {
   return useQuery({
     queryKey: ['archived-quizzes'],
-    queryFn: async (): Promise<Quiz[]> => {
+    queryFn: async () => {
       const response = await QuizApi.findArchived();
       return response.data.data;
     }

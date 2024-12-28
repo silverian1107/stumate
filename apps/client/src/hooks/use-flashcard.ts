@@ -1,21 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { FlashcardsApi } from '@/endpoints/flashcard-api';
 
-export const useStudyFlashcards = (deckId?: string) => {
-  const { id: routeDeckId } = useParams<{ id: string }>();
-  const actualDeckId = deckId || routeDeckId;
-
+export const useStudyFlashcards = (deckId: string) => {
   return useQuery({
-    queryKey: ['study-flashcards', actualDeckId],
+    queryKey: ['studyFlashcards', deckId],
     queryFn: async () => {
-      if (!actualDeckId) throw new Error('No deck ID provided');
-      const response = await FlashcardsApi.fetchStudyFlashcards(actualDeckId);
+      const response = await FlashcardsApi.fetchStudyFlashcards(deckId);
       return response.data.flashcards;
-    },
-    enabled: !!actualDeckId
+    }
   });
 };
 
@@ -28,6 +22,15 @@ export const useMarkFlashcard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['flashcards']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['decks'],
+        exact: false
+      });
+      queryClient.invalidateQueries({ queryKey: ['deck'], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ['flashcardsByDeckId'],
+        exact: false
       });
     }
   });
