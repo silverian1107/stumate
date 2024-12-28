@@ -83,7 +83,7 @@ export function QuizHeader({
     >
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-primary-600">
-          {isEditing ? 'Edit' : 'Create'} Quizz
+          {isEditing ? 'Edit' : 'Create'} Quiz
         </h1>
         <Button
           type="submit"

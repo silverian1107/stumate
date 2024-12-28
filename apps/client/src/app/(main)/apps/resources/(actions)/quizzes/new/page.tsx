@@ -84,11 +84,11 @@ export default function ResourcePage() {
   };
 
   return (
-    <>
+    <div className="size-full flex flex-col px-4 py-8 pb-2 space-y-6 xl:w-4/5 mx-auto lg:text-base">
       <QuizHeader onSubmit={handleSubmit} />
       <div className="flex-1 overflow-hidden">
         <QuizCreateElement />
       </div>
-    </>
+    </div>
   );
 }
