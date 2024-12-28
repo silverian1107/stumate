@@ -93,25 +93,27 @@ const QuizCreator: React.FC = () => {
   }, [data, isLoading, dispatch, routeIds]);
 
   return (
-    <div className="container mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-8rem)]">
-        <div
-          ref={creatorRef}
-          className="overflow-y-auto pr-4"
-          onScroll={(e) => handleScroll(e.currentTarget.scrollTop, 'creator')}
-        >
-          {questions.map((question) => (
-            <QuestionForm key={question._id} question={question} />
-          ))}
-        </div>
-        <div className="hidden lg:block h-full overflow-hidden">
-          <Preview questions={questions} ref={previewRef} />
+    <div className="h-full flex flex-col">
+      <div className="flex-1 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+          <div
+            ref={creatorRef}
+            className="overflow-y-auto pr-4 h-full"
+            onScroll={(e) => handleScroll(e.currentTarget.scrollTop, 'creator')}
+          >
+            {questions.map((question) => (
+              <QuestionForm key={question._id} question={question} />
+            ))}
+          </div>
+          <div className="hidden lg:block h-full overflow-hidden">
+            <Preview questions={questions} ref={previewRef} />
+          </div>
         </div>
       </div>
-      <div className="fixed bottom-20 right-4 lg:hidden">
+      <div className="mt-4 lg:hidden">
         <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
           <DialogTrigger asChild>
-            <Button>Preview Quiz</Button>
+            <Button className="w-full">Preview Quiz</Button>
           </DialogTrigger>
           <DialogContent className="w-[90vw] max-w-[450px] h-[80vh] p-0">
             <Preview questions={questions} ref={previewRef} />

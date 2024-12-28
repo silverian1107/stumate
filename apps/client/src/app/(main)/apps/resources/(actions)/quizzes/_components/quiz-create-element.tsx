@@ -18,10 +18,8 @@ const QuizCreateElement: React.FC = () => {
         <div className="flex-1 overflow-y-auto">
           <QuizCreator />
         </div>
-        <div className="sticky bottom-0 mt-2">
-          <QuizControls />
-        </div>
       </div>
+      <QuizControls />
     </div>
   );
 };
