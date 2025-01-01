@@ -28,8 +28,7 @@ export const useCreateSummary = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['getSummaries', noteId],
-        exact: false
+        queryKey: ['getSummary', noteId]
       });
 
       queryClient.invalidateQueries({
@@ -64,8 +63,7 @@ export const useUpdateSummary = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['getSummaries', noteId],
-        exact: false
+        queryKey: ['getSummary', noteId]
       });
 
       queryClient.invalidateQueries({

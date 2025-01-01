@@ -93,7 +93,7 @@ const DocumentList = ({
     return (
       <p
         style={{ paddingLeft: level ? `${level * 12 + 25}px` : undefined }}
-        className="text-sm font-medium text-muted-foreground"
+        className="text-sm font-medium text-muted-foreground text-center"
       >
         No documents inside.
       </p>

@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '../ui/dialog';
+import { Spinner } from '../ui/spinner'; // Import the Spinner component
 import { Textarea } from '../ui/textarea';
 
 export function SummaryTabContent() {
@@ -25,7 +26,9 @@ export function SummaryTabContent() {
 
   const [summary, setSummary] = useState('');
   const [showPreview, setShowPreview] = useState(false);
-  const [isEditingSummary, setIsEditingSummary] = useState(false);
+  const [isEditingInPreview, setIsEditingInPreview] = useState(false);
+  const [editedSummary, setEditedSummary] = useState('');
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   useEffect(() => {
     if (data && typeof data.content === 'string') {
@@ -33,21 +36,28 @@ export function SummaryTabContent() {
     }
   }, [data]);
 
-  const toggleSummaryEdit = () => {
-    setIsEditingSummary(!isEditingSummary);
+  const handleCreateSummary = async () => {
+    setIsGeneratingSummary(true);
+    try {
+      await createSummary.mutateAsync();
+    } finally {
+      setIsGeneratingSummary(false);
+    }
   };
 
-  const handleCreateSummary = async () => {
-    await createSummary.mutateAsync();
-    toggleSummaryEdit();
+  const handleOpenPreview = (editMode = false) => {
+    setShowPreview(true);
+    setIsEditingInPreview(editMode);
+    setEditedSummary(summary);
   };
 
   const handleSaveSummary = async () => {
     await updateSummary.mutateAsync({
-      content: summary,
+      content: editedSummary,
       summaryId: data._id
     });
-    toggleSummaryEdit();
+    setSummary(editedSummary);
+    setIsEditingInPreview(false);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -63,88 +73,110 @@ export function SummaryTabContent() {
       <CardContent>
         {data === null || data === undefined ? (
           <div className="flex flex-col space-y-2">
-            <Button variant="outline" size="sm" onClick={handleCreateSummary}>
-              <Sparkles className="size-4 mr-2" /> Generate
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCreateSummary}
+              disabled={isGeneratingSummary}
+            >
+              {isGeneratingSummary ? (
+                <>
+                  <Spinner size="small" />
+                  <span className="ml-2">Generating...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-4 mr-2" /> Generate
+                </>
+              )}
             </Button>
           </div>
         ) : (
           <div className="flex flex-col space-y-4">
-            {isEditingSummary ? (
-              <>
-                <Textarea
-                  className="min-h-[150px]"
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                  placeholder="Enter a summary..."
-                />
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleSaveSummary}
-                  >
-                    <Edit className="size-4 mr-2" />
-                    Save
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  className="text-sm min-h-[150px] overflow-auto"
-                  style={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 6,
-                    WebkitBoxOrient: 'vertical',
-                    wordWrap: 'break-word'
-                  }}
-                >
-                  {summary}
-                </div>
+            <div
+              className="text-sm min-h-[150px] overflow-auto"
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 6,
+                WebkitBoxOrient: 'vertical',
+                wordWrap: 'break-word'
+              }}
+            >
+              {summary}
+            </div>
 
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={toggleSummaryEdit}
-                  >
-                    <Edit className="size-4 mr-2" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowPreview(true)}
-                  >
-                    <Eye className="size-4 mr-2" />
-                    Preview
-                  </Button>
-                </div>
-              </>
-            )}
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleOpenPreview(true)}
+              >
+                <Edit className="size-4 mr-2" />
+                Edit
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleOpenPreview(false)}
+              >
+                <Eye className="size-4 mr-2" />
+                Preview
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
         <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Preview Summary</DialogTitle>
+            <DialogTitle>
+              {isEditingInPreview ? 'Edit Summary' : 'Preview Summary'}
+            </DialogTitle>
           </DialogHeader>
-          <div
-            className="text-sm min-h-[480px] max-h-[720px] overflow-auto mt-4"
-            style={{
-              display: '-webkit-box',
-              WebkitLineClamp: 6,
-              WebkitBoxOrient: 'vertical',
-              wordWrap: 'break-word'
-            }}
-          >
-            {summary}
-          </div>
+          {isEditingInPreview ? (
+            <Textarea
+              className="min-h-[480px] max-h-[720px] mt-4"
+              value={editedSummary}
+              onChange={(e) => setEditedSummary(e.target.value)}
+              placeholder="Enter a summary..."
+            />
+          ) : (
+            <div
+              className="text-sm min-h-[480px] max-h-[720px] overflow-auto mt-4"
+              style={{
+                wordWrap: 'break-word'
+              }}
+            >
+              {summary}
+            </div>
+          )}
           <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setShowPreview(false)}>
-              Close
-            </Button>
+            {isEditingInPreview ? (
+              <>
+                <Button variant="outline" onClick={handleSaveSummary}>
+                  Save
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsEditingInPreview(false)}
+                >
+                  Cancel
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsEditingInPreview(true)}
+                >
+                  <Edit className="size-4 mr-2" />
+                  Edit
+                </Button>
+                <Button variant="outline" onClick={() => setShowPreview(false)}>
+                  Close
+                </Button>
+              </>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -4,23 +4,23 @@ import { IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateQuizTestDto {
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @IsOptional()
   @IsString()
-  description: string;
+  description?: string;
 
   @IsOptional()
   @Transform(({ value }) => Number(value))
   @IsNumber()
-  numberOfQuestion: number;
+  numberOfQuestion?: number;
 
   @IsOptional()
   @Transform(({ value }) => Number(value))
   @IsNumber()
-  duration: number;
+  duration?: number;
 
   @IsOptional()
   @IsMongoId()
-  noteId: string;
+  noteId?: string;
 }

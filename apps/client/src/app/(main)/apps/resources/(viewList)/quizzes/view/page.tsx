@@ -10,7 +10,7 @@ import type { Quiz } from '@/types/deck';
 import { useSearch } from '../../SearchContext';
 import QuizCard from './quiz-card';
 
-const Quizzes = () => {
+const Quizzes: React.FC = () => {
   const { data, isLoading, error } = useQuizzesByOwner();
   const { searchQuery, setSearchQuery } = useSearch();
 
@@ -51,13 +51,24 @@ const Quizzes = () => {
     );
   }
 
-  const filteredData = data.filter((quiz) =>
+  const filteredAndSortedData = data.filter((quiz: Quiz) =>
     quiz.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  //   .sort((a: Quiz, b: Quiz) => {
+  //     if (sortOption === 'name') {
+  //       return a.name.localeCompare(b.name);
+  //     }
+  //     if (sortOption === 'updatedAt' || sortOption === 'lastStudied') {
+  //       return (
+  //         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  //       );
+  //     }
+  //     return 0;
+  //   });
 
   return (
     <div className="grid w-full flex-1 auto-rows-min grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 xl:grid-cols-4">
-      {filteredData.map((quiz: Quiz) => (
+      {filteredAndSortedData.map((quiz: Quiz) => (
         <QuizCard
           key={quiz._id}
           id={quiz._id}

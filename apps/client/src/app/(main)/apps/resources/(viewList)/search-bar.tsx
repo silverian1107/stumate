@@ -36,8 +36,8 @@ const SearchBar: React.FC = () => {
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="lastStudied">Last Studied</SelectItem>
           <SelectItem value="updatedAt">Updated At</SelectItem>
+          <SelectItem value="lastStudied">Last Studied</SelectItem>
           <SelectItem value="name">Name</SelectItem>
         </SelectContent>
       </Select>

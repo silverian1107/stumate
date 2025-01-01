@@ -76,7 +76,7 @@ const DashboardPage = () => {
     <div className="flex flex-col gap-5 p-5 flex-1 size-full">
       <Items
         overview={
-          statistics?.data.overview || {
+          statistics?.data?.overview || {
             totalAccounts: 0,
             totalNotes: 0,
             totalFlashcards: 0,
@@ -84,7 +84,7 @@ const DashboardPage = () => {
           }
         }
       />
-      {statistics?.data.monthlyStatisticsChart && (
+      {statistics?.data?.monthlyStatisticsChart && (
         <RevenueChart
           monthlyStatisticsChart={statistics.data.monthlyStatisticsChart}
         />

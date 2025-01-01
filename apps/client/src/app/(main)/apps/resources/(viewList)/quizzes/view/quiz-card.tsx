@@ -11,7 +11,7 @@ interface ResourceCardProps {
   description?: string;
 }
 
-const QuizCard = ({ id, name, description }: ResourceCardProps) => {
+const QuizCard: React.FC<ResourceCardProps> = ({ id, name, description }) => {
   const { data, isLoading, error } = useQuizById(id);
   const { data: questions, isLoading: isLoadingQuestions } =
     useQuizQuestions(id);
@@ -44,10 +44,6 @@ const QuizCard = ({ id, name, description }: ResourceCardProps) => {
           <p className="font-semibold text-primary-950/50">Total questions: </p>
           <h1>{data.numberOfQuestion}</h1>
         </div>
-        {/* <div className="flex items-center justify-between">
-          <p className="font-semibold text-primary-950/50">Due today: </p>
-          <h1>25</h1>
-        </div> */}
         <div className="flex items-center justify-between">
           <p className="font-semibold text-primary-950/50">Progress: </p>
           <h1>75%</h1>

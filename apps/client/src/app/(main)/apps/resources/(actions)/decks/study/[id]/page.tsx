@@ -118,8 +118,10 @@ const FlashcardStudyPage = () => {
         isFlipped={isFlipped}
         setIsFlipped={setIsFlipped}
       >
-        <FlipCardFront>{currentFlashcard.front}</FlipCardFront>
-        <FlipCardBack className="rounded-2xl">
+        <FlipCardFront className="text-center">
+          {currentFlashcard.front}
+        </FlipCardFront>
+        <FlipCardBack className="rounded-2xl text-center">
           {currentFlashcard.back}
         </FlipCardBack>
       </FlipCard>

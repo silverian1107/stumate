@@ -120,6 +120,13 @@ export class QuizQuestionsService {
     });
 
     const newQuizQuestions = await this.quizQuestionModel.insertMany(questions);
+    await this.quizTestService.update(
+      quizTestId,
+      {
+        numberOfQuestion: newQuizQuestions.length,
+      },
+      user,
+    );
     return { data: newQuizQuestions, _id: quizTestId };
   }
 

@@ -1,4 +1,5 @@
 import { BookOpen, Plus, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import {
@@ -14,6 +15,8 @@ import { Progress } from '../ui/progress';
 import { Spinner } from '../ui/spinner'; // Import the Spinner component
 
 export const DeckTabContent = () => {
+  const router = useRouter();
+
   const { data: note, isLoading: isLoadingNote } = useNoteById();
   const { data, isLoading } = useDeckByNoteId(note._id);
 
@@ -92,15 +95,33 @@ export const DeckTabContent = () => {
               {deck?.reviewedCardCount || 0}/{deck?.cardCount || 0} cards
               reviewed
             </p>
-            <Button
-              className="w-full hover:bg-primary-50/80 bg-primary-50 text-primary-600"
-              variant="secondary"
-            >
-              Edit
-            </Button>
-            <Button className="w-full" disabled={flashcards.length === 0}>
-              Review Deck
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button
+                className="w-full hover:bg-primary-50/80 bg-primary-50 text-primary-600"
+                variant="secondary"
+                onClick={() => {
+                  router.push(`/apps/resources/decks/new/${deck._id}`);
+                }}
+              >
+                Edit
+              </Button>
+              <Button
+                className="w-full"
+                disabled={flashcards.length === 0 || isGeneratingByAI}
+                onClick={() => {
+                  router.push(`/apps/resources/decks/study/${deck._id}`);
+                }}
+              >
+                {isGeneratingByAI ? (
+                  <>
+                    <Spinner size="small" />
+                    <span className="ml-2">Generating by AI...</span>
+                  </>
+                ) : (
+                  'Review Deck'
+                )}
+              </Button>
+            </div>
           </>
         ) : (
           <div className="flex flex-col space-y-2">

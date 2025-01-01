@@ -34,13 +34,21 @@ export function LearnerSidebar() {
     return 0;
   };
 
+  const truncateTag = (tag: string) => {
+    const words = tag.split(' ');
+    if (words.length > 7) {
+      return `${words.slice(0, 5).join(' ')}...`;
+    }
+    return tag;
+  };
+
   const tagLimit = 3;
   const tagList = note?.tags?.slice(0, tagLimit).map((tag: any) => (
     <span
       key={tag._id}
       className="bg-primary-50 px-1 py-0.5 rounded-full text-primary-700"
     >
-      {tag.name}
+      {truncateTag(tag.name)}
     </span>
   ));
 

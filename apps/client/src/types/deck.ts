@@ -48,6 +48,7 @@ export interface Deck extends BaseResource {
 }
 
 export interface Quiz extends BaseResource {
+  updatedAt: string | number | Date;
   numberOfQuestion: number;
   duration: number;
   elements: QuizElement[];
